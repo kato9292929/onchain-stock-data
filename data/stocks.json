@@ -1,0 +1,295 @@
+{
+  "source": "sample-data",
+  "note": "Live data sources (Helius / Birdeye / Jupiter / yfinance) are not reachable from this build environment. Values shown are illustrative and must be refreshed against the live RPC + xstocks.fi registry before production use.",
+  "updated_at": "2026-05-23T19:00:00Z",
+  "stocks": [
+    {
+      "underlying_ticker": "NVDA",
+      "company_name": "NVIDIA Corporation",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 3450000000000,
+      "price_usd": 142.36,
+      "price_change_24h_pct": 1.42,
+      "price_change_7d_pct": 4.18,
+      "price_change_30d_pct": 12.7,
+      "volume_24h_usd": 38100000000,
+      "earnings_next_date": "2026-08-21",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "NVDAx",
+          "chain": "Solana",
+          "mint_address": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+          "decimals": 8,
+          "current_price_usd": 142.18,
+          "volume_24h_usd": 6420000,
+          "venues": ["Kraken", "Bybit", "Jupiter", "Raydium", "Phantom"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "TSLA",
+      "company_name": "Tesla, Inc.",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 1110000000000,
+      "price_usd": 345.7,
+      "price_change_24h_pct": -0.82,
+      "price_change_7d_pct": 2.06,
+      "price_change_30d_pct": 8.4,
+      "volume_24h_usd": 18200000000,
+      "earnings_next_date": "2026-07-23",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "TSLAx",
+          "chain": "Solana",
+          "mint_address": "XsP7xzNPvEHS1m6qDXVqXFL9rsXKpYwQ3W8Z9sTeslA",
+          "decimals": 8,
+          "current_price_usd": 345.92,
+          "volume_24h_usd": 4810000,
+          "venues": ["Kraken", "Bybit", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "AAPL",
+      "company_name": "Apple Inc.",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 3380000000000,
+      "price_usd": 221.45,
+      "price_change_24h_pct": 0.34,
+      "price_change_7d_pct": 1.21,
+      "price_change_30d_pct": 3.4,
+      "volume_24h_usd": 11400000000,
+      "earnings_next_date": "2026-07-31",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "AAPLx",
+          "chain": "Solana",
+          "mint_address": "XsApPLeXxYzMintAddressPlaceholder1111111111",
+          "decimals": 8,
+          "current_price_usd": 221.31,
+          "volume_24h_usd": 2710000,
+          "venues": ["Kraken", "Bybit", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "MSFT",
+      "company_name": "Microsoft Corporation",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 3160000000000,
+      "price_usd": 425.1,
+      "price_change_24h_pct": 0.65,
+      "price_change_7d_pct": 2.71,
+      "price_change_30d_pct": 5.9,
+      "volume_24h_usd": 9100000000,
+      "earnings_next_date": "2026-07-30",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "MSFTx",
+          "chain": "Solana",
+          "mint_address": "XsMSFTxxxYzMintAddressPlaceholder2222222222",
+          "decimals": 8,
+          "current_price_usd": 424.84,
+          "volume_24h_usd": 1840000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "AMZN",
+      "company_name": "Amazon.com, Inc.",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 2090000000000,
+      "price_usd": 198.7,
+      "price_change_24h_pct": -0.45,
+      "price_change_7d_pct": 0.92,
+      "price_change_30d_pct": 4.2,
+      "volume_24h_usd": 7600000000,
+      "earnings_next_date": "2026-07-31",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "AMZNx",
+          "chain": "Solana",
+          "mint_address": "XsAMZNxxxYzMintAddressPlaceholder3333333333",
+          "decimals": 8,
+          "current_price_usd": 198.55,
+          "volume_24h_usd": 1230000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "GOOGL",
+      "company_name": "Alphabet Inc. (Class A)",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 2230000000000,
+      "price_usd": 182.4,
+      "price_change_24h_pct": 1.05,
+      "price_change_7d_pct": 3.18,
+      "price_change_30d_pct": 6.5,
+      "volume_24h_usd": 5300000000,
+      "earnings_next_date": "2026-07-22",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "GOOGLx",
+          "chain": "Solana",
+          "mint_address": "XsGOOGLxxYzMintAddressPlaceholder4444444444",
+          "decimals": 8,
+          "current_price_usd": 182.27,
+          "volume_24h_usd": 980000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "META",
+      "company_name": "Meta Platforms, Inc.",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 1380000000000,
+      "price_usd": 545.8,
+      "price_change_24h_pct": 0.27,
+      "price_change_7d_pct": 1.83,
+      "price_change_30d_pct": 5.1,
+      "volume_24h_usd": 4700000000,
+      "earnings_next_date": "2026-07-29",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "METAx",
+          "chain": "Solana",
+          "mint_address": "XsMETAxxxYzMintAddressPlaceholder5555555555",
+          "decimals": 8,
+          "current_price_usd": 545.6,
+          "volume_24h_usd": 1110000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "COIN",
+      "company_name": "Coinbase Global, Inc.",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 78000000000,
+      "price_usd": 305.4,
+      "price_change_24h_pct": 2.84,
+      "price_change_7d_pct": 8.12,
+      "price_change_30d_pct": 18.6,
+      "volume_24h_usd": 3200000000,
+      "earnings_next_date": "2026-08-07",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "COINx",
+          "chain": "Solana",
+          "mint_address": "XsCOINxxxYzMintAddressPlaceholder6666666666",
+          "decimals": 8,
+          "current_price_usd": 305.81,
+          "volume_24h_usd": 2480000,
+          "venues": ["Kraken", "Bybit", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "MSTR",
+      "company_name": "MicroStrategy Incorporated",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 88000000000,
+      "price_usd": 412.6,
+      "price_change_24h_pct": 3.21,
+      "price_change_7d_pct": 11.4,
+      "price_change_30d_pct": 24.8,
+      "volume_24h_usd": 2900000000,
+      "earnings_next_date": "2026-08-06",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "MSTRx",
+          "chain": "Solana",
+          "mint_address": "XsMSTRxxxYzMintAddressPlaceholder7777777777",
+          "decimals": 8,
+          "current_price_usd": 413.18,
+          "volume_24h_usd": 3120000,
+          "venues": ["Kraken", "Bybit", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "GME",
+      "company_name": "GameStop Corp.",
+      "listing_market": "NYSE",
+      "market_cap_usd": 11200000000,
+      "price_usd": 26.4,
+      "price_change_24h_pct": -1.24,
+      "price_change_7d_pct": 4.62,
+      "price_change_30d_pct": 7.8,
+      "volume_24h_usd": 410000000,
+      "earnings_next_date": "2026-09-09",
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "GMEx",
+          "chain": "Solana",
+          "mint_address": "XsGMExxxxYzMintAddressPlaceholder8888888888",
+          "decimals": 8,
+          "current_price_usd": 26.51,
+          "volume_24h_usd": 720000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "SPY",
+      "company_name": "SPDR S&P 500 ETF Trust",
+      "listing_market": "NYSE ARCA",
+      "market_cap_usd": 615000000000,
+      "price_usd": 612.8,
+      "price_change_24h_pct": 0.18,
+      "price_change_7d_pct": 1.42,
+      "price_change_30d_pct": 3.7,
+      "volume_24h_usd": 25400000000,
+      "earnings_next_date": null,
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "SPYx",
+          "chain": "Solana",
+          "mint_address": "XsSPYxxxxYzMintAddressPlaceholder9999999999",
+          "decimals": 8,
+          "current_price_usd": 612.6,
+          "volume_24h_usd": 1890000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    },
+    {
+      "underlying_ticker": "QQQ",
+      "company_name": "Invesco QQQ Trust",
+      "listing_market": "NASDAQ",
+      "market_cap_usd": 320000000000,
+      "price_usd": 528.3,
+      "price_change_24h_pct": 0.42,
+      "price_change_7d_pct": 2.06,
+      "price_change_30d_pct": 4.8,
+      "volume_24h_usd": 11200000000,
+      "earnings_next_date": null,
+      "tokenized_versions": [
+        {
+          "issuer": "Backed Finance (xStocks)",
+          "token_symbol": "QQQx",
+          "chain": "Solana",
+          "mint_address": "XsQQQxxxxYzMintAddressPlaceholderAAAAAAAAAA",
+          "decimals": 8,
+          "current_price_usd": 528.12,
+          "volume_24h_usd": 1340000,
+          "venues": ["Kraken", "Jupiter", "Raydium"]
+        }
+      ]
+    }
+  ]
+}

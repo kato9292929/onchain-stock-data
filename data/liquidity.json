@@ -1,0 +1,92 @@
+{
+  "source": "sample-data",
+  "note": "Jupiter / Raydium / Orca pool data could not be fetched from this build environment. Refresh against lite-api.jup.ag and on-chain pool accounts before production use.",
+  "updated_at": "2026-05-23T19:00:00Z",
+  "pairs": [
+    {
+      "token_symbol": "NVDAx",
+      "underlying_ticker": "NVDA",
+      "official_price_usd": 142.36,
+      "dex_price_usd": 142.18,
+      "deviation_pct": -0.127,
+      "tvl_usd": 8420000,
+      "volume_24h_usd": 6420000,
+      "top_pools": [
+        { "venue": "Raydium", "pair": "NVDAx / USDC", "tvl_usd": 5210000, "fee_bps": 25 },
+        { "venue": "Orca",    "pair": "NVDAx / USDC", "tvl_usd": 2110000, "fee_bps": 30 },
+        { "venue": "Jupiter (aggregated)", "pair": "NVDAx / USDC", "tvl_usd": 1100000, "fee_bps": null }
+      ],
+      "arbitrage_signal": "neutral"
+    },
+    {
+      "token_symbol": "TSLAx",
+      "underlying_ticker": "TSLA",
+      "official_price_usd": 345.70,
+      "dex_price_usd": 345.92,
+      "deviation_pct": 0.064,
+      "tvl_usd": 6210000,
+      "volume_24h_usd": 4810000,
+      "top_pools": [
+        { "venue": "Raydium", "pair": "TSLAx / USDC", "tvl_usd": 3640000, "fee_bps": 25 },
+        { "venue": "Orca",    "pair": "TSLAx / USDC", "tvl_usd": 1820000, "fee_bps": 30 }
+      ],
+      "arbitrage_signal": "neutral"
+    },
+    {
+      "token_symbol": "COINx",
+      "underlying_ticker": "COIN",
+      "official_price_usd": 305.40,
+      "dex_price_usd": 305.81,
+      "deviation_pct": 0.134,
+      "tvl_usd": 3120000,
+      "volume_24h_usd": 2480000,
+      "top_pools": [
+        { "venue": "Raydium", "pair": "COINx / USDC", "tvl_usd": 1980000, "fee_bps": 25 },
+        { "venue": "Orca",    "pair": "COINx / USDC", "tvl_usd": 1140000, "fee_bps": 30 }
+      ],
+      "arbitrage_signal": "premium (DEX rich vs NASDAQ)"
+    },
+    {
+      "token_symbol": "MSTRx",
+      "underlying_ticker": "MSTR",
+      "official_price_usd": 412.60,
+      "dex_price_usd": 413.18,
+      "deviation_pct": 0.141,
+      "tvl_usd": 4310000,
+      "volume_24h_usd": 3120000,
+      "top_pools": [
+        { "venue": "Raydium", "pair": "MSTRx / USDC", "tvl_usd": 2810000, "fee_bps": 25 },
+        { "venue": "Orca",    "pair": "MSTRx / USDC", "tvl_usd": 1500000, "fee_bps": 30 }
+      ],
+      "arbitrage_signal": "premium (DEX rich vs NASDAQ)"
+    },
+    {
+      "token_symbol": "AAPLx",
+      "underlying_ticker": "AAPL",
+      "official_price_usd": 221.45,
+      "dex_price_usd": 221.31,
+      "deviation_pct": -0.063,
+      "tvl_usd": 2710000,
+      "volume_24h_usd": 2710000,
+      "top_pools": [
+        { "venue": "Raydium", "pair": "AAPLx / USDC", "tvl_usd": 1610000, "fee_bps": 25 },
+        { "venue": "Orca",    "pair": "AAPLx / USDC", "tvl_usd": 1100000, "fee_bps": 30 }
+      ],
+      "arbitrage_signal": "neutral"
+    },
+    {
+      "token_symbol": "GMEx",
+      "underlying_ticker": "GME",
+      "official_price_usd": 26.40,
+      "dex_price_usd": 26.51,
+      "deviation_pct": 0.416,
+      "tvl_usd": 920000,
+      "volume_24h_usd": 720000,
+      "top_pools": [
+        { "venue": "Raydium", "pair": "GMEx / USDC", "tvl_usd": 620000, "fee_bps": 25 },
+        { "venue": "Orca",    "pair": "GMEx / USDC", "tvl_usd": 300000, "fee_bps": 30 }
+      ],
+      "arbitrage_signal": "premium (DEX rich vs NYSE)"
+    }
+  ]
+}

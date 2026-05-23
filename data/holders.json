@@ -1,0 +1,66 @@
+{
+  "source": "sample-data",
+  "note": "Helius RPC could not be reached from this build environment. Refresh against getTokenLargestAccounts + getProgramAccounts before production use.",
+  "updated_at": "2026-05-23T19:00:00Z",
+  "tokens": [
+    {
+      "token_symbol": "NVDAx",
+      "underlying_ticker": "NVDA",
+      "mint_address": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+      "holder_count": 4218,
+      "total_supply": 612300,
+      "concentration_score": 0.42,
+      "concentration_label": "moderate",
+      "top_holders": [
+        { "rank": 1, "address": "5Hk...Kraken-treasury",  "balance": 92100, "pct": 15.04, "label": "Kraken — exchange wallet" },
+        { "rank": 2, "address": "7Qw...Bybit-treasury",   "balance": 71200, "pct": 11.63, "label": "Bybit — exchange wallet" },
+        { "rank": 3, "address": "9Vp...Raydium-NVDAx-USDC", "balance": 58400, "pct": 9.54, "label": "Raydium NVDAx/USDC pool" },
+        { "rank": 4, "address": "3Mk...Orca-NVDAx-USDC", "balance": 24700, "pct": 4.03, "label": "Orca NVDAx/USDC pool" },
+        { "rank": 5, "address": "2Bg...whale-01",         "balance": 18200, "pct": 2.97, "label": "Individual whale" }
+      ]
+    },
+    {
+      "token_symbol": "TSLAx",
+      "underlying_ticker": "TSLA",
+      "mint_address": "XsP7xzNPvEHS1m6qDXVqXFL9rsXKpYwQ3W8Z9sTeslA",
+      "holder_count": 3104,
+      "total_supply": 281200,
+      "concentration_score": 0.51,
+      "concentration_label": "high",
+      "top_holders": [
+        { "rank": 1, "address": "5Hk...Kraken-treasury",  "balance": 56300, "pct": 20.02, "label": "Kraken — exchange wallet" },
+        { "rank": 2, "address": "7Qw...Bybit-treasury",   "balance": 41200, "pct": 14.65, "label": "Bybit — exchange wallet" },
+        { "rank": 3, "address": "9Vp...Raydium-TSLAx-USDC", "balance": 32100, "pct": 11.41, "label": "Raydium TSLAx/USDC pool" },
+        { "rank": 4, "address": "2Bg...whale-02",         "balance": 14800, "pct": 5.26, "label": "Individual whale" }
+      ]
+    },
+    {
+      "token_symbol": "COINx",
+      "underlying_ticker": "COIN",
+      "mint_address": "XsCOINxxxYzMintAddressPlaceholder6666666666",
+      "holder_count": 1824,
+      "total_supply": 112400,
+      "concentration_score": 0.47,
+      "concentration_label": "moderate",
+      "top_holders": [
+        { "rank": 1, "address": "5Hk...Kraken-treasury",  "balance": 19800, "pct": 17.62, "label": "Kraken — exchange wallet" },
+        { "rank": 2, "address": "9Vp...Raydium-COINx-USDC", "balance": 13600, "pct": 12.10, "label": "Raydium COINx/USDC pool" },
+        { "rank": 3, "address": "3Mk...Orca-COINx-USDC", "balance": 8200,  "pct": 7.30, "label": "Orca COINx/USDC pool" }
+      ]
+    },
+    {
+      "token_symbol": "MSTRx",
+      "underlying_ticker": "MSTR",
+      "mint_address": "XsMSTRxxxYzMintAddressPlaceholder7777777777",
+      "holder_count": 2210,
+      "total_supply": 84200,
+      "concentration_score": 0.56,
+      "concentration_label": "high",
+      "top_holders": [
+        { "rank": 1, "address": "5Hk...Kraken-treasury",  "balance": 16800, "pct": 19.95, "label": "Kraken — exchange wallet" },
+        { "rank": 2, "address": "2Bg...whale-mstr-01",    "balance": 9800,  "pct": 11.64, "label": "Individual whale" },
+        { "rank": 3, "address": "9Vp...Raydium-MSTRx-USDC", "balance": 8200, "pct": 9.74, "label": "Raydium MSTRx/USDC pool" }
+      ]
+    }
+  ]
+}
