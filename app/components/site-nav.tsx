@@ -9,6 +9,7 @@ const NAV = [
   { href: "/liquidity", label: "Liquidity" },
   { href: "/holders", label: "Holders" },
   { href: "/alpha", label: "Alpha" },
+  { href: "/analyst", label: "Analyst" },
 ];
 
 export function SiteNav() {

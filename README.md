@@ -16,19 +16,21 @@ Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を
 | `/liquidity` | Jupiter / Raydium / Orca プールの TVL と公式価格 vs DEX 価格乖離     |
 | `/holders`   | Helius RPC 由来の保有者数・上位ホルダー・集中度スコア                |
 | `/alpha`     | オーナーが手動キュレーションした X 投稿の埋め込み                    |
+| `/analyst`   | エージェント向け有料 IC memo (上記 5 API を並列で叩いて Claude で統合) |
 
 ## API
 
 すべて JSON を返します。`User-Agent` で人 / エージェントを判定し、エージェントには HTTP 402 で x402 challenge を返します。
 
 ```text
-GET /api/stocks                  # 全銘柄
-GET /api/stocks?tokenized=true   # tokenized のみ
-GET /api/stocks/:ticker          # NVDA / TSLA / AAPL 等
-GET /api/ipo                     # Backpack IPOs Onchain calendar
-GET /api/liquidity               # DEX プール + 乖離率
-GET /api/holders                 # 保有者マップ + 集中度
-GET /api/alpha-posts             # Alpha Signals (オーナーキュレーション)
+GET  /api/stocks                  # 全銘柄
+GET  /api/stocks?tokenized=true   # tokenized のみ
+GET  /api/stocks/:ticker          # NVDA / TSLA / AAPL 等
+GET  /api/ipo                     # Backpack IPOs Onchain calendar
+GET  /api/liquidity               # DEX プール + 乖離率
+GET  /api/holders                 # 保有者マップ + 集中度
+GET  /api/alpha-posts             # Alpha Signals (オーナーキュレーション)
+POST /api/analyst                 # Claude が IC memo を生成 (有料)
 ```
 
 ### Sample response (200・browser)
@@ -107,6 +109,73 @@ const res = await fetchWithPay("https://onchain-stock-data.vercel.app/api/stocks
 - **流動性プール** — Jupiter aggregator / Raydium / Orca SDK
 - **保有者マップ** — Helius RPC (`getTokenLargestAccounts`, `getProgramAccounts`)
 - **Alpha posts** — `data/alpha-posts.json` をオーナーが手動編集
+
+## Analyst (`POST /api/analyst`)
+
+エージェント向け有料エンドポイント。リクエスト時に上記 5 API を並列で叩き、Claude (Anthropic) で構造化された IC memo に統合して返します。
+
+### Request
+
+```bash
+POST /api/analyst
+Content-Type: application/json
+
+{
+  "ticker": "SPCX",      // 必須
+  "depth":  "standard"   // 任意 — quick | standard | deep (default: standard)
+}
+```
+
+### Pricing & depth
+
+| depth      | sources                                                | time      | price (USDC) |
+|------------|--------------------------------------------------------|-----------|--------------|
+| `quick`    | 5 internal endpoints                                   | 3-5 min   | **$0.50**    |
+| `standard` | + SEC EDGAR filings (recent)                           | 10-15 min | **$1.50**    |
+| `deep`     | + earnings call transcript + comparable financials     | 20-30 min | **$3.00**    |
+
+決済は Base USDC または Solana USDC を [x402](https://x402.org) で受領。
+
+### Auth modes
+
+| Caller                                       | Behavior |
+|----------------------------------------------|----------|
+| Browser (Mozilla / Safari / Chrome UA)       | `GET /analyst` ページ (HTML) を返す。`POST /api/analyst` は HTML を返さず、後述の挙動。 |
+| Agent (`curl`, Claude, GPT, Python requests) | HTTP 402 x402 challenge を返す。x402 payment 完了後にレポート生成。 |
+| Internal (`X-Internal-Key: $INTERNAL_API_KEY`) | 課金スキップ・HTTP 200 で直接レポート生成。自社 backend や AA から使う想定。 |
+
+### Sample call
+
+```bash
+# Internal (free, AA / self-hosted)
+curl -X POST https://onchain-stock-data.vercel.app/api/analyst \
+  -H "Content-Type: application/json" \
+  -H "X-Internal-Key: $INTERNAL_API_KEY" \
+  -d '{"ticker": "SPCX", "depth": "standard"}'
+
+# Agent (x402-charged)
+curl -X POST https://onchain-stock-data.vercel.app/api/analyst \
+  -H "Content-Type: application/json" \
+  -d '{"ticker": "SPCX", "depth": "standard"}'
+# → HTTP 402, body includes Base USDC + Solana USDC accept options
+```
+
+`data/sample-analyst-output.json` に SPCX standard のサンプル出力を同梱しています (このリポジトリの初期版はハンドクラフト — 実 Claude 生成版に置き換えるには `ANTHROPIC_API_KEY` を設定したデプロイ環境で上記 curl を実行)。
+
+### 位置付け (vs agentic.market)
+
+- `agentic.market` は米国上場株中心の AI 投資分析エージェント。
+- 本 Analyst は **APAC + Solana onchain (xStocks) + Backpack IPOs Onchain** にデータ起点を持つことで補完関係。
+- 共通スキーマで IC memo を出すため、agentic と組み合わせて多面評価できます。
+
+### 環境変数
+
+| Var                 | 必須 | 用途 |
+|---------------------|------|------|
+| `ANTHROPIC_API_KEY` | yes  | Claude API 呼び出し (`POST /api/analyst`) |
+| `INTERNAL_API_KEY`  | opt  | 内部認証 (`X-Internal-Key` ヘッダ)。未設定なら内部認証ルートは無効。 |
+
+`.env.example` を参照。Vercel デプロイ時は Project Settings → Environment Variables から投入してください。
 
 ## Alpha Signals
 

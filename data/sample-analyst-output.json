@@ -1,0 +1,144 @@
+{
+  "_meta": {
+    "source": "hand-crafted illustrative sample",
+    "note": "ANTHROPIC_API_KEY was not available in the build sandbox, so this file was authored by hand to match the schema. Replace by POSTing /api/analyst with depth=standard on a deployed instance to get a real Claude-generated report."
+  },
+  "ticker": "SPCX",
+  "company_name": "Space Exploration Technologies Corp. (SpaceX)",
+  "generated_at": "2026-05-23T19:00:00Z",
+  "depth": "standard",
+  "verdict": "WATCH",
+  "target_price_usd": 78.0,
+  "position_size_pct": 1.5,
+  "decision_card": {
+    "summary": "SpaceX (planned ticker SPCX) is targeting a 2026-06-12 NASDAQ listing with a primary issuance allocation route open via Backpack IPOs Onchain (Superstate × Solana). Pre-IPO secondary-market marks imply a ~$350B FDV, leaving limited upside vs the proposed $65 IPO price unless Starlink ARPU and Starship cadence beat plan. We recommend WATCH with a small 1.5% tracking position via the onchain allocation, scaling only on a successful first commercial Starship payload run post-listing.",
+    "key_metrics": {
+      "planned_listing_date": "2026-06-12",
+      "target_listing_market": "NASDAQ",
+      "primary_issuance_route": "Backpack IPOs Onchain (Superstate × Solana)",
+      "implied_fdv_usd_billion": 350,
+      "tokenized_underlying_today": "none (xStocks NVDAx/TSLAx are reference comps only)",
+      "indicative_ipo_price_usd": 65
+    }
+  },
+  "bull_case": "Starlink crosses 8M paid subscribers and turns FCF-positive at the segment level by H2 2026, contributing >35% of consolidated revenue and breaking the 'launch services only' narrative. Starship reaches 12 orbital cadence by year-end, unlocking the Mars / NASA HLS / DoD heavy-lift revenue stack that no peer can price. Onchain primary issuance via Superstate × Solana lets APAC and crypto-native LPs absorb the float without the 90-day post-IPO lockup discount typical of US institutional placements, supporting a tighter float and a faster path to index inclusion. Tokenized SPCX (likely 'SPCXx' via Backed Finance) on Solana would deepen secondary liquidity within weeks of listing, mirroring the COIN / MSTR onchain premium pattern visible today on Raydium/Orca.",
+  "bear_case": "The $350B implied FDV already prices a flawless 2027 Starlink IPO spinout and uninterrupted Starship cadence; any catastrophic failure or extended FAA grounding (cf. 2024 Starship-3 incident) compresses multiples by 30-40% quickly. SpaceX retains heavy Musk key-person concentration and a dual-class share structure that limits governance recourse — the same risk MSTR holders are now repricing. The Backpack IPOs Onchain rail is unproven at SPCX-scale size; settlement, KYC, and US-person enforcement under Superstate's framework could either delay allocations or trigger a clawback that hurts the first onchain holders. Finally, xStocks regional restrictions (US/UK/CA/AU/EU residents blocked) mean a large fraction of natural buyers cannot use the tokenized exposure, capping the onchain premium upside vs the traditional book.",
+  "investment_thesis": [
+    {
+      "point": "Onchain primary allocation is a differentiated entry vs traditional IPO syndication.",
+      "supporting_data": "Source: /api/ipo — SPCX listed with platform 'Backpack IPOs Onchain', partner 'Superstate × Solana', status 'waitlist open' as of 2026-05-23."
+    },
+    {
+      "point": "Existing onchain tokenized-equity demand is real and reflexive — DEX pools sustain premiums on high-conviction names.",
+      "supporting_data": "Source: /api/liquidity — COINx (+0.13%), MSTRx (+0.14%), GMEx (+0.42%) DEX prices trade premium to NASDAQ/NYSE reference, indicating tokenized retail bid for narrative names; SPCXx would likely inherit this pattern."
+    },
+    {
+      "point": "Solana DEX infrastructure can absorb meaningful float within days of listing.",
+      "supporting_data": "Source: /api/liquidity — Top tokenized names already see $3-8M TVL on Raydium+Orca pools combined; SPCXx could replicate inside a week."
+    },
+    {
+      "point": "Holders on existing xStocks skew toward custodial exchange wallets, leaving room for retail accumulation.",
+      "supporting_data": "Source: /api/holders — NVDAx top-3 concentration (Kraken+Bybit+Raydium pool) = 36.2%; the rest is fragmented across 4,200+ wallets, evidence of an active retail base for SPCXx."
+    }
+  ],
+  "anti_thesis": [
+    {
+      "point": "Indicative $350B FDV bakes in flawless execution; any Starship setback is binary downside.",
+      "supporting_data": "Comp: TSLA mcap $1.11T at /api/stocks/TSLA price $345.70 implies SPCX trading at ~30% of TSLA on a P/Sales unprofitable basis is aggressive."
+    },
+    {
+      "point": "xStocks regional eligibility excludes the largest pools of natural SPCX buyers.",
+      "supporting_data": "Source: site disclaimer + Backed Finance T&Cs — US/UK/CA/AU/EU residents are excluded from tokenized exposure."
+    },
+    {
+      "point": "Onchain allocation rails are unproven at this notional size.",
+      "supporting_data": "Source: /api/ipo — SPCX is the first $300B+ FDV name on Backpack IPOs Onchain; no historical settlement data exists for the Superstate × Solana stack at this scale."
+    },
+    {
+      "point": "Index inclusion gating means traditional flows arrive on a 6-12 month lag, leaving day-1 supply/demand wholly retail and crossover-driven.",
+      "supporting_data": "Comp: COIN inclusion lag in 2021 set a 9-month precedent before S&P 500 add."
+    }
+  ],
+  "valuation": {
+    "method_1": {
+      "name": "Sum-of-the-parts (Launch + Starlink + Future)",
+      "value_usd": 285000000000,
+      "assumptions": "Launch services $80B (25x 2026E EBITDA), Starlink $150B (15x 2027E recurring ARR at 8M subs × $90 ARPU), Future optionality (Starship/Mars/DoD) $55B. Implies $59/share vs $65 indicative IPO price."
+    },
+    "method_2": {
+      "name": "Comparable onchain tokenized-equity premium / discount",
+      "value_usd": 380000000000,
+      "assumptions": "Bull-case: SPCXx trades 8% DEX premium to listing price for first 30 days (in line with MSTR/COIN onchain premiums seen on Raydium today), justifying $79/share blended print. Source: /api/liquidity deviation_pct."
+    }
+  },
+  "top_risks": [
+    {
+      "severity": 5,
+      "likelihood": 2,
+      "description": "Starship test or operational failure during the 30-day post-listing window. Mitigant: small initial position, scale on first successful commercial payload."
+    },
+    {
+      "severity": 4,
+      "likelihood": 3,
+      "description": "Onchain allocation settlement issue at the Superstate × Solana layer (KYC re-verification, US-person clawback, or wrapper redemption gating). Mitigant: monitor /api/ipo status weekly, follow Backpack waitlist comms."
+    },
+    {
+      "severity": 4,
+      "likelihood": 3,
+      "description": "Musk key-person event impacts execution / governance. Mitigant: standard for the name; reflected in dual-class discount."
+    },
+    {
+      "severity": 3,
+      "likelihood": 3,
+      "description": "Macro repricing: 10Y > 5.0% compresses long-duration unprofitable-growth multiples by 20-30%."
+    },
+    {
+      "severity": 3,
+      "likelihood": 2,
+      "description": "Regulatory action against tokenized US equities in additional jurisdictions, shrinking the xStocks-accessible buyer pool."
+    }
+  ],
+  "decision_triggers": {
+    "upgrade_if": [
+      "First post-listing commercial Starship payload succeeds without anomaly",
+      "Starlink discloses >7M paid subscribers in first quarterly print",
+      "SPCXx (Backed Finance tokenized SPCX) launches on Solana with >$5M Raydium TVL inside 30 days",
+      "Indicative IPO price prints below $58 (>10% to SOTP base case)"
+    ],
+    "downgrade_if": [
+      "Listing date slips beyond Q3 2026",
+      "Starship test failure with FAA grounding lasting >60 days",
+      "Onchain allocation settlement issue at first batch",
+      "Implied FDV at open > $420B (>15% premium to top of fundamental range)"
+    ]
+  },
+  "sources_called": [
+    {
+      "endpoint": "/api/stocks/SPCX",
+      "cost_usd": 0,
+      "data_summary": "Not yet listed; no record (expected — IPO calendar item)."
+    },
+    {
+      "endpoint": "/api/ipo",
+      "cost_usd": 0,
+      "data_summary": "SPCX planned 2026-06-12 NASDAQ listing; Backpack IPOs Onchain waitlist open via Superstate × Solana."
+    },
+    {
+      "endpoint": "/api/liquidity",
+      "cost_usd": 0,
+      "data_summary": "Reference: COIN/MSTR/GME tokenized peers show +0.13% to +0.42% DEX premium over US listings; $3-8M TVL per name on Raydium+Orca."
+    },
+    {
+      "endpoint": "/api/holders",
+      "cost_usd": 0,
+      "data_summary": "Reference: 4,200+ NVDAx wallets, top-3 concentration ~36% (exchange + AMM); retail tail is substantial."
+    },
+    {
+      "endpoint": "/api/alpha-posts",
+      "cost_usd": 0,
+      "data_summary": "Current Alpha feed (HesterPeirce, InTheAssembly, JaguarAnalytics) is supportive of tokenized-equity primary issuance experiments."
+    }
+  ],
+  "total_cost_usd": 1.5,
+  "disclaimer": "本レポートは投資助言ではありません。Claude (Anthropic) が公開情報および本プロダクトの内部 API を統合して生成したものであり、数値は概算です。実際の投資判断には認可を受けた投資アドバイザーへの相談を推奨します。xStocks には米英加豪EU 等の居住者制限があるため、tokenized 経由のエクスポージャー取得前にご自身の居住地域の規制を必ず確認してください。"
+}

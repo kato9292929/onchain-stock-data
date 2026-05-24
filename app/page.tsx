@@ -28,6 +28,12 @@ const FEATURES = [
     title: "Alpha",
     blurb: "Owner-curated X posts on tokenized equities.",
   },
+  {
+    href: "/analyst",
+    title: "Analyst",
+    blurb:
+      "Paid agent endpoint — aggregates the 5 APIs above and returns a structured IC memo via Claude ($0.50 / $1.50 / $3.00).",
+  },
 ];
 
 export default function Home() {
@@ -87,13 +93,16 @@ export default function Home() {
           spec; humans on this site get free reads.
         </p>
         <pre className="text-xs text-zinc-300 bg-black/60 border border-zinc-800 rounded p-3 overflow-x-auto">
-{`GET /api/stocks                 # full xStocks registry
-GET /api/stocks?tokenized=true  # tokenized-only
-GET /api/stocks/:ticker         # single ticker (NVDA, TSLA, …)
-GET /api/ipo                    # Backpack IPOs Onchain calendar
-GET /api/liquidity              # DEX pools + price deviation
-GET /api/holders                # holder maps + concentration
-GET /api/alpha-posts            # curated X posts`}
+{`GET  /api/stocks                 # full xStocks registry
+GET  /api/stocks?tokenized=true  # tokenized-only
+GET  /api/stocks/:ticker         # single ticker (NVDA, TSLA, …)
+GET  /api/ipo                    # Backpack IPOs Onchain calendar
+GET  /api/liquidity              # DEX pools + price deviation
+GET  /api/holders                # holder maps + concentration
+GET  /api/alpha-posts            # curated X posts
+POST /api/analyst                # Claude-synthesised IC memo
+                                 #   body: { ticker, depth }
+                                 #   $0.50 quick · $1.50 standard · $3.00 deep`}
         </pre>
       </section>
     </div>
