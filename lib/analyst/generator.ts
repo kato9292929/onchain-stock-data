@@ -25,9 +25,9 @@ export interface GenerateError {
 }
 
 const MAX_TOKENS: Record<Depth, number> = {
-  quick: 2_500,
-  standard: 4_500,
-  deep: 8_000,
+  quick: 8_192,
+  standard: 16_384,
+  deep: 32_768,
 };
 
 const TIMEOUT_MS: Record<Depth, number> = {
