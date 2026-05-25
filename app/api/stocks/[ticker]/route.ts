@@ -1,27 +1,30 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getStocks } from "@/lib/data";
-import { isAgentRequest, jsonOk, x402ChallengeResponse } from "@/lib/x402";
+import { withPaywall } from "@/lib/x402-route";
 
-export async function GET(
-  req: NextRequest,
-  ctx: { params: Promise<{ ticker: string }> },
-) {
-  const { ticker } = await ctx.params;
-  if (isAgentRequest(req)) {
-    return x402ChallengeResponse({
-      resource: new URL(req.url).pathname,
-      description: `Detail record for ${ticker.toUpperCase()}.`,
-    });
-  }
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const handler = async (req: NextRequest) => {
+  const ticker = new URL(req.url).pathname.split("/").pop() ?? "";
   const data = await getStocks();
   const match = data.stocks.find(
     (s) => s.underlying_ticker.toUpperCase() === ticker.toUpperCase(),
   );
   if (!match) {
-    return new Response(JSON.stringify({ error: "not_found", ticker }), {
-      status: 404,
-      headers: { "content-type": "application/json" },
-    });
+    return NextResponse.json(
+      { error: "not_found", ticker },
+      { status: 404 },
+    );
   }
-  return jsonOk({ source: data.source, updated_at: data.updated_at, stock: match });
-}
+  return NextResponse.json({
+    source: data.source,
+    updated_at: data.updated_at,
+    stock: match,
+  });
+};
+
+export const GET = withPaywall(handler, {
+  price: "$0.01",
+  description: "Single-ticker detail record from the xStocks registry.",
+});

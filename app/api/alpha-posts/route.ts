@@ -1,13 +1,14 @@
-import { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getAlphaPosts } from "@/lib/data";
-import { isAgentRequest, jsonOk, x402ChallengeResponse } from "@/lib/x402";
+import { withPaywall } from "@/lib/x402-route";
 
-export async function GET(req: NextRequest) {
-  if (isAgentRequest(req)) {
-    return x402ChallengeResponse({
-      resource: new URL(req.url).pathname,
-      description: "Curated Alpha Signals feed (owner-managed X post list).",
-    });
-  }
-  return jsonOk(await getAlphaPosts());
-}
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+export const GET = withPaywall(
+  async () => NextResponse.json(await getAlphaPosts()),
+  {
+    price: "$0.01",
+    description: "Curated Alpha Signals feed (owner-managed X post list).",
+  },
+);

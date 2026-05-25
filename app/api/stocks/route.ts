@@ -1,19 +1,21 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getStocks } from "@/lib/data";
-import { isAgentRequest, jsonOk, x402ChallengeResponse } from "@/lib/x402";
+import { withPaywall } from "@/lib/x402-route";
 
-export async function GET(req: NextRequest) {
-  if (isAgentRequest(req)) {
-    return x402ChallengeResponse({
-      resource: new URL(req.url).pathname,
-      description: "Full xStocks registry with prices, volumes, and venues.",
-    });
-  }
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const handler = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const tokenizedOnly = searchParams.get("tokenized") === "true";
   const data = await getStocks();
   const stocks = tokenizedOnly
     ? data.stocks.filter((s) => s.tokenized_versions.length > 0)
     : data.stocks;
-  return jsonOk({ ...data, stocks });
-}
+  return NextResponse.json({ ...data, stocks });
+};
+
+export const GET = withPaywall(handler, {
+  price: "$0.01",
+  description: "Full xStocks registry with prices, volumes, and venues.",
+});
