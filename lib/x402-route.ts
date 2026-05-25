@@ -20,9 +20,6 @@ export function withX402AndInternal(
     async (req: NextRequest) => handler(req),
     routeConfig,
     x402Server,
-    undefined,
-    undefined,
-    false, // syncFacilitatorOnStart — defer to first paid request
   );
   return async (req: NextRequest) => {
     if (isInternalAuthed(req)) {

@@ -78,9 +78,6 @@ export async function POST(req: NextRequest) {
       `Generate ${depth} IC memo for ${ticker} (aggregates 5 internal endpoints + Claude synthesis).`,
     ),
     x402Server,
-    undefined,
-    undefined,
-    false, // syncFacilitatorOnStart — defer to first paid request
   );
   return wrapped(req);
 }

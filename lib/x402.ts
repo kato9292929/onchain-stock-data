@@ -10,7 +10,7 @@ import type { PaymentOption } from "@x402/core/http";
 import type { Network } from "@x402/core/types";
 import { registerExactEvmScheme } from "@x402/evm/exact/server";
 import { registerExactSvmScheme } from "@x402/svm/exact/server";
-import { createFacilitatorConfig, facilitator } from "@coinbase/x402";
+import { createFacilitatorConfig } from "@coinbase/x402";
 
 const DEFAULT_BASE_PAY_TO = "0xC67d94504696960bA0f2e7C3FeE703950734c00A";
 const DEFAULT_SOLANA_PAY_TO = "4s8XQC2WzRfgH8Xiep7ybnCW11VKRCMwxQF6jknx3VPf";
@@ -34,7 +34,7 @@ function buildFacilitatorConfig(): FacilitatorConfig {
   if (url && /^https?:\/\//.test(url)) {
     return { url };
   }
-  return facilitator;
+  return {};
 }
 
 const facilitatorClient = new HTTPFacilitatorClient(buildFacilitatorConfig());
