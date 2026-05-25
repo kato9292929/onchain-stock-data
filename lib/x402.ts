@@ -1,96 +1,84 @@
-import { NextRequest, NextResponse } from "next/server";
+import {
+  HTTPFacilitatorClient,
+  x402ResourceServer,
+} from "@x402/core/server";
+import type {
+  FacilitatorConfig,
+  RouteConfig,
+} from "@x402/core/server";
+import type { PaymentOption } from "@x402/core/http";
+import type { Network } from "@x402/core/types";
+import { registerExactEvmScheme } from "@x402/evm/exact/server";
+import { registerExactSvmScheme } from "@x402/svm/exact/server";
+import { createFacilitatorConfig, facilitator } from "@coinbase/x402";
 
-const AGENT_UA_PATTERNS = [
-  /claude/i,
-  /anthropic/i,
-  /gpt/i,
-  /openai/i,
-  /chatgpt/i,
-  /^curl\//i,
-  /python-requests/i,
-  /httpx/i,
-  /go-http-client/i,
-  /node-fetch/i,
-  /axios/i,
-  /undici/i,
-  /wget/i,
-  /bot\b/i,
-  /crawler/i,
-  /scraper/i,
-  /x402/i,
-];
+const DEFAULT_BASE_PAY_TO = "0xC67d94504696960bA0f2e7C3FeE703950734c00A";
+const DEFAULT_SOLANA_PAY_TO = "4s8XQC2WzRfgH8Xiep7ybnCW11VKRCMwxQF6jknx3VPf";
 
-export function isAgentRequest(req: NextRequest | Request): boolean {
-  const ua =
-    (req as NextRequest).headers?.get?.("user-agent") ??
-    (req as Request).headers.get("user-agent") ??
-    "";
-  if (!ua) return true;
-  return AGENT_UA_PATTERNS.some((p) => p.test(ua));
+export const PAY_TO_BASE = (process.env.WALLET_ADDRESS_BASE ??
+  DEFAULT_BASE_PAY_TO) as `0x${string}`;
+
+export const PAY_TO_SOLANA =
+  process.env.WALLET_ADDRESS_SOLANA ?? DEFAULT_SOLANA_PAY_TO;
+
+export const BASE_NETWORK: Network = "eip155:8453";
+export const SOLANA_NETWORK: Network = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
+
+function buildFacilitatorConfig(): FacilitatorConfig {
+  const apiKeyId = process.env.CDP_API_KEY_ID;
+  const apiKeySecret = process.env.CDP_API_KEY_SECRET;
+  if (apiKeyId && apiKeySecret) {
+    return createFacilitatorConfig(apiKeyId, apiKeySecret);
+  }
+  const url = process.env.FACILITATOR_URL;
+  if (url && /^https?:\/\//.test(url)) {
+    return { url };
+  }
+  return facilitator;
 }
 
-export interface X402ChallengeOptions {
-  resource: string;
-  description: string;
-  amountUsd?: number;
-}
+const facilitatorClient = new HTTPFacilitatorClient(buildFacilitatorConfig());
 
-const DEFAULT_PRICE_USD = 0.01;
+export const x402Server = new x402ResourceServer(facilitatorClient);
+registerExactEvmScheme(x402Server);
+registerExactSvmScheme(x402Server);
 
-const PAYMENT_OPTIONS = [
-  {
-    scheme: "exact",
-    network: "base",
-    asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-    asset_symbol: "USDC",
-    asset_decimals: 6,
-    payTo: "0x0000000000000000000000000000000000000000",
-  },
-  {
-    scheme: "exact",
-    network: "solana",
-    asset: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    asset_symbol: "USDC",
-    asset_decimals: 6,
-    payTo: "11111111111111111111111111111111",
-  },
-];
-
-export function x402ChallengeResponse(opts: X402ChallengeOptions): NextResponse {
-  const amountUsd = opts.amountUsd ?? DEFAULT_PRICE_USD;
-  const body = {
-    x402Version: 1,
-    error: "payment_required",
-    accepts: PAYMENT_OPTIONS.map((p) => ({
-      ...p,
-      maxAmountRequired: (amountUsd * 1_000_000).toFixed(0),
-      maxAmountRequiredUsd: amountUsd.toFixed(2),
-      resource: opts.resource,
-      description: opts.description,
-      mimeType: "application/json",
-      maxTimeoutSeconds: 60,
-    })),
-    note:
-      "This endpoint is free for humans browsing the website. Programmatic clients pay $" +
-      amountUsd.toFixed(2) +
-      " per request via x402 (Base USDC or Solana USDC).",
-  };
-  return new NextResponse(JSON.stringify(body, null, 2), {
-    status: 402,
-    headers: {
-      "content-type": "application/json",
-      "x-payment-required": "x402",
-      "cache-control": "no-store",
+/**
+ * Build a v2 RouteConfig that advertises both Base USDC and Solana USDC
+ * payment options for the given price. Clients pick whichever they want
+ * to settle in.
+ */
+export function buildRouteConfig(
+  price: string,
+  description: string,
+): RouteConfig {
+  const accepts: PaymentOption[] = [
+    {
+      scheme: "exact",
+      network: BASE_NETWORK,
+      payTo: PAY_TO_BASE,
+      price,
     },
-  });
+    {
+      scheme: "exact",
+      network: SOLANA_NETWORK,
+      payTo: PAY_TO_SOLANA,
+      price,
+    },
+  ];
+  return { accepts, description };
 }
 
-export function jsonOk<T>(data: T): NextResponse {
-  return new NextResponse(JSON.stringify(data, null, 2), {
-    status: 200,
-    headers: {
-      "content-type": "application/json",
-      "cache-control": "public, max-age=60",
-    },
-  });
+/**
+ * Internal-auth bypass: callers that present the shared INTERNAL_API_KEY in
+ * the `X-Internal-Key` header skip payment entirely. Useful for our own
+ * backend / AA agents that already pay for compute another way.
+ */
+export function isInternalAuthed(req: {
+  headers: { get(name: string): string | null };
+}): boolean {
+  const expected = process.env.INTERNAL_API_KEY;
+  if (!expected) return false;
+  const provided = req.headers.get("x-internal-key");
+  return !!provided && provided === expected;
 }

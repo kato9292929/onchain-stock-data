@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { withX402 } from "@x402/next";
 import {
   aggregateForTicker,
   companyName,
@@ -13,7 +14,11 @@ import {
   DEPTHS,
   PRICING_USD,
 } from "@/lib/analyst/templates";
-import { isAgentRequest, x402ChallengeResponse } from "@/lib/x402";
+import {
+  buildRouteConfig,
+  isInternalAuthed,
+  x402Server,
+} from "@/lib/x402";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,7 +31,7 @@ interface AnalystRequestBody {
 export async function POST(req: NextRequest) {
   let body: AnalystRequestBody;
   try {
-    body = (await req.json()) as AnalystRequestBody;
+    body = (await req.clone().json()) as AnalystRequestBody;
   } catch {
     return jsonError(400, "invalid_json", "request body is not valid JSON");
   }
@@ -36,22 +41,11 @@ export async function POST(req: NextRequest) {
 
   if (!ticker) return jsonError(400, "missing_ticker", "ticker is required");
   if (!DEPTHS.includes(depth)) {
-    return jsonError(400, "invalid_depth", `depth must be one of ${DEPTHS.join(", ")}`);
-  }
-
-  const internalKeyHeader = req.headers.get("x-internal-key");
-  const internalKeyEnv = process.env.INTERNAL_API_KEY;
-  const internalAuthed =
-    !!internalKeyEnv &&
-    !!internalKeyHeader &&
-    internalKeyHeader === internalKeyEnv;
-
-  if (!internalAuthed && isAgentRequest(req)) {
-    return x402ChallengeResponse({
-      resource: "/api/analyst",
-      description: `Generate ${depth} IC memo for ${ticker} (aggregates 5 internal endpoints + Claude synthesis).`,
-      amountUsd: PRICING_USD[depth],
-    });
+    return jsonError(
+      400,
+      "invalid_depth",
+      `depth must be one of ${DEPTHS.join(", ")}`,
+    );
   }
 
   const aggregated = await aggregateForTicker(ticker);
@@ -63,6 +57,39 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const internalAuthed = isInternalAuthed(req);
+  const priceUsd = PRICING_USD[depth];
+
+  const runAfterPaid = async () =>
+    runAnalyst({ ticker, depth }, aggregated, internalAuthed);
+
+  if (internalAuthed) {
+    return runAfterPaid();
+  }
+
+  // Delegate to v2 withX402 inline; the route config is depth-specific so we
+  // build it per call. withX402 returns the 402 challenge when the X-PAYMENT
+  // header is missing or invalid, and only invokes the handler once payment is
+  // verified.
+  const wrapped = withX402(
+    runAfterPaid,
+    buildRouteConfig(
+      `$${priceUsd.toFixed(2)}`,
+      `Generate ${depth} IC memo for ${ticker} (aggregates 5 internal endpoints + Claude synthesis).`,
+    ),
+    x402Server,
+    undefined,
+    undefined,
+    false, // syncFacilitatorOnStart — defer to first paid request
+  );
+  return wrapped(req);
+}
+
+async function runAnalyst(
+  { ticker, depth }: { ticker: string; depth: Depth },
+  aggregated: Awaited<ReturnType<typeof aggregateForTicker>>,
+  internalAuthed: boolean,
+): Promise<NextResponse> {
   const sec = depth === "quick" ? undefined : await fetchSecFilings(ticker);
 
   const result = await generateAnalystReport({
@@ -100,9 +127,7 @@ export async function POST(req: NextRequest) {
   }
   report.total_cost_usd = internalAuthed ? 0 : PRICING_USD[depth];
 
-  await persistLog(report).catch(() => {
-    /* logging is best-effort */
-  });
+  await persistLog(report).catch(() => {});
 
   return new NextResponse(JSON.stringify(report, null, 2), {
     status: 200,
