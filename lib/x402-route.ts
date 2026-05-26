@@ -5,12 +5,49 @@ import { buildRouteConfig, isInternalAuthed, x402Server } from "./x402";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
 
+// CORS preset shared across every paywalled endpoint and the discovery
+// descriptor. Open `Access-Control-Allow-Origin: *` because x402 endpoints
+// are public-by-design — payment is the auth, not the origin.
+//
+// `X-PAYMENT` is the header browser-based agents send to settle. `Content-Type`
+// covers POST /api/analyst (application/json). `PAYMENT-REQUIRED` and
+// `PAYMENT-RESPONSE` are the v2 challenge / receipt headers, exposed so
+// browser fetch() callers can read them after a 402 or a 200+settlement.
+export const CORS_ALLOW_HEADERS = "X-PAYMENT, Content-Type, X-Internal-Key";
+export const CORS_ALLOW_METHODS = "GET, POST, OPTIONS";
+export const CORS_EXPOSE_HEADERS =
+  "PAYMENT-REQUIRED, PAYMENT-RESPONSE, payment-required, payment-response";
+
+const CORS_BASE_HEADERS: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": CORS_ALLOW_HEADERS,
+  "Access-Control-Allow-Methods": CORS_ALLOW_METHODS,
+  "Access-Control-Max-Age": "86400",
+};
+
+/** Shared OPTIONS handler. Re-export from each route file as `OPTIONS`. */
+export function corsPreflight(): NextResponse {
+  return new NextResponse(null, { status: 204, headers: CORS_BASE_HEADERS });
+}
+
+/** Add CORS + expose-headers to any outgoing response (200, 402, 5xx). */
+function applyCors(res: NextResponse): NextResponse {
+  for (const [k, v] of Object.entries(CORS_BASE_HEADERS)) {
+    if (!res.headers.has(k)) res.headers.set(k, v);
+  }
+  res.headers.set("Access-Control-Expose-Headers", CORS_EXPOSE_HEADERS);
+  return res;
+}
+
 /**
  * Wrap a route handler so that:
+ * - OPTIONS preflight short-circuits to 204 + CORS (never hits withX402);
  * - callers with a matching `X-Internal-Key` skip payment and hit the handler
  *   directly (zero cost);
  * - everyone else goes through `withX402`, which returns the v2 402 challenge
- *   on unpaid requests and settles payment via the configured facilitator.
+ *   on unpaid requests and settles payment via the configured facilitator;
+ * - every response (200 / 402 / error) carries the CORS headers so
+ *   browser-based agents can read the challenge cross-origin.
  */
 export function withX402AndInternal(
   handler: Handler,
@@ -25,20 +62,32 @@ export function withX402AndInternal(
     false, // syncFacilitatorOnStart — defer to first paid request
   );
   return async (req: NextRequest) => {
-    if (isInternalAuthed(req)) {
-      return handler(req);
+    if (req.method === "OPTIONS") return corsPreflight();
+    try {
+      const res = isInternalAuthed(req)
+        ? await handler(req)
+        : await wrapped(req);
+      return applyCors(res);
+    } catch (err) {
+      // Surface a CORS-tagged 500 so browser-based callers can read the
+      // failure body. Without this, fetch() reports a generic CORS error
+      // and the agent can't tell init failure from a network blip.
+      const message =
+        err instanceof Error ? err.message : "internal server error";
+      return applyCors(
+        NextResponse.json({ error: "internal_error", message }, { status: 500 }),
+      );
     }
-    return wrapped(req);
   };
 }
 
 /** Shortcut: build the standard Base+Solana accepts for `price` and wrap. */
 export function withPaywall(
   handler: Handler,
-  opts: { price: string; description: string },
+  opts: { price: string; description: string; resourcePath: string },
 ): (req: NextRequest) => Promise<NextResponse> {
   return withX402AndInternal(
     handler,
-    buildRouteConfig(opts.price, opts.description),
+    buildRouteConfig(opts.price, opts.description, opts.resourcePath),
   );
 }

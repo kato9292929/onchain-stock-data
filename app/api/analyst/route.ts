@@ -19,9 +19,33 @@ import {
   isInternalAuthed,
   x402Server,
 } from "@/lib/x402";
+import {
+  CORS_ALLOW_HEADERS,
+  CORS_ALLOW_METHODS,
+  CORS_EXPOSE_HEADERS,
+  corsPreflight,
+} from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const CORS_RESPONSE_HEADERS: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": CORS_ALLOW_HEADERS,
+  "Access-Control-Allow-Methods": CORS_ALLOW_METHODS,
+  "Access-Control-Expose-Headers": CORS_EXPOSE_HEADERS,
+};
+
+function applyCors(res: NextResponse): NextResponse {
+  for (const [k, v] of Object.entries(CORS_RESPONSE_HEADERS)) {
+    if (!res.headers.has(k)) res.headers.set(k, v);
+  }
+  return res;
+}
+
+export function OPTIONS(): NextResponse {
+  return corsPreflight();
+}
 
 interface AnalystRequestBody {
   ticker?: string;
@@ -33,27 +57,32 @@ export async function POST(req: NextRequest) {
   try {
     body = (await req.clone().json()) as AnalystRequestBody;
   } catch {
-    return jsonError(400, "invalid_json", "request body is not valid JSON");
+    return applyCors(jsonError(400, "invalid_json", "request body is not valid JSON"));
   }
 
   const ticker = (body.ticker ?? "").trim().toUpperCase();
   const depth = (body.depth ?? "standard") as Depth;
 
-  if (!ticker) return jsonError(400, "missing_ticker", "ticker is required");
+  if (!ticker)
+    return applyCors(jsonError(400, "missing_ticker", "ticker is required"));
   if (!DEPTHS.includes(depth)) {
-    return jsonError(
-      400,
-      "invalid_depth",
-      `depth must be one of ${DEPTHS.join(", ")}`,
+    return applyCors(
+      jsonError(
+        400,
+        "invalid_depth",
+        `depth must be one of ${DEPTHS.join(", ")}`,
+      ),
     );
   }
 
   const aggregated = await aggregateForTicker(ticker);
   if (!tickerExists(aggregated)) {
-    return jsonError(
-      404,
-      "ticker_not_found",
-      `${ticker} not present in /api/stocks or /api/ipo`,
+    return applyCors(
+      jsonError(
+        404,
+        "ticker_not_found",
+        `${ticker} not present in /api/stocks or /api/ipo`,
+      ),
     );
   }
 
@@ -64,7 +93,7 @@ export async function POST(req: NextRequest) {
     runAnalyst({ ticker, depth }, aggregated, internalAuthed);
 
   if (internalAuthed) {
-    return runAfterPaid();
+    return applyCors(await runAfterPaid());
   }
 
   // Delegate to v2 withX402 inline; the route config is depth-specific so we
@@ -76,13 +105,14 @@ export async function POST(req: NextRequest) {
     buildRouteConfig(
       `$${priceUsd.toFixed(2)}`,
       `Generate ${depth} IC memo for ${ticker} (aggregates 5 internal endpoints + Claude synthesis).`,
+      "/api/analyst",
     ),
     x402Server,
     undefined,
     undefined,
     false, // syncFacilitatorOnStart — defer to first paid request
   );
-  return wrapped(req);
+  return applyCors(await wrapped(req));
 }
 
 async function runAnalyst(
