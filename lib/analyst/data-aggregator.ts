@@ -39,7 +39,8 @@ export async function aggregateForTicker(
     null;
   const ipo_record =
     ipos.ipos.find((i) => i.ticker.toUpperCase() === upper) ?? null;
-  const liquidity_for_ticker = liquidity.pairs.filter(
+  const liquidityPairs = liquidity?.pairs ?? [];
+  const liquidity_for_ticker = liquidityPairs.filter(
     (p) => p.underlying_ticker.toUpperCase() === upper,
   );
   const holders_for_ticker = holders.tokens.filter(
@@ -55,7 +56,7 @@ export async function aggregateForTicker(
     alpha_posts: alphaPosts,
     cross_market_context: {
       market_updated_at: stocks.updated_at,
-      liquidity_universe_size: liquidity.pairs.length,
+      liquidity_universe_size: liquidityPairs.length,
       holders_universe_size: holders.tokens.length,
       alpha_post_count: alphaPosts.length,
     },
