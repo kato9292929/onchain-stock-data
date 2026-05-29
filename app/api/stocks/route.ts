@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStocks } from "@/lib/data";
-import { withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,4 +18,7 @@ const handler = async (req: NextRequest) => {
 export const GET = withPaywall(handler, {
   price: "$0.01",
   description: "Full xStocks registry with prices, volumes, and venues.",
+  resourcePath: "/api/stocks",
 });
+
+export const OPTIONS = () => corsPreflight();

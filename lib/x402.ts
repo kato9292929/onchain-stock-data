@@ -14,6 +14,7 @@ import { createFacilitatorConfig, facilitator } from "@coinbase/x402";
 
 const DEFAULT_BASE_PAY_TO = "0xC67d94504696960bA0f2e7C3FeE703950734c00A";
 const DEFAULT_SOLANA_PAY_TO = "4s8XQC2WzRfgH8Xiep7ybnCW11VKRCMwxQF6jknx3VPf";
+const DEFAULT_PUBLIC_BASE_URL = "https://osd-coral.vercel.app";
 
 export const PAY_TO_BASE = (process.env.WALLET_ADDRESS_BASE ??
   DEFAULT_BASE_PAY_TO) as `0x${string}`;
@@ -23,6 +24,25 @@ export const PAY_TO_SOLANA =
 
 export const BASE_NETWORK: Network = "eip155:8453";
 export const SOLANA_NETWORK: Network = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
+
+// USDC contract / mint addresses on each chain. Surfaced in the
+// `/.well-known/x402.json` descriptor so directory crawlers (x402scan, Pay.sh)
+// can confirm what asset each accept leg settles in without re-deriving from
+// `network`.
+export const ASSET_BASE_USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+export const ASSET_SOLANA_USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+
+// Canonical origin used to build absolute `resource` URLs in v2 accept legs
+// and in the discovery JSON. `X402_PUBLIC_BASE_URL` lets a self-hoster point
+// the descriptor at their own deployment without code changes.
+export const PUBLIC_BASE_URL = (
+  process.env.X402_PUBLIC_BASE_URL ?? DEFAULT_PUBLIC_BASE_URL
+).replace(/\/$/, "");
+
+export function resourceUrl(pathTemplate: string): string {
+  const path = pathTemplate.startsWith("/") ? pathTemplate : `/${pathTemplate}`;
+  return `${PUBLIC_BASE_URL}${path}`;
+}
 
 function buildFacilitatorConfig(): FacilitatorConfig {
   const apiKeyId = process.env.CDP_API_KEY_ID;
@@ -47,26 +67,38 @@ registerExactSvmScheme(x402Server);
  * Build a v2 RouteConfig that advertises both Base USDC and Solana USDC
  * payment options for the given price. Clients pick whichever they want
  * to settle in.
+ *
+ * `resourcePath` (e.g. `/api/stocks/:ticker`) is echoed:
+ *   - at the top level as `RouteConfig.resource` so the v2 `PaymentRequired`
+ *     response carries `resource.url` even when the request URL alone is
+ *     ambiguous (proxies, rewrites);
+ *   - per accept leg as `extra.resource` so spend-map / receipt matchers can
+ *     bind a settled payment back to the specific endpoint that priced it,
+ *     without needing to re-parse the top-level resource for every leg.
  */
 export function buildRouteConfig(
   price: string,
   description: string,
+  resourcePath: string,
 ): RouteConfig {
+  const resource = resourceUrl(resourcePath);
   const accepts: PaymentOption[] = [
     {
       scheme: "exact",
       network: BASE_NETWORK,
       payTo: PAY_TO_BASE,
       price,
+      extra: { resource },
     },
     {
       scheme: "exact",
       network: SOLANA_NETWORK,
       payTo: PAY_TO_SOLANA,
       price,
+      extra: { resource },
     },
   ];
-  return { accepts, description };
+  return { accepts, description, resource };
 }
 
 /**
