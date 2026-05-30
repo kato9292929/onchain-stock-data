@@ -131,6 +131,52 @@ export interface AlphaPost {
   added_at: string;
 }
 
+export interface PortfolioHolding {
+  ticker: string;
+  company_name: string;
+  weight: number;
+  thesis: string;
+  entry_price_usd?: number;
+  current_price_usd?: number;
+}
+
+export interface Portfolio {
+  week_of: string;
+  generated_at: string;
+  model: string;
+  horizon: string;
+  rationale: string;
+  holdings: PortfolioHolding[];
+}
+
+export interface PortfolioHistoryFile {
+  source: string;
+  note: string;
+  updated_at: string;
+  current: Portfolio | null;
+  history: Portfolio[];
+}
+
+export interface PerformanceRecord {
+  date: string;
+  portfolio_index: number;
+  spy_index: number;
+  qqq_index: number;
+  portfolio_return_pct: number;
+  spy_return_pct: number;
+  qqq_return_pct: number;
+}
+
+export interface PerformanceHistoryFile {
+  source: string;
+  note: string;
+  updated_at: string;
+  base_date: string;
+  base_spy_price?: number;
+  base_qqq_price?: number;
+  records: PerformanceRecord[];
+}
+
 // ── JSON fallback loaders ──────────────────────────────────────────────
 // Used when TOKENS_XYZ_API_KEY is unset, or when a tokens.xyz call fails.
 
@@ -140,6 +186,10 @@ const loadLiquidityJson = () => loadJson<LiquidityFile>("liquidity.json");
 export const getIpos = () => loadJson<IposFile>("ipo.json");
 export const getHolders = () => loadJson<HoldersFile>("holders.json");
 export const getAlphaPosts = () => loadJson<AlphaPost[]>("alpha-posts.json");
+export const getPortfolioHistory = () =>
+  loadJson<PortfolioHistoryFile>("portfolio-history.json");
+export const getPerformanceHistory = () =>
+  loadJson<PerformanceHistoryFile>("performance-history.json");
 
 // ── tokens.xyz → existing-shape mappers ────────────────────────────────
 

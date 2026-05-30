@@ -11,6 +11,7 @@ import {
 } from "@/lib/x402";
 import { corsPreflight } from "@/lib/x402-route";
 import { PRICING_USD } from "@/lib/analyst/templates";
+import { PREDICT_PRICING_USD } from "@/lib/predict";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
@@ -62,6 +63,15 @@ function analystLegs(): AcceptLeg[] {
   const out: AcceptLeg[] = [];
   for (const depth of ["quick", "standard", "deep"] as const) {
     out.push(...dualLegs("/api/analyst", PRICING_USD[depth]));
+  }
+  return out;
+}
+
+function predictLegs(): AcceptLeg[] {
+  // /api/predict prices per `depth` body field — one pair of legs per tier.
+  const out: AcceptLeg[] = [];
+  for (const depth of ["quick", "standard", "deep"] as const) {
+    out.push(...dualLegs("/api/predict", PREDICT_PRICING_USD[depth]));
   }
   return out;
 }
@@ -128,6 +138,13 @@ export function GET(): NextResponse {
         description:
           "Generate an IC memo for a ticker. Body: { ticker, depth: quick|standard|deep }. Price varies by depth — accepts legs cover all three tiers.",
         accepts: analystLegs(),
+      },
+      {
+        path: "/api/predict",
+        method: "POST",
+        description:
+          "Claude buy/hold/sell predictions for multiple tickers. Body: { tickers: string[], horizon: 1w|1m|3m, depth: quick|standard|deep }. Price varies by depth — accepts legs cover all three tiers.",
+        accepts: predictLegs(),
       },
     ],
   };
