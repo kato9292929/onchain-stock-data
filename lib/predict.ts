@@ -271,7 +271,6 @@ export async function runPredict(input: {
     resp = await client.messages.create({
       model: PREDICT_MODEL[depth],
       max_tokens: MAX_TOKENS[depth],
-      temperature: 0.3,
       system: [
         { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
       ],

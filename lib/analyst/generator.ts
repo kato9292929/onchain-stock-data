@@ -65,7 +65,6 @@ export async function generateAnalystReport(
     resp = await client.messages.create({
       model: CLAUDE_MODEL[input.depth],
       max_tokens: MAX_TOKENS[input.depth],
-      temperature: 0.3,
       system: [
         {
           type: "text",

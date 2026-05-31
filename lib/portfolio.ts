@@ -76,7 +76,6 @@ ${JSON.stringify(
     resp = await client.messages.create({
       model: PORTFOLIO_MODEL,
       max_tokens: 3_000,
-      temperature: 0.4,
       system: [
         { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
       ],
