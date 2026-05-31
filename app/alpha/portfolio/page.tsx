@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPortfolioHistory } from "@/lib/data";
+import { getPortfolioHistory, getStocks } from "@/lib/data";
 import { DataBanner } from "../../components/data-banner";
 
 const fmtUsd = (n?: number) =>
@@ -7,8 +7,49 @@ const fmtUsd = (n?: number) =>
     ? n.toLocaleString("en-US", { style: "currency", currency: "USD" })
     : "—";
 
+/**
+ * Tickers that have an xStock (Backed Finance) tokenized version on Solana.
+ * Derived from the existing stocks registry — used ONLY for page enrichment
+ * (badge + internal links), never for selection.
+ */
+async function xstockTickers(): Promise<Set<string>> {
+  try {
+    const data = await getStocks();
+    const set = new Set<string>();
+    for (const s of data.stocks) {
+      const isXStock = s.tokenized_versions.some((v) =>
+        /xstock|backed/i.test(v.issuer) ||
+        (v.venues ?? []).some((t) => /xstock/i.test(t)),
+      );
+      if (isXStock) set.add(s.underlying_ticker.toUpperCase());
+    }
+    return set;
+  } catch {
+    return new Set();
+  }
+}
+
+function OnchainEnrichment({ ticker }: { ticker: string }) {
+  return (
+    <span className="inline-flex items-center gap-2 flex-wrap">
+      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+        Solana tokenized
+      </span>
+      <Link href={`/liquidity?ticker=${ticker}`} className="text-[11px] text-cyan-400">
+        liquidity
+      </Link>
+      <Link href="/holders" className="text-[11px] text-cyan-400">
+        holders
+      </Link>
+    </span>
+  );
+}
+
 export default async function PortfolioPage() {
-  const data = await getPortfolioHistory();
+  const [data, onchain] = await Promise.all([
+    getPortfolioHistory(),
+    xstockTickers(),
+  ]);
   const p = data.current;
 
   return (
@@ -16,8 +57,8 @@ export default async function PortfolioPage() {
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">Claude Portfolio</h1>
         <p className="text-sm text-zinc-400">
-          毎週月曜朝 6 時 (JST) に Claude が選ぶ米株 10 銘柄。SPY / NASDAQ (QQQ)
-          との比較は{" "}
+          毎週 Claude が選ぶ米株 10 銘柄。1 ヶ月の検証可能な catalyst を thesis に。
+          SPY / NASDAQ (QQQ) との比較は{" "}
           <Link href="/alpha/portfolio/history" className="text-cyan-400">
             history
           </Link>{" "}
@@ -59,7 +100,7 @@ export default async function PortfolioPage() {
               </thead>
               <tbody>
                 {p.holdings.map((h) => (
-                  <tr key={h.ticker} className="border-b border-zinc-900">
+                  <tr key={h.ticker} className="border-b border-zinc-900 align-top">
                     <td className="py-2 pr-4">
                       <Link
                         href={`/alpha/portfolio/${h.ticker}`}
@@ -68,7 +109,14 @@ export default async function PortfolioPage() {
                         {h.ticker}
                       </Link>
                     </td>
-                    <td className="py-2 pr-4 text-zinc-400">{h.company_name}</td>
+                    <td className="py-2 pr-4 text-zinc-400">
+                      <div>{h.company_name}</div>
+                      {onchain.has(h.ticker.toUpperCase()) && (
+                        <div className="mt-1">
+                          <OnchainEnrichment ticker={h.ticker.toUpperCase()} />
+                        </div>
+                      )}
+                    </td>
                     <td className="py-2 pr-4 text-right text-zinc-200">
                       {h.weight.toFixed(1)}%
                     </td>

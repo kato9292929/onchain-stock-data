@@ -9,29 +9,35 @@ import type {
 } from "@/lib/data";
 
 /**
- * Weekly "Claude Portfolio": Claude selects ~10 liquid US large-cap stocks
- * with weights + a one-line thesis. Used by the weekly cron
- * (/api/cron/update-portfolio) and persisted to data/portfolio-history.json
- * (committed to git for transparency).
+ * Weekly "Claude Portfolio": Claude selects 10 US stocks (no large-cap /
+ * liquidity constraint) with weights + a verifiable 1-month catalyst thesis
+ * (in Japanese). Used by the weekly job and persisted to
+ * data/portfolio-history.json (committed to git for transparency).
+ * Onchain/tokenized status does NOT influence selection — it is surfaced
+ * only as page enrichment (badge + links) on holdings that have an xStock.
  */
 
 export const PORTFOLIO_SIZE = 10;
 export const PORTFOLIO_MODEL = "claude-opus-4-7";
 
-const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポートフォリオを構築するエージェントです。
+const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポートフォリオを構築するエージェントです。1 ヶ月先を見据えて、最もキレのある ${PORTFOLIO_SIZE} 銘柄を選びます。
 
 ルール:
-- 流動性の高い米大型株を ${PORTFOLIO_SIZE} 銘柄選ぶ。weight は合計 100 になるよう配分する (各 4〜20 の範囲目安)。
-- 各銘柄に 1 行の thesis (なぜ保有するか) を付ける。
-- tokenized 版が Solana 上に存在する銘柄 (NVDA/TSLA/AAPL/MSFT/AMZN/GOOGL/META/AVGO/COIN/MSTR 等) を優先すると、osd の他データと相互参照しやすい。
+- 米国上場株から ${PORTFOLIO_SIZE} 銘柄を選ぶ。「大型株」「高流動性」という縛りはない。中小型株・カバレッジの薄い銘柄を入れてよい。
+- コンセンサスと違う見方を歓迎する。誰でも挙げる大型株を並べるだけの無難な構成は避ける。
+- weight は合計 100 になるよう配分する (各 4〜20 の範囲目安)。
+- 各銘柄の thesis は「今後 1 ヶ月で何が起きれば当たりか」を 1 行で言える、検証可能な catalyst にする。
+  例: 「X/X の決算でデータセンタ受注が前四半期比+20%を超えれば再評価」「FDA の承認判断 (X月) で…」。
+  「durable growth」「強いブランド」「粘着性が高い」のような曖昧で検証不能な理由は禁止。
+- thesis と rationale は日本語で書く。
 - 出力は厳密に JSON のみ。前後の文章や Markdown コードフェンス禁止。スキーマに無いフィールドを足さない。
-- これは投資助言ではない。
+- これは投資助言ではなく情報提供。
 
 出力スキーマ:
 {
-  "rationale": "<2-4 文: 今週の全体方針>",
+  "rationale": "<2-4 文 (日本語): 今週の全体方針・どこにエッジを置いたか>",
   "holdings": [
-    { "ticker": "<UPPER>", "company_name": "<string>", "weight": <number>, "thesis": "<1 sentence>" }
+    { "ticker": "<UPPER>", "company_name": "<string>", "weight": <number>, "thesis": "<1 文 (日本語): 1 ヶ月の検証可能な catalyst>" }
   ]
 }`;
 
