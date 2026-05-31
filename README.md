@@ -224,14 +224,28 @@ Content-Type: application/json
 - `/alpha/portfolio/[ticker]` — 銘柄詳細 (Claude full thesis・entry/current price)
 - `GET /api/alpha/portfolio/current` — JSON で無料公開 (agent / 外部 tool 用)
 
-データは `data/portfolio-history.json` (週次) と `data/performance-history.json` (日次) に保存し、**git commit して履歴を残す** (透明性)。更新は Vercel Cron:
+`/alpha/portfolio/history` には recharts による Portfolio vs SPY / QQQ の比較チャートと、週ごとの銘柄入替 (新規 / 除外 / 増減) のタイムラインを表示します。
 
-| cron                              | schedule (UTC) | JST       | 処理 |
-|-----------------------------------|----------------|-----------|------|
-| `/api/cron/update-portfolio`      | `0 21 * * 1`   | 火 06:00  | Claude が 10 銘柄選定 → `portfolio-history.json` に追記 |
-| `/api/cron/update-performance`    | `30 21 * * *`  | 翌 06:30  | SPY/QQQ 終値を記録 → `performance-history.json` に追記 |
+### 永続化は GitHub Actions (Vercel Cron ではない)
 
-cron は `CRON_SECRET` (`Authorization: Bearer`) または `INTERNAL_API_KEY` で認証。`lib/portfolio.ts` / `lib/benchmarks.ts` を直接呼ぶため `/api/predict` への循環呼び出しはありません。Vercel の FS は read-only のため書き込みは best-effort で、生成結果はレスポンスにも含めます (GitHub Action 等で commit する想定)。
+データは `data/portfolio-history.json` (週次) と `data/performance-history.json` (日次) に保存し、**git commit して履歴を残します** (透明性)。**Vercel の FS は read-only/ephemeral で書き込みが残らない**ため、定期実行は **GitHub Actions** が唯一の正です (各 commit が Vercel 再デプロイをトリガし最新が反映)。`vercel.json` の cron 定義は撤去済み。
+
+| workflow | schedule (UTC) | JST | 処理 |
+|----------|----------------|-----|------|
+| `.github/workflows/update-portfolio.yml` | `0 21 * * 1` | 火 06:00 | `npm run update:portfolio` → 10 銘柄選定 → `portfolio-history.json` を commit/push |
+| `.github/workflows/update-performance.yml` | `30 21 * * *` | 翌 06:30 | `npm run update:performance` → SPY/QQQ 記録 → `performance-history.json` を commit/push |
+
+各 workflow は `npm ci` 後に `tsx scripts/update-*.ts` を実行し、`lib/jobs.ts` の生成関数を**直接**呼びます (`/api/predict` を HTTP で叩かない = 循環・二重課金なし)。手動実行は GitHub の Actions タブから `workflow_dispatch`。両 workflow は同一 `concurrency` group で push 競合を回避。
+
+**必要な GitHub Actions secrets:**
+
+| secret | 必須 | 用途 |
+|--------|------|------|
+| `ANTHROPIC_API_KEY` | yes | 週次の銘柄選定 (update-portfolio) |
+| `TOKENS_XYZ_API_KEY` | opt | current price 参照 (未設定なら `data/stocks.json` フォールバック) |
+| `BENCHMARK_PROVIDER` | opt | SPY/QQQ 取得元 (既定 `yahoo`) |
+
+`/api/cron/update-portfolio` と `/api/cron/update-performance` は手動トリガ用に残置 (`CRON_SECRET` / `INTERNAL_API_KEY` 認証) ですが、Vercel 上では書き込みが残らないため永続化は GitHub Actions 側で行います。`/api/predict` は有料 endpoint として従来どおり。
 
 ## Alpha Signals
 
