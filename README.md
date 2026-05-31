@@ -13,7 +13,7 @@ Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を
 |--------------|----------------------------------------------------------------------|
 | `/stocks`    | xStocks 60+ — mint address, 現在価格, 24h vol, venues, 上場株財務 |
 | `/ipo`       | Backpack IPOs Onchain (Superstate × Solana) waitlist                 |
-| `/liquidity` | Jupiter / Raydium / Orca プールの TVL と公式価格 vs DEX 価格乖離     |
+| `/liquidity` | tokens.xyz 集約 DEX プール (Jupiter / Raydium / Orca / Meteora) の TVL と公式価格 vs DEX 価格乖離 |
 | `/holders`   | Helius RPC 由来の保有者数・上位ホルダー・集中度スコア                |
 | `/alpha`     | オーナーが手動キュレーションした X 投稿の埋め込み                    |
 | `/analyst`   | エージェント向け有料 IC memo (上記 5 API を並列で叩いて Claude で統合) |
@@ -27,7 +27,8 @@ GET  /api/stocks                  # 全銘柄
 GET  /api/stocks?tokenized=true   # tokenized のみ
 GET  /api/stocks/:ticker          # NVDA / TSLA / AAPL 等
 GET  /api/ipo                     # Backpack IPOs Onchain calendar
-GET  /api/liquidity               # DEX プール + 乖離率
+GET  /api/liquidity               # DEX プール + 乖離率 (overview)
+GET  /api/liquidity?ticker=NVDA   # 単一銘柄の流動性ランク済みプール
 GET  /api/holders                 # 保有者マップ + 集中度
 GET  /api/alpha-posts             # Alpha Signals (オーナーキュレーション)
 POST /api/analyst                 # Claude が IC memo を生成 (有料)
@@ -100,15 +101,20 @@ const res = await fetchWithPay("https://onchain-stock-data.vercel.app/api/stocks
 
 ## Data sources
 
-このリポジトリ初期版は `data/*.json` をサンプルデータとして同梱しています。本番運用前に以下のソースで再生成してください:
+Solana 上のトークン化株式の解決と流動性ランクは **tokens.xyz Assets API** に集約しています。上場株財務は `yfinance`、IPO は Backpack、holders は Helius のまま。
 
-- **xStocks レジストリ** — Backed Finance 公式 (`xstocks.fi`) + Helius RPC (mint metadata)
-- **xStocks 価格・出来高** — Jupiter price API (`lite-api.jup.ag`), Birdeye (`public-api.birdeye.so`)
-- **上場株財務** — `yfinance` (Python) または各取引所公式 API
-- **Backpack IPOs Onchain** — https://backpack.exchange/ipo-access
-- **流動性プール** — Jupiter aggregator / Raydium / Orca SDK
-- **保有者マップ** — Helius RPC (`getTokenLargestAccounts`, `getProgramAccounts`)
-- **Alpha posts** — `data/alpha-posts.json` をオーナーが手動編集
+`TOKENS_XYZ_API_KEY` を設定すると `/api/stocks`・`/api/stocks/:ticker`・`/api/liquidity` は tokens.xyz をライブソースとして使い、未設定時は同梱の `data/*.json` サンプルにフォールバックします。
+
+- **Tokens API (tokens.xyz)** — Solana Foundation 管理の統一資産レジストリ (`api.tokens.xyz/v1`)。xStock + Ondo + PreStocks の全 variant を canonical な `assetId` に解決し、流動性ランク済みの markets (Jupiter / Raydium / Orca / Meteora を集約) を返す。**xStocks レジストリ解決・価格・出来高・DEX プール / 流動性は tokens.xyz が一次ソース**。
+  - `/v1/assets/curated?list=stocks` → `/api/stocks`
+  - `/v1/assets/resolve?ref=<ticker>` (+ `/variants`) → `/api/stocks/:ticker`
+  - `/v1/assets/:assetId/markets?mint=<variant mint>` → `/api/liquidity?ticker=<sym>`
+- **上場株財務** — `yfinance` (Python) または各取引所公式 API (tokens.xyz では取得不可・範囲外)
+- **Backpack IPOs Onchain** — https://backpack.exchange/ipo-access (`/api/ipo`)
+- **保有者マップ** — Helius RPC (`getTokenLargestAccounts`, `getProgramAccounts`) (`/api/holders`)
+- **Alpha posts** — `data/alpha-posts.json` をオーナーが手動編集 (`/api/alpha-posts`)
+
+> 旧構成の Birdeye (`public-api.birdeye.so`) / Jupiter price API (`lite-api.jup.ag`) / Raydium / Orca / Meteora の個別呼び出しと手動管理の `data/stocks.json` は tokens.xyz に置き換え済みです (`data/stocks.json` と `data/liquidity.json` は `TOKENS_XYZ_API_KEY` 未設定時の backward fallback としてのみ残置)。
 
 ## Analyst (`POST /api/analyst`)
 
@@ -172,8 +178,11 @@ curl -X POST https://onchain-stock-data.vercel.app/api/analyst \
 
 | Var                 | 必須 | 用途 |
 |---------------------|------|------|
+| `TOKENS_XYZ_API_KEY`| yes* | tokens.xyz Assets API 認証 (`/api/stocks`・`/api/stocks/:ticker`・`/api/liquidity`)。未設定時は `data/*.json` にフォールバック。 |
 | `ANTHROPIC_API_KEY` | yes  | Claude API 呼び出し (`POST /api/analyst`) |
 | `INTERNAL_API_KEY`  | opt  | 内部認証 (`X-Internal-Key` ヘッダ)。未設定なら内部認証ルートは無効。 |
+
+\* 本番では必須。Vercel の Project Settings → Environment Variables に `TOKENS_XYZ_API_KEY` を投入してください (`tok_...` 形式・リポジトリには直書きしない)。
 
 `.env.example` を参照。Vercel デプロイ時は Project Settings → Environment Variables から投入してください。
 
