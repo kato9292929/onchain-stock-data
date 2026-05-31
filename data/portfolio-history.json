@@ -1,6 +1,6 @@
 {
   "source": "sample-data",
-  "note": "Illustrative Claude-selected portfolio. Replaced weekly by /api/cron/update-portfolio (Mon 06:00 JST) and committed to git for transparency. Not investment advice.",
+  "note": "Illustrative Claude-selected portfolio. Replaced weekly by the GitHub Actions workflow (.github/workflows/update-portfolio.yml, Tue 06:00 JST) which git-commits this file for transparency. Not investment advice.",
   "updated_at": "2026-05-26T21:00:00Z",
   "current": {
     "week_of": "2026-05-25",

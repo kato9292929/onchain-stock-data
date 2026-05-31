@@ -4,6 +4,7 @@ import path from "node:path";
 import type {
   Portfolio,
   PortfolioHolding,
+  PortfolioChange,
   PortfolioHistoryFile,
 } from "@/lib/data";
 
@@ -37,6 +38,8 @@ const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポー
 export interface SelectPortfolioInput {
   weekOf: string;
   horizon: string;
+  /** Previous week's portfolio, so Claude can carry conviction / track changes. */
+  previous?: Portfolio | null;
 }
 
 export async function selectPortfolio(
@@ -48,6 +51,25 @@ export async function selectPortfolio(
   if (!apiKey) return { ok: false, error: "ANTHROPIC_API_KEY is not set" };
 
   const client = new Anthropic({ apiKey, timeout: 300_000 });
+
+  // Port from Claude-Stock-Portfolio-Watch: feed previous holdings so the
+  // model can keep conviction names and justify rotations week over week.
+  const previousBlock = input.previous
+    ? `\n\n前週のポートフォリオ (継続/入替の判断材料・無理に変えなくてよい):
+\`\`\`json
+${JSON.stringify(
+  {
+    week_of: input.previous.week_of,
+    holdings: input.previous.holdings.map((h) => ({
+      ticker: h.ticker,
+      weight: h.weight,
+    })),
+  },
+  null,
+  2,
+)}
+\`\`\``
+    : "\n\n前週のポートフォリオはありません (初回選定)。";
 
   let resp: Anthropic.Message;
   try {
@@ -64,6 +86,7 @@ export async function selectPortfolio(
           content: `週: ${input.weekOf}
 horizon: ${input.horizon}
 生成時刻: ${new Date().toISOString()}
+${previousBlock}
 
 ${PORTFOLIO_SIZE} 銘柄のポートフォリオを選定し、スキーマ通りの JSON のみを返してください。`,
         },
@@ -128,6 +151,41 @@ export function normalizeWeights(
     ...h,
     weight: Math.round((h.weight / total) * 1000) / 10,
   }));
+}
+
+/**
+ * Week-over-week change set (added / removed / weight increase|decrease|hold).
+ * Ported from Claude-Stock-Portfolio-Watch's change tracking — drives the
+ * color-coded timeline on /alpha/portfolio/history.
+ */
+export function diffHoldings(
+  prev: Portfolio | null | undefined,
+  next: Portfolio,
+): PortfolioChange[] {
+  const prevMap = new Map(
+    (prev?.holdings ?? []).map((h) => [h.ticker, h.weight]),
+  );
+  const nextMap = new Map(next.holdings.map((h) => [h.ticker, h.weight]));
+  const changes: PortfolioChange[] = [];
+
+  for (const h of next.holdings) {
+    const before = prevMap.get(h.ticker);
+    if (before === undefined) {
+      changes.push({ ticker: h.ticker, action: "add", to_weight: h.weight });
+    } else if (h.weight > before + 0.05) {
+      changes.push({ ticker: h.ticker, action: "increase", from_weight: before, to_weight: h.weight });
+    } else if (h.weight < before - 0.05) {
+      changes.push({ ticker: h.ticker, action: "decrease", from_weight: before, to_weight: h.weight });
+    } else {
+      changes.push({ ticker: h.ticker, action: "hold", from_weight: before, to_weight: h.weight });
+    }
+  }
+  for (const [ticker, weight] of prevMap) {
+    if (!nextMap.has(ticker)) {
+      changes.push({ ticker, action: "remove", from_weight: weight });
+    }
+  }
+  return changes;
 }
 
 /** Build the next history file: previous current rotates into history. */

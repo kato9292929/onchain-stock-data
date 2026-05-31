@@ -1,6 +1,6 @@
 {
   "source": "sample-data",
-  "note": "Daily close of the Claude portfolio index vs SPY / QQQ benchmarks. Appended by /api/cron/update-performance (06:30 JST). All series rebased to 100 at portfolio inception. Not investment advice.",
+  "note": "Daily close of the Claude portfolio index vs SPY / QQQ benchmarks. Appended by the daily GitHub Actions workflow (.github/workflows/update-performance.yml, 06:30 JST) which git-commits this file. All series rebased to 100 at portfolio inception. Not investment advice.",
   "updated_at": "2026-05-26T21:30:00Z",
   "base_date": "2026-05-26",
   "records": [

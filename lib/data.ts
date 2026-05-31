@@ -140,6 +140,13 @@ export interface PortfolioHolding {
   current_price_usd?: number;
 }
 
+export interface PortfolioChange {
+  ticker: string;
+  action: "add" | "remove" | "increase" | "decrease" | "hold";
+  from_weight?: number;
+  to_weight?: number;
+}
+
 export interface Portfolio {
   week_of: string;
   generated_at: string;
@@ -147,6 +154,7 @@ export interface Portfolio {
   horizon: string;
   rationale: string;
   holdings: PortfolioHolding[];
+  changes?: PortfolioChange[];
 }
 
 export interface PortfolioHistoryFile {
