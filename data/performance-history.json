@@ -1,0 +1,17 @@
+{
+  "source": "sample-data",
+  "note": "Daily close of the Claude portfolio index vs SPY / QQQ benchmarks. Appended by /api/cron/update-performance (06:30 JST). All series rebased to 100 at portfolio inception. Not investment advice.",
+  "updated_at": "2026-05-26T21:30:00Z",
+  "base_date": "2026-05-26",
+  "records": [
+    {
+      "date": "2026-05-26",
+      "portfolio_index": 100.0,
+      "spy_index": 100.0,
+      "qqq_index": 100.0,
+      "portfolio_return_pct": 0.0,
+      "spy_return_pct": 0.0,
+      "qqq_return_pct": 0.0
+    }
+  ]
+}
