@@ -232,7 +232,7 @@ Content-Type: application/json
 
 | workflow | schedule (UTC) | JST | 処理 |
 |----------|----------------|-----|------|
-| `.github/workflows/update-portfolio.yml` | `0 21 * * 1` | 火 06:00 | `npm run update:portfolio` → 10 銘柄選定 → `portfolio-history.json` を commit/push |
+| `.github/workflows/update-portfolio.yml` | `0 21 * * 0` | 月 06:00 | `npm run update:portfolio` → 10 銘柄選定 → `portfolio-history.json` を commit/push |
 | `.github/workflows/update-performance.yml` | `30 21 * * *` | 翌 06:30 | `npm run update:performance` → SPY/QQQ 記録 → `performance-history.json` を commit/push |
 
 各 workflow は `npm ci` 後に `tsx scripts/update-*.ts` を実行し、`lib/jobs.ts` の生成関数を**直接**呼びます (`/api/predict` を HTTP で叩かない = 循環・二重課金なし)。手動実行は GitHub の Actions タブから `workflow_dispatch`。両 workflow は同一 `concurrency` group で push 競合を回避。
