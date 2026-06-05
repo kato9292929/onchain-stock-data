@@ -1,0 +1,56 @@
+name: Evaluate Catalysts (daily)
+
+# Daily catalyst scoring for the Claude Portfolio. For every `pending` evaluation
+# whose catalyst_target_date + 7 days has passed, Claude (web search enabled)
+# judges hit/partial/miss/na and the verdict is committed back to the repo
+# (Vercel's FS is read-only/ephemeral, so git is the only durable store).
+
+on:
+  schedule:
+    # 21:00 UTC daily == 06:00 JST next day (offset from the 21:30 performance job).
+    - cron: "0 21 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Share the portfolio-data group so this never races with the weekly portfolio
+# or daily performance jobs on push.
+concurrency:
+  group: portfolio-data
+  cancel-in-progress: false
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Evaluate due catalysts
+        run: npm run evaluate:catalysts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit & push data
+        run: |
+          git config user.name "osd-portfolio-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/portfolio-evaluations.json
+          if git diff --staged --quiet; then
+            echo "No catalyst evaluations to commit."
+          else
+            git commit -m "chore(catalysts): daily catalyst evaluation update [skip ci]"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Flag failure
+        if: failure()
+        run: echo "::error::evaluate-catalysts workflow failed — see the job logs above"
