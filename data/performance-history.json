@@ -1,7 +1,7 @@
 {
   "source": "sample-data",
   "note": "Daily close of the Claude portfolio index vs SPY / QQQ benchmarks. Appended by the daily GitHub Actions workflow (.github/workflows/update-performance.yml, 06:30 JST) which git-commits this file. All series rebased to 100 at portfolio inception. Not investment advice.",
-  "updated_at": "2026-06-04T22:02:27.782Z",
+  "updated_at": "2026-06-05T22:00:38.619Z",
   "base_date": "2026-05-26",
   "records": [
     {
@@ -57,6 +57,15 @@
       "portfolio_return_pct": 0,
       "spy_return_pct": 0.08,
       "qqq_return_pct": 0.31
+    },
+    {
+      "date": "2026-06-05",
+      "portfolio_index": 100,
+      "spy_index": 97.5,
+      "qqq_index": 95.5,
+      "portfolio_return_pct": 0,
+      "spy_return_pct": -2.5,
+      "qqq_return_pct": -4.5
     }
   ],
   "base_spy_price": 756.48,
