@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "update:portfolio": "tsx scripts/update-portfolio.ts",
-    "update:performance": "tsx scripts/update-performance.ts"
+    "update:performance": "tsx scripts/update-performance.ts",
+    "backfill:catalysts": "node scripts/backfill-catalyst-targets.mjs",
+    "evaluate:catalysts": "node scripts/evaluate-catalysts.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

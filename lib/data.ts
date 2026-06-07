@@ -175,6 +175,31 @@ export interface PerformanceRecord {
   qqq_return_pct: number;
 }
 
+export type EvaluationStatus =
+  | "pending"
+  | "hit"
+  | "partial"
+  | "miss"
+  | "na";
+
+export interface PortfolioEvaluation {
+  week_of: string;
+  ticker: string;
+  catalyst_target_date: string;
+  success_condition: string;
+  status: EvaluationStatus;
+  evaluated_at: string | null;
+  evidence_url: string | null;
+  reasoning: string | null;
+}
+
+export interface PortfolioEvaluationsFile {
+  source: string;
+  note: string;
+  updated_at: string;
+  evaluations: PortfolioEvaluation[];
+}
+
 export interface PerformanceHistoryFile {
   source: string;
   note: string;
@@ -198,6 +223,8 @@ export const getPortfolioHistory = () =>
   loadJson<PortfolioHistoryFile>("portfolio-history.json");
 export const getPerformanceHistory = () =>
   loadJson<PerformanceHistoryFile>("performance-history.json");
+export const getPortfolioEvaluations = () =>
+  loadJson<PortfolioEvaluationsFile>("portfolio-evaluations.json");
 
 // ── tokens.xyz → existing-shape mappers ────────────────────────────────
 
