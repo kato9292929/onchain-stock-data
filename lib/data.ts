@@ -200,6 +200,23 @@ export interface PortfolioEvaluationsFile {
   evaluations: PortfolioEvaluation[];
 }
 
+/**
+ * Externally-submitted catalyst (Phase A). Same status vocabulary as the
+ * internal portfolio evaluations, judged by the same daily evaluator.
+ */
+export interface ExternalCatalyst {
+  catalyst_id: string;
+  ticker: string;
+  catalyst_description: string;
+  target_date: string;
+  submitted_at: string;
+  submitter_contact: string | null;
+  status: EvaluationStatus;
+  judgement_date: string | null;
+  evidence_urls: string[];
+  reasoning: string | null;
+}
+
 export interface PerformanceHistoryFile {
   source: string;
   note: string;
@@ -225,6 +242,8 @@ export const getPerformanceHistory = () =>
   loadJson<PerformanceHistoryFile>("performance-history.json");
 export const getPortfolioEvaluations = () =>
   loadJson<PortfolioEvaluationsFile>("portfolio-evaluations.json");
+export const getExternalCatalysts = () =>
+  loadJson<ExternalCatalyst[]>("external-catalysts.json");
 
 // ── tokens.xyz → existing-shape mappers ────────────────────────────────
 

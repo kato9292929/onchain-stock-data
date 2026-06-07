@@ -9,7 +9,8 @@
     "update:portfolio": "tsx scripts/update-portfolio.ts",
     "update:performance": "tsx scripts/update-performance.ts",
     "backfill:catalysts": "node scripts/backfill-catalyst-targets.mjs",
-    "evaluate:catalysts": "node scripts/evaluate-catalysts.mjs"
+    "evaluate:catalysts": "node scripts/evaluate-catalysts.mjs",
+    "test": "node --import tsx --test scripts/__tests__/*.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

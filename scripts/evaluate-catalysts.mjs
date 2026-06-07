@@ -20,6 +20,7 @@ import path from "node:path";
 const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
 const HISTORY_FILE = path.join(ROOT, "data", "portfolio-history.json");
+const EXTERNAL_FILE = path.join(ROOT, "data", "external-catalysts.json");
 const MODEL = "claude-opus-4-7";
 const GRACE_DAYS = 7;
 const VALID_STATUS = new Set(["hit", "partial", "miss", "na"]);
@@ -79,15 +80,19 @@ function extractJson(text) {
   return JSON.parse(candidate.trim());
 }
 
-async function evaluateOne(client, entry, thesis) {
+/**
+ * Judge one catalyst. `entry` is normalised to:
+ *   { ticker, targetDate, condition, context }
+ * so internal portfolio evaluations and external submissions share the exact
+ * same Claude + web-search logic and anti-hallucination URL filtering.
+ */
+async function evaluateOne(client, { ticker, targetDate, condition, context }) {
   const webSearch = { type: "web_search_20260209", name: "web_search" };
-  const userPrompt = `銘柄: ${entry.ticker}
-週: ${entry.week_of}
-catalyst_target_date: ${entry.catalyst_target_date}
-thesis: ${thesis || "(thesis 不明)"}
-success_condition: ${entry.success_condition}
+  const userPrompt = `銘柄: ${ticker}
+catalyst_target_date: ${targetDate}
+${context ? `${context}\n` : ""}success_condition: ${condition}
 
-${entry.catalyst_target_date} 前後の実際のニュース・株価・SEC ファイリングを web 検索で確認し、success_condition の達成可否を判定してください。最後に指定の JSON を出力してください。`;
+${targetDate} 前後の実際のニュース・株価・SEC ファイリングを web 検索で確認し、success_condition の達成可否を判定してください。最後に指定の JSON を出力してください。`;
 
   const messages = [{ role: "user", content: userPrompt }];
   const searchUrls = new Set();
@@ -170,18 +175,32 @@ async function main() {
     console.warn(`[evaluate] could not load thesis lookup: ${e.message}`);
   }
 
+  // External submissions (Phase A) — file is a bare array, may not exist.
+  let externals = [];
+  try {
+    const raw = JSON.parse(await readFile(EXTERNAL_FILE, "utf8"));
+    if (Array.isArray(raw)) externals = raw;
+  } catch (e) {
+    console.warn(`[evaluate] no external catalysts file: ${e.message}`);
+  }
+
   const today = todayIso();
-  const due = evaluations.filter(
+  const dueInternal = evaluations.filter(
     (e) =>
       e.status === "pending" &&
       addDays(e.catalyst_target_date, GRACE_DAYS) <= today,
   );
-
-  console.log(
-    `[evaluate] ${due.length} due / ${evaluations.length} total (as of ${today})`,
+  const dueExternal = externals.filter(
+    (e) =>
+      e.status === "pending" && addDays(e.target_date, GRACE_DAYS) <= today,
   );
 
-  if (due.length === 0) {
+  console.log(
+    `[evaluate] internal ${dueInternal.length}/${evaluations.length}, ` +
+      `external ${dueExternal.length}/${externals.length} due (as of ${today})`,
+  );
+
+  if (dueInternal.length === 0 && dueExternal.length === 0) {
     console.log("[evaluate] nothing due — exiting without changes");
     return;
   }
@@ -189,31 +208,70 @@ async function main() {
   const { default: Anthropic } = await import("@anthropic-ai/sdk");
   const client = new Anthropic({ apiKey, timeout: 300_000 });
 
-  let updated = 0;
-  for (const entry of due) {
+  // ── Internal portfolio evaluations ──────────────────────────────────
+  let internalUpdated = 0;
+  for (const entry of dueInternal) {
     const thesis = thesisByKey.get(`${entry.week_of}::${entry.ticker}`) ?? "";
     try {
-      const verdict = await evaluateOne(client, entry, thesis);
+      const verdict = await evaluateOne(client, {
+        ticker: entry.ticker,
+        targetDate: entry.catalyst_target_date,
+        condition: entry.success_condition,
+        context: `週: ${entry.week_of}\nthesis: ${thesis || "(thesis 不明)"}`,
+      });
       entry.status = verdict.status;
       entry.evidence_url = verdict.evidence_url;
       entry.reasoning = verdict.reasoning;
       entry.evaluated_at = new Date().toISOString();
-      updated += 1;
+      internalUpdated += 1;
       console.log(
-        `  ✓ ${entry.week_of} ${entry.ticker} → ${verdict.status}` +
+        `  ✓ [int] ${entry.week_of} ${entry.ticker} → ${verdict.status}` +
           (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
       );
     } catch (e) {
-      // Leave it pending for the next run; surface but don't abort the batch.
       console.error(`::warning::${entry.week_of} ${entry.ticker}: ${e.message}`);
     }
   }
 
-  if (updated > 0) {
+  // ── External submissions ────────────────────────────────────────────
+  let externalUpdated = 0;
+  for (const entry of dueExternal) {
+    try {
+      const verdict = await evaluateOne(client, {
+        ticker: entry.ticker,
+        targetDate: entry.target_date,
+        condition: entry.catalyst_description,
+        context: "外部提出 catalyst（submitter による）",
+      });
+      entry.status = verdict.status;
+      // External schema uses evidence_urls[] (plural); keep the verified one.
+      entry.evidence_urls = verdict.evidence_url ? [verdict.evidence_url] : [];
+      entry.reasoning = verdict.reasoning;
+      entry.judgement_date = todayIso();
+      externalUpdated += 1;
+      console.log(
+        `  ✓ [ext] ${entry.catalyst_id} ${entry.ticker} → ${verdict.status}` +
+          (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
+      );
+    } catch (e) {
+      console.error(`::warning::${entry.catalyst_id} ${entry.ticker}: ${e.message}`);
+    }
+  }
+
+  if (internalUpdated > 0) {
     evalsFile.updated_at = new Date().toISOString();
     await writeFile(EVAL_FILE, `${JSON.stringify(evalsFile, null, 2)}\n`, "utf8");
-    console.log(`[evaluate] wrote ${EVAL_FILE} (${updated} updated)`);
-  } else {
+    console.log(`[evaluate] wrote ${EVAL_FILE} (${internalUpdated} updated)`);
+  }
+  if (externalUpdated > 0) {
+    await writeFile(
+      EXTERNAL_FILE,
+      `${JSON.stringify(externals, null, 2)}\n`,
+      "utf8",
+    );
+    console.log(`[evaluate] wrote ${EXTERNAL_FILE} (${externalUpdated} updated)`);
+  }
+  if (internalUpdated === 0 && externalUpdated === 0) {
     console.log("[evaluate] no entries updated");
   }
 }
