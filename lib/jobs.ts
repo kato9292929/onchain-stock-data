@@ -18,6 +18,10 @@ import {
   appendPerformanceRecord,
   writePerformanceHistory,
 } from "@/lib/benchmarks";
+import {
+  fetchExternalData,
+  formatExternalDataForPrompt,
+} from "@/lib/external-data";
 
 /**
  * Portfolio / performance update jobs (ported from Claude-Stock-Portfolio-Watch's
@@ -36,6 +40,7 @@ export interface PortfolioUpdateResult {
   persisted?: boolean;
   persist_reason?: string;
   error?: string;
+  used_external_data?: boolean;
 }
 
 export async function runPortfolioUpdate(
@@ -57,10 +62,15 @@ export async function runPortfolioUpdate(
     };
   }
 
+  // Best-effort external alt-data from AA (10s timeout, degrades to "").
+  const externalData = await fetchExternalData();
+  const externalContext = formatExternalDataForPrompt(externalData);
+
   const selected = await selectPortfolio({
     weekOf,
     horizon,
     previous: prev.current,
+    externalContext,
   });
   if (!selected.ok) {
     return { ok: false, week_of: weekOf, error: selected.error };
@@ -79,6 +89,7 @@ export async function runPortfolioUpdate(
     portfolio,
     persisted: write.persisted,
     persist_reason: write.reason,
+    used_external_data: externalContext.length > 0,
   };
 }
 
