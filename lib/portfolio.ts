@@ -46,6 +46,11 @@ export interface SelectPortfolioInput {
   horizon: string;
   /** Previous week's portfolio, so Claude can carry conviction / track changes. */
   previous?: Portfolio | null;
+  /**
+   * Pre-formatted external alt-data context (AA via x402), appended verbatim
+   * to the prompt. Empty / undefined → prompt unchanged (graceful degradation).
+   */
+  externalContext?: string;
 }
 
 export async function selectPortfolio(
@@ -92,6 +97,7 @@ ${JSON.stringify(
 horizon: ${input.horizon}
 生成時刻: ${new Date().toISOString()}
 ${previousBlock}
+${input.externalContext ?? ""}
 
 ${PORTFOLIO_SIZE} 銘柄のポートフォリオを選定し、スキーマ通りの JSON のみを返してください。`,
         },

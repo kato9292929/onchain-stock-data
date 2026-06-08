@@ -146,6 +146,20 @@ export function GET(): NextResponse {
           "Claude buy/hold/sell predictions for multiple tickers. Body: { tickers: string[], horizon: 1w|1m|3m, depth: quick|standard|deep }. Price varies by depth — accepts legs cover all three tiers.",
         accepts: predictLegs(),
       },
+      {
+        path: "/api/wrappers/birdeye-ohlcv",
+        method: "POST",
+        description:
+          "x402 wrapper around Birdeye OHLCV for a Solana token. Body: { address, type, limit }. Returns the trimmed candle array.",
+        accepts: dualLegs("/api/wrappers/birdeye-ohlcv", 0.01),
+      },
+      {
+        path: "/api/wrappers/perplexity-research",
+        method: "POST",
+        description:
+          "x402 wrapper around Perplexity recent-news research. Body: { ticker, lookback_hours }. Returns top-3 events + catalyst suggestions + citations.",
+        accepts: dualLegs("/api/wrappers/perplexity-research", 0.05),
+      },
     ],
   };
 

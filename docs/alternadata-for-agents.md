@@ -34,6 +34,43 @@ LLM エージェントは株式の catalyst（決算ビート、FDA 承認、契
 - 判定完了時の webhook 通知（`submitter_contact` 宛）
 - 共有レート制限ストア（Vercel KV / Upstash）への置き換え
 
+## Phase 1（本実装）— AA × 外部 alt data 統合（osd 側）
+
+osd を、外部 alt data の **x402 ゲートウェイ**かつ **consumer** として接続する。AA（alt-data エージェント、別リポジトリ）との双方向連携：
+
+### 1. osd が提供する x402 wrapper（AA が daily で叩く）
+
+外部データ API を osd の x402 paywall でラップし、AA がエージェントとして課金経由で取得できるようにする。API key は osd の server-side env のみで保持し、レスポンスには出さない。
+
+| endpoint | 価格 | 上流 | 返却 |
+|----------|------|------|------|
+| `POST /api/wrappers/birdeye-ohlcv` | $0.01 | Birdeye OHLCV | `{ address, candles[{ts,o,h,l,c,v}], fetched_at }` |
+| `POST /api/wrappers/perplexity-research` | $0.05 | Perplexity | `{ ticker, lookback_hours, events[{title,date,source_url,catalyst_suggestion}], citations, fetched_at }` |
+
+Perplexity の prompt は固定（「直近 N 時間の top 3 news を catalyst formulation 付きで JSON」）。これにより AA は **catalyst の素材**（target_date + condition の候補）を機械的に得て、Phase A の `/api/alpha/catalyst/submit` に投げ込むループが成立する。
+
+### 2. osd が消費する AA の集約データ（週次 portfolio 選定に注入）
+
+AA は複数ソース（Birdeye / Perplexity / 将来は Nansen 等）を集約した `/api/latest-external-data` を公開する。osd の週次 `update-portfolio` cron はこれを `AA_EXTERNAL_DATA_URL` から fetch し、Claude の選定プロンプトに「External alt data」context として append する。
+
+- **graceful degradation**：10 秒タイムアウト・非 2xx・未設定はすべて external data 無しで選定続行（選定が外部依存で止まらない）。
+- これにより Claude Portfolio の選定が、価格モメンタム（Birdeye）と最新ニュース catalyst（Perplexity）で**裏付けられる**。
+
+### データフロー
+
+```
+Birdeye / Perplexity ──(x402 wrapper, osd)──> AA ──(集約)──> /api/latest-external-data
+                                                              │
+                                  osd update-portfolio cron ──┘ (fetch, prompt に append)
+AA ──(catalyst 素材)──> osd /api/alpha/catalyst/submit ──(daily 採点)──> /score
+```
+
+### スコープ外（別 PR / Phase 2）
+
+- AA 側の MODE B・`/api/latest-external-data` 実装
+- Nansen / CoinGecko / Quicknode 等の追加ソース
+- wrapper への認証 / レート制限の追加（現状は x402 課金のみ）
+
 ## 将来の Phase（構想）
 
 - **Phase A1 — 課金と認証**：x402 でマイクロペイメント化し、API key でエージェント単位の集計を可能に。
