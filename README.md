@@ -293,10 +293,12 @@ curl https://osd-coral.vercel.app/api/alpha/catalyst/ext_xxxxxxxx/score
 
 外部 alt data API を x402 paywall でラップした有料 endpoint。AA（alt-data エージェント）がこれを daily で叩いて自前のパイプラインに供給します。API key は **server-side のみ**で使用し、レスポンスには含めません。CORS open・force-dynamic。`X-Internal-Key` で課金スキップ。
 
+**支払いは Base USDC / Solana USDC のどちらでも可**（dual-leg）。402 challenge に両チェーンの leg を提示し、caller が払ったチェーンの proof を検証します（Base=CDP facilitator、Solana=`SOLANA_FACILITATOR_URL`）。詳細は下記「Solana payments」。
+
 | endpoint | 価格 | 上流 | env |
 |----------|------|------|-----|
-| `POST /api/wrappers/birdeye-ohlcv` | **$0.01** / call (USDC on Base) | Birdeye OHLCV | `BIRDEYE_API_KEY` |
-| `POST /api/wrappers/perplexity-research` | **$0.05** / call | Perplexity | `PERPLEXITY_API_KEY` |
+| `POST /api/wrappers/birdeye-ohlcv` | **$0.01** / call (USDC on Base or Solana) | Birdeye OHLCV | `BIRDEYE_API_KEY` |
+| `POST /api/wrappers/perplexity-research` | **$0.05** / call (USDC on Base or Solana) | Perplexity | `PERPLEXITY_API_KEY` |
 
 ```bash
 # Birdeye OHLCV — Solana token, 30 本の日足
@@ -315,6 +317,19 @@ curl -X POST https://osd-coral.vercel.app/api/wrappers/perplexity-research \
 ### Claude Portfolio cron への external data 統合
 
 `/api/cron/update-portfolio`（週次）は実行時に `AA_EXTERNAL_DATA_URL`（AA の `/api/latest-external-data`）を fetch し、取得できれば Claude の選定プロンプトに「External alt data」context section として append します（Birdeye OHLCV サマリ + Perplexity ニュース/catalyst）。**10 秒タイムアウト・失敗時は external data 無しで選定続行**（graceful degradation）。詳細は [docs/alternadata-for-agents.md](docs/alternadata-for-agents.md)。
+
+### Solana payments（供給側 / Solana で叩かれる側）
+
+osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受け付けます**。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。実際に Solana 払いを検証するには、Solana 対応の x402 facilitator を `SOLANA_FACILITATOR_URL` に設定します。
+
+- **設定時**：`x402ResourceServer` に 2 つ目の facilitator client として追加され、SDK が `solana:*` の verify をそちらへルーティング。402 challenge の Solana leg（payTo=`SOLANA_RECEIVE_ADDRESS`、mint=Solana USDC、金額=価格）が実際に検証可能になります。
+- **未設定時**：facilitator client 配列は CDP（Base のみ）だけ。挙動は従来と完全に同一（Base のみ実検証）で、Solana leg は discovery に宣言されるが検証経路は無効 ＝ **リグレッションなし**。
+- Base の検証経路（CDP facilitator）は一切変更していません。チェーン種別は SDK が proof の network を見て自動で振り分けます（EVM=CDP / Solana=Solana facilitator）。
+
+| env | 用途 |
+|-----|------|
+| `SOLANA_RECEIVE_ADDRESS` | Solana USDC の受取アドレス（402 challenge の payTo）。 |
+| `SOLANA_FACILITATOR_URL` | Solana の支払いを検証する x402 facilitator（例：PayAI）。未設定なら Solana 検証は無効。 |
 
 ## Alpha Signals
 
