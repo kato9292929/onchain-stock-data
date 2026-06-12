@@ -19,8 +19,12 @@ const DEFAULT_PUBLIC_BASE_URL = "https://osd-coral.vercel.app";
 export const PAY_TO_BASE = (process.env.WALLET_ADDRESS_BASE ??
   DEFAULT_BASE_PAY_TO) as `0x${string}`;
 
+// Solana receive address. SOLANA_RECEIVE_ADDRESS is the canonical Phase-Solana
+// env; WALLET_ADDRESS_SOLANA is kept as a backward-compatible fallback.
 export const PAY_TO_SOLANA =
-  process.env.WALLET_ADDRESS_SOLANA ?? DEFAULT_SOLANA_PAY_TO;
+  process.env.SOLANA_RECEIVE_ADDRESS ??
+  process.env.WALLET_ADDRESS_SOLANA ??
+  DEFAULT_SOLANA_PAY_TO;
 
 export const BASE_NETWORK: Network = "eip155:8453";
 export const SOLANA_NETWORK: Network = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
@@ -44,6 +48,11 @@ export function resourceUrl(pathTemplate: string): string {
   return `${PUBLIC_BASE_URL}${path}`;
 }
 
+/**
+ * EVM (Base) facilitator config. CDP (api.cdp.coinbase.com) verifies Base but
+ * NOT Solana — its `getSupported()` advertises EVM kinds only. So Base payments
+ * keep flowing through CDP exactly as before.
+ */
 function buildFacilitatorConfig(): FacilitatorConfig {
   const apiKeyId = process.env.CDP_API_KEY_ID;
   const apiKeySecret = process.env.CDP_API_KEY_SECRET;
@@ -57,9 +66,42 @@ function buildFacilitatorConfig(): FacilitatorConfig {
   return facilitator;
 }
 
-const facilitatorClient = new HTTPFacilitatorClient(buildFacilitatorConfig());
+/**
+ * Build the facilitator client array for the resource server.
+ *
+ * The SDK already ships a full SVM (Solana) verify/settle scheme
+ * (`registerExactSvmScheme`, registered below); the only missing piece was a
+ * facilitator that advertises `solana:*` in `getSupported()`. Since
+ * `x402ResourceServer` accepts an array of clients and merges their supported
+ * networks (earlier clients win on conflicts), we append a Solana facilitator
+ * client when `SOLANA_FACILITATOR_URL` is configured.
+ *
+ * When that env is unset, the array is just the CDP/EVM client — behaviour is
+ * byte-for-byte identical to before (Base-only real verification), so this is a
+ * safe, regression-free addition. The owner injects a Solana x402 facilitator
+ * URL (e.g. PayAI) at deploy time to turn on real Solana verification.
+ */
+function buildFacilitatorClients(): HTTPFacilitatorClient[] {
+  const clients: HTTPFacilitatorClient[] = [
+    new HTTPFacilitatorClient(buildFacilitatorConfig()),
+  ];
 
-export const x402Server = new x402ResourceServer(facilitatorClient);
+  const solUrl = process.env.SOLANA_FACILITATOR_URL;
+  if (solUrl && /^https?:\/\//.test(solUrl)) {
+    const config: FacilitatorConfig = { url: solUrl.replace(/\/$/, "") };
+    clients.push(new HTTPFacilitatorClient(config));
+  }
+
+  return clients;
+}
+
+/** True when a dedicated Solana facilitator is configured (real SVM verify). */
+export function isSolanaFacilitatorConfigured(): boolean {
+  const u = process.env.SOLANA_FACILITATOR_URL;
+  return !!u && /^https?:\/\//.test(u);
+}
+
+export const x402Server = new x402ResourceServer(buildFacilitatorClients());
 registerExactEvmScheme(x402Server);
 registerExactSvmScheme(x402Server);
 
