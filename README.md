@@ -150,6 +150,8 @@ Content-Type: application/json
 
 決済は Base USDC または Solana USDC を [x402](https://x402.org) で受領。
 
+> **Facilitator 構成**: 有料 endpoint は 2 つの facilitator を併用します。**Base (eip155:8453)** は従来どおり CDP (`@coinbase/x402`)、**Solana (solana:*)** は PayAI (`@payai/facilitator`・`https://facilitator.payai.network`) で検証/settle します。`x402ResourceServer` に CDP を先頭にした配列で渡し、SDK が `getSupported()` のマップでネットワークごとに自動振り分け。PayAI 無料 tier はキー不要、本番拡張時のみ `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` を設定します。PayAI client の構築に失敗しても CDP 単独 (Base のみ) に degrade し、Base 経路は不変です。
+
 ### Auth modes
 
 | Caller                                       | Behavior |
