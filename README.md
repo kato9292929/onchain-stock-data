@@ -295,10 +295,12 @@ curl https://osd-coral.vercel.app/api/alpha/catalyst/ext_xxxxxxxx/score
 
 外部 alt data API を x402 paywall でラップした有料 endpoint。AA（alt-data エージェント）がこれを daily で叩いて自前のパイプラインに供給します。API key は **server-side のみ**で使用し、レスポンスには含めません。CORS open・force-dynamic。`X-Internal-Key` で課金スキップ。
 
+**支払いは Base USDC / Solana USDC のどちらでも可**（dual-leg）。402 challenge に両チェーンの leg を提示し、caller が払ったチェーンの proof を検証します（Base=CDP facilitator、Solana=PayAI facilitator）。詳細は下記「Solana payments」。
+
 | endpoint | 価格 | 上流 | env |
 |----------|------|------|-----|
-| `POST /api/wrappers/birdeye-ohlcv` | **$0.01** / call (USDC on Base) | Birdeye OHLCV | `BIRDEYE_API_KEY` |
-| `POST /api/wrappers/perplexity-research` | **$0.05** / call | Perplexity | `PERPLEXITY_API_KEY` |
+| `POST /api/wrappers/birdeye-ohlcv` | **$0.01** / call (USDC on Base or Solana) | Birdeye OHLCV | `BIRDEYE_API_KEY` |
+| `POST /api/wrappers/perplexity-research` | **$0.05** / call (USDC on Base or Solana) | Perplexity | `PERPLEXITY_API_KEY` |
 
 ```bash
 # Birdeye OHLCV — Solana token, 30 本の日足
@@ -317,6 +319,19 @@ curl -X POST https://osd-coral.vercel.app/api/wrappers/perplexity-research \
 ### Claude Portfolio cron への external data 統合
 
 `/api/cron/update-portfolio`（週次）は実行時に `AA_EXTERNAL_DATA_URL`（AA の `/api/latest-external-data`）を fetch し、取得できれば Claude の選定プロンプトに「External alt data」context section として append します（Birdeye OHLCV サマリ + Perplexity ニュース/catalyst）。**10 秒タイムアウト・失敗時は external data 無しで選定続行**（graceful degradation）。詳細は [docs/alternadata-for-agents.md](docs/alternadata-for-agents.md)。
+
+### Solana payments（供給側 / Solana で叩かれる側）
+
+osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受け付けます**。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。Solana の検証/settle は**公式 `@payai/facilitator` パッケージ**（`https://facilitator.payai.network`）に委ねます。
+
+- **構成**：`x402ResourceServer` に **CDP（Base）を先頭、PayAI（Solana）を 2 つ目**にした facilitator client 配列を渡します。SDK が `initialize()` 時に各 `getSupported()` を読み、`solana:*` の verify を PayAI、`eip155:8453` を CDP へ自動ルーティング（先頭優先なので Base は CDP から動きません）。402 challenge の Solana leg は payTo=`SOLANA_RECEIVE_ADDRESS`、mint=Solana USDC、金額=価格。
+- **PayAI 認証**：無料 tier はキー不要。本番拡張時のみ `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET`（JWT auth）を設定します。
+- **フォールバック**：PayAI client の構築に失敗した場合は配列が `[CDP]` のみに degrade し、**Base のみ実検証＝従来と完全に同一**（リグレッションなし）。Base の検証経路（CDP facilitator）は一切変更していません。
+
+| env | 用途 |
+|-----|------|
+| `SOLANA_RECEIVE_ADDRESS` | Solana USDC の受取アドレス（402 challenge の payTo）。未設定なら `WALLET_ADDRESS_SOLANA` → デフォルトの順でフォールバック。 |
+| `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` | PayAI の JWT 認証（本番拡張時のみ・無料 tier 不要）。 |
 
 ## Alpha Signals
 

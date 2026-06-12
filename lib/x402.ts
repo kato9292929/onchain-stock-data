@@ -22,8 +22,12 @@ const DEFAULT_PUBLIC_BASE_URL = "https://osd-coral.vercel.app";
 export const PAY_TO_BASE = (process.env.WALLET_ADDRESS_BASE ??
   DEFAULT_BASE_PAY_TO) as `0x${string}`;
 
+// Solana receive address. SOLANA_RECEIVE_ADDRESS is the canonical Phase-Solana
+// env; WALLET_ADDRESS_SOLANA is kept as a backward-compatible fallback.
 export const PAY_TO_SOLANA =
-  process.env.WALLET_ADDRESS_SOLANA ?? DEFAULT_SOLANA_PAY_TO;
+  process.env.SOLANA_RECEIVE_ADDRESS ??
+  process.env.WALLET_ADDRESS_SOLANA ??
+  DEFAULT_SOLANA_PAY_TO;
 
 export const BASE_NETWORK: Network = "eip155:8453";
 export const SOLANA_NETWORK: Network = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
@@ -51,6 +55,7 @@ export function resourceUrl(pathTemplate: string): string {
  * CDP (Base/EVM) facilitator config — UNCHANGED.
  * Priority: CDP_API_KEY → FACILITATOR_URL → @coinbase/x402 anonymous default.
  * This is the verify/settle path for Base (eip155:8453) and must not change.
+ * CDP verifies Base only; Solana is handled by the PayAI client below.
  */
 function buildFacilitatorConfig(): FacilitatorConfig {
   const apiKeyId = process.env.CDP_API_KEY_ID;
