@@ -22,7 +22,7 @@ interface BirdeyeBody {
  *
  * Paywall via the shared `withPaywall` helper (Section C): it advertises BOTH
  * Base USDC and Solana USDC accept legs and verifies whichever chain the caller
- * pays on (CDP facilitator for Base, SOLANA_FACILITATOR_URL for Solana).
+ * pays on (CDP facilitator for Base, PayAI facilitator for Solana).
  * X-Internal-Key callers skip payment.
  */
 const handler = async (req: NextRequest): Promise<NextResponse> => {

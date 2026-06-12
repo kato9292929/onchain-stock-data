@@ -19,7 +19,7 @@ const {
   SOLANA_NETWORK,
   ASSET_SOLANA_USDC,
   ASSET_BASE_USDC,
-  isSolanaFacilitatorConfigured,
+  isPayAISolanaEnabled,
 } = x402;
 
 // ── Section A: the 402 challenge advertises a Solana leg ────────────────
@@ -59,15 +59,9 @@ test("discovery Solana mint/payTo match the verification config", () => {
   assert.equal(sol.payTo, PAY_TO_SOLANA);
 });
 
-// ── Facilitator wiring ──────────────────────────────────────────────────
-test("isSolanaFacilitatorConfigured reflects SOLANA_FACILITATOR_URL", () => {
-  const prev = process.env.SOLANA_FACILITATOR_URL;
-  delete process.env.SOLANA_FACILITATOR_URL;
-  assert.equal(isSolanaFacilitatorConfigured(), false);
-  process.env.SOLANA_FACILITATOR_URL = "https://facilitator.example/solana";
-  assert.equal(isSolanaFacilitatorConfigured(), true);
-  process.env.SOLANA_FACILITATOR_URL = "not-a-url";
-  assert.equal(isSolanaFacilitatorConfigured(), false);
-  if (prev === undefined) delete process.env.SOLANA_FACILITATOR_URL;
-  else process.env.SOLANA_FACILITATOR_URL = prev;
+// ── Facilitator wiring (PayAI for Solana) ───────────────────────────────
+test("Solana verification is wired via the PayAI facilitator client", () => {
+  // @payai/facilitator is a dependency here, so the PayAI client builds and
+  // Solana is verifiable. (SOLANA_FACILITATOR_URL is no longer used.)
+  assert.equal(isPayAISolanaEnabled, true);
 });

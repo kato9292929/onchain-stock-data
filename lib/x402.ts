@@ -11,6 +11,9 @@ import type { Network } from "@x402/core/types";
 import { registerExactEvmScheme } from "@x402/evm/exact/server";
 import { registerExactSvmScheme } from "@x402/svm/exact/server";
 import { createFacilitatorConfig, facilitator } from "@coinbase/x402";
+import {
+  createFacilitatorConfig as createPayAIFacilitatorConfig,
+} from "@payai/facilitator";
 
 const DEFAULT_BASE_PAY_TO = "0xC67d94504696960bA0f2e7C3FeE703950734c00A";
 const DEFAULT_SOLANA_PAY_TO = "4s8XQC2WzRfgH8Xiep7ybnCW11VKRCMwxQF6jknx3VPf";
@@ -49,9 +52,10 @@ export function resourceUrl(pathTemplate: string): string {
 }
 
 /**
- * EVM (Base) facilitator config. CDP (api.cdp.coinbase.com) verifies Base but
- * NOT Solana — its `getSupported()` advertises EVM kinds only. So Base payments
- * keep flowing through CDP exactly as before.
+ * CDP (Base/EVM) facilitator config — UNCHANGED.
+ * Priority: CDP_API_KEY → FACILITATOR_URL → @coinbase/x402 anonymous default.
+ * This is the verify/settle path for Base (eip155:8453) and must not change.
+ * CDP verifies Base only; Solana is handled by the PayAI client below.
  */
 function buildFacilitatorConfig(): FacilitatorConfig {
   const apiKeyId = process.env.CDP_API_KEY_ID;
@@ -66,42 +70,55 @@ function buildFacilitatorConfig(): FacilitatorConfig {
   return facilitator;
 }
 
+const cdpFacilitatorClient = new HTTPFacilitatorClient(buildFacilitatorConfig());
+
 /**
- * Build the facilitator client array for the resource server.
+ * Build the PayAI (Solana) facilitator client, or null if construction fails.
  *
- * The SDK already ships a full SVM (Solana) verify/settle scheme
- * (`registerExactSvmScheme`, registered below); the only missing piece was a
- * facilitator that advertises `solana:*` in `getSupported()`. Since
- * `x402ResourceServer` accepts an array of clients and merges their supported
- * networks (earlier clients win on conflicts), we append a Solana facilitator
- * client when `SOLANA_FACILITATOR_URL` is configured.
+ * Official PayAI wiring (verified against @payai/facilitator@2.4.x types):
+ * `createFacilitatorConfig()` returns a FacilitatorConfig pointing at
+ * https://facilitator.payai.network with automatic JWT auth when
+ * PAYAI_API_KEY_ID / PAYAI_API_KEY_SECRET are set (free tier works without).
+ * It is passed to the same HTTPFacilitatorClient the CDP path uses.
  *
- * When that env is unset, the array is just the CDP/EVM client — behaviour is
- * byte-for-byte identical to before (Base-only real verification), so this is a
- * safe, regression-free addition. The owner injects a Solana x402 facilitator
- * URL (e.g. PayAI) at deploy time to turn on real Solana verification.
+ * Wrapped in try/catch so that, if the package is missing or config build
+ * throws, we degrade to CDP-only (Base) and never break the existing path.
  */
-function buildFacilitatorClients(): HTTPFacilitatorClient[] {
-  const clients: HTTPFacilitatorClient[] = [
-    new HTTPFacilitatorClient(buildFacilitatorConfig()),
-  ];
-
-  const solUrl = process.env.SOLANA_FACILITATOR_URL;
-  if (solUrl && /^https?:\/\//.test(solUrl)) {
-    const config: FacilitatorConfig = { url: solUrl.replace(/\/$/, "") };
-    clients.push(new HTTPFacilitatorClient(config));
+function buildPayAIFacilitatorClient(): HTTPFacilitatorClient | null {
+  try {
+    const config = createPayAIFacilitatorConfig(
+      process.env.PAYAI_API_KEY_ID,
+      process.env.PAYAI_API_KEY_SECRET,
+    );
+    return new HTTPFacilitatorClient(config);
+  } catch (err) {
+    console.warn(
+      `[x402] PayAI facilitator unavailable — Solana verification disabled, Base unaffected: ${err}`,
+    );
+    return null;
   }
-
-  return clients;
 }
 
-/** True when a dedicated Solana facilitator is configured (real SVM verify). */
-export function isSolanaFacilitatorConfigured(): boolean {
-  const u = process.env.SOLANA_FACILITATOR_URL;
-  return !!u && /^https?:\/\//.test(u);
-}
+const payaiFacilitatorClient = buildPayAIFacilitatorClient();
 
-export const x402Server = new x402ResourceServer(buildFacilitatorClients());
+/** True when the PayAI (Solana) facilitator client was constructed. */
+export const isPayAISolanaEnabled = payaiFacilitatorClient !== null;
+
+/**
+ * Facilitator client array. CDP first so Base (eip155:8453) keeps routing to
+ * CDP exactly as before; PayAI is appended for solana:*. The SDK's
+ * x402ResourceServer.initialize() calls getSupported() on each and builds a
+ * version→network→scheme→client map (earlier clients win on conflicts), so
+ * each network is verified/settled by its own facilitator automatically.
+ *
+ * If PayAI couldn't be built, the array is just [CDP] — byte-identical to the
+ * previous single-facilitator behaviour (Base-only real verification).
+ */
+const facilitatorClients = payaiFacilitatorClient
+  ? [cdpFacilitatorClient, payaiFacilitatorClient]
+  : [cdpFacilitatorClient];
+
+export const x402Server = new x402ResourceServer(facilitatorClients);
 registerExactEvmScheme(x402Server);
 registerExactSvmScheme(x402Server);
 

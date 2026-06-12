@@ -150,6 +150,8 @@ Content-Type: application/json
 
 決済は Base USDC または Solana USDC を [x402](https://x402.org) で受領。
 
+> **Facilitator 構成**: 有料 endpoint は 2 つの facilitator を併用します。**Base (eip155:8453)** は従来どおり CDP (`@coinbase/x402`)、**Solana (solana:*)** は PayAI (`@payai/facilitator`・`https://facilitator.payai.network`) で検証/settle します。`x402ResourceServer` に CDP を先頭にした配列で渡し、SDK が `getSupported()` のマップでネットワークごとに自動振り分け。PayAI 無料 tier はキー不要、本番拡張時のみ `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` を設定します。PayAI client の構築に失敗しても CDP 単独 (Base のみ) に degrade し、Base 経路は不変です。
+
 ### Auth modes
 
 | Caller                                       | Behavior |
@@ -293,7 +295,7 @@ curl https://osd-coral.vercel.app/api/alpha/catalyst/ext_xxxxxxxx/score
 
 外部 alt data API を x402 paywall でラップした有料 endpoint。AA（alt-data エージェント）がこれを daily で叩いて自前のパイプラインに供給します。API key は **server-side のみ**で使用し、レスポンスには含めません。CORS open・force-dynamic。`X-Internal-Key` で課金スキップ。
 
-**支払いは Base USDC / Solana USDC のどちらでも可**（dual-leg）。402 challenge に両チェーンの leg を提示し、caller が払ったチェーンの proof を検証します（Base=CDP facilitator、Solana=`SOLANA_FACILITATOR_URL`）。詳細は下記「Solana payments」。
+**支払いは Base USDC / Solana USDC のどちらでも可**（dual-leg）。402 challenge に両チェーンの leg を提示し、caller が払ったチェーンの proof を検証します（Base=CDP facilitator、Solana=PayAI facilitator）。詳細は下記「Solana payments」。
 
 | endpoint | 価格 | 上流 | env |
 |----------|------|------|-----|
@@ -320,16 +322,16 @@ curl -X POST https://osd-coral.vercel.app/api/wrappers/perplexity-research \
 
 ### Solana payments（供給側 / Solana で叩かれる側）
 
-osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受け付けます**。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。実際に Solana 払いを検証するには、Solana 対応の x402 facilitator を `SOLANA_FACILITATOR_URL` に設定します。
+osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受け付けます**。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。Solana の検証/settle は**公式 `@payai/facilitator` パッケージ**（`https://facilitator.payai.network`）に委ねます。
 
-- **設定時**：`x402ResourceServer` に 2 つ目の facilitator client として追加され、SDK が `solana:*` の verify をそちらへルーティング。402 challenge の Solana leg（payTo=`SOLANA_RECEIVE_ADDRESS`、mint=Solana USDC、金額=価格）が実際に検証可能になります。
-- **未設定時**：facilitator client 配列は CDP（Base のみ）だけ。挙動は従来と完全に同一（Base のみ実検証）で、Solana leg は discovery に宣言されるが検証経路は無効 ＝ **リグレッションなし**。
-- Base の検証経路（CDP facilitator）は一切変更していません。チェーン種別は SDK が proof の network を見て自動で振り分けます（EVM=CDP / Solana=Solana facilitator）。
+- **構成**：`x402ResourceServer` に **CDP（Base）を先頭、PayAI（Solana）を 2 つ目**にした facilitator client 配列を渡します。SDK が `initialize()` 時に各 `getSupported()` を読み、`solana:*` の verify を PayAI、`eip155:8453` を CDP へ自動ルーティング（先頭優先なので Base は CDP から動きません）。402 challenge の Solana leg は payTo=`SOLANA_RECEIVE_ADDRESS`、mint=Solana USDC、金額=価格。
+- **PayAI 認証**：無料 tier はキー不要。本番拡張時のみ `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET`（JWT auth）を設定します。
+- **フォールバック**：PayAI client の構築に失敗した場合は配列が `[CDP]` のみに degrade し、**Base のみ実検証＝従来と完全に同一**（リグレッションなし）。Base の検証経路（CDP facilitator）は一切変更していません。
 
 | env | 用途 |
 |-----|------|
-| `SOLANA_RECEIVE_ADDRESS` | Solana USDC の受取アドレス（402 challenge の payTo）。 |
-| `SOLANA_FACILITATOR_URL` | Solana の支払いを検証する x402 facilitator（例：PayAI）。未設定なら Solana 検証は無効。 |
+| `SOLANA_RECEIVE_ADDRESS` | Solana USDC の受取アドレス（402 challenge の payTo）。未設定なら `WALLET_ADDRESS_SOLANA` → デフォルトの順でフォールバック。 |
+| `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` | PayAI の JWT 認証（本番拡張時のみ・無料 tier 不要）。 |
 
 ## Alpha Signals
 
