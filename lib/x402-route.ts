@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
 import type { RouteConfig } from "@x402/core/server";
-import { buildRouteConfig, isInternalAuthed, x402Server } from "./x402";
+import {
+  buildRouteConfig,
+  buildSolanaOnlyRouteConfig,
+  isInternalAuthed,
+  x402Server,
+} from "./x402";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
 
@@ -95,5 +100,20 @@ export function withPaywall(
   return withX402AndInternal(
     handler,
     buildRouteConfig(opts.price, opts.description, opts.resourcePath),
+  );
+}
+
+/**
+ * Shortcut: build Solana-ONLY accepts for `price` and wrap. The 402 challenge
+ * presents a single Solana USDC accept (no Base leg), forcing callers onto the
+ * Solana settlement path. Same internal-bypass + CORS behaviour as withPaywall.
+ */
+export function withSolanaOnlyPaywall(
+  handler: Handler,
+  opts: { price: string; description: string; resourcePath: string },
+): (req: NextRequest) => Promise<NextResponse> {
+  return withX402AndInternal(
+    handler,
+    buildSolanaOnlyRouteConfig(opts.price, opts.description, opts.resourcePath),
   );
 }

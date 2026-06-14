@@ -13,6 +13,7 @@ process.env.SOLANA_RECEIVE_ADDRESS = SOL_ADDR;
 const x402 = await import("../../lib/x402.ts");
 const {
   buildRouteConfig,
+  buildSolanaOnlyRouteConfig,
   PAY_TO_SOLANA,
   PAY_TO_BASE,
   BASE_NETWORK,
@@ -46,6 +47,31 @@ test("buildRouteConfig advertises both Base and Solana exact legs", () => {
 
 test("Solana network id is mainnet solana CAIP", () => {
   assert.match(SOLANA_NETWORK, /^solana:/);
+});
+
+test("buildSolanaOnlyRouteConfig advertises ONLY the Solana exact leg", () => {
+  const cfg = buildSolanaOnlyRouteConfig("$0.01", "test", "/api/ipo");
+  assert.equal(cfg.accepts.length, 1);
+  const only = cfg.accepts[0];
+  // No Base/EVM leg at all.
+  assert.equal(cfg.accepts.some((a) => a.network === BASE_NETWORK), false);
+  // The single leg is the same complete Solana accept as the dual-leg builder.
+  assert.equal(only.scheme, "exact");
+  assert.equal(only.network, SOLANA_NETWORK);
+  assert.equal(only.payTo, PAY_TO_SOLANA);
+  assert.equal(only.price, "$0.01");
+});
+
+test("ipo/holders/liquidity routes use withSolanaOnlyPaywall (no Base)", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const path = await import("node:path");
+  const { fileURLToPath } = await import("node:url");
+  const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+  for (const r of ["ipo", "holders", "liquidity"]) {
+    const src = await readFile(path.join(repo, "app/api", r, "route.ts"), "utf8");
+    assert.match(src, /withSolanaOnlyPaywall\(/, `${r} uses withSolanaOnlyPaywall`);
+    assert.equal(/\bwithPaywall\b/.test(src), false, `${r} no longer uses dual-leg withPaywall`);
+  }
 });
 
 // ── Section D: discovery (dualLegs) ↔ verification (buildRouteConfig) ────
