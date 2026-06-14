@@ -161,6 +161,33 @@ export function buildRouteConfig(
 }
 
 /**
+ * Build a v2 RouteConfig that advertises ONLY the Solana USDC payment option.
+ *
+ * Same scheme/network/payTo/extra as the Solana leg of `buildRouteConfig` —
+ * the Solana accept is byte-identical; we just omit the Base (EVM) leg. Used
+ * by the handful of endpoints (/api/ipo, /api/holders, /api/liquidity) that
+ * should be settled on Solana only, so AA cannot pick the Base accept. All
+ * other paid endpoints keep the dual-leg `buildRouteConfig`.
+ */
+export function buildSolanaOnlyRouteConfig(
+  price: string,
+  description: string,
+  resourcePath: string,
+): RouteConfig {
+  const resource = resourceUrl(resourcePath);
+  const accepts: PaymentOption[] = [
+    {
+      scheme: "exact",
+      network: SOLANA_NETWORK,
+      payTo: PAY_TO_SOLANA,
+      price,
+      extra: { resource },
+    },
+  ];
+  return { accepts, description, resource };
+}
+
+/**
  * Internal-auth bypass: callers that present the shared INTERNAL_API_KEY in
  * the `X-Internal-Key` header skip payment entirely. Useful for our own
  * backend / AA agents that already pay for compute another way.

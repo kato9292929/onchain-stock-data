@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLiquidity } from "@/lib/data";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,7 +14,9 @@ const handler = async (req: NextRequest) => {
   return NextResponse.json(data);
 };
 
-export const GET = withPaywall(handler, {
+// Solana-only paywall: 402 advertises a single Solana USDC accept (no Base
+// leg) so AA settles this endpoint on Solana. See withSolanaOnlyPaywall.
+export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
   description: "Tokenized stock DEX liquidity + price deviation.",
   resourcePath: "/api/liquidity",

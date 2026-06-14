@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { getIpos } from "@/lib/data";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export const GET = withPaywall(
+// Solana-only paywall: 402 advertises a single Solana USDC accept (no Base
+// leg) so AA settles this endpoint on Solana. See withSolanaOnlyPaywall.
+export const GET = withSolanaOnlyPaywall(
   async () => NextResponse.json(await getIpos()),
   {
     price: "$0.01",

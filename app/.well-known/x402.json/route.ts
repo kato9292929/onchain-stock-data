@@ -56,6 +56,23 @@ function dualLegs(resourcePath: string, usd: number): AcceptLeg[] {
   ];
 }
 
+// Solana-only accept leg, for endpoints whose paywall presents Solana alone
+// (/api/ipo, /api/holders, /api/liquidity). Mirrors the Solana half of
+// dualLegs so discovery matches the route's 402 challenge.
+function solanaOnlyLeg(resourcePath: string, usd: number): AcceptLeg[] {
+  const resource = resourceUrl(resourcePath);
+  return [
+    {
+      scheme: "exact",
+      network: SOLANA_NETWORK,
+      amount: usdToBaseUnits(usd),
+      asset: ASSET_SOLANA_USDC,
+      payTo: PAY_TO_SOLANA,
+      resource,
+    },
+  ];
+}
+
 function analystLegs(): AcceptLeg[] {
   // /api/analyst prices per `depth` body field — emit one pair of legs per
   // tier so directory crawlers can show all three price points without
@@ -108,22 +125,22 @@ export function GET(): NextResponse {
         path: "/api/ipo",
         method: "GET",
         description:
-          "Backpack IPOs Onchain calendar (Superstate × Solana).",
-        accepts: dualLegs("/api/ipo", 0.01),
+          "Backpack IPOs Onchain calendar (Superstate × Solana). Solana USDC only.",
+        accepts: solanaOnlyLeg("/api/ipo", 0.01),
       },
       {
         path: "/api/liquidity",
         method: "GET",
         description:
-          "Tokenized stock DEX liquidity + price deviation vs underlying.",
-        accepts: dualLegs("/api/liquidity", 0.01),
+          "Tokenized stock DEX liquidity + price deviation vs underlying. Solana USDC only.",
+        accepts: solanaOnlyLeg("/api/liquidity", 0.01),
       },
       {
         path: "/api/holders",
         method: "GET",
         description:
-          "Tokenized stock holders map + concentration scores.",
-        accepts: dualLegs("/api/holders", 0.01),
+          "Tokenized stock holders map + concentration scores. Solana USDC only.",
+        accepts: solanaOnlyLeg("/api/holders", 0.01),
       },
       {
         path: "/api/alpha-posts",
