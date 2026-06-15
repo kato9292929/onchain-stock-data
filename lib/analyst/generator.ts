@@ -24,10 +24,29 @@ export interface GenerateError {
   raw?: string;
 }
 
-const MAX_TOKENS: Record<Depth, number> = {
-  quick: 2_500,
-  standard: 4_500,
-  deep: 8_000,
+// Initial output budget per depth. The previous values (2.5k/4.5k/8k) were too
+// low: standard's 4,500 tokens ≈ ~6,750 chars of JSON, which is exactly where
+// the IC memo (esp. NVDA, the longest) was truncating mid-string → invalid JSON
+// → 502. Raised with comfortable headroom; still far below the model caps
+// (Sonnet 4.6 = 64k output, Opus 4.7 = 128k output, per Anthropic docs).
+export const MAX_TOKENS: Record<Depth, number> = {
+  quick: 4_000,
+  standard: 8_000,
+  deep: 16_000,
+};
+
+// Retry ceiling when the first attempt stops on `max_tokens`. Still well within
+// each model's output cap (Sonnet 64k / Opus 128k).
+export const RETRY_MAX_TOKENS: Record<Depth, number> = {
+  quick: 8_000,
+  standard: 16_000,
+  deep: 32_000,
+};
+
+// Per-model output-token caps (Anthropic docs). Used to assert our budgets fit.
+export const MODEL_OUTPUT_CAP: Record<string, number> = {
+  "claude-sonnet-4-6": 64_000,
+  "claude-opus-4-7": 128_000,
 };
 
 const TIMEOUT_MS: Record<Depth, number> = {
@@ -60,11 +79,16 @@ export async function generateAnalystReport(
     depth_hint: input.depth,
   };
 
-  let resp: Anthropic.Message;
-  try {
-    resp = await client.messages.create({
+  const userContent = userPromptFor({
+    ticker: input.ticker,
+    depth: input.depth,
+    aggregated: promptPayload,
+  });
+
+  const callOnce = (maxTokens: number) =>
+    client.messages.create({
       model: CLAUDE_MODEL[input.depth],
-      max_tokens: MAX_TOKENS[input.depth],
+      max_tokens: maxTokens,
       system: [
         {
           type: "text",
@@ -72,21 +96,36 @@ export async function generateAnalystReport(
           cache_control: { type: "ephemeral" },
         },
       ],
-      messages: [
-        {
-          role: "user",
-          content: userPromptFor({
-            ticker: input.ticker,
-            depth: input.depth,
-            aggregated: promptPayload,
-          }),
-        },
-      ],
+      messages: [{ role: "user", content: userContent }],
     });
+
+  let resp: Anthropic.Message;
+  try {
+    resp = await callOnce(MAX_TOKENS[input.depth]);
+    // If the model ran out of output budget, the JSON is truncated mid-stream.
+    // Don't try to JSON.parse a half-written object — retry once with a higher
+    // ceiling before surfacing an error.
+    if (resp.stop_reason === "max_tokens") {
+      console.warn(
+        `[analyst] ${input.ticker} (${input.depth}) hit max_tokens at ${MAX_TOKENS[input.depth]}, retrying at ${RETRY_MAX_TOKENS[input.depth]}`,
+      );
+      resp = await callOnce(RETRY_MAX_TOKENS[input.depth]);
+    }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     const kind = msg.toLowerCase().includes("timeout") ? "timeout" : "claude_error";
     return { ok: false, err: { kind, message: msg } };
+  }
+
+  // Still truncated after the retry — fail loudly rather than parse broken JSON.
+  if (resp.stop_reason === "max_tokens") {
+    return {
+      ok: false,
+      err: {
+        kind: "invalid_output",
+        message: `Claude output truncated at max_tokens (${RETRY_MAX_TOKENS[input.depth]}) even after retry; IC memo too long to fit.`,
+      },
+    };
   }
 
   const text = resp.content
