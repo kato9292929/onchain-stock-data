@@ -23,6 +23,12 @@ Working agreement:
 - **Never rewrite history.** No rebase / force-push / history surgery on shared
   branches — production runs off this history. Duplicate/early commits are left
   as-is.
+- **Keep the default branch named `main` permanently — never rename or delete it.**
+  Vercel's Production deploy tracks a fixed branch name; renaming/deleting the
+  default (e.g. during branch hygiene) silently detaches production so merges to
+  `main` stop deploying. If the production branch ever drifts, fix it in Vercel
+  → Settings → Environments → Production → Branch Tracking → `main` (and/or
+  `vercel --prod` to deploy the current `main` immediately).
 - **Don't hardcode the default branch name** in workflows or scripts. The cron
   workflows use `${GITHUB_REF_NAME}` so they follow the branch they run on; keep
   it that way so a future rename can't break them.
