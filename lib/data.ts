@@ -131,6 +131,23 @@ export interface AlphaPost {
   added_at: string;
 }
 
+export interface PickupItem {
+  theme: string;
+  summary: string;
+  source_url: string;
+  posted_at: string;
+  catalyst_ready: boolean;
+  /** Optional override for the status badge text (e.g. "pending July meeting"). */
+  condition?: string;
+}
+
+export interface PickupFile {
+  source: string;
+  note: string;
+  updated_at: string;
+  items: PickupItem[];
+}
+
 export interface PortfolioHolding {
   ticker: string;
   company_name: string;
@@ -236,6 +253,7 @@ const loadLiquidityJson = () => loadJson<LiquidityFile>("liquidity.json");
 export const getIpos = () => loadJson<IposFile>("ipo.json");
 export const getHolders = () => loadJson<HoldersFile>("holders.json");
 export const getAlphaPosts = () => loadJson<AlphaPost[]>("alpha-posts.json");
+export const getPickup = () => loadJson<PickupFile>("pickup.json");
 export const getPortfolioHistory = () =>
   loadJson<PortfolioHistoryFile>("portfolio-history.json");
 export const getPerformanceHistory = () =>

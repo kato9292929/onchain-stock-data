@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SiteNav } from "./components/site-nav";
-import { SiteFooter } from "./components/site-footer";
+import { SiteChrome } from "./components/site-chrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +30,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-black text-zinc-100 font-mono">
-        <SiteNav />
-        <main className="flex-1 px-6 py-8 max-w-6xl w-full mx-auto">
-          {children}
-        </main>
-        <SiteFooter />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
