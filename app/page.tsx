@@ -103,10 +103,6 @@ export default async function Home() {
       {/* nav */}
       <nav className="osd-nav">
         <div className="wrap nav-in">
-          <a className="brand" href="/">
-            <span className="dot" />
-            onchain stock data
-          </a>
           <div className="nav-links">
             {NAV.map((n) => (
               <a key={n.label} href={n.href}>
