@@ -24,7 +24,7 @@ export default async function IpoPage() {
           <div key={i.ticker} className="terminal-card p-4 space-y-2">
             <div className="flex items-baseline justify-between">
               <div>
-                <div className="text-cyan-300 font-bold text-lg">
+                <div className="text-gold-bright font-bold text-lg">
                   {i.ticker}
                 </div>
                 <div className="text-zinc-100">{i.company_name}</div>
@@ -45,9 +45,9 @@ export default async function IpoPage() {
                   target="_blank"
                   rel="noreferrer noopener"
                 >
-                  <span className="text-cyan-400">{p.platform}</span>
+                  <span className="text-gold">{p.platform}</span>
                   <span className="text-zinc-500"> · {p.partner}</span>
-                  <span className="ml-2 text-xs px-2 py-0.5 rounded bg-cyan-400/10 text-cyan-300">
+                  <span className="ml-2 text-xs px-2 py-0.5 rounded bg-gold/10 text-gold-bright">
                     {p.status}
                   </span>
                 </a>

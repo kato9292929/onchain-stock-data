@@ -32,7 +32,7 @@ export default async function StockDetailPage({
       </Link>
 
       <header className="space-y-1">
-        <h1 className="text-3xl font-bold text-cyan-300">
+        <h1 className="text-3xl font-bold text-gold-bright">
           {stock.underlying_ticker}
         </h1>
         <div className="text-zinc-100">{stock.company_name}</div>
@@ -110,7 +110,7 @@ export default async function StockDetailPage({
         {stock.tokenized_versions.map((t) => (
           <div key={t.token_symbol} className="terminal-card p-4 space-y-2">
             <div className="flex items-baseline justify-between">
-              <div className="text-cyan-300 font-bold">{t.token_symbol}</div>
+              <div className="text-gold-bright font-bold">{t.token_symbol}</div>
               <div className="text-zinc-100 font-bold">
                 {fmtUsd(t.current_price_usd)}
               </div>

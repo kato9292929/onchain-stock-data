@@ -64,7 +64,7 @@ export default async function AnalystPage() {
   return (
     <div className="space-y-10">
       <header className="space-y-2">
-        <div className="text-xs text-cyan-400">/analyst</div>
+        <div className="text-xs text-gold">/analyst</div>
         <h1 className="text-2xl font-bold">Analyst</h1>
         <p className="text-sm text-zinc-400 max-w-2xl">
           AI エージェントが既存 5 API (stocks / ipo / liquidity / holders /
@@ -91,7 +91,7 @@ export default async function AnalystPage() {
           </thead>
           <tbody>
             <tr className="border-b border-zinc-800/60">
-              <td className="py-2 text-cyan-300 font-bold">quick</td>
+              <td className="py-2 text-gold-bright font-bold">quick</td>
               <td className="py-2 text-zinc-400">5 internal endpoints only</td>
               <td className="py-2 text-zinc-400">{TIME_ESTIMATE.quick}</td>
               <td className="py-2 text-right text-zinc-100">
@@ -99,7 +99,7 @@ export default async function AnalystPage() {
               </td>
             </tr>
             <tr className="border-b border-zinc-800/60">
-              <td className="py-2 text-cyan-300 font-bold">standard</td>
+              <td className="py-2 text-gold-bright font-bold">standard</td>
               <td className="py-2 text-zinc-400">
                 + SEC EDGAR filings (recent)
               </td>
@@ -109,7 +109,7 @@ export default async function AnalystPage() {
               </td>
             </tr>
             <tr>
-              <td className="py-2 text-cyan-300 font-bold">deep</td>
+              <td className="py-2 text-gold-bright font-bold">deep</td>
               <td className="py-2 text-zinc-400">
                 + earnings call transcript + comparable financials
               </td>
@@ -122,7 +122,7 @@ export default async function AnalystPage() {
         </table>
         <p className="text-xs text-zinc-500">
           Settlement: Base USDC or Solana USDC via{" "}
-          <a href="https://x402.org" className="text-cyan-400">
+          <a href="https://x402.org" className="text-gold">
             x402
           </a>
           . AA (Anthropic Agent) や 自社 backend には `X-Internal-Key` で課金スキップ。
@@ -204,7 +204,7 @@ console.log(report.verdict, report.target_price_usd);`}
         <div className="terminal-card p-4 space-y-3">
           <div className="flex items-baseline justify-between flex-wrap gap-2">
             <div>
-              <span className="text-cyan-300 font-bold text-xl">
+              <span className="text-gold-bright font-bold text-xl">
                 {sample.ticker}
               </span>
               <span className="text-zinc-100 ml-2">{sample.company_name}</span>
@@ -277,7 +277,7 @@ console.log(report.verdict, report.target_price_usd);`}
           <div className="grid md:grid-cols-2 gap-3 text-xs">
             {Object.values(sample.valuation).map((m, idx) => (
               <div key={idx} className="border border-zinc-800 rounded p-3">
-                <div className="text-cyan-300 font-bold">{m.name}</div>
+                <div className="text-gold-bright font-bold">{m.name}</div>
                 <div className="text-zinc-100 mt-1">{fmtUsd(m.value_usd)}</div>
                 <div className="text-zinc-400 mt-1">{m.assumptions}</div>
               </div>
@@ -343,7 +343,7 @@ console.log(report.verdict, report.target_price_usd);`}
             <tbody>
               {sample.sources_called.map((s, idx) => (
                 <tr key={idx} className="border-t border-zinc-800/60">
-                  <td className="py-1 font-mono text-cyan-300">{s.endpoint}</td>
+                  <td className="py-1 font-mono text-gold-bright">{s.endpoint}</td>
                   <td className="py-1 text-zinc-400">{s.data_summary}</td>
                   <td className="py-1 text-right text-zinc-500">
                     ${s.cost_usd.toFixed(2)}

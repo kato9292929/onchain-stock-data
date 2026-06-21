@@ -35,10 +35,10 @@ function OnchainEnrichment({ ticker }: { ticker: string }) {
       <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
         Solana tokenized
       </span>
-      <Link href={`/liquidity?ticker=${ticker}`} className="text-[11px] text-cyan-400">
+      <Link href={`/liquidity?ticker=${ticker}`} className="text-[11px] text-gold">
         liquidity
       </Link>
-      <Link href="/holders" className="text-[11px] text-cyan-400">
+      <Link href="/holders" className="text-[11px] text-gold">
         holders
       </Link>
     </span>
@@ -59,7 +59,7 @@ export default async function PortfolioPage() {
         <p className="text-sm text-zinc-400">
           毎週 Claude が選ぶ米株 10 銘柄。1 ヶ月の検証可能な catalyst を thesis に。
           SPY / NASDAQ (QQQ) との比較は{" "}
-          <Link href="/alpha/portfolio/history" className="text-cyan-400">
+          <Link href="/alpha/portfolio/history" className="text-gold">
             history
           </Link>{" "}
           を参照。JSON は{" "}
@@ -104,7 +104,7 @@ export default async function PortfolioPage() {
                     <td className="py-2 pr-4">
                       <Link
                         href={`/alpha/portfolio/${h.ticker}`}
-                        className="text-cyan-300 font-bold"
+                        className="text-gold-bright font-bold"
                       >
                         {h.ticker}
                       </Link>

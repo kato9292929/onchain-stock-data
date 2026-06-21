@@ -20,10 +20,10 @@ export default async function AlphaPage() {
 
       <Link
         href="/alpha/portfolio"
-        className="block terminal-card p-4 hover:border-cyan-500/50 hover:no-underline"
+        className="block terminal-card p-4 hover:border-gold/60 hover:no-underline"
       >
         <div className="flex items-baseline justify-between">
-          <span className="text-cyan-300 font-bold">Claude Portfolio →</span>
+          <span className="text-gold-bright font-bold">Claude Portfolio →</span>
           <span className="text-xs text-zinc-500">無料公開 · 週次更新</span>
         </div>
         <p className="text-sm text-zinc-400 mt-1">

@@ -35,7 +35,7 @@ export default async function LiquidityPage() {
             <div key={p.token_symbol} className="terminal-card p-4">
               <div className="flex items-baseline justify-between mb-3">
                 <div>
-                  <span className="text-cyan-300 font-bold">
+                  <span className="text-gold-bright font-bold">
                     {p.token_symbol}
                   </span>
                   <span className="text-zinc-500 text-sm ml-2">
