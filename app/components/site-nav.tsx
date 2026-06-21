@@ -27,7 +27,7 @@ export function SiteNav() {
           href="/"
           className="text-zinc-100 hover:no-underline flex items-center gap-2 text-lg font-bold tracking-tight"
         >
-          <span className="text-gold">●</span> Onchain Stock Data
+          Onchain Stock Data
         </Link>
         <nav className="flex flex-wrap gap-1 text-sm">
           {NAV.map((item) => {

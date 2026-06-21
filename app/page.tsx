@@ -104,7 +104,6 @@ export default async function Home() {
       <nav className="osd-nav">
         <div className="wrap nav-in">
           <a className="brand" href="/">
-            <span className="dot" />
             Onchain Stock Data
           </a>
           <div className="nav-links">
