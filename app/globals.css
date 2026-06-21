@@ -22,8 +22,10 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, monospace;
+  /* match the top page (.osd-home) — sans base, with mono reserved for the
+     code/label bits that opt in via font-mono. */
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+    "Noto Sans JP", sans-serif;
 }
 
 a {
