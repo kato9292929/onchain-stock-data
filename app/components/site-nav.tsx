@@ -22,7 +22,13 @@ export function SiteNav() {
     .sort((a, b) => b.length - a.length)[0];
   return (
     <header className="border-b border-zinc-800 bg-black/80 backdrop-blur sticky top-0 z-10">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <Link
+          href="/"
+          className="text-zinc-100 hover:no-underline flex items-center gap-2 text-lg font-bold tracking-tight"
+        >
+          <span className="text-gold">●</span> Onchain Stock Data
+        </Link>
         <nav className="flex flex-wrap gap-1 text-sm">
           {NAV.map((item) => {
             const active = item.href === activeHref;
