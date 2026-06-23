@@ -58,7 +58,7 @@ export default async function PortfolioHistoryPage() {
         <h1 className="text-2xl font-bold">Claude Portfolio — History</h1>
         <p className="text-sm text-zinc-400">
           過去の週次ポートフォリオと、SPY / NASDAQ (QQQ) 比較。{" "}
-          <Link href="/alpha/portfolio" className="text-cyan-400">
+          <Link href="/alpha/portfolio" className="text-gold">
             current
           </Link>
         </p>
@@ -110,7 +110,7 @@ export default async function PortfolioHistoryPage() {
           {all.map((p, idx) => (
             <div key={`${p.week_of}-${idx}`} className="terminal-card p-4">
               <div className="flex items-baseline justify-between mb-2">
-                <span className="text-cyan-300 font-bold">week of {p.week_of}</span>
+                <span className="text-gold-bright font-bold">week of {p.week_of}</span>
                 <span className="text-xs text-zinc-500">{p.model}</span>
               </div>
               {p.rationale && (

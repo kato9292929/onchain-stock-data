@@ -5,6 +5,7 @@ import {
   getLiquidity,
   getHolders,
   getPickup,
+  getPortfolioHistory,
   type PickupItem,
 } from "@/lib/data";
 import { Reveal } from "./components/reveal";
@@ -57,11 +58,12 @@ function pickupStatus(item: PickupItem): { text: string; cls: string } {
 }
 
 const NAV = [
+  { href: "/alpha/portfolio", label: "Portfolio" },
   { href: "/stocks", label: "Stocks" },
-  { href: "/ipo", label: "IPOs" },
+  { href: "/ipo", label: "IPO" },
   { href: "/liquidity", label: "Liquidity" },
   { href: "/holders", label: "Holders" },
-  { href: "#pickup", label: "Pickup" },
+  { href: "/alpha", label: "Alpha" },
   { href: "/analyst", label: "Analyst" },
 ];
 
@@ -73,14 +75,17 @@ const PRICING = [
 
 export default async function Home() {
   // Each source degrades independently; the page never fails on sample data.
-  const [pickup, stocks, ipos, liquidity, holders] = await Promise.all([
-    getPickup().catch(() => null),
-    getStocks().catch(() => null),
-    getIpos().catch(() => null),
-    getLiquidity().catch(() => null),
-    getHolders().catch(() => null),
-  ]);
+  const [pickup, stocks, ipos, liquidity, holders, portfolioHistory] =
+    await Promise.all([
+      getPickup().catch(() => null),
+      getStocks().catch(() => null),
+      getIpos().catch(() => null),
+      getLiquidity().catch(() => null),
+      getHolders().catch(() => null),
+      getPortfolioHistory().catch(() => null),
+    ]);
 
+  const portfolio = portfolioHistory?.current ?? null;
   const pickupItems = pickup?.items ?? [];
   const topStocks = (stocks?.stocks ?? []).slice(0, 4);
   const upcomingIpos = (ipos?.ipos ?? []).slice(0, 4);
@@ -99,8 +104,7 @@ export default async function Home() {
       <nav className="osd-nav">
         <div className="wrap nav-in">
           <a className="brand" href="/">
-            <span className="dot" />
-            onchain stock data
+            Onchain Stock Data
           </a>
           <div className="nav-links">
             {NAV.map((n) => (
@@ -126,6 +130,57 @@ export default async function Home() {
           browser, x402 JSON for agents at $0.01 a call.
         </p>
       </header>
+
+      {/* Portfolio — the main feature, surfaced at the top */}
+      {portfolio ? (
+        <section id="portfolio">
+          <div className="wrap">
+            <div className="sec-head rv">
+              <div>
+                <div className="eyebrow">claude portfolio</div>
+                <h2>Portfolio</h2>
+              </div>
+              <p>
+                毎週 Claude が選ぶ米株 10 銘柄。1 ヶ月の検証可能な catalyst を
+                thesis に。SPY / NASDAQ との比較は portfolio ページを参照。
+              </p>
+            </div>
+            <div className="pf rv">
+              <div className="pf-meta">
+                <span>
+                  week of <span className="k">{portfolio.week_of}</span> ·{" "}
+                  horizon <span className="k">{portfolio.horizon}</span> · model{" "}
+                  <span className="k">{portfolio.model}</span>
+                </span>
+                <Link href="/alpha/portfolio">View full portfolio →</Link>
+              </div>
+              {portfolio.rationale ? (
+                <div className="pf-rationale">{portfolio.rationale}</div>
+              ) : null}
+              <table className="pf-tbl">
+                <thead>
+                  <tr>
+                    <th>Ticker</th>
+                    <th className="hide-sm">Company</th>
+                    <th className="r">Weight</th>
+                    <th className="hide-sm">Thesis</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {portfolio.holdings.map((h) => (
+                    <tr key={h.ticker}>
+                      <td className="tk">{h.ticker}</td>
+                      <td className="co hide-sm">{h.company_name}</td>
+                      <td className="w r">{h.weight.toFixed(1)}%</td>
+                      <td className="th hide-sm">{h.thesis}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Pickup */}
       <section id="pickup">
@@ -360,6 +415,7 @@ export default async function Home() {
             <div className="copy">© 2026 x402 Inc.</div>
           </div>
           <div className="foot-links">
+            <Link href="/alpha/portfolio">Portfolio</Link>
             <Link href="/stocks">Stocks</Link>
             <Link href="/analyst">Analyst</Link>
             <a href="#agents">x402</a>

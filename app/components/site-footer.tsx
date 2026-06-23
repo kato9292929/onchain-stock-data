@@ -22,7 +22,7 @@ export function SiteFooter() {
         <p>
           <a
             href="https://github.com/kato9292929/onchain-stock-data"
-            className="text-cyan-400"
+            className="text-gold"
           >
             github.com/kato9292929/onchain-stock-data
           </a>

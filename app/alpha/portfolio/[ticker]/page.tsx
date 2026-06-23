@@ -34,7 +34,7 @@ export default async function PortfolioTickerPage({
 
       <header className="space-y-1">
         <h1 className="text-2xl font-bold">
-          <span className="text-cyan-300">{holding.ticker}</span>{" "}
+          <span className="text-gold-bright">{holding.ticker}</span>{" "}
           <span className="text-zinc-400 text-lg">{holding.company_name}</span>
         </h1>
         <p className="text-xs text-zinc-500">

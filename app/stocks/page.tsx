@@ -44,7 +44,7 @@ export default async function StocksPage() {
             >
               <div className="flex items-baseline justify-between mb-2">
                 <div>
-                  <div className="text-cyan-300 font-bold">
+                  <div className="text-gold-bright font-bold">
                     {s.underlying_ticker}
                     {tok && (
                       <span className="text-zinc-500 text-sm ml-2">
@@ -90,7 +90,7 @@ export default async function StocksPage() {
                 <div className="border-t border-zinc-800 pt-2 text-xs text-zinc-400">
                   <div className="flex items-baseline justify-between">
                     <span>
-                      <span className="text-cyan-400">{tok.token_symbol}</span>{" "}
+                      <span className="text-gold">{tok.token_symbol}</span>{" "}
                       {fmtUsd(tok.current_price_usd)}
                     </span>
                     {dev !== null && (
