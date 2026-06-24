@@ -1,7 +1,6 @@
 import {
   getPortfolioHistory,
   getPerformanceHistory,
-  getStockByTicker,
   type PerformanceRecord,
   type Portfolio,
   type PortfolioHistoryFile,
@@ -15,6 +14,7 @@ import {
 } from "@/lib/portfolio";
 import {
   fetchBenchmarks,
+  fetchQuotes,
   appendPerformanceRecord,
   writePerformanceHistory,
 } from "@/lib/benchmarks";
@@ -112,14 +112,47 @@ export async function runPerformanceUpdate(): Promise<PerformanceUpdateResult> {
   const today = new Date().toISOString().slice(0, 10);
 
   // Benchmark indices need a fixed base price; capture it on first sight.
+  // If a fetch fails, carry the last index forward instead of snapping to 100.
   const baseSpy = perf.base_spy_price ?? benchmarks.spy?.price;
   const baseQqq = perf.base_qqq_price ?? benchmarks.qqq?.price;
   const spyIndex =
-    benchmarks.spy && baseSpy ? (benchmarks.spy.price / baseSpy) * 100 : 100;
+    benchmarks.spy && baseSpy
+      ? (benchmarks.spy.price / baseSpy) * 100
+      : (lastIndexValue(perf, "spy_index") ?? 100);
   const qqqIndex =
-    benchmarks.qqq && baseQqq ? (benchmarks.qqq.price / baseQqq) * 100 : 100;
+    benchmarks.qqq && baseQqq
+      ? (benchmarks.qqq.price / baseQqq) * 100
+      : (lastIndexValue(perf, "qqq_index") ?? 100);
 
-  const portfolioIndex = await computePortfolioIndex(portfolioHist);
+  // Portfolio: chain a daily index from current holdings and yesterday's
+  // prices. This is rebalance-safe — each day uses that day's holdings/weights
+  // — and needs no per-holding cost basis, only the prior close we carry here.
+  const holdings = portfolioHist.current?.holdings ?? [];
+  const quotes = await fetchQuotes(holdings.map((h) => h.ticker));
+  const priceToday: Record<string, number> = {};
+  for (const q of quotes) if (q) priceToday[q.symbol] = q.price;
+
+  const lastPrices = perf.last_prices ?? {};
+  const prevIndex = lastIndexValue(perf, "portfolio_index") ?? 100;
+
+  let weightedReturn = 0;
+  let weightSum = 0;
+  for (const h of holdings) {
+    const cur = priceToday[h.ticker];
+    const prev = lastPrices[h.ticker];
+    // Skip tickers added this rebalance (no prior price) or with a failed fetch.
+    if (!cur || !prev || prev <= 0) continue;
+    weightedReturn += h.weight * (cur / prev - 1);
+    weightSum += h.weight;
+  }
+  const dailyReturn = weightSum > 0 ? weightedReturn / weightSum : 0;
+  const portfolioIndex = prevIndex * (1 + dailyReturn);
+
+  // Carry today's prices forward for tomorrow's daily-return calc.
+  const nextLastPrices: Record<string, number> = { ...lastPrices };
+  for (const h of holdings) {
+    if (priceToday[h.ticker]) nextLastPrices[h.ticker] = priceToday[h.ticker];
+  }
 
   const record: PerformanceRecord = {
     date: today,
@@ -133,8 +166,11 @@ export async function runPerformanceUpdate(): Promise<PerformanceUpdateResult> {
 
   const next: PerformanceHistoryFile = {
     ...appendPerformanceRecord(perf, record),
+    base_date: perf.base_date || today,
     base_spy_price: baseSpy,
     base_qqq_price: baseQqq,
+    last_prices: nextLastPrices,
+    source: "live",
   };
   const write = await writePerformanceHistory(next);
 
@@ -148,33 +184,26 @@ export async function runPerformanceUpdate(): Promise<PerformanceUpdateResult> {
   };
 }
 
-async function computePortfolioIndex(
-  portfolioHist: PortfolioHistoryFile,
-): Promise<number> {
-  const current = portfolioHist.current;
-  if (!current || current.holdings.length === 0) return 100;
-
-  let weighted = 0;
-  let weightSum = 0;
-  for (const h of current.holdings) {
-    const entry = h.entry_price_usd;
-    if (!entry || entry <= 0) continue;
-    const stock = await getStockByTicker(h.ticker).catch(() => null);
-    const cur = stock?.price_usd ?? entry; // no live price → treat as flat
-    weighted += h.weight * (cur / entry);
-    weightSum += h.weight;
-  }
-  if (weightSum <= 0) return 100;
-  return (weighted / weightSum) * 100;
+/** Last recorded value of an index series, or null if no records yet. */
+function lastIndexValue(
+  perf: PerformanceHistoryFile,
+  key: "portfolio_index" | "spy_index" | "qqq_index",
+): number | null {
+  const recs = perf.records;
+  if (!recs.length) return null;
+  const v = recs[recs.length - 1][key];
+  return typeof v === "number" ? v : null;
 }
 
-/** ISO date (YYYY-MM-DD) of the Monday on or before `d` (UTC). */
+/** ISO date (YYYY-MM-DD) of the Monday of the current week, in JST. */
 export function mondayOf(d: Date): string {
-  const day = d.getUTCDay(); // 0=Sun..6=Sat
+  // The weekly cron fires Sun 21:00 UTC = Mon 06:00 JST. Compute the Monday in
+  // JST (UTC+9) so it lands on the current week's Monday, not the previous one.
+  const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  const day = jst.getUTCDay(); // 0=Sun..6=Sat, in JST
   const diff = (day + 6) % 7; // days since Monday
-  const monday = new Date(d);
-  monday.setUTCDate(d.getUTCDate() - diff);
-  return monday.toISOString().slice(0, 10);
+  jst.setUTCDate(jst.getUTCDate() - diff);
+  return jst.toISOString().slice(0, 10);
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;

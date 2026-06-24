@@ -241,6 +241,8 @@ export interface PerformanceHistoryFile {
   base_date: string;
   base_spy_price?: number;
   base_qqq_price?: number;
+  /** Most recent close per holding ticker, used to chain daily portfolio returns. */
+  last_prices?: Record<string, number>;
   records: PerformanceRecord[];
 }
 

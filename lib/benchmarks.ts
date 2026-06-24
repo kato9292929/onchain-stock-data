@@ -62,6 +62,17 @@ export async function fetchBenchmarks(): Promise<{
   return { spy, qqq };
 }
 
+/**
+ * Fetch latest prices for an arbitrary list of tickers (holdings) via the same
+ * Yahoo provider. Returns one entry per input symbol; null where the fetch
+ * failed so the caller can skip that ticker for the day.
+ */
+export async function fetchQuotes(
+  symbols: string[],
+): Promise<Array<Quote | null>> {
+  return Promise.all(symbols.map((s) => fetchBenchmarkQuote(s)));
+}
+
 const DATA_DIR = path.join(process.cwd(), "data");
 
 export function appendPerformanceRecord(
