@@ -32,6 +32,23 @@ export default async function AlphaPage() {
         </p>
       </Link>
 
+      <Link
+        href="/alpha/jp"
+        className="block terminal-card p-4 hover:border-gold/60 hover:no-underline"
+      >
+        <div className="flex items-baseline justify-between">
+          <span className="text-gold-bright font-bold">
+            日本株 AI データセンタ・チェーン →
+          </span>
+          <span className="text-xs text-zinc-500">無料公開 · 自動採点</span>
+        </div>
+        <p className="text-sm text-zinc-400 mt-1">
+          AI データセンタの製造サプライチェーンに位置する日本株 5
+          銘柄の dated catalyst。期日後に決算短信・適時開示で自動判定。
+          JSON: <code className="text-zinc-300">/api/alpha/jp/catalysts</code>
+        </p>
+      </Link>
+
       <section
         className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         aria-label="alpha posts"

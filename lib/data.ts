@@ -224,6 +224,10 @@ export interface PortfolioEvaluationsFile {
 export interface ExternalCatalyst {
   catalyst_id: string;
   ticker: string;
+  /** Equity market the catalyst belongs to. Defaults to "US" when absent. */
+  market?: "US" | "JP";
+  /** Provenance tag, e.g. "osd_jp_coverage" for curated JP coverage. */
+  source?: string;
   catalyst_description: string;
   target_date: string;
   submitted_at: string;

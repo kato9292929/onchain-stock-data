@@ -174,6 +174,7 @@ export function buildCatalyst(v: ValidatedSubmission): ExternalCatalyst {
   return {
     catalyst_id: generateCatalystId(),
     ticker: v.ticker,
+    market: "US",
     catalyst_description: v.catalyst_description,
     target_date: v.target_date,
     submitted_at: new Date().toISOString(),
@@ -189,7 +190,13 @@ export async function readExternalCatalysts(): Promise<ExternalCatalyst[]> {
   try {
     const raw = await fs.readFile(FILE, "utf8");
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as ExternalCatalyst[]) : [];
+    if (!Array.isArray(parsed)) return [];
+    // Legacy/US entries may omit `market`; normalise the default so callers
+    // (judge, list endpoint) can branch on it without per-site null checks.
+    return (parsed as ExternalCatalyst[]).map((c) => ({
+      ...c,
+      market: c.market ?? "US",
+    }));
   } catch {
     return [];
   }
