@@ -38,6 +38,9 @@ export async function GET(): Promise<NextResponse> {
       status: c.status,
       evidence_urls: c.evidence_urls ?? [],
       evaluated_at: c.judgement_date ?? null,
+      agent_id: c.agent_id ?? null,
+      conviction: c.conviction ?? null,
+      source: c.source ?? null,
     }));
 
   return new NextResponse(

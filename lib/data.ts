@@ -226,8 +226,12 @@ export interface ExternalCatalyst {
   ticker: string;
   /** Equity market the catalyst belongs to. Defaults to "US" when absent. */
   market?: "US" | "JP";
-  /** Provenance tag, e.g. "osd_jp_coverage" for curated JP coverage. */
-  source?: string;
+  /** Provenance tag, e.g. an AA agent's source label. */
+  source?: string | null;
+  /** Submitter's confidence in the call, 0–1, when provided. */
+  conviction?: number | null;
+  /** Signing agent id (e.g. AA agentId) when submitted by an agent. */
+  agent_id?: string | null;
   catalyst_description: string;
   target_date: string;
   submitted_at: string;

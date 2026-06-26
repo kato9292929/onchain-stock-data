@@ -67,6 +67,12 @@ export default async function JpCatalystsPage() {
         </p>
       </header>
 
+      {jp.length === 0 ? (
+        <p className="text-sm text-zinc-500">
+          まだ catalyst がありません。署名つきエージェント (AA) の submit
+          が入り次第ここに表示されます。
+        </p>
+      ) : (
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="text-zinc-500 text-left border-b border-zinc-800">
@@ -131,6 +137,7 @@ export default async function JpCatalystsPage() {
           </tbody>
         </table>
       </div>
+      )}
 
       <p className="text-xs text-zinc-600">
         目安日は過去の発表時期からの予想であり、各社の正式な決算発表日ではありません。正式日程の公表後に差し替えます。本ページは

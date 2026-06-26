@@ -23,6 +23,10 @@ export interface SubmitInput {
   catalyst_description?: unknown;
   target_date?: unknown;
   submitter_contact?: unknown;
+  market?: unknown;
+  source?: unknown;
+  conviction?: unknown;
+  agent_id?: unknown;
 }
 
 export interface ValidatedSubmission {
@@ -30,6 +34,10 @@ export interface ValidatedSubmission {
   catalyst_description: string;
   target_date: string; // YYYY-MM-DD
   submitter_contact: string | null;
+  market: "US" | "JP";
+  source: string | null;
+  conviction: number | null;
+  agent_id: string | null;
 }
 
 export type ValidationResult =
@@ -130,9 +138,87 @@ export function validateSubmission(body: SubmitInput): ValidationResult {
     submitter_contact = c === "" ? null : c;
   }
 
+  // market (optional) — defaults to "US"; only "US" | "JP" allowed.
+  let market: "US" | "JP" = "US";
+  if (body.market != null) {
+    if (body.market !== "US" && body.market !== "JP") {
+      return {
+        ok: false,
+        field: "market",
+        message: 'market must be "US" or "JP"',
+      };
+    }
+    market = body.market;
+  }
+
+  // source (optional) — free-form provenance label, max 200 chars.
+  let source: string | null = null;
+  if (body.source != null) {
+    if (typeof body.source !== "string") {
+      return { ok: false, field: "source", message: "source must be a string" };
+    }
+    const s = body.source.trim();
+    if (s.length > 200) {
+      return {
+        ok: false,
+        field: "source",
+        message: "source must be 200 characters or fewer",
+      };
+    }
+    source = s === "" ? null : s;
+  }
+
+  // conviction (optional) — confidence in [0, 1].
+  let conviction: number | null = null;
+  if (body.conviction != null) {
+    if (
+      typeof body.conviction !== "number" ||
+      Number.isNaN(body.conviction) ||
+      body.conviction < 0 ||
+      body.conviction > 1
+    ) {
+      return {
+        ok: false,
+        field: "conviction",
+        message: "conviction must be a number between 0 and 1",
+      };
+    }
+    conviction = body.conviction;
+  }
+
+  // agent_id (optional) — signing agent identifier, max 200 chars.
+  let agent_id: string | null = null;
+  if (body.agent_id != null) {
+    if (typeof body.agent_id !== "string") {
+      return {
+        ok: false,
+        field: "agent_id",
+        message: "agent_id must be a string",
+      };
+    }
+    const a = body.agent_id.trim();
+    if (a.length > 200) {
+      return {
+        ok: false,
+        field: "agent_id",
+        message: "agent_id must be 200 characters or fewer",
+      };
+    }
+    agent_id = a === "" ? null : a;
+  }
+
   return {
     ok: true,
-    value: { ticker, catalyst_description: desc, target_date, submitter_contact },
+    value: {
+      ticker,
+      catalyst_description: desc,
+      target_date,
+      submitter_contact,
+      market,
+      source,
+      conviction,
+      agent_id,
+    },
   };
 }
 
@@ -174,7 +260,10 @@ export function buildCatalyst(v: ValidatedSubmission): ExternalCatalyst {
   return {
     catalyst_id: generateCatalystId(),
     ticker: v.ticker,
-    market: "US",
+    market: v.market ?? "US",
+    source: v.source ?? null,
+    conviction: v.conviction ?? null,
+    agent_id: v.agent_id ?? null,
     catalyst_description: v.catalyst_description,
     target_date: v.target_date,
     submitted_at: new Date().toISOString(),
