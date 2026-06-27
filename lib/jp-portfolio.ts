@@ -88,7 +88,10 @@ ${JSON.stringify(
   try {
     resp = await client.messages.create({
       model: PORTFOLIO_MODEL,
-      max_tokens: 3_000,
+      // JP rows carry an extra target_date and longer Japanese theses; give the
+      // model enough room so the 10-holding JSON never truncates mid-output
+      // (a too-small budget previously corrupted later tickers).
+      max_tokens: 4_096,
       system: [
         { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
       ],
@@ -157,12 +160,19 @@ function normalizeDate(v: unknown): string {
   return /^\d{4}-\d{2}-\d{2}/.test(s) ? s.slice(0, 10) : "";
 }
 
-/** Drop invalid rows and scale weights so they sum to 100 (rounded to 0.1). */
+/** A valid JP securities code is 4 digits (e.g. "4062"). */
+export const JP_TICKER_RE = /^\d{4}$/;
+
+/**
+ * Drop invalid rows and scale weights so they sum to 100 (rounded to 0.1).
+ * Rows whose ticker is not a 4-digit code are dropped — this guards against a
+ * corrupted/truncated model response leaking garbage tickers into the holdings.
+ */
 export function normalizeJpWeights(
   holdings: JpPortfolioHolding[],
 ): JpPortfolioHolding[] {
   const valid = holdings.filter(
-    (h) => h.ticker && Number.isFinite(h.weight) && h.weight > 0,
+    (h) => JP_TICKER_RE.test(h.ticker) && Number.isFinite(h.weight) && h.weight > 0,
   );
   const total = valid.reduce((s, h) => s + h.weight, 0);
   if (total <= 0) return [];
