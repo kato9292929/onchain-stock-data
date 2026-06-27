@@ -1,0 +1,6 @@
+{
+  "source": "claude-jp-portfolio-evaluations",
+  "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
+  "updated_at": "2026-06-27T00:00:00.000Z",
+  "evaluations": []
+}

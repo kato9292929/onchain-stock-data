@@ -21,6 +21,8 @@ const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
 const HISTORY_FILE = path.join(ROOT, "data", "portfolio-history.json");
 const EXTERNAL_FILE = path.join(ROOT, "data", "external-catalysts.json");
+const JP_HISTORY_FILE = path.join(ROOT, "data", "jp-portfolio-history.json");
+const JP_EVAL_FILE = path.join(ROOT, "data", "jp-portfolio-evaluations.json");
 const MODEL = "claude-opus-4-7";
 const GRACE_DAYS = 7;
 const VALID_STATUS = new Set(["hit", "partial", "miss", "na"]);
@@ -287,6 +289,60 @@ async function main() {
   for (const c of upExternals) externalsById.set(c.catalyst_id, c);
   const externals = [...externalsById.values()];
 
+  // ── JP portfolio catalysts: auto-register pending evaluations from
+  //    jp-portfolio-history.json (each holding's dated thesis), then judge with
+  //    the JP prompt. Mirror of the US internal flow, self-bootstrapping (no
+  //    backfill step). git-committed file is the only store.
+  let jpEvalsFile = null;
+  let jpEvaluations = [];
+  let jpCreated = 0;
+  try {
+    const jpHistory = JSON.parse(await readFile(JP_HISTORY_FILE, "utf8"));
+    try {
+      jpEvalsFile = JSON.parse(await readFile(JP_EVAL_FILE, "utf8"));
+    } catch {
+      jpEvalsFile = {
+        source: "claude-jp-portfolio-evaluations",
+        note: "",
+        updated_at: new Date().toISOString(),
+        evaluations: [],
+      };
+    }
+    jpEvaluations = Array.isArray(jpEvalsFile.evaluations)
+      ? jpEvalsFile.evaluations
+      : [];
+    const jpSeen = new Set(
+      jpEvaluations.map((e) => `${e.week_of}::${String(e.ticker).toUpperCase()}`),
+    );
+    const jpPortfolios = [
+      ...(jpHistory.current ? [jpHistory.current] : []),
+      ...(Array.isArray(jpHistory.history) ? jpHistory.history : []),
+    ];
+    for (const p of jpPortfolios) {
+      if (!p?.week_of || !Array.isArray(p.holdings)) continue;
+      for (const h of p.holdings) {
+        const ticker = String(h.ticker ?? "").toUpperCase();
+        if (!ticker || !h.target_date) continue;
+        const key = `${p.week_of}::${ticker}`;
+        if (jpSeen.has(key)) continue;
+        jpSeen.add(key);
+        jpEvaluations.push({
+          week_of: p.week_of,
+          ticker,
+          catalyst_target_date: h.target_date,
+          success_condition: String(h.thesis ?? ""),
+          status: "pending",
+          evaluated_at: null,
+          evidence_url: null,
+          reasoning: null,
+        });
+        jpCreated += 1;
+      }
+    }
+  } catch (e) {
+    console.warn(`[evaluate] no JP portfolio history: ${e.message}`);
+  }
+
   const today = todayIso();
   const dueInternal = evaluations.filter(
     (e) =>
@@ -297,19 +353,33 @@ async function main() {
     (e) =>
       e.status === "pending" && addDays(e.target_date, GRACE_DAYS) <= today,
   );
+  const dueJp = jpEvaluations.filter(
+    (e) =>
+      e.status === "pending" &&
+      e.catalyst_target_date &&
+      addDays(e.catalyst_target_date, GRACE_DAYS) <= today,
+  );
 
   console.log(
     `[evaluate] internal ${dueInternal.length}/${evaluations.length}, ` +
-      `external ${dueExternal.length}/${externals.length} due (as of ${today})`,
+      `external ${dueExternal.length}/${externals.length}, ` +
+      `jp ${dueJp.length}/${jpEvaluations.length} due (as of ${today})`,
   );
 
-  if (dueInternal.length === 0 && dueExternal.length === 0) {
+  const anyDue =
+    dueInternal.length > 0 || dueExternal.length > 0 || dueJp.length > 0;
+  if (!anyDue && jpCreated === 0) {
     console.log("[evaluate] nothing due — exiting without changes");
     return;
   }
 
-  const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  const client = new Anthropic({ apiKey, timeout: 300_000 });
+  // Only need the API client when something is actually due; a JP-only bootstrap
+  // (newly registered pending rows, nothing due yet) just writes the file.
+  let client = null;
+  if (anyDue) {
+    const { default: Anthropic } = await import("@anthropic-ai/sdk");
+    client = new Anthropic({ apiKey, timeout: 300_000 });
+  }
 
   // ── Internal portfolio evaluations ──────────────────────────────────
   let internalUpdated = 0;
@@ -373,6 +443,31 @@ async function main() {
     }
   }
 
+  // ── JP portfolio catalysts ──────────────────────────────────────────
+  let jpJudged = 0;
+  for (const entry of dueJp) {
+    try {
+      const verdict = await evaluateOne(client, {
+        ticker: entry.ticker,
+        targetDate: entry.catalyst_target_date,
+        condition: entry.success_condition,
+        context: `週: ${entry.week_of}`,
+        market: "JP",
+      });
+      entry.status = verdict.status;
+      entry.evidence_url = verdict.evidence_url;
+      entry.reasoning = verdict.reasoning;
+      entry.evaluated_at = new Date().toISOString();
+      jpJudged += 1;
+      console.log(
+        `  ✓ [jp] ${entry.week_of} ${entry.ticker} → ${verdict.status}` +
+          (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
+      );
+    } catch (e) {
+      console.error(`::warning::jp ${entry.week_of} ${entry.ticker}: ${e.message}`);
+    }
+  }
+
   if (internalUpdated > 0) {
     evalsFile.updated_at = new Date().toISOString();
     await writeFile(EVAL_FILE, `${JSON.stringify(evalsFile, null, 2)}\n`, "utf8");
@@ -386,7 +481,21 @@ async function main() {
     );
     console.log(`[evaluate] wrote ${EXTERNAL_FILE}`);
   }
-  if (internalUpdated === 0 && externalUpdated === 0) {
+  // Persist JP evaluations when rows were registered and/or judged.
+  if ((jpCreated > 0 || jpJudged > 0) && jpEvalsFile) {
+    jpEvalsFile.updated_at = new Date().toISOString();
+    jpEvalsFile.evaluations = jpEvaluations;
+    await writeFile(JP_EVAL_FILE, `${JSON.stringify(jpEvalsFile, null, 2)}\n`, "utf8");
+    console.log(
+      `[evaluate] wrote ${JP_EVAL_FILE} (registered ${jpCreated}, judged ${jpJudged})`,
+    );
+  }
+  if (
+    internalUpdated === 0 &&
+    externalUpdated === 0 &&
+    jpJudged === 0 &&
+    jpCreated === 0
+  ) {
     console.log("[evaluate] no entries updated");
   }
 }

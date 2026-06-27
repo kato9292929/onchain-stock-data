@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "update:portfolio": "tsx scripts/update-portfolio.ts",
+    "update:jp-portfolio": "tsx scripts/update-jp-portfolio.ts",
     "update:performance": "tsx scripts/update-performance.ts",
     "backfill:catalysts": "node scripts/backfill-catalyst-targets.mjs",
     "evaluate:catalysts": "node scripts/evaluate-catalysts.mjs",

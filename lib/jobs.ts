@@ -1,10 +1,13 @@
 import {
   getPortfolioHistory,
   getPerformanceHistory,
+  getJpPortfolioHistory,
   type PerformanceRecord,
   type Portfolio,
   type PortfolioHistoryFile,
   type PerformanceHistoryFile,
+  type JpPortfolio,
+  type JpPortfolioHistoryFile,
 } from "@/lib/data";
 import {
   selectPortfolio,
@@ -12,6 +15,12 @@ import {
   writePortfolioHistory,
   diffHoldings,
 } from "@/lib/portfolio";
+import {
+  selectJpPortfolio,
+  appendJpPortfolio,
+  writeJpPortfolioHistory,
+  diffJpHoldings,
+} from "@/lib/jp-portfolio";
 import {
   fetchBenchmarks,
   fetchQuotes,
@@ -90,6 +99,75 @@ export async function runPortfolioUpdate(
     persisted: write.persisted,
     persist_reason: write.reason,
     used_external_data: externalContext.length > 0,
+  };
+}
+
+// First-week conviction seed (AI-DC chain), passed as the "previous" holdings so
+// the very first JP selection can reason about rotation just like the US one.
+const JP_SEED_PREVIOUS: JpPortfolio = {
+  week_of: "seed",
+  generated_at: "1970-01-01T00:00:00.000Z",
+  model: "seed",
+  horizon: "1m",
+  rationale: "",
+  holdings: [
+    { ticker: "4062", company_name: "イビデン", weight: 20, thesis: "", target_date: "" },
+    { ticker: "2802", company_name: "味の素", weight: 20, thesis: "", target_date: "" },
+    { ticker: "3110", company_name: "日東紡", weight: 20, thesis: "", target_date: "" },
+    { ticker: "6920", company_name: "レーザーテック", weight: 20, thesis: "", target_date: "" },
+    { ticker: "6146", company_name: "ディスコ", weight: 20, thesis: "", target_date: "" },
+  ],
+};
+
+export interface JpPortfolioUpdateResult {
+  ok: boolean;
+  week_of?: string;
+  portfolio?: JpPortfolio;
+  persisted?: boolean;
+  persist_reason?: string;
+  error?: string;
+}
+
+/** Weekly JP portfolio update — mirror of runPortfolioUpdate (osd-internal). */
+export async function runJpPortfolioUpdate(
+  opts: { horizon?: string } = {},
+): Promise<JpPortfolioUpdateResult> {
+  const weekOf = mondayOf(new Date());
+  const horizon = opts.horizon ?? "1m";
+
+  let prev: JpPortfolioHistoryFile;
+  try {
+    prev = await getJpPortfolioHistory();
+  } catch {
+    prev = {
+      source: "claude-jp-portfolio",
+      note: "",
+      updated_at: new Date().toISOString(),
+      current: null,
+      history: [],
+    };
+  }
+
+  // Carry the prior week (or the conviction seed on the very first run).
+  const previous = prev.current ?? JP_SEED_PREVIOUS;
+  const selected = await selectJpPortfolio({ weekOf, horizon, previous });
+  if (!selected.ok) {
+    return { ok: false, week_of: weekOf, error: selected.error };
+  }
+
+  const portfolio: JpPortfolio = {
+    ...selected.portfolio,
+    changes: diffJpHoldings(prev.current, selected.portfolio),
+  };
+  const next = appendJpPortfolio(prev, portfolio);
+  const write = await writeJpPortfolioHistory(next);
+
+  return {
+    ok: true,
+    week_of: weekOf,
+    portfolio,
+    persisted: write.persisted,
+    persist_reason: write.reason,
   };
 }
 

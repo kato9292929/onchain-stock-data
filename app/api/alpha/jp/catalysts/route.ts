@@ -5,11 +5,16 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/alpha/jp/catalysts — free public JSON of the curated Japan-equity
- * (AI data-center chain) dated catalysts. Filters the shared external-catalysts
- * store to `market === "JP"` and returns the prediction, its current verdict,
- * and any verified evidence URLs. Same daily judge / score lookup as US
- * external submissions; CORS-open like portfolio/current.
+ * GET /api/alpha/jp/catalysts — LEGACY route (external-catalysts based).
+ *
+ * The canonical JP surface is now the osd-internal Claude Portfolio:
+ *   GET /api/alpha/jp/portfolio/current  — weekly 10-name JP selection
+ *   GET /api/alpha/jp/scorecard          — catalyst verdicts / hit-rate
+ * This endpoint is kept for back-compat and returns whatever JP entries remain
+ * in the external-catalysts store; new JP coverage flows through the portfolio.
+ *
+ * Filters the shared external-catalysts store to `market === "JP"` and returns
+ * the prediction, its current verdict, and any verified evidence URLs.
  *
  * NOTE: each catalyst's `target_date` is an ESTIMATE from past reporting
  * cadence, not the company's confirmed earnings date. The judge runs on

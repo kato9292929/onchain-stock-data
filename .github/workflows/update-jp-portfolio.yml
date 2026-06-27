@@ -1,0 +1,52 @@
+name: Update JP Claude Portfolio (weekly)
+
+# Authoritative persistence runner for the JP Claude Portfolio. Mirror of
+# update-portfolio.yml: the weekly selection is generated here and committed
+# back to the repo (Vercel's FS is read-only/ephemeral). Each commit triggers a
+# Vercel redeploy that serves the fresh data.
+
+on:
+  schedule:
+    # 21:15 UTC Sunday == 06:15 JST Monday (15 min after the US portfolio job).
+    - cron: "15 21 * * 0"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Share the portfolio-data group so this never races with the US weekly /
+# daily performance / daily evaluate jobs on push.
+concurrency:
+  group: portfolio-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate weekly JP portfolio
+        run: npm run update:jp-portfolio
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit & push data
+        run: |
+          git config user.name "osd-portfolio-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/jp-portfolio-history.json
+          if git diff --staged --quiet; then
+            echo "No JP portfolio changes to commit."
+          else
+            git commit -m "chore(jp-portfolio): weekly Claude JP portfolio update [skip ci]"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

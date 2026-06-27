@@ -242,6 +242,40 @@ export interface ExternalCatalyst {
   reasoning: string | null;
 }
 
+/**
+ * JP Claude Portfolio — a mirror of the US Portfolio for Japanese equities
+ * (AI / semiconductor / data-center supply chain). Self-contained in osd:
+ * Claude selects weekly → written to data/jp-portfolio-history.json → CI
+ * commits → Vercel reads. No AA / Upstash / realtime submit. Holdings carry an
+ * explicit target_date (JP fiscal year-ends differ), used by the judge.
+ */
+export interface JpPortfolioHolding {
+  ticker: string; // 4-digit securities code, e.g. "4062"
+  company_name: string;
+  weight: number;
+  thesis: string;
+  /** Next-earnings date estimate the catalyst is judged against (YYYY-MM-DD). */
+  target_date: string;
+}
+
+export interface JpPortfolio {
+  week_of: string;
+  generated_at: string;
+  model: string;
+  horizon: string;
+  rationale: string;
+  holdings: JpPortfolioHolding[];
+  changes?: PortfolioChange[];
+}
+
+export interface JpPortfolioHistoryFile {
+  source: string;
+  note: string;
+  updated_at: string;
+  current: JpPortfolio | null;
+  history: JpPortfolio[];
+}
+
 export interface PerformanceHistoryFile {
   source: string;
   note: string;
@@ -270,6 +304,11 @@ export const getPerformanceHistory = () =>
   loadJson<PerformanceHistoryFile>("performance-history.json");
 export const getPortfolioEvaluations = () =>
   loadJson<PortfolioEvaluationsFile>("portfolio-evaluations.json");
+export const getJpPortfolioHistory = () =>
+  loadJson<JpPortfolioHistoryFile>("jp-portfolio-history.json");
+// JP catalyst verdicts share the US evaluation shape.
+export const getJpPortfolioEvaluations = () =>
+  loadJson<PortfolioEvaluationsFile>("jp-portfolio-evaluations.json");
 export const getExternalCatalysts = () =>
   loadJson<ExternalCatalyst[]>("external-catalysts.json");
 
