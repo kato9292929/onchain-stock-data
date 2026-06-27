@@ -58,12 +58,11 @@ function pickupStatus(item: PickupItem): { text: string; cls: string } {
 }
 
 const NAV = [
-  { href: "/alpha/portfolio", label: "Portfolio" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/stocks", label: "Stocks" },
   { href: "/ipo", label: "IPO" },
   { href: "/liquidity", label: "Liquidity" },
   { href: "/holders", label: "Holders" },
-  { href: "/alpha", label: "Alpha" },
   { href: "/analyst", label: "Analyst" },
 ];
 
@@ -141,8 +140,9 @@ export default async function Home() {
                 <h2>Portfolio</h2>
               </div>
               <p>
-                毎週 Claude が選ぶ米株 10 銘柄。1 ヶ月の検証可能な catalyst を
-                thesis に。SPY / NASDAQ との比較は portfolio ページを参照。
+                毎週 Claude が選ぶ米国株 10 銘柄。1 ヶ月の検証可能な catalyst を
+                thesis に。日本株を含む全体は{" "}
+                <Link href="/portfolio">/portfolio</Link> を参照。
               </p>
             </div>
             <div className="pf rv">
@@ -152,7 +152,7 @@ export default async function Home() {
                   horizon <span className="k">{portfolio.horizon}</span> · model{" "}
                   <span className="k">{portfolio.model}</span>
                 </span>
-                <Link href="/alpha/portfolio">View full portfolio →</Link>
+                <Link href="/portfolio">View full portfolio →</Link>
               </div>
               {portfolio.rationale ? (
                 <div className="pf-rationale">{portfolio.rationale}</div>
@@ -415,7 +415,7 @@ export default async function Home() {
             <div className="copy">© 2026 x402 Inc.</div>
           </div>
           <div className="foot-links">
-            <Link href="/alpha/portfolio">Portfolio</Link>
+            <Link href="/portfolio">Portfolio</Link>
             <Link href="/stocks">Stocks</Link>
             <Link href="/analyst">Analyst</Link>
             <a href="#agents">x402</a>
