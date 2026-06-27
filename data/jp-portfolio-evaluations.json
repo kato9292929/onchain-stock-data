@@ -1,6 +1,127 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-06-27T00:00:00.000Z",
-  "evaluations": []
+  "updated_at": "2026-06-27T21:26:46.681Z",
+  "evaluations": [
+    {
+      "week_of": "2026-06-22",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-07-31",
+      "success_condition": "7/31予定の26年3月期1Q決算でICパッケージ基板売上が前年同期比+25%超なら、AI向けABFの数量回復確認で再評価。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-07-30",
+      "success_condition": "7/30前後の1Q決算でSoCテスタ受注が四半期で1,800億円超なら、HBM4立ち上げ需要を織り込み上方修正。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "2802",
+      "catalyst_target_date": "2026-08-05",
+      "success_condition": "8/5前後の1Q決算で電子材料セグメント売上が前年比+20%超ならABF需要拡大の再確認で上昇。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "3110",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/7前後の1Q決算でグラスファイバー事業の営業利益が前年同期比2倍以上なら、低誘電ガラスクロス需要拡大を再評価。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-08-01",
+      "success_condition": "7月月次出荷速報（8/1頃公表）で出荷高が単月450億円超なら、HBM向けグラインダ・ダイサ需要強含みで上値追い。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6920",
+      "catalyst_target_date": "2026-08-12",
+      "success_condition": "8/12前後の通期決算で受注残が5,500億円超を維持できればEUVマスク検査独占ポジション維持を再確認。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "7729",
+      "catalyst_target_date": "2026-08-06",
+      "success_condition": "8/6前後の1Q決算で半導体製造装置受注が前年同期比+30%超ならHBM裏面研削需要の取り込みで再評価。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6323",
+      "catalyst_target_date": "2026-07-10",
+      "success_condition": "7/10前後の26年2月期1Q決算でウェハ搬送装置売上が前年同期比+20%超ならファブ投資再開のシグナルで上昇。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6967",
+      "catalyst_target_date": "2026-07-31",
+      "success_condition": "7/31前後の1Q決算でフリップチップ基板売上が前年同期比+15%超ならAIサーバ向け回復確認で見直し買い。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6787",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/7前後の1Q決算でAI/データセンター向けPCB売上比率が30%超かつ営業利益率10%超ならマルチプル拡大。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6981",
+      "catalyst_target_date": "2026-07-31",
+      "success_condition": "2026/7/31想定の1Q決算でAIサーバ向けMLCC売上比率が拡大し営業利益が前年比+15%超なら当たり",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-22",
+      "ticker": "6806",
+      "catalyst_target_date": "2026-07-30",
+      "success_condition": "2026/7/30想定の1Q決算で受注高が前年同期比+20%超かつデータセンタ向け高速コネクタ比率が拡大なら当たり",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    }
+  ]
 }
