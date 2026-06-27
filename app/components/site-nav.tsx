@@ -4,12 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/alpha/portfolio", label: "Portfolio" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/stocks", label: "Stocks" },
   { href: "/ipo", label: "IPO" },
   { href: "/liquidity", label: "Liquidity" },
   { href: "/holders", label: "Holders" },
-  { href: "/alpha", label: "Alpha" },
   { href: "/analyst", label: "Analyst" },
 ];
 
