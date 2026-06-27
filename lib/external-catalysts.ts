@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import type { ExternalCatalyst } from "@/lib/data";
+import { upstashConfigured, listCatalysts } from "@/lib/catalyst-upstash";
 
 /**
  * Phase A — external catalyst submission helpers.
@@ -275,20 +276,45 @@ export function buildCatalyst(v: ValidatedSubmission): ExternalCatalyst {
   };
 }
 
-export async function readExternalCatalysts(): Promise<ExternalCatalyst[]> {
+/** Default a missing `market` to "US" so callers can branch without null checks. */
+function normalizeMarket(c: ExternalCatalyst): ExternalCatalyst {
+  return { ...c, market: c.market ?? "US" };
+}
+
+/** Read the git-committed file store (US / legacy entries). */
+async function readFileCatalysts(): Promise<ExternalCatalyst[]> {
   try {
     const raw = await fs.readFile(FILE, "utf8");
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    // Legacy/US entries may omit `market`; normalise the default so callers
-    // (judge, list endpoint) can branch on it without per-site null checks.
-    return (parsed as ExternalCatalyst[]).map((c) => ({
-      ...c,
-      market: c.market ?? "US",
-    }));
+    return (parsed as ExternalCatalyst[]).map(normalizeMarket);
   } catch {
     return [];
   }
+}
+
+/**
+ * All external catalysts. The committed file is the US/legacy store; when
+ * Upstash is configured it is the source of truth for JP catalysts, so we merge
+ * both by catalyst_id (Upstash wins on conflict). Upstash read failures degrade
+ * to the file rather than throwing.
+ */
+export async function readExternalCatalysts(): Promise<ExternalCatalyst[]> {
+  const fileList = await readFileCatalysts();
+  if (!upstashConfigured()) return fileList;
+
+  let upList: ExternalCatalyst[];
+  try {
+    upList = await listCatalysts();
+  } catch (e) {
+    console.error(`[external] upstash list failed, using file only: ${e}`);
+    return fileList;
+  }
+
+  const byId = new Map<string, ExternalCatalyst>();
+  for (const c of fileList) byId.set(c.catalyst_id, c);
+  for (const c of upList) byId.set(c.catalyst_id, normalizeMarket(c));
+  return [...byId.values()];
 }
 
 export async function writeExternalCatalysts(

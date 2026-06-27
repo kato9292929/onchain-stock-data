@@ -60,6 +60,71 @@ const SYSTEM_PROMPT_JP = `あなたは日本株のイベント検証アナリス
 最後に次の JSON のみを出力:
 { "status": "hit" | "partial" | "miss" | "na", "evidence_url": "https://..." | null, "reasoning": "..." }`;
 
+// ── Upstash (REST) — JP catalyst store ─────────────────────────────────
+// Same protocol/keys as lib/catalyst-upstash.ts, re-implemented with fetch
+// because this plain-Node script can't import the TS lib. When the env is unset
+// (local / existing tests) every helper is a no-op and the script falls back to
+// the committed file exactly as before.
+const UPSTASH_SET_KEY = "jp:catalysts";
+
+function upstashConfigured() {
+  return Boolean(
+    process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN,
+  );
+}
+
+function upstashBodyKey(ticker, catalystId) {
+  return `catalyst:jp:${ticker}:${catalystId}`;
+}
+
+async function upstashPipeline(commands) {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const res = await fetch(`${url}/pipeline`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(commands),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`upstash pipeline ${res.status}: ${await res.text()}`);
+  }
+  const replies = await res.json();
+  for (const r of replies) {
+    if (r && r.error) throw new Error(`upstash command error: ${r.error}`);
+  }
+  return replies;
+}
+
+async function upstashListCatalysts() {
+  if (!upstashConfigured()) return [];
+  const [members] = await upstashPipeline([["SMEMBERS", UPSTASH_SET_KEY]]);
+  const keys = members?.result ?? [];
+  if (!keys.length) return [];
+  const [values] = await upstashPipeline([["MGET", ...keys]]);
+  const out = [];
+  for (const v of values?.result ?? []) {
+    if (!v) continue;
+    try {
+      out.push(JSON.parse(v));
+    } catch {
+      // skip corrupt entry
+    }
+  }
+  return out;
+}
+
+async function upstashPutCatalyst(c) {
+  const key = upstashBodyKey(c.ticker, c.catalyst_id);
+  await upstashPipeline([
+    ["SET", key, JSON.stringify(c)],
+    ["SADD", UPSTASH_SET_KEY, key],
+  ]);
+}
+
 /** ISO date `n` days after `iso` (YYYY-MM-DD). */
 function addDays(iso, n) {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -199,14 +264,28 @@ async function main() {
     console.warn(`[evaluate] could not load thesis lookup: ${e.message}`);
   }
 
-  // External submissions (Phase A) — file is a bare array, may not exist.
-  let externals = [];
+  // External submissions (Phase A). The committed file is the US/legacy store;
+  // Upstash is the source of truth for JP. Merge by catalyst_id (Upstash wins),
+  // but keep fileExternals separate so we only git-commit the file-backed ones.
+  let fileExternals = [];
   try {
     const raw = JSON.parse(await readFile(EXTERNAL_FILE, "utf8"));
-    if (Array.isArray(raw)) externals = raw;
+    if (Array.isArray(raw)) fileExternals = raw;
   } catch (e) {
     console.warn(`[evaluate] no external catalysts file: ${e.message}`);
   }
+  let upExternals = [];
+  if (upstashConfigured()) {
+    try {
+      upExternals = await upstashListCatalysts();
+    } catch (e) {
+      console.warn(`[evaluate] upstash list failed, file only: ${e.message}`);
+    }
+  }
+  const externalsById = new Map();
+  for (const c of fileExternals) externalsById.set(c.catalyst_id, c);
+  for (const c of upExternals) externalsById.set(c.catalyst_id, c);
+  const externals = [...externalsById.values()];
 
   const today = todayIso();
   const dueInternal = evaluations.filter(
@@ -259,6 +338,7 @@ async function main() {
 
   // ── External submissions ────────────────────────────────────────────
   let externalUpdated = 0;
+  let fileExternalsDirty = false;
   for (const entry of dueExternal) {
     try {
       const verdict = await evaluateOne(client, {
@@ -274,6 +354,16 @@ async function main() {
       entry.reasoning = verdict.reasoning;
       entry.judgement_date = todayIso();
       externalUpdated += 1;
+      // JP verdicts go back to Upstash (the source of truth); file-backed
+      // (US/legacy) entries are git-committed below.
+      if (entry.market === "JP" && upstashConfigured()) {
+        try {
+          await upstashPutCatalyst(entry);
+        } catch (e) {
+          console.error(`::warning::upstash put ${entry.catalyst_id}: ${e.message}`);
+        }
+      }
+      if (fileExternals.includes(entry)) fileExternalsDirty = true;
       console.log(
         `  ✓ [ext] ${entry.catalyst_id} ${entry.ticker} → ${verdict.status}` +
           (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
@@ -288,13 +378,13 @@ async function main() {
     await writeFile(EVAL_FILE, `${JSON.stringify(evalsFile, null, 2)}\n`, "utf8");
     console.log(`[evaluate] wrote ${EVAL_FILE} (${internalUpdated} updated)`);
   }
-  if (externalUpdated > 0) {
+  if (fileExternalsDirty) {
     await writeFile(
       EXTERNAL_FILE,
-      `${JSON.stringify(externals, null, 2)}\n`,
+      `${JSON.stringify(fileExternals, null, 2)}\n`,
       "utf8",
     );
-    console.log(`[evaluate] wrote ${EXTERNAL_FILE} (${externalUpdated} updated)`);
+    console.log(`[evaluate] wrote ${EXTERNAL_FILE}`);
   }
   if (internalUpdated === 0 && externalUpdated === 0) {
     console.log("[evaluate] no entries updated");

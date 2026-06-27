@@ -10,6 +10,7 @@ import {
   type SubmitInput,
 } from "@/lib/external-catalysts";
 import { checkRateLimit, clientIp } from "@/lib/rate-limit";
+import { upstashConfigured, putCatalyst } from "@/lib/catalyst-upstash";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -80,11 +81,22 @@ export async function POST(req: NextRequest) {
     }
 
     const catalyst = buildCatalyst(validation.value);
+
+    // JP is persisted in Upstash (the durable, cross-instance store); the file
+    // write below is only a local/dev fallback. US behaviour is unchanged.
+    if (catalyst.market === "JP" && upstashConfigured()) {
+      try {
+        await putCatalyst(catalyst);
+      } catch (e) {
+        console.error(`[catalyst/submit] upstash put failed: ${e}`);
+      }
+    }
+
     list.push(catalyst);
     const write = await writeExternalCatalysts(list);
     if (!write.persisted) {
       // FS is read-only on Vercel; log but still return the created record so
-      // the submitter has the id. The durable store is the GH Actions commit.
+      // the submitter has the id. The durable store is Upstash (JP) / GH commit.
       console.error(
         `[catalyst/submit] could not persist (read-only FS?): ${write.reason}`,
       );

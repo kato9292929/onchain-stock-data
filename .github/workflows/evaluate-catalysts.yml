@@ -37,6 +37,10 @@ jobs:
         run: npm run evaluate:catalysts
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # JP catalysts live in Upstash; the job reads/writes verdicts there.
+          # Unset → file-only fallback (US/legacy), so this stays optional.
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
 
       - name: Commit & push data
         run: |
