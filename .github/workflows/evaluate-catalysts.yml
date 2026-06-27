@@ -50,7 +50,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No catalyst evaluations to commit."
           else
-            git commit -m "chore(catalysts): daily catalyst evaluation update [skip ci]"
+            git commit -m "chore(catalysts): daily catalyst evaluation update"
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi

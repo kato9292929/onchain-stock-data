@@ -46,7 +46,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No JP portfolio changes to commit."
           else
-            git commit -m "chore(jp-portfolio): weekly Claude JP portfolio update [skip ci]"
+            git commit -m "chore(jp-portfolio): weekly Claude JP portfolio update"
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
