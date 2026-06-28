@@ -153,6 +153,8 @@ export interface PortfolioHolding {
   company_name: string;
   weight: number;
   thesis: string;
+  /** Catalyst judgement date (YYYY-MM-DD); optional for back-compat. */
+  target_date?: string;
   entry_price_usd?: number;
   current_price_usd?: number;
 }

@@ -65,6 +65,7 @@ export default async function PortfolioPage() {
           history={us}
           enrichmentTickers={onchain}
           tickerBaseHref="/alpha/portfolio"
+          showTargetDate
         />
       ) : (
         <section className="space-y-2">
