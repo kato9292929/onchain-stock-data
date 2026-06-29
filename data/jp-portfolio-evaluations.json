@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-06-27T21:26:46.681Z",
+  "updated_at": "2026-06-29T21:31:54.058Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -118,6 +118,106 @@
       "ticker": "6806",
       "catalyst_target_date": "2026-07-30",
       "success_condition": "2026/7/30想定の1Q決算で受注高が前年同期比+20%超かつデータセンタ向け高速コネクタ比率が拡大なら当たり",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/7予定の26/3期1Q決算で電子事業売上が前年同期比+25%超ならAIサーバ向けABF基板の数量回復を確認しリレート。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-07-30",
+      "success_condition": "7/30予定の1Q決算で通期売上ガイダンスが上方修正されればHBM/AI ASIC向けテスタ需要の継続を確認。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-07-10",
+      "success_condition": "7月上旬発表の6月度月次出荷高が四半期合計で会社計画比+5%超なら後工程装置の強含み継続を示唆。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "3110",
+      "catalyst_target_date": "2026-08-05",
+      "success_condition": "8/5前後の1Q決算でグラスファイバ事業の営業利益が前年同期比+30%超ならAI基板向け特殊ガラスクロス需給逼迫を裏付け。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "2802",
+      "catalyst_target_date": "2026-08-06",
+      "success_condition": "8/6予定の1Q決算で機能材料（ABF）売上が前年同期比+20%超なら先端パッケージ需要の継続を確認。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "6920",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8月上旬の本決算でEUVマスク検査装置の受注残が前四半期比増加に転じれば中期成長懸念が後退。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "6323",
+      "catalyst_target_date": "2026-07-15",
+      "success_condition": "7月中旬の月次/四半期受注でウェハ搬送装置が前年同期比+15%超なら台湾・韓国メモリ投資の再加速を示唆。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "6787",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/上旬の1Q決算で営業利益が前年同期比+20%超ならAIサーバ向け多層基板の利益寄与を確認。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "7729",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/上旬の1Q決算で半導体製造装置受注が前年同期比+25%超ならプロービング/ダイシング装置の構造的伸長を確認。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-06-29",
+      "ticker": "6590",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8月上旬の1Q決算でHBM向け洗浄/アニール装置を含む受注が前年同期比+30%超なら中小型後工程装置として再評価。",
       "status": "pending",
       "evaluated_at": null,
       "evidence_url": null,
