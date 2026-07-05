@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-06-29T21:31:54.058Z",
+  "updated_at": "2026-07-05T21:57:34.008Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -218,6 +218,106 @@
       "ticker": "6590",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8月上旬の1Q決算でHBM向け洗浄/アニール装置を含む受注が前年同期比+30%超なら中小型後工程装置として再評価。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-08-06",
+      "success_condition": "8/6予定の1Q決算でSoCテスタ売上が前年比+30%以上かつ通期上方修正なら続伸",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/7予定の1Q決算でICパッケージ基板売上が前四半期比+10%超なら再評価",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "3110",
+      "catalyst_target_date": "2026-08-05",
+      "success_condition": "8/5前後の1Q決算でTガラスクロス数量が前年比+20%超なら上放れ",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "2802",
+      "catalyst_target_date": "2026-08-05",
+      "success_condition": "8/5の1Q決算で電子材料(ABF)売上が前年比+25%超なら関連セクター牽引",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-07-24",
+      "success_condition": "7/24前後の月次出荷速報でグラインダ出荷が四半期見通しを+5%上振れなら続伸",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "6920",
+      "catalyst_target_date": "2026-08-13",
+      "success_condition": "8/13予定の通期決算でEUVマスク検査受注が前年比プラス転換なら反発",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "6323",
+      "catalyst_target_date": "2026-08-14",
+      "success_condition": "8月中旬の1Q決算で半導体搬送機受注残が前四半期比+8%超なら再評価",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "6787",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/7予定の1Q決算で車載/AI基板売上が前年比+15%超なら上振れ",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "7729",
+      "catalyst_target_date": "2026-08-06",
+      "success_condition": "8/6予定の1Q決算でプローバ受注が前年比+20%超なら評価見直し",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-07-06",
+      "ticker": "6963",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8/7予定の1Q決算でSiCパワー売上が前四半期比プラス転換すればコンセンサス逆張りで反発",
       "status": "pending",
       "evaluated_at": null,
       "evidence_url": null,
