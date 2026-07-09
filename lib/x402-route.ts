@@ -4,8 +4,10 @@ import type { RouteConfig } from "@x402/core/server";
 import {
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
+  buildSolanaAcceptsV1,
   isInternalAuthed,
   x402Server,
+  X402_VERSION,
 } from "./x402";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
@@ -103,17 +105,58 @@ export function withPaywall(
   );
 }
 
+/** True when the request already carries an x402 payment to settle. */
+function hasPayment(req: NextRequest): boolean {
+  return (
+    !!req.headers.get("x-payment") || !!req.headers.get("payment-signature")
+  );
+}
+
 /**
- * Shortcut: build Solana-ONLY accepts for `price` and wrap. The 402 challenge
- * presents a single Solana USDC accept (no Base leg), forcing callers onto the
- * Solana settlement path. Same internal-bypass + CORS behaviour as withPaywall.
+ * Solana-ONLY paywall with a SELF-BUILT 402 challenge.
+ *
+ * Unlike `withPaywall`, the unpaid 402 is assembled by us instead of by
+ * `withX402`, so it is pinned to the v1 Solana shape (bare `"solana"` network,
+ * `maxAmountRequired`) that our AA client settles against, and can no longer be
+ * silently upgraded to v2 by the facilitator's `getSupported()`. The body
+ * co-lists a forward-looking v2 leg (CAIP-2 network, `amount`) as a second
+ * accept. See `buildSolanaAcceptsV1` for the field-by-field package grounding.
+ *
+ * Request routing:
+ *  - OPTIONS               → 204 + CORS (never touches withX402);
+ *  - X-Internal-Key match  → straight to the handler (zero cost);
+ *  - already has a payment  → delegate to withX402 for the real verify/settle
+ *      (settlement logic is unchanged — we only own the challenge);
+ *  - otherwise              → our self-built v1+v2 402.
+ *
+ * Note: the challenge body stays `x402Version: 1`. A v2-native client is served
+ * the v2 leg's fields but sees a v1 envelope; full v2 transport (an
+ * `x402Version:2` body / PAYMENT-REQUIRED header) is a separate track and is
+ * not synthesised here without a measured production v2 reference.
  */
 export function withSolanaOnlyPaywall(
   handler: Handler,
   opts: { price: string; description: string; resourcePath: string },
 ): (req: NextRequest) => Promise<NextResponse> {
-  return withX402AndInternal(
+  const settle = withX402AndInternal(
     handler,
     buildSolanaOnlyRouteConfig(opts.price, opts.description, opts.resourcePath),
   );
+  return async (req: NextRequest) => {
+    if (req.method === "OPTIONS") return corsPreflight();
+    if (isInternalAuthed(req)) return applyCors(await handler(req));
+    // Hand any already-paid request to withX402 for verify + settle.
+    if (hasPayment(req)) return settle(req);
+    // Unpaid: emit our own v1-pinned, v2-co-listed Solana 402.
+    const body = {
+      x402Version: X402_VERSION,
+      accepts: buildSolanaAcceptsV1(
+        opts.resourcePath,
+        opts.price,
+        opts.description,
+      ),
+      error: "X-PAYMENT header is required",
+    };
+    return applyCors(NextResponse.json(body, { status: 402 }));
+  };
 }

@@ -200,3 +200,126 @@ export function isInternalAuthed(req: {
   const provided = req.headers.get("x-internal-key");
   return !!provided && provided === expected;
 }
+
+// ---------------------------------------------------------------------------
+// Self-built Solana 402 challenge (facilitator-independent, v1 + v2 dual leg)
+// ---------------------------------------------------------------------------
+//
+// WHY THIS EXISTS. The stock `withX402` builds its `accepts[]` from the
+// facilitator's `getSupported()`. When PayAI added v2 Solana kinds, that map
+// started resolving Solana to the v2 shape (`amount`, CAIP-2 network, body
+// `x402Version:2`). Our AA client registered the *v1* Solana scheme, whose
+// payload reads `maxAmountRequired` and matches on the bare `"solana"` network
+// alias — so the auto-upgraded v2 challenge stopped matching and settlement
+// broke. We therefore build the Solana 402 body ourselves and pin it to v1,
+// while ALSO co-listing a forward-looking v2 leg for future v2-native clients.
+//
+// Every field below is grounded in the installed package source (2.13.0), not
+// guessed:
+//   • v1 field name `maxAmountRequired`  → @x402/svm/v1 ExactSvmSchemeV1
+//       (`BigInt(selectedV1.maxAmountRequired)`) + @x402/core
+//       PaymentRequirementsV1Schema.
+//   • v2 field name `amount`             → @x402/core PaymentRequirementsV2Schema
+//       + @x402/svm exact/client (`BigInt(paymentRequirements.amount)`).
+//   • v1 network alias `"solana"`        → @x402/svm/v1 V1_TO_V2_NETWORK_MAP
+//       ({ solana: "solana:5eykt4…" }); normalizeNetwork() maps it to mainnet.
+//   • v2 network (CAIP-2)                → PaymentRequirementsV2Schema requires
+//       a ":"-bearing id; SOLANA_NETWORK is the mainnet CAIP-2.
+//   • `extra.feePayer`                   → required by BOTH svm client schemes
+//       for the sponsored-transfer flow.
+//
+// PaymentRequirementsV1Schema is a plain `z.object` (unknown keys are stripped,
+// not rejected), so carrying `amount` on the v1 leg — and the full v1 field set
+// on the v2 leg — is safe: each leg validates under both schemas, and each svm
+// client reads whichever amount field it knows.
+
+/** x402 protocol version pinned on the self-built Solana challenge body. */
+export const X402_VERSION = 1 as const;
+
+/** Bare v1 network alias for Solana mainnet (svm/v1 V1_TO_V2_NETWORK_MAP). */
+export const SOLANA_SCHEME_NETWORK = "solana" as const;
+
+/** CAIP-2 Solana mainnet id, re-exported for the v2 leg. */
+export const SOLANA_CAIP2_NETWORK: string = SOLANA_NETWORK;
+
+/** Receive address, re-read at request time (env is fixed per deployment). */
+function solanaPayToRuntime(): string {
+  return (
+    process.env.SOLANA_RECEIVE_ADDRESS ??
+    process.env.WALLET_ADDRESS_SOLANA ??
+    DEFAULT_SOLANA_PAY_TO
+  );
+}
+
+// Fee payer (facilitator's fee-paying pubkey) for the sponsored Solana
+// transfer. In the stock withX402 path this is injected from the facilitator's
+// getSupported().extra; because we bypass that path we must supply it from env.
+// If unset, the leg omits feePayer and the svm client will refuse to build the
+// tx — so this env MUST be populated in production for settlement to work.
+function solanaFeePayer(): string | undefined {
+  return process.env.X402_SOLANA_FEE_PAYER || process.env.PAYAI_FEE_PAYER;
+}
+
+/** Convert a `$0.01`-style price to an atomic USDC (6-decimal) string. */
+function priceToAtomicUsdc(price: string): string {
+  const usd = parseFloat(price.replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(usd)) {
+    throw new Error(`Invalid Solana price: ${price}`);
+  }
+  return Math.round(usd * 1_000_000).toString();
+}
+
+/**
+ * A single Solana accept leg. `network` is `string` (not the narrow `"solana"`
+ * literal) so the same shape carries both the v1 alias and the v2 CAIP-2 id.
+ */
+export interface SolanaAccept {
+  scheme: "exact";
+  network: string;
+  maxAmountRequired: string;
+  amount?: string;
+  resource: string;
+  description: string;
+  mimeType: "application/json";
+  payTo: string;
+  maxTimeoutSeconds: number;
+  asset: string;
+  extra: Record<string, unknown> | null;
+}
+
+/**
+ * Build the two-leg `accepts[]` for a self-built Solana 402 body: the v1 leg
+ * first (AA's live settlement path), the v2 leg second (forward-looking). Both
+ * legs price/pay/asset-match; they differ only in `network` and which amount
+ * field the client reads.
+ */
+export function buildSolanaAcceptsV1(
+  resourcePath: string,
+  price: string,
+  description: string,
+): SolanaAccept[] {
+  const atomic = priceToAtomicUsdc(price);
+  const resource = resourceUrl(resourcePath);
+  const payTo = solanaPayToRuntime();
+  const feePayer = solanaFeePayer();
+  const extra: Record<string, unknown> | null = feePayer
+    ? { feePayer, resource }
+    : { resource };
+  const common = {
+    scheme: "exact" as const,
+    maxAmountRequired: atomic,
+    resource,
+    description,
+    mimeType: "application/json" as const,
+    payTo,
+    maxTimeoutSeconds: 300,
+    asset: ASSET_SOLANA_USDC,
+    extra,
+  };
+  return [
+    // v1 leg (first): bare "solana" alias, maxAmountRequired — AA's lifeline.
+    { ...common, network: SOLANA_SCHEME_NETWORK },
+    // v2 leg (second): CAIP-2 network, adds `amount` for v2-native clients.
+    { ...common, network: SOLANA_CAIP2_NETWORK, amount: atomic },
+  ];
+}
