@@ -200,3 +200,198 @@ export function isInternalAuthed(req: {
   const provided = req.headers.get("x-internal-key");
   return !!provided && provided === expected;
 }
+
+// ---------------------------------------------------------------------------
+// Self-built Solana 402 challenge (facilitator-independent, v1 + v2 dual leg)
+// ---------------------------------------------------------------------------
+//
+// WHY THIS EXISTS. The stock `withX402` builds its `accepts[]` from the
+// facilitator's `getSupported()`. When PayAI added v2 Solana kinds, that map
+// started resolving Solana to the v2 shape (`amount`, CAIP-2 network, body
+// `x402Version:2`). Our AA client registered the *v1* Solana scheme, whose
+// payload reads `maxAmountRequired` and matches on the bare `"solana"` network
+// alias — so the auto-upgraded v2 challenge stopped matching and settlement
+// broke. We therefore build the Solana 402 body ourselves and pin it to v1,
+// while ALSO co-listing a forward-looking v2 leg for future v2-native clients.
+//
+// Every field below is grounded in the installed package source (2.13.0), not
+// guessed:
+//   • v1 field name `maxAmountRequired`  → @x402/svm/v1 ExactSvmSchemeV1
+//       (`BigInt(selectedV1.maxAmountRequired)`) + @x402/core
+//       PaymentRequirementsV1Schema.
+//   • v2 field name `amount`             → @x402/core PaymentRequirementsV2Schema
+//       + @x402/svm exact/client (`BigInt(paymentRequirements.amount)`).
+//   • v1 network alias `"solana"`        → @x402/svm/v1 V1_TO_V2_NETWORK_MAP
+//       ({ solana: "solana:5eykt4…" }); normalizeNetwork() maps it to mainnet.
+//   • v2 network (CAIP-2)                → PaymentRequirementsV2Schema requires
+//       a ":"-bearing id; SOLANA_NETWORK is the mainnet CAIP-2.
+//   • `extra.feePayer`                   → required by BOTH svm client schemes
+//       for the sponsored-transfer flow.
+//
+// PaymentRequirementsV1Schema is a plain `z.object` (unknown keys are stripped,
+// not rejected), so carrying `amount` on the v1 leg — and the full v1 field set
+// on the v2 leg — is safe: each leg validates under both schemas, and each svm
+// client reads whichever amount field it knows.
+
+/** x402 protocol version pinned on the self-built Solana challenge body. */
+export const X402_VERSION = 1 as const;
+
+/** Bare v1 network alias for Solana mainnet (svm/v1 V1_TO_V2_NETWORK_MAP). */
+export const SOLANA_SCHEME_NETWORK = "solana" as const;
+
+/** CAIP-2 Solana mainnet id, re-exported for the v2 leg. */
+export const SOLANA_CAIP2_NETWORK: string = SOLANA_NETWORK;
+
+/** Receive address, re-read at request time (env is fixed per deployment). */
+function solanaPayToRuntime(): string {
+  return (
+    process.env.SOLANA_RECEIVE_ADDRESS ??
+    process.env.WALLET_ADDRESS_SOLANA ??
+    DEFAULT_SOLANA_PAY_TO
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Dynamic Solana feePayer (freshness-only facilitator dependency)
+// ---------------------------------------------------------------------------
+//
+// feePayer is the facilitator's wallet that sponsors the Solana transfer fee.
+// It ROTATES intra-day — observed D6ZhtNQ5nT… → BFK9TLC3… → 2wKupLR9q6…
+// on 2026-07-09. A hardcoded / env-pinned value therefore goes stale the moment
+// PayAI rotates: a client that partial-signs a tx against a now-retired feePayer
+// produces a transaction PayAI can no longer complete, so settlement silently
+// breaks. We therefore resolve it LIVE at 402-build time, cache it briefly, and
+// fall back to env / last-known-good only when the fetch fails — the 402 body
+// is ALWAYS returned.
+//
+// This does NOT reintroduce the getSupported()-drives-accepts coupling that
+// caused the v1→v2 regression: the leg *skeleton* (scheme / network / asset /
+// payTo / amount) stays static and self-built. Only this single
+// freshness-critical field is sourced from the facilitator, and a failure
+// degrades to fallback rather than an empty 402.
+
+// Last feePayer observed on 2026-07-09; seeds the env fallback so a fresh
+// deploy is never blank even before the first successful getSupported().
+const DEFAULT_SOLANA_FEE_PAYER = "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4";
+
+// Short TTL: long enough to avoid hammering the facilitator per request, short
+// enough to pick up a rotation within minutes.
+const FEE_PAYER_TTL_MS = 3 * 60 * 1000;
+let feePayerCache: { value: string; expires: number } | null = null;
+
+/** env / hardcoded last-known-good feePayer. Never empty. */
+export function solanaFeePayerFallback(): string {
+  return (
+    process.env.X402_SOLANA_FEE_PAYER ||
+    process.env.PAYAI_FEE_PAYER ||
+    DEFAULT_SOLANA_FEE_PAYER
+  );
+}
+
+/**
+ * Pull the current Solana feePayer from PayAI's `getSupported()` (the
+ * `/supported` endpoint) — the same `extra.feePayer` the svm server injects in
+ * the stock path. Returns null on any network/auth/shape failure.
+ */
+async function fetchSolanaFeePayer(): Promise<string | null> {
+  if (!payaiFacilitatorClient) return null;
+  try {
+    const supported = await payaiFacilitatorClient.getSupported();
+    for (const kind of supported?.kinds ?? []) {
+      const net = typeof kind?.network === "string" ? kind.network : "";
+      const fp = kind?.extra?.feePayer;
+      if (net.startsWith("solana") && typeof fp === "string" && fp) {
+        return fp;
+      }
+    }
+  } catch {
+    // Facilitator unreachable / rate-limited / shape drift — fall back.
+  }
+  return null;
+}
+
+/**
+ * Resolve the Solana feePayer for a 402 challenge: fresh from PayAI when
+ * possible (short-TTL cached), else the last good cached value, else the env /
+ * hardcoded fallback. Always resolves — a 402 is never blocked on this.
+ */
+export async function getSolanaFeePayer(): Promise<string> {
+  const now = Date.now();
+  if (feePayerCache && feePayerCache.expires > now) {
+    return feePayerCache.value;
+  }
+  const fresh = await fetchSolanaFeePayer();
+  if (fresh) {
+    feePayerCache = { value: fresh, expires: now + FEE_PAYER_TTL_MS };
+    return fresh;
+  }
+  // Stale-but-known beats the static fallback; static fallback is the floor.
+  if (feePayerCache) return feePayerCache.value;
+  return solanaFeePayerFallback();
+}
+
+/** Convert a `$0.01`-style price to an atomic USDC (6-decimal) string. */
+function priceToAtomicUsdc(price: string): string {
+  const usd = parseFloat(price.replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(usd)) {
+    throw new Error(`Invalid Solana price: ${price}`);
+  }
+  return Math.round(usd * 1_000_000).toString();
+}
+
+/**
+ * A single Solana accept leg. `network` is `string` (not the narrow `"solana"`
+ * literal) so the same shape carries both the v1 alias and the v2 CAIP-2 id.
+ */
+export interface SolanaAccept {
+  scheme: "exact";
+  network: string;
+  maxAmountRequired: string;
+  amount?: string;
+  resource: string;
+  description: string;
+  mimeType: "application/json";
+  payTo: string;
+  maxTimeoutSeconds: number;
+  asset: string;
+  extra: Record<string, unknown> | null;
+}
+
+/**
+ * Build the two-leg `accepts[]` for a self-built Solana 402 body: the v1 leg
+ * first (AA's live settlement path), the v2 leg second (forward-looking). Both
+ * legs price/pay/asset-match; they differ only in `network` and which amount
+ * field the client reads.
+ *
+ * `feePayer` is passed in (resolved by the caller via `getSolanaFeePayer()`, so
+ * it tracks PayAI's intra-day rotation); it defaults to the env/last-known-good
+ * fallback so the builder alone still produces a complete, non-empty leg.
+ */
+export function buildSolanaAcceptsV1(
+  resourcePath: string,
+  price: string,
+  description: string,
+  feePayer: string = solanaFeePayerFallback(),
+): SolanaAccept[] {
+  const atomic = priceToAtomicUsdc(price);
+  const resource = resourceUrl(resourcePath);
+  const payTo = solanaPayToRuntime();
+  const extra: Record<string, unknown> = { feePayer, resource };
+  const common = {
+    scheme: "exact" as const,
+    maxAmountRequired: atomic,
+    resource,
+    description,
+    mimeType: "application/json" as const,
+    payTo,
+    maxTimeoutSeconds: 300,
+    asset: ASSET_SOLANA_USDC,
+    extra,
+  };
+  return [
+    // v1 leg (first): bare "solana" alias, maxAmountRequired — AA's lifeline.
+    { ...common, network: SOLANA_SCHEME_NETWORK },
+    // v2 leg (second): CAIP-2 network, adds `amount` for v2-native clients.
+    { ...common, network: SOLANA_CAIP2_NETWORK, amount: atomic },
+  ];
+}
