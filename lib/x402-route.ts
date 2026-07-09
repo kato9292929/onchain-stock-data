@@ -5,6 +5,7 @@ import {
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
   buildSolanaAcceptsV1,
+  getSolanaFeePayer,
   isInternalAuthed,
   x402Server,
   X402_VERSION,
@@ -147,13 +148,17 @@ export function withSolanaOnlyPaywall(
     if (isInternalAuthed(req)) return applyCors(await handler(req));
     // Hand any already-paid request to withX402 for verify + settle.
     if (hasPayment(req)) return settle(req);
-    // Unpaid: emit our own v1-pinned, v2-co-listed Solana 402.
+    // Unpaid: emit our own v1-pinned, v2-co-listed Solana 402. feePayer is
+    // resolved fresh (PayAI rotates it intra-day) with a fallback so the 402 is
+    // never blocked; the leg skeleton stays static/self-built.
+    const feePayer = await getSolanaFeePayer();
     const body = {
       x402Version: X402_VERSION,
       accepts: buildSolanaAcceptsV1(
         opts.resourcePath,
         opts.price,
         opts.description,
+        feePayer,
       ),
       error: "X-PAYMENT header is required",
     };

@@ -19,6 +19,7 @@ const {
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
   buildSolanaAcceptsV1,
+  solanaFeePayerFallback,
   PAY_TO_SOLANA,
   PAY_TO_BASE,
   BASE_NETWORK,
@@ -119,6 +120,32 @@ test("buildSolanaAcceptsV1 scales the atomic amount with price", () => {
   const legs = buildSolanaAcceptsV1("/api/holders", "$0.25", "t");
   assert.equal(legs[0].maxAmountRequired, "250000");
   assert.equal(legs[1].amount, "250000");
+});
+
+test("buildSolanaAcceptsV1 threads an explicit (fresh) feePayer into both legs", () => {
+  const FRESH = "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4";
+  const legs = buildSolanaAcceptsV1("/api/ipo", "$0.01", "t", FRESH);
+  assert.equal(legs[0].extra.feePayer, FRESH);
+  assert.equal(legs[1].extra.feePayer, FRESH);
+});
+
+test("solanaFeePayerFallback: env wins, else last-known-good default", () => {
+  // env set (see top of file) → env value.
+  assert.equal(solanaFeePayerFallback(), FEE_PAYER);
+  // env cleared → hardcoded last-observed feePayer (2026-07-09), never empty.
+  const savedX = process.env.X402_SOLANA_FEE_PAYER;
+  const savedP = process.env.PAYAI_FEE_PAYER;
+  delete process.env.X402_SOLANA_FEE_PAYER;
+  delete process.env.PAYAI_FEE_PAYER;
+  try {
+    assert.equal(
+      solanaFeePayerFallback(),
+      "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4",
+    );
+  } finally {
+    if (savedX !== undefined) process.env.X402_SOLANA_FEE_PAYER = savedX;
+    if (savedP !== undefined) process.env.PAYAI_FEE_PAYER = savedP;
+  }
 });
 
 // ── Section D: discovery (dualLegs) ↔ verification (buildRouteConfig) ────

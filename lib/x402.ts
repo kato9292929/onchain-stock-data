@@ -251,13 +251,83 @@ function solanaPayToRuntime(): string {
   );
 }
 
-// Fee payer (facilitator's fee-paying pubkey) for the sponsored Solana
-// transfer. In the stock withX402 path this is injected from the facilitator's
-// getSupported().extra; because we bypass that path we must supply it from env.
-// If unset, the leg omits feePayer and the svm client will refuse to build the
-// tx — so this env MUST be populated in production for settlement to work.
-function solanaFeePayer(): string | undefined {
-  return process.env.X402_SOLANA_FEE_PAYER || process.env.PAYAI_FEE_PAYER;
+// ---------------------------------------------------------------------------
+// Dynamic Solana feePayer (freshness-only facilitator dependency)
+// ---------------------------------------------------------------------------
+//
+// feePayer is the facilitator's wallet that sponsors the Solana transfer fee.
+// It ROTATES intra-day — observed D6ZhtNQ5nT… → BFK9TLC3… → 2wKupLR9q6…
+// on 2026-07-09. A hardcoded / env-pinned value therefore goes stale the moment
+// PayAI rotates: a client that partial-signs a tx against a now-retired feePayer
+// produces a transaction PayAI can no longer complete, so settlement silently
+// breaks. We therefore resolve it LIVE at 402-build time, cache it briefly, and
+// fall back to env / last-known-good only when the fetch fails — the 402 body
+// is ALWAYS returned.
+//
+// This does NOT reintroduce the getSupported()-drives-accepts coupling that
+// caused the v1→v2 regression: the leg *skeleton* (scheme / network / asset /
+// payTo / amount) stays static and self-built. Only this single
+// freshness-critical field is sourced from the facilitator, and a failure
+// degrades to fallback rather than an empty 402.
+
+// Last feePayer observed on 2026-07-09; seeds the env fallback so a fresh
+// deploy is never blank even before the first successful getSupported().
+const DEFAULT_SOLANA_FEE_PAYER = "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4";
+
+// Short TTL: long enough to avoid hammering the facilitator per request, short
+// enough to pick up a rotation within minutes.
+const FEE_PAYER_TTL_MS = 3 * 60 * 1000;
+let feePayerCache: { value: string; expires: number } | null = null;
+
+/** env / hardcoded last-known-good feePayer. Never empty. */
+export function solanaFeePayerFallback(): string {
+  return (
+    process.env.X402_SOLANA_FEE_PAYER ||
+    process.env.PAYAI_FEE_PAYER ||
+    DEFAULT_SOLANA_FEE_PAYER
+  );
+}
+
+/**
+ * Pull the current Solana feePayer from PayAI's `getSupported()` (the
+ * `/supported` endpoint) — the same `extra.feePayer` the svm server injects in
+ * the stock path. Returns null on any network/auth/shape failure.
+ */
+async function fetchSolanaFeePayer(): Promise<string | null> {
+  if (!payaiFacilitatorClient) return null;
+  try {
+    const supported = await payaiFacilitatorClient.getSupported();
+    for (const kind of supported?.kinds ?? []) {
+      const net = typeof kind?.network === "string" ? kind.network : "";
+      const fp = kind?.extra?.feePayer;
+      if (net.startsWith("solana") && typeof fp === "string" && fp) {
+        return fp;
+      }
+    }
+  } catch {
+    // Facilitator unreachable / rate-limited / shape drift — fall back.
+  }
+  return null;
+}
+
+/**
+ * Resolve the Solana feePayer for a 402 challenge: fresh from PayAI when
+ * possible (short-TTL cached), else the last good cached value, else the env /
+ * hardcoded fallback. Always resolves — a 402 is never blocked on this.
+ */
+export async function getSolanaFeePayer(): Promise<string> {
+  const now = Date.now();
+  if (feePayerCache && feePayerCache.expires > now) {
+    return feePayerCache.value;
+  }
+  const fresh = await fetchSolanaFeePayer();
+  if (fresh) {
+    feePayerCache = { value: fresh, expires: now + FEE_PAYER_TTL_MS };
+    return fresh;
+  }
+  // Stale-but-known beats the static fallback; static fallback is the floor.
+  if (feePayerCache) return feePayerCache.value;
+  return solanaFeePayerFallback();
 }
 
 /** Convert a `$0.01`-style price to an atomic USDC (6-decimal) string. */
@@ -292,19 +362,21 @@ export interface SolanaAccept {
  * first (AA's live settlement path), the v2 leg second (forward-looking). Both
  * legs price/pay/asset-match; they differ only in `network` and which amount
  * field the client reads.
+ *
+ * `feePayer` is passed in (resolved by the caller via `getSolanaFeePayer()`, so
+ * it tracks PayAI's intra-day rotation); it defaults to the env/last-known-good
+ * fallback so the builder alone still produces a complete, non-empty leg.
  */
 export function buildSolanaAcceptsV1(
   resourcePath: string,
   price: string,
   description: string,
+  feePayer: string = solanaFeePayerFallback(),
 ): SolanaAccept[] {
   const atomic = priceToAtomicUsdc(price);
   const resource = resourceUrl(resourcePath);
   const payTo = solanaPayToRuntime();
-  const feePayer = solanaFeePayer();
-  const extra: Record<string, unknown> | null = feePayer
-    ? { feePayer, resource }
-    : { resource };
+  const extra: Record<string, unknown> = { feePayer, resource };
   const common = {
     scheme: "exact" as const,
     maxAmountRequired: atomic,
