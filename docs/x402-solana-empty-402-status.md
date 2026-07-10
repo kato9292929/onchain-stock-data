@@ -16,6 +16,8 @@
 - 対策（実装済み・本セッションで再構築、work branch へ push 済み）: 3ルートの**未払いチャレンジの accepts を facilitator非依存で自前構築**。**1本の402の `accepts[]` に v1 leg（先頭）と v2 leg（併記）を両方載せる**。body top-level `x402Version` は **v1 固定**（現行AA互換）。型は全て一次ソース（@x402/svm / @x402/core 2.13.0 実コード）から確定。**X-PAYMENT提示時の verify/settle は従来の @x402/svm + PayAI に委譲（決済ロジック無変更）**。Base側は無変更。
 - 残: ①`X402_SOLANA_FEE_PAYER`(=PayAI feePayer) env設定 ②本番デプロイ判断（運用者）③デプロイ後 pay→200→solscan着金確認（運用者）④本番実402との最終照合（運用者curl）。
 
+> **【2026-07-10 追記・重要】この 402 修正だけでは Solana は通らない。** 2026-07-09 daily ラン実測で OSD Solana は全滅（`filtered out by policies for x402 version: 1`, HTTP 0）。真因は **AAクライアントの `x402Client` policy が Solana requirements を payload構築前に全フィルタ**していること（`@x402/core` `client/index.js:412` で確定。scheme登録・network文字列・サーバー402の形は無罪）。**サーバー側修正では直らない。AA policy を先に直す。** 詳細は `docs/x402-solana-reference.md` §7。本 402 修正（v1+v2併記・feePayer動的化）は「AAがSolanaを通すようになった後に必要な、正しい402の形」として有効。
+
 ---
 
 ## 2. 背景（regressionの前提）

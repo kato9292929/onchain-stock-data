@@ -1,9 +1,21 @@
-# Solana x402 対応 — 正典リファレンス（OSD = コピー元）
+# Solana x402 対応 — 402 ワイヤ形式リファレンス（＋確定した真ブロッカー）
 
-作成: 2026-07-10 ／ 対象: OSD 本番実装（PR #15）を正として、他プロダクト（JIN 等）を同型化するための仕様。
+作成: 2026-07-10 ／ 対象: 402 の**ワイヤ形式仕様**（サーバー側）と、Solana決済が通らない**真因の確定記録**。
 
-> このドキュメントは**移植のコピー元仕様**。OSD の実コード（`lib/x402.ts` / `lib/x402-route.ts`）が唯一の正。
-> ここに書いた形と OSD 実コードがズレたら**実コードが正**。推測で足さない。
+> このドキュメントは 402 の**形の仕様**であって「これをコピーすれば Solana が通る」という保証書ではない。
+> OSD の実コード（`lib/x402.ts` / `lib/x402-route.ts`）が形の唯一の正。推測で足さない。
+
+---
+
+## ⚠️ 最重要の訂正（2026-07-10 daily ラン実測）
+
+**OSD Solana は本番で1本も通っていない。** 2026-07-09 の daily ランで、OSD の `/api/ipo`・`/api/holders`・`/api/liquidity`（Solana）は**全滅**。エラーは
+`Failed to create payment payload: All payment requirements were filtered out by policies for x402 version: 1`、**HTTP 0 / ref=-（送信すらしていない）**。
+毎日通っている ref付き200 は `eip155:8453`（Base/EVM）**だけ**。→ **OSD Solana は「動くコピー元」ではない。**
+
+**真因（`@x402/core` クライアント実コードで確定）:** AAクライアントの **`x402Client` に登録された policy** が Solana requirements を payload構築前に全フィルタしている（`client/index.js:412`）。**scheme登録・network文字列・サーバー402の形は無罪**（それらは別のエラー行を投げるが、今回は投げていない）。詳細は §7。
+
+**帰結:** サーバー側（OSD/JIN）の402をどう変えても直らない。**まず AA 側の policy を直す**（§7 の順序）。下の 1〜6 は「AA が Solana を受け付けるようになった後」に 402 の形を揃えるための仕様として読むこと。
 
 ---
 
@@ -11,7 +23,7 @@
 
 1. **transport は「body の `accepts[]` に v1 leg と v2 leg を併記」**。v1 leg を先頭にする。
    **v2 を `PAYMENT-REQUIRED` レスポンスヘッダ（base64(JSON)）に載せる独自方式は使わない。**
-   理由: OSD は body 併記で本番稼働・curl実測済み。ヘッダ方式は実AAで通る保証がなく、二系統を保守する意味がない。
+   理由: OSD の 402 body 形は curl で**形状のみ実測済み**（＝この形が出ることは確認済み。ただし §上部の訂正どおり、この形で pay→200 が通ったわけではない）。ヘッダ方式は実AAで通る保証がなく、二系統を保守する意味もない。まず AA policy を直す前提で、形はこの body 併記に統一する。
 2. **body top-level は `x402Version: 1` 固定。**
 3. **verify/settle は自前実装しない。** `@x402/next` の `withX402` に委譲する。
    自前化してよいのは **①402チャレンジ（accepts）の組み立て と ②feePayer の取得** の2つだけ。
@@ -150,20 +162,41 @@ env（Vercel）:
 
 ---
 
-## 7. `filtered out by policies for x402 version: 1` の切り分け（未確定・推測で埋めない）
+## 7. 真ブロッカー: `filtered out by policies for x402 version: 1`（AA policy で確定）
 
-JIN で観測されたこのエラーは **AA/クライアント側**の可能性が高い（`registerExactSvmScheme` の登録内容 or `x402Client` の policy が v1 を弾いている）。パッケージ層は v1 `"solana"` を受理する（実コード確認済み）。
+**これがSolanaが通らない真因。** サーバー402の形の問題ではない。エラーは `@x402/core` クライアント `selectPaymentRequirements`（`client/index.js`）が出す。3段階のどこで落ちたかで原因が特定できる:
 
-方針:
-- **body に v1 + v2 を併記していれば、v1 を policy で弾く AA でも v2 leg を掴める**（X-alpha で実AAが v2 leg を掴み部分署名・送信まで到達した観測あり）。まずは §1 の型で pay→200 を実測。
-- それでも通らない場合、**AA リポの `registerExactSvmScheme` 登録と `x402Client` policy の実コードを読む**まで真因を断定しない。
-- verify が絡む段では **verify応答の `invalidReason` を最初に見る**。
+| 段階 | コード | ゼロになったときのエラー |
+|---|---|---|
+| 1. version登録 | L388-390 | `No client registered for x402 version: X` |
+| 2. network/scheme フィルタ | L392-407 | `No network/scheme registered for x402 version: X which comply...`（acceptsと登録内容をJSONダンプ） |
+| 3. **policy 適用** | L409-413 | **`All payment requirements were filtered out by policies for x402 version: X`** ← 実際に出ているのはこれ |
+
+**出ているのは L412（policy段階）**なので、確定として:
+- ✅ 段階1通過 → AAは v1 用に Solana scheme を登録済み（`registerV1`）。
+- ✅ 段階2通過 → Solana leg（`network:"solana"`, `scheme:"exact"`）は登録に**マッチしている**。**network文字列・scheme登録・サーバー402の形は無罪**（問題なら L390/L400 の別エラーになる）。
+- ❌ 段階3 → AAに登録された **`x402Client` policy が Solana requirements を全部フィルタで落としている**。
+
+物証: `@x402/core` のpolicyサンプル（`client/index.js:146-148`）に
+`client.registerPolicy((version, reqs) => reqs.filter(r => r.network.startsWith('eip155:')))` がある。これがあれば Solana は `eip155:` で始まらず全落ち → L412。**Base(EVM)だけ毎日通る**のと完全整合。
+
+**候補policy（AAリポを読むまで断定しない）:**
+- (a) **network許可リスト**（`eip155:` のみ許可）→ Solanaを常に落とす。version非依存。
+- (b) **version固定**（`version === 2` のみ許可）→ x402Version:1 の body を丸ごと落とす。
+
+**サーバー側（OSD/JIN）でこれは直せない。** AAが payload構築前に落としているので accepts の形は無関係。
+
+### やるべき順序（サーバー先行は無意味・AA先行）
+1. **AAリポの実コードを読む**: `grep -rn "registerPolicy\|fromConfig\|policies\|startsWith('eip155\|x402Version === 2\|\.filter(" src/ dist/`。`x402Client.fromConfig({ policies:[…] })` / `registerPolicy(…)` の predicate を特定し、上記 (a)/(b) を確定。
+2. **AA policy を修正** → Solana leg を残す（EVMと同じく「1本でも通る」状態に）。verify段では応答 `invalidReason` を最初に見る。
+3. そのあと初めて、JIN / OSD の 402 を §1 の形に揃える（→ pay→200 実測）。
 
 ---
 
 ## 8. 受け入れ条件（この順で確認）
 
-1. 本番の**本体402**（`curl -i https://<jin-host>/<paid-path>`）が §1 の構造（v1先頭+v2併記、`x402Version:1`、両leg `extra.feePayer` 入り）であること。OSD 本体402と JIN 固有値以外差分なし。
+0. **（前提）AA policy が Solana leg を通す**ようになっていること（§7）。ここが未達なら以下は全て無意味。
+1. 本番の**本体402**（`curl -i https://<host>/<paid-path>`）が §1 の構造（v1先頭+v2併記、`x402Version:1`、両leg `extra.feePayer` 入り）であること。
 2. env / Production Branch（§6）。
 3. 実AA（`6JKVug…`）で **pay→200** → solscan で payTo（`4s8XQC…`）への 0.01 USDC **着金（base58 tx, Success）**。← ここで初めて「pay→200 完了」。
 4. 一発で通らないときは verify応答 `invalidReason` を最初に見る。
