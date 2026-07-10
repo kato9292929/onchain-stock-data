@@ -186,6 +186,14 @@ env（Vercel）:
 
 **サーバー側（OSD/JIN）でこれは直せない。** AAが payload構築前に落としているので accepts の形は無関係。
 
+（行番号はビルドで前後する: 本レポ node_modules の cjs は policy ループ L409-413/throw L412。別ビルド(mjs/src)では L436-441 等。**ロジックは同一**。3者が独立に同じ結論。）
+
+### X-alpha「v2到達」矛盾の解消（同じ誤読の再発防止）
+「手動テストでは実AAが v2 leg を掴んで部分署名・送信まで到達した」という観測と、本番 daily の全滅は**矛盾しない**。理由が実コードで閉じた:
+- 手動 `test-payment-solana.js` は**最小クライアント**で `registerPolicy` を呼ばない → `this.policies` が**空** → policyループを素通り → v2 leg を掴めた。
+- 本番AAは `fromConfig` / `initX402Fetch` で **policy を積む** → 同じウォレット・同じサーバー・同じ402でも policy段（L412）で死ぬ。
+- → **「手動 test-payment が通った」を「本番AAが通る」と読み替えてはいけない。** policy構成が別物。前回の「X-alphaでv2到達したから OSDの v2 leg は本番で通る」という増幅は、この違いを見落としたことによる。
+
 ### やるべき順序（サーバー先行は無意味・AA先行）
 1. **AAリポの実コードを読む**: `grep -rn "registerPolicy\|fromConfig\|policies\|startsWith('eip155\|x402Version === 2\|\.filter(" src/ dist/`。`x402Client.fromConfig({ policies:[…] })` / `registerPolicy(…)` の predicate を特定し、上記 (a)/(b) を確定。
 2. **AA policy を修正** → Solana leg を残す（EVMと同じく「1本でも通る」状態に）。verify段では応答 `invalidReason` を最初に見る。
