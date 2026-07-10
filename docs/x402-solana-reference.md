@@ -13,17 +13,19 @@
 `Failed to create payment payload: All payment requirements were filtered out by policies for x402 version: 1`、**HTTP 0 / ref=-（送信すらしていない）**。
 毎日通っている ref付き200 は `eip155:8453`（Base/EVM）**だけ**。→ **OSD Solana は「動くコピー元」ではない。**
 
-**真因（`@x402/core` クライアント実コードで確定）:** AAクライアントの **`x402Client` に登録された policy** が Solana requirements を payload構築前に全フィルタしている（`client/index.js:412`）。**scheme登録・network文字列・サーバー402の形は無罪**（それらは別のエラー行を投げるが、今回は投げていない）。詳細は §7。
+**真因（実コード＋実ログで確定・2026-07-10）:** AAの金額上限policy（`src/x402.ts:73`）が **`BigInt(r.amount)` を読むが、Solana が返す v1 leg は `amount` を持たず `maxAmountRequired` を使う**。`BigInt(undefined)` が throw → `catch → false` → Solana leg 全 drop → `@x402/core` `selectPaymentRequirements` の policy段（`client/index.js:412`）で `filtered out`。EVM leg は `amount` を持つので通る。**(a)network許可でも (b)version固定でもなく、金額フィールド名バグ。** 詳細と patch は §7。
 
-**帰結:** サーバー側（OSD/JIN）の402をどう変えても直らない。**まず AA 側の policy を直す**（§7 の順序）。下の 1〜6 は「AA が Solana を受け付けるようになった後」に 402 の形を揃えるための仕様として読むこと。
+**もう一つの確定:** body top-level が `x402Version:1` なので selection は **v1登録に対して**走る。**body に v2 CAIP-2 leg（network `"solana:..."`）を併記しても、v1登録にマッチせず段階2で脱落する** → 現行AAには v2 leg は届かない（＝§1 の「v1+v2併記」の v2 は forward-looking であって、このパスを通すのは v1 `"solana"` leg の方）。効かせるべきは **v1 `"solana"` leg を policy段で殺さないこと**。
+
+**帰結:** サーバー側（OSD/JIN）の402をどう変えても直らない。**まず AA 側の policy を1点直す**（§7）。下の 1〜6 は「AA修正後」に v1 leg を正しく整える仕様として読むこと。
 
 ---
 
 ## 0. 一番大事な結論（これだけは外さない）
 
-1. **transport は「body の `accepts[]` に v1 leg と v2 leg を併記」**。v1 leg を先頭にする。
-   **v2 を `PAYMENT-REQUIRED` レスポンスヘッダ（base64(JSON)）に載せる独自方式は使わない。**
-   理由: OSD の 402 body 形は curl で**形状のみ実測済み**（＝この形が出ることは確認済み。ただし §上部の訂正どおり、この形で pay→200 が通ったわけではない）。ヘッダ方式は実AAで通る保証がなく、二系統を保守する意味もない。まず AA policy を直す前提で、形はこの body 併記に統一する。
+1. **現行AAを通すのは v1 `"solana"` leg（`maxAmountRequired` + `extra.feePayer`）。** これを body の `accepts` 先頭に置く。
+   v2 CAIP-2 leg の併記は**害はないが現行AAには届かない**（body が v1 なので段階2で脱落。forward-looking 扱い）。
+   **v2 を `PAYMENT-REQUIRED` レスポンスヘッダ（base64）に載せる独自 transport は使わない**（実AAで通る保証なし・二系統保守は無意味）。まず §7 の AA policy を直すのが前提。
 2. **body top-level は `x402Version: 1` 固定。**
 3. **verify/settle は自前実装しない。** `@x402/next` の `withX402` に委譲する。
    自前化してよいのは **①402チャレンジ（accepts）の組み立て と ②feePayer の取得** の2つだけ。
@@ -174,19 +176,46 @@ env（Vercel）:
 
 **出ているのは L412（policy段階）**なので、確定として:
 - ✅ 段階1通過 → AAは v1 用に Solana scheme を登録済み（`registerV1`）。
-- ✅ 段階2通過 → Solana leg（`network:"solana"`, `scheme:"exact"`）は登録に**マッチしている**。**network文字列・scheme登録・サーバー402の形は無罪**（問題なら L390/L400 の別エラーになる）。
-- ❌ 段階3 → AAに登録された **`x402Client` policy が Solana requirements を全部フィルタで落としている**。
+- ✅ 段階2通過 → v1 `"solana"` leg は登録に**マッチしている**。**network文字列・scheme登録・サーバー402の形は無罪**（問題なら L390/L400 の別エラーになる）。
+- ❌ 段階3 → AAに登録された **policy が Solana requirements を全部フィルタで落としている**。
 
-物証: `@x402/core` のpolicyサンプル（`client/index.js:146-148`）に
-`client.registerPolicy((version, reqs) => reqs.filter(r => r.network.startsWith('eip155:')))` がある。これがあれば Solana は `eip155:` で始まらず全落ち → L412。**Base(EVM)だけ毎日通る**のと完全整合。
+### 犯人 = 金額上限policyのフィールド名バグ（実コードで確定）
+AAの policy は1個だけ（`src/x402.ts:73` / `dist/x402.js:60`）:
+```js
+.registerPolicy((_version, reqs) =>
+  reqs.filter((r) => {
+    try { return BigInt(r.amount) <= maxUsdc; }  // ← r.amount を読む
+    catch { return false; }
+  })
+);
+```
+**これは per-call USDC 上限チェックだが、`r.amount` を読む。** @x402/svm 確定事実どおり **v1 leg は `maxAmountRequired` を使い `amount` を持たない**。Solana が body で返すのは v1 `"solana"` leg（`maxAmountRequired`）→ `r.amount` は `undefined` → `BigInt(undefined)` が **throw → catch → false → drop** → 全弾 → L412。
 
-**候補policy（AAリポを読むまで断定しない）:**
-- (a) **network許可リスト**（`eip155:` のみ許可）→ Solanaを常に落とす。version非依存。
-- (b) **version固定**（`version === 2` のみ許可）→ x402Version:1 の body を丸ごと落とす。
+実ログで裏取り: 2026-07-09 daily の JIN movers 402 `accepts[0] = {"scheme":"exact","network":"solana","maxAmountRequired":"20000",...}` に `amount` フィールドなし。金額 0.02 USDC は上限超過ではあり得ない → 「読めずに throw」経路で確定。**EVM leg が毎日通るのは `amount` を持つから。** → **(a)network許可でも (b)version固定でもなく、金額フィールド名バグ。**
 
-**サーバー側（OSD/JIN）でこれは直せない。** AAが payload構築前に落としているので accepts の形は無関係。
+### 修正（AAリポ側・1点・最小）
+対象 `src/x402.ts`（dist は build で再生成）。上限セマンティクスは維持、**読むフィールドだけ**直す:
+```ts
+.registerPolicy(
+  (_version: number, reqs: PaymentRequirements[]) =>
+    reqs.filter((r) => {
+      try {
+        // v2 leg は `amount`、v1 leg は `maxAmountRequired`。存在する方を読む。
+        const raw = (r as any).amount ?? (r as any).maxAmountRequired;
+        if (raw === undefined || raw === null) return false;
+        return BigInt(raw) <= maxUsdc;
+      } catch {
+        return false;
+      }
+    })
+);
+```
+USDC は両ネットワーク6桁なので同じ micro-USDC 閾値で正しく効く。**このリポ（OSD）には push できない。適用は AAリポ側で。**
 
-（行番号はビルドで前後する: 本レポ node_modules の cjs は policy ループ L409-413/throw L412。別ビルド(mjs/src)では L436-441 等。**ロジックは同一**。3者が独立に同じ結論。）
+（行番号はビルドで前後: 本レポ cjs は policy ループ L409-413/throw L412、別ビルドで L436-441 等。**ロジック同一。3者が独立に同結論。**）
+
+### body に v2 leg を併記しても現行AAには効かない（確定）
+body top-level が `x402Version:1` → selection は **v1登録に対して**走る（段階1でversion=1のscheme集合を引く）。v2 CAIP-2 leg（network `"solana:..."`）は v1登録にマッチせず**段階2で脱落**。→ **効かせるべきは v1 `"solana"` leg を段階3で殺さないこと**（＝上の policy 修正）。v2 併記は forward-looking で、このパスの解決策ではない。
 
 ### X-alpha「v2到達」矛盾の解消（同じ誤読の再発防止）
 「手動テストでは実AAが v2 leg を掴んで部分署名・送信まで到達した」という観測と、本番 daily の全滅は**矛盾しない**。理由が実コードで閉じた:
@@ -195,16 +224,16 @@ env（Vercel）:
 - → **「手動 test-payment が通った」を「本番AAが通る」と読み替えてはいけない。** policy構成が別物。前回の「X-alphaでv2到達したから OSDの v2 leg は本番で通る」という増幅は、この違いを見落としたことによる。
 
 ### やるべき順序（サーバー先行は無意味・AA先行）
-1. **AAリポの実コードを読む**: `grep -rn "registerPolicy\|fromConfig\|policies\|startsWith('eip155\|x402Version === 2\|\.filter(" src/ dist/`。`x402Client.fromConfig({ policies:[…] })` / `registerPolicy(…)` の predicate を特定し、上記 (a)/(b) を確定。
-2. **AA policy を修正** → Solana leg を残す（EVMと同じく「1本でも通る」状態に）。verify段では応答 `invalidReason` を最初に見る。
-3. そのあと初めて、JIN / OSD の 402 を §1 の形に揃える（→ pay→200 実測）。
+1. **AA policy を1点修正**（上の patch。`r.amount ?? r.maxAmountRequired`）→ `npm run build` → 再デプロイ。これで v1 `"solana"` leg が段階3を生き残る。
+2. **サーバー側で v1 leg の `extra.feePayer` を保証**。policy を抜けた後、v1 svm client が `maxAmountRequired` から payload を組み `extra.feePayer` を**必須で読む**（無いと throw）。OSD は動的feePayer実装済み。**JIN は同型の fallback チェーンを入れる**（無いと今度はここで落ちる）。
+3. **pay→200 実測** → solscan で `6JKVug…`→`4s8XQC…` の着金（base58 tx, Success）。verify で落ちたら `invalidReason` を最初に見る（feePayer/amount/nonce の切り分け）。
 
 ---
 
 ## 8. 受け入れ条件（この順で確認）
 
-0. **（前提）AA policy が Solana leg を通す**ようになっていること（§7）。ここが未達なら以下は全て無意味。
-1. 本番の**本体402**（`curl -i https://<host>/<paid-path>`）が §1 の構造（v1先頭+v2併記、`x402Version:1`、両leg `extra.feePayer` 入り）であること。
+0. **（前提）AA policy 修正（§7 patch）がデプロイ済み**であること。ここが未達なら以下は全て無意味。
+1. 本番の**本体402**（`curl -i https://<host>/<paid-path>`）が §1 の構造（v1 `"solana"` leg 先頭、`maxAmountRequired`、`extra.feePayer` 入り、`x402Version:1`）であること。
 2. env / Production Branch（§6）。
 3. 実AA（`6JKVug…`）で **pay→200** → solscan で payTo（`4s8XQC…`）への 0.01 USDC **着金（base58 tx, Success）**。← ここで初めて「pay→200 完了」。
 4. 一発で通らないときは verify応答 `invalidReason` を最初に見る。
