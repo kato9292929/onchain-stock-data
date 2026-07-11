@@ -7,6 +7,18 @@
 
 ---
 
+## 🛑 TRANSPORT 訂正待ち（2026-07-11・このファイルの body/v1 形は誤りの可能性大）
+
+**このドキュメントが「正典」としている body transport / top-level `x402Version:1` / v1 leg を掴ませる形は、実測で pay→200 が実証された X-alpha の形と食い違う。** X-alpha の実証済み正典は:
+- transport = **`PAYMENT-REQUIRED` レスポンスヘッダ（base64）／ body は `{}`（空）**
+- top-level = **`x402Version:2`** ／ `accepts[]` に v1+v2 併記 ／ **AA は v2 leg を掴む**（`amount` 持ちなので policy 素通り）
+
+**パッケージ実コードで確定:** `@x402/core` http `createHTTPResponse`（L703-713）は API リクエストに **body `{}` + `PAYMENT-REQUIRED` ヘッダ**を返す（L716 コメント「v1 puts in body, v2 puts in header」）。→ **`withX402` は元々この v2 ヘッダ transport を出しており、"空402" はバグではなく正常だった。** 当初「空402＝バグ」として self-build（body/v1）に作り替えた PR #15 の前提が逆。
+
+**したがって §0〜§8 の「body/v1 を出す」記述は、X-alpha 生402 を curl 捕獲して確認するまで採用しない。** 有力な修正方針 = OSD の self-build を撤回し `withX402` に戻す（ヘッダ/v2/live feePayer を native に出す）。**capture 待ち**（egress 制限で会話側は curl 不可 → 運用者が捕獲）。
+
+---
+
 ## ⚠️ 最重要の訂正（2026-07-10 daily ラン実測）
 
 **OSD Solana は本番で1本も通っていない。** 2026-07-09 の daily ランで、OSD の `/api/ipo`・`/api/holders`・`/api/liquidity`（Solana）は**全滅**。エラーは
