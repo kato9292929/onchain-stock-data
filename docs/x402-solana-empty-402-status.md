@@ -9,6 +9,30 @@
 
 ---
 
+## ✅ 解決（2026-07-11・オンチェーン実証）— 以下の旧調査は §1 のバナー以降を参照
+
+**OSD Solana は本番で pay→200・着金まで確定。しかも native `withX402` の形で。**
+
+本番 `https://osd-coral.vercel.app/api/ipo` を本番AA経路（policy込み `pay-once`）で実測:
+- 402 = **body `{}` ＋ `PAYMENT-REQUIRED` ヘッダ**、decode で **`x402Version:2`**、accepts **1 leg**（`scheme:exact` / `network:solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`(CAIP-2) / `amount:10000`（`maxAmountRequired`は無し） / `asset:USDC` / `payTo:4s8XQC…` / `maxTimeoutSeconds:300` / `extra:{resource,feePayer}`）。
+- AA が掴んだ leg = **index0 / version2 / `solana:*` 一致 / `amount`**。
+- 支払い → **HTTP 200**、`PAYMENT-RESPONSE` `success:true` `network:solana:5eykt4…` `tx:5ZmV4paKHoxq…ArtejUk4`。
+- **solscan: tx `5ZmV4paKHoxq…` = Success / Finalized、`6JKVug…`→`4s8XQC…` 0.01 USDC。**
+
+### これが確定させたこと
+- **native `withX402`(2.13.0) は常に `x402Version:2`（server が envelope をハードコード）** で、accepts に **v2 CAIP-2 leg（`amount`）** を出す。AA は v2 leg を掴み、**`amount` を持つので AA policy を素通り（`c4b673b` 以前でも通る形）**。→ **OSD Solana は native 形で元から通っていた。「空`{}`402＝バグ」は誤診**（＝空ボディは v2 ヘッダ transport の正常形）。仮説(a)確定。
+- **feePayer はローテーション実測**: 同一エンドポイントで `pay-once` 時 `BENrLo…`、その30秒後の curl では `GVJJ7rdG…`。native `withX402` が `/supported` から**リクエスト毎に live 注入**しているため。→ feePayer 鮮度は native が自動で解決。
+- **`c4b673b`（AA policy の `amount??maxAmountRequired`）は OSD の v2 leg には不要だった**（v2 leg は `amount` を持つ）。ただし **body/v1 形（`maxAmountRequired`）や JIN の v1 leg には必須**なので、修正自体は正当。
+
+### デプロイ・ドリフト（重要・運用）
+- **main は PR #15 の self-build（body / `x402Version:1`）を持つが、本番はそれを実行していない**（本番実測は native `x402Version:2`）。＝ **PR #15 は main にマージされたが本番デプロイに乗っていない**（Vercel 反映漏れ。AGENTS.md の既知事象と整合）。
+- したがって **PR #16（本 revert）は「壊れを直す緊急」ではなく「main を、本番が実際に動いている native 形へ再整合させるクリーンアップ」**。同時に**将来 main を再デプロイした瞬間に body/v1 が本番へ出て、動いている v2 経路を壊す時限地雷を除去**する意味を持つ。
+- → PR #16 マージ推奨（本番挙動は不変＝native のまま／未デプロイの逸脱コードを main から除去）。デプロイ判断は運用者。
+
+以下 §1〜 は **PR #15 を生んだ当時の（誤診を含む）調査ログ**。歴史的経緯として残す（結論は上記で上書き）。
+
+---
+
 ## 1. TL;DR（結論だけ）
 
 - 症状: 本番 `GET /api/ipo`・`/api/holders`・`/api/liquidity` の402が、AAの決済経路とミスマッチして決済に進めない（初期観測は本文空 `{}`）。7/6-7/7に劣化。
