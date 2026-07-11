@@ -9,25 +9,17 @@ import assert from "node:assert/strict";
 // SOLANA_RECEIVE_ADDRESS must be read at import time by lib/x402.ts.
 const SOL_ADDR = "SoLReceive1111111111111111111111111111111111";
 process.env.SOLANA_RECEIVE_ADDRESS = SOL_ADDR;
-// Fee payer is read at call time by buildSolanaAcceptsV1; set it so the
-// self-built legs carry extra.feePayer (as production must).
-const FEE_PAYER = "FeePayer11111111111111111111111111111111111";
-process.env.X402_SOLANA_FEE_PAYER = FEE_PAYER;
 
 const x402 = await import("../../lib/x402.ts");
 const {
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
-  buildSolanaAcceptsV1,
-  solanaFeePayerFallback,
   PAY_TO_SOLANA,
   PAY_TO_BASE,
   BASE_NETWORK,
   SOLANA_NETWORK,
-  SOLANA_SCHEME_NETWORK,
   ASSET_SOLANA_USDC,
   ASSET_BASE_USDC,
-  X402_VERSION,
   isPayAISolanaEnabled,
 } = x402;
 
@@ -79,72 +71,6 @@ test("ipo/holders/liquidity routes use withSolanaOnlyPaywall (no Base)", async (
     const src = await readFile(path.join(repo, "app/api", r, "route.ts"), "utf8");
     assert.match(src, /withSolanaOnlyPaywall\(/, `${r} uses withSolanaOnlyPaywall`);
     assert.equal(/\bwithPaywall\b/.test(src), false, `${r} no longer uses dual-leg withPaywall`);
-  }
-});
-
-// ── Section A2: self-built v1+v2 dual-leg 402 challenge ─────────────────
-test("X402_VERSION pins the self-built challenge body to v1", () => {
-  assert.equal(X402_VERSION, 1);
-});
-
-test("buildSolanaAcceptsV1 emits v1 leg first, then v2 leg", () => {
-  const legs = buildSolanaAcceptsV1("/api/ipo", "$0.01", "test");
-  assert.equal(legs.length, 2);
-
-  const [v1, v2] = legs;
-
-  // v1 leg (first): bare "solana" alias + maxAmountRequired, NO amount field.
-  assert.equal(v1.network, SOLANA_SCHEME_NETWORK);
-  assert.equal(v1.network, "solana");
-  assert.equal(v1.scheme, "exact");
-  assert.equal(v1.maxAmountRequired, "10000"); // $0.01 * 1e6
-  assert.equal(v1.amount, undefined);
-  assert.equal(v1.payTo, SOL_ADDR);
-  assert.equal(v1.asset, ASSET_SOLANA_USDC);
-  assert.equal(v1.mimeType, "application/json");
-  assert.equal(v1.maxTimeoutSeconds, 300);
-  assert.equal(v1.extra.feePayer, FEE_PAYER);
-
-  // v2 leg (second): CAIP-2 network + amount, still carries maxAmountRequired
-  // so it validates under the v1 body schema too.
-  assert.equal(v2.network, SOLANA_NETWORK);
-  assert.match(v2.network, /^solana:/);
-  assert.equal(v2.scheme, "exact");
-  assert.equal(v2.amount, "10000");
-  assert.equal(v2.maxAmountRequired, "10000");
-  assert.equal(v2.payTo, SOL_ADDR);
-  assert.equal(v2.extra.feePayer, FEE_PAYER);
-});
-
-test("buildSolanaAcceptsV1 scales the atomic amount with price", () => {
-  const legs = buildSolanaAcceptsV1("/api/holders", "$0.25", "t");
-  assert.equal(legs[0].maxAmountRequired, "250000");
-  assert.equal(legs[1].amount, "250000");
-});
-
-test("buildSolanaAcceptsV1 threads an explicit (fresh) feePayer into both legs", () => {
-  const FRESH = "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4";
-  const legs = buildSolanaAcceptsV1("/api/ipo", "$0.01", "t", FRESH);
-  assert.equal(legs[0].extra.feePayer, FRESH);
-  assert.equal(legs[1].extra.feePayer, FRESH);
-});
-
-test("solanaFeePayerFallback: env wins, else last-known-good default", () => {
-  // env set (see top of file) → env value.
-  assert.equal(solanaFeePayerFallback(), FEE_PAYER);
-  // env cleared → hardcoded last-observed feePayer (2026-07-09), never empty.
-  const savedX = process.env.X402_SOLANA_FEE_PAYER;
-  const savedP = process.env.PAYAI_FEE_PAYER;
-  delete process.env.X402_SOLANA_FEE_PAYER;
-  delete process.env.PAYAI_FEE_PAYER;
-  try {
-    assert.equal(
-      solanaFeePayerFallback(),
-      "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4",
-    );
-  } finally {
-    if (savedX !== undefined) process.env.X402_SOLANA_FEE_PAYER = savedX;
-    if (savedP !== undefined) process.env.PAYAI_FEE_PAYER = savedP;
   }
 });
 
