@@ -52,3 +52,25 @@ test("withPaywall advertises both Base and Solana legs + internal bypass", async
   assert.match(src, /isInternalAuthed\(req\)/);
   assert.match(src, /true, \/\/ syncFacilitatorOnStart/);
 });
+
+// Claude Portfolio (US + JP) and Catalyst scoring are paid via the shared
+// dual-leg withPaywall at $0.01. The free human view stays the HTML pages.
+const PAID_ALPHA_ROUTES = [
+  ["app/api/alpha/portfolio/current/route.ts", "/api/alpha/portfolio/current"],
+  ["app/api/alpha/portfolio/scorecard/route.ts", "/api/alpha/portfolio/scorecard"],
+  ["app/api/alpha/jp/portfolio/current/route.ts", "/api/alpha/jp/portfolio/current"],
+  ["app/api/alpha/jp/scorecard/route.ts", "/api/alpha/jp/scorecard"],
+  ["app/api/alpha/jp/catalysts/route.ts", "/api/alpha/jp/catalysts"],
+  ["app/api/alpha/catalyst/submit/route.ts", "/api/alpha/catalyst/submit"],
+  ["app/api/alpha/catalyst/[catalyst_id]/score/route.ts", "/api/alpha/catalyst/:catalyst_id/score"],
+];
+
+test("Claude Portfolio + Catalyst routes use shared withPaywall at $0.01", async () => {
+  for (const [file, resourcePath] of PAID_ALPHA_ROUTES) {
+    const src = await routeSrc(file);
+    assert.match(src, /withPaywall\(/, `${file} uses withPaywall`);
+    assert.match(src, /"\$0\.01"/, `${file} priced at $0.01`);
+    assert.match(src, new RegExp(`"${resourcePath.replace(/[/:]/g, "\\$&")}"`), `${file} resourcePath`);
+    assert.match(src, /corsPreflight/, `${file} exposes OPTIONS/CORS`);
+  }
+});

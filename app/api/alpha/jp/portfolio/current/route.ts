@@ -1,27 +1,16 @@
 import { NextResponse } from "next/server";
 import { getJpPortfolioHistory } from "@/lib/data";
+import { corsPreflight, withPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Free public JSON of the current JP Claude Portfolio (Japanese AI / semi /
- * data-center supply chain). Mirror of /api/alpha/portfolio/current. No x402
- * paywall, CORS-open. This is the canonical JP surface (replaces the older
- * external-catalysts-based /api/alpha/jp/catalysts).
+ * Current Claude JP Portfolio (weekly 10-name Japan-equity selection) as JSON.
+ * Paid x402 endpoint (Base + Solana USDC). The free human view is the JP
+ * portfolio HTML page; internal callers bypass with `X-Internal-Key`.
  */
-export function OPTIONS(): NextResponse {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Access-Control-Max-Age": "86400",
-    },
-  });
-}
-
-export async function GET(): Promise<NextResponse> {
+const handler = async (): Promise<NextResponse> => {
   const data = await getJpPortfolioHistory();
   const current = data.current
     ? {
@@ -36,24 +25,18 @@ export async function GET(): Promise<NextResponse> {
       }
     : null;
 
-  return new NextResponse(
-    JSON.stringify(
-      {
-        source: data.source,
-        updated_at: data.updated_at,
-        note: data.note,
-        current,
-      },
-      null,
-      2,
-    ),
-    {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
-        "cache-control": "public, max-age=60, s-maxage=300",
-        "access-control-allow-origin": "*",
-      },
-    },
-  );
-}
+  return NextResponse.json({
+    source: data.source,
+    updated_at: data.updated_at,
+    note: data.note,
+    current,
+  });
+};
+
+export const GET = withPaywall(handler, {
+  price: "$0.01",
+  description: "Claude JP Portfolio - current weekly 10-name Japan-equity selection.",
+  resourcePath: "/api/alpha/jp/portfolio/current",
+});
+
+export const OPTIONS = () => corsPreflight();

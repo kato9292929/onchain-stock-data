@@ -177,6 +177,55 @@ export function GET(): NextResponse {
           "x402 wrapper around Perplexity recent-news research. Body: { ticker, lookback_hours }. Returns top-3 events + catalyst suggestions + citations.",
         accepts: dualLegs("/api/wrappers/perplexity-research", 0.05),
       },
+      {
+        path: "/api/alpha/portfolio/current",
+        method: "GET",
+        description:
+          "Claude US Portfolio - current weekly 10-name selection (ticker, weight, thesis).",
+        accepts: dualLegs("/api/alpha/portfolio/current", 0.01),
+      },
+      {
+        path: "/api/alpha/portfolio/scorecard",
+        method: "GET",
+        description:
+          "Claude US Portfolio scorecard - catalyst hit-rate + SPY/QQQ cumulative returns.",
+        accepts: dualLegs("/api/alpha/portfolio/scorecard", 0.01),
+      },
+      {
+        path: "/api/alpha/jp/portfolio/current",
+        method: "GET",
+        description:
+          "Claude JP Portfolio - current weekly 10-name Japan-equity selection.",
+        accepts: dualLegs("/api/alpha/jp/portfolio/current", 0.01),
+      },
+      {
+        path: "/api/alpha/jp/scorecard",
+        method: "GET",
+        description:
+          "Claude JP Portfolio scorecard - catalyst hit-rate (no benchmark index).",
+        accepts: dualLegs("/api/alpha/jp/scorecard", 0.01),
+      },
+      {
+        path: "/api/alpha/jp/catalysts",
+        method: "GET",
+        description:
+          "Claude JP dated catalysts (legacy back-compat surface).",
+        accepts: dualLegs("/api/alpha/jp/catalysts", 0.01),
+      },
+      {
+        path: "/api/alpha/catalyst/submit",
+        method: "POST",
+        description:
+          "Submit an external catalyst for Claude verdict scoring. Body: { ticker, catalyst_description, target_date, submitter_contact? }.",
+        accepts: dualLegs("/api/alpha/catalyst/submit", 0.01),
+      },
+      {
+        path: "/api/alpha/catalyst/:catalyst_id/score",
+        method: "GET",
+        description:
+          "Lookup the Claude verdict for a submitted external catalyst (pending|hit|partial|miss|na).",
+        accepts: dualLegs("/api/alpha/catalyst/:catalyst_id/score", 0.01),
+      },
     ],
   };
 
