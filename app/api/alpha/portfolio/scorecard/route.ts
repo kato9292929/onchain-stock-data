@@ -4,30 +4,20 @@ import {
   getPortfolioEvaluations,
   type PortfolioEvaluation,
 } from "@/lib/data";
+import { corsPreflight, withPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Free public JSON scorecard for the Claude Portfolio: catalyst hit-rate,
- * cumulative returns vs SPY/QQQ, and the most recent catalyst evaluations.
- * Same style as current/route.ts — no x402 paywall, CORS-open.
+ * Scorecard for the Claude US Portfolio: catalyst hit-rate, cumulative returns
+ * vs SPY/QQQ, and the most recent catalyst evaluations. Paid x402 endpoint
+ * (Base + Solana USDC); internal callers bypass with `X-Internal-Key`.
  *
  * `cumulative_returns.portfolio_pct` is `null` until performance-history.json's
  * `portfolio_index` is actually computed (it's currently held at 100). Once the
  * indexing job lands, real values flow through automatically.
  */
-export function OPTIONS(): NextResponse {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Access-Control-Max-Age": "86400",
-    },
-  });
-}
-
 const JUDGED: PortfolioEvaluation["status"][] = ["hit", "partial", "miss", "na"];
 
 /** Sort key: judged evaluations first (newest evaluated_at), then by week. */
@@ -38,7 +28,7 @@ function recencyKey(e: PortfolioEvaluation): number {
   return Date.parse(`${e.week_of}T00:00:00Z`) - 1e15;
 }
 
-export async function GET(): Promise<NextResponse> {
+const handler = async (): Promise<NextResponse> => {
   const [evalsFile, perf] = await Promise.all([
     getPortfolioEvaluations(),
     getPerformanceHistory(),
@@ -92,24 +82,20 @@ export async function GET(): Promise<NextResponse> {
 
   const as_of = last?.date ?? new Date().toISOString().slice(0, 10);
 
-  return new NextResponse(
-    JSON.stringify(
-      {
-        as_of,
-        hit_rate,
-        cumulative_returns,
-        recent_evaluations,
-      },
-      null,
-      2,
-    ),
-    {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
-        "cache-control": "public, max-age=60, s-maxage=300",
-        "access-control-allow-origin": "*",
-      },
-    },
-  );
-}
+  return NextResponse.json({
+    as_of,
+    hit_rate,
+    cumulative_returns,
+    recent_evaluations,
+  });
+};
+
+void JUDGED;
+
+export const GET = withPaywall(handler, {
+  price: "$0.01",
+  description: "Claude US Portfolio scorecard - catalyst hit-rate + SPY/QQQ cumulative returns.",
+  resourcePath: "/api/alpha/portfolio/scorecard",
+});
+
+export const OPTIONS = () => corsPreflight();
