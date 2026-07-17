@@ -242,6 +242,26 @@ export interface ExternalCatalyst {
   judgement_date: string | null;
   evidence_urls: string[];
   reasoning: string | null;
+  // --- Series-authored dated-catalyst extensions (optional). The HTTP submit
+  // path never sets these; they are populated by editorial seed datasets such
+  // as the Physical-AI series. They add structure the judge/scorecard can use
+  // without changing the submit contract. ---
+  /** Timing type: quarterly earnings print / event-by-deadline / fixed date. */
+  catalyst_type?: "earnings" | "event" | "fixed_date";
+  /** Whether `target_date` is an estimate (replace when official) or confirmed. */
+  date_confidence?: "estimated" | "confirmed";
+  /** ISO-3166 alpha-2 country (JP/US/NO/CA/GB/FR ...); distinct from `market`. */
+  country?: string;
+  /** Series grouping label, e.g. "physical-ai". */
+  series?: string;
+  /** 1-based article number within the series. */
+  series_article?: number;
+  /** "main" primary condition, or "sub" for an independently-scored 補助線. */
+  catalyst_role?: "main" | "sub";
+  /** For a sub-condition: the catalyst_id of the main condition it hangs off. */
+  parent_catalyst_id?: string | null;
+  /** Display name for unlisted / pre-IPO companies (ticker is then a slug). */
+  company_name?: string;
 }
 
 /**

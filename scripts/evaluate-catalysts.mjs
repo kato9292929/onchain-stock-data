@@ -411,11 +411,19 @@ async function main() {
   let fileExternalsDirty = false;
   for (const entry of dueExternal) {
     try {
+      // Event-type catalysts are asymmetric: the success is that a specific
+      // disclosure/event HAPPENS by target_date, so ABSENCE by the deadline is
+      // a `miss`, not `na`. Spell this out so it overrides the JP prompt's
+      // default of treating "no material by the date" as `na`.
+      const eventRule =
+        entry.catalyst_type === "event"
+          ? "\n【判定ルール】これはイベント型 catalyst。target_date までに success_condition を満たす開示・事実が web 検索で確認できない場合は miss とすること（『何も公表されない＝miss』。na にはしない）。買収・上場廃止・事業消滅など catalyst 自体が無効化された場合のみ na。"
+          : "";
       const verdict = await evaluateOne(client, {
         ticker: entry.ticker,
         targetDate: entry.target_date,
         condition: entry.catalyst_description,
-        context: "外部提出 catalyst（submitter による）",
+        context: `外部提出 catalyst（submitter による）${eventRule}`,
         market: entry.market === "JP" ? "JP" : "US",
       });
       entry.status = verdict.status;
