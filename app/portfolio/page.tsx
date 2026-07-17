@@ -1,17 +1,23 @@
 import Link from "next/link";
-import { getPortfolioHistory, getJpPortfolioHistory, getStocks } from "@/lib/data";
+import {
+  getPortfolioHistory,
+  getPerformanceHistory,
+  getStocks,
+} from "@/lib/data";
 import { PortfolioSection } from "../components/portfolio-section";
+import { AllocationBreakdown } from "../components/allocation-breakdown";
+import { PortfolioPnl } from "../components/portfolio-pnl";
+import { PortfolioToggle } from "../components/portfolio-toggle";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Unified Claude Portfolio page: US and JP weekly selections on one page.
- * Each section degrades independently (null current → empty state). The API
- * routes (/api/alpha/portfolio/*, /api/alpha/jp/*) are unchanged — this is a
- * presentation-only page.
+ * US Claude Portfolio page: allocation breakdown + P&L ($10k rebased vs SPY/QQQ)
+ * + weekly holdings. The JP portfolio lives on its own page (/portfolio/jp).
+ * Presentation only — the API routes are unchanged.
  */
 
-/** Tickers with an xStock (Backed Finance) tokenized version — US enrichment only. */
+/** Tickers with an xStock (Backed Finance) tokenized version — US enrichment. */
 async function xstockTickers(): Promise<Set<string>> {
   try {
     const data = await getStocks();
@@ -31,31 +37,39 @@ async function xstockTickers(): Promise<Set<string>> {
 }
 
 export default async function PortfolioPage() {
-  const [us, jp, onchain] = await Promise.all([
+  const [us, perf, onchain] = await Promise.all([
     getPortfolioHistory().catch(() => null),
-    getJpPortfolioHistory().catch(() => null),
+    getPerformanceHistory().catch(() => null),
     xstockTickers(),
   ]);
 
   return (
-    <div className="space-y-10">
-      <header className="space-y-2">
+    <div className="space-y-8">
+      <header className="space-y-3">
         <h1 className="text-2xl font-bold">Claude Portfolio</h1>
         <p className="text-sm text-zinc-400">
-          毎週 Claude が選ぶ米国株・日本株の各 10 銘柄。1 ヶ月の検証可能な
-          catalyst を thesis に。米国株は{" "}
+          毎週 Claude が選ぶ米国株・日本株の各 10 銘柄。1 ヶ月の検証可能な catalyst を
+          thesis に。米国株は{" "}
           <code className="text-zinc-300">/api/alpha/portfolio/current</code>、日本株は{" "}
-          <code className="text-zinc-300">/api/alpha/jp/portfolio/current</code>{" "}
-          で無料公開。
+          <code className="text-zinc-300">/api/alpha/jp/portfolio/current</code> で公開。
         </p>
+        <PortfolioToggle active="us" />
       </header>
+
+      {perf && perf.records.length > 0 && (
+        <PortfolioPnl records={perf.records} baseDate={perf.base_date} />
+      )}
+
+      {us?.current && (
+        <AllocationBreakdown holdings={us.current.holdings} accentTickers={onchain} />
+      )}
 
       {us ? (
         <PortfolioSection
-          title="米国株"
+          title="銘柄と thesis"
           subtitle={
             <>
-              SPY / NASDAQ (QQQ) との比較は{" "}
+              週次の選定・入替は{" "}
               <Link href="/alpha/portfolio/history" className="text-gold">
                 history
               </Link>{" "}
@@ -65,31 +79,14 @@ export default async function PortfolioPage() {
           history={us}
           enrichmentTickers={onchain}
           tickerBaseHref="/alpha/portfolio"
-          showTargetDate
         />
       ) : (
-        <section className="space-y-2">
-          <h2 className="text-xl font-bold">米国株</h2>
-          <p className="text-sm text-zinc-500">データを読み込めませんでした。</p>
-        </section>
-      )}
-
-      {jp ? (
-        <PortfolioSection
-          title="日本株"
-          subtitle="AI・半導体・データセンター関連のサプライチェーンから選定。期日後に決算短信・適時開示で採点。"
-          history={jp}
-          showTargetDate
-        />
-      ) : (
-        <section className="space-y-2">
-          <h2 className="text-xl font-bold">日本株</h2>
-          <p className="text-sm text-zinc-500">データを読み込めませんでした。</p>
-        </section>
+        <p className="text-sm text-zinc-500">米国株データを読み込めませんでした。</p>
       )}
 
       <p className="text-xs text-zinc-600">
-        本ポートフォリオは Claude による情報提供であり投資助言ではありません。
+        本ポートフォリオは Claude による情報提供であり投資助言ではありません。表示の損益は
+        base_date 起点のインデックス（保有終値から日次連鎖）に $10,000 を当てた参考値です。
       </p>
     </div>
   );
