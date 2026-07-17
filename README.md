@@ -17,7 +17,7 @@ Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を
 | `/holders`   | Helius RPC 由来の保有者数・上位ホルダー・集中度スコア                |
 | `/alpha`     | オーナーが手動キュレーションした X 投稿の埋め込み                    |
 | `/analyst`   | エージェント向け有料 IC memo (上記 5 API を並列で叩いて Claude で統合) |
-| `/alpha/portfolio` | Claude が毎週月曜朝 6 時 (JST) に選ぶ米株 10 銘柄 (無料公開・SPY/QQQ 比較・履歴付き) |
+| `/portfolio` · `/portfolio/jp` | Claude が毎週選ぶ米株・日本株 各 10 銘柄。ページはブラウザ無料 (Allocation・$10k P&L vs SPY/QQQ・履歴)。JSON API は x402 有料 |
 
 ## API
 
@@ -25,9 +25,9 @@ Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を
 
 **課金・決済レーンの区分:**
 
-- **有料 (Base USDC + Solana USDC の dual-leg)** — 402 に両チェーンの leg を提示し、caller が払ったチェーンを検証。
+- **有料 (Base USDC + Solana USDC の dual-leg)** — 402 に両チェーンの leg を提示し、caller が払ったチェーンを検証。株データ系＋ Claude Portfolio / Catalyst の JSON API。
 - **有料 (Solana USDC のみ)** — `/api/ipo`・`/api/holders`・`/api/liquidity`。402 は Solana leg のみ。
-- **無料 (x402 なし・CORS 開放)** — Claude Portfolio / catalyst 系（`/api/alpha/...`）。
+- **無料** — 各 **HTML ページ**（`/portfolio`・`/portfolio/jp` などブラウザ表示）は無料。**JSON API はすべて上記いずれかの課金対象**（Claude Portfolio / Catalyst 系 `/api/alpha/...` も x402 有料）。
 - **内部専用** — `/api/cron/*`（`CRON_SECRET`）。有料エンドポイントは `X-Internal-Key` で課金スキップ可。
 
 ```text
@@ -47,14 +47,19 @@ GET  /api/liquidity                     # DEX プール + 乖離率 (overview) (
 GET  /api/liquidity?ticker=NVDA         # 単一銘柄の流動性ランク済みプール
 GET  /api/holders                       # 保有者マップ + 集中度 ($0.01)
 
-# ── 無料 (x402 なし・CORS 開放) ──
-GET  /api/alpha/portfolio/current       # 現在の Claude US Portfolio (10 銘柄・JSON)
-GET  /api/alpha/portfolio/scorecard     # catalyst hit-rate + SPY/QQQ 比較
-GET  /api/alpha/jp/portfolio/current    # 現在の Claude JP Portfolio (日本株・JSON)
-GET  /api/alpha/jp/scorecard            # JP catalyst hit-rate + ベンチ比較
-GET  /api/alpha/jp/catalysts            # JP portfolio の catalyst 一覧
-POST /api/alpha/catalyst/submit         # 外部 catalyst を投稿 (Phase A)
-GET  /api/alpha/catalyst/:id/score      # 投稿 catalyst の判定結果 (Phase A)
+# ── 有料: Claude Portfolio / Catalyst (Base + Solana dual-leg) ──
+# ※ HTML ページ (/portfolio, /portfolio/jp) は無料。以下の JSON API のみ有料。
+GET  /api/alpha/portfolio/current       # 現在の Claude US Portfolio (10 銘柄・JSON) ($0.01)
+GET  /api/alpha/portfolio/scorecard     # US catalyst hit-rate + SPY/QQQ 累積比較 ($0.01)
+GET  /api/alpha/jp/portfolio/current    # 現在の Claude JP Portfolio (日本株・JSON) ($0.01)
+GET  /api/alpha/jp/scorecard            # JP catalyst hit-rate (ベンチ指数なし) ($0.01)
+GET  /api/alpha/jp/catalysts            # JP dated catalysts 一覧 ($0.01)
+POST /api/alpha/catalyst/submit         # 外部 catalyst を投稿 (Phase A) ($0.01)
+GET  /api/alpha/catalyst/:id/score      # 投稿 catalyst の判定結果 ($0.01)
+
+# ── 無料 (HTML ページ・x402 なし) ──
+# /portfolio /portfolio/jp /stocks /ipo /liquidity /holders /analyst /alpha
+# — ブラウザ表示は無料。JSON API は上記の課金対象。
 ```
 
 ### Sample response (200・browser)
@@ -254,16 +259,17 @@ Content-Type: application/json
 
 レスポンスは各 ticker の `predict` (buy/hold/sell)・`confidence` (low/medium/high)・`reasoning`・`data_summary`・`current/target price`。x402 は既存と同じ Base + Solana の 2 leg・depth 別課金 (`/api/analyst` と同パターン)。内部呼び出しは `X-Internal-Key` で課金スキップ。
 
-## Claude Portfolio (`/alpha/portfolio`)
+## Claude Portfolio (`/portfolio`)
 
-毎週月曜朝 6 時 (JST) に Claude が選ぶ米株 10 銘柄を **無料公開**します (旧 claudestock.vercel.app を osd に統合)。
+毎週月曜朝 6 時 (JST) に Claude が選ぶ米株・日本株の各 10 銘柄。**HTML ページはブラウザ無料公開**、**JSON API (`/api/alpha/...`) はエージェント向けに x402 有料 ($0.01・Base + Solana)** (旧 claudestock.vercel.app を osd に統合)。
 
-- `/alpha/portfolio` — 現在の 10 銘柄 (ticker / weight / 1 行 thesis)
-- `/alpha/portfolio/history` — 過去の portfolio 履歴 + SPY/QQQ 比較
+- `/portfolio` — 米国株: Allocation Breakdown ＋ $10,000 投資の P&L (vs SPY/QQQ・Profit History チャート) ＋ 10 銘柄/thesis
+- `/portfolio/jp` — 日本株: Allocation Breakdown ＋ catalyst hit-rate ＋ 10 銘柄/thesis (ベンチ指数なし)
+- `/alpha/portfolio/history` — 過去の portfolio 履歴 + SPY/QQQ 比較チャート
 - `/alpha/portfolio/[ticker]` — 銘柄詳細 (Claude full thesis・entry/current price)
-- `GET /api/alpha/portfolio/current` — JSON で無料公開 (agent / 外部 tool 用)
+- `GET /api/alpha/portfolio/current` — 同じ選定を JSON で (x402 有料 $0.01・agent / 外部 tool 用)
 
-`/alpha/portfolio/history` には recharts による Portfolio vs SPY / QQQ の比較チャートと、週ごとの銘柄入替 (新規 / 除外 / 増減) のタイムラインを表示します。
+P&L は `performance-history.json` の `portfolio_index`（保有終値から日次連鎖・base_date 起点 100 リベース）に $10,000 を当てた参考値。`/alpha/portfolio/history` には recharts による比較チャートと週次の銘柄入替タイムラインを表示します。
 
 ### 永続化は GitHub Actions (Vercel Cron ではない)
 
