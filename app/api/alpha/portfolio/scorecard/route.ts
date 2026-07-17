@@ -14,9 +14,10 @@ export const dynamic = "force-dynamic";
  * vs SPY/QQQ, and the most recent catalyst evaluations. Paid x402 endpoint
  * (Base + Solana USDC); internal callers bypass with `X-Internal-Key`.
  *
- * `cumulative_returns.portfolio_pct` is `null` until performance-history.json's
- * `portfolio_index` is actually computed (it's currently held at 100). Once the
- * indexing job lands, real values flow through automatically.
+ * `portfolio_index` is now live — chained daily from holding closes and rebased
+ * to 100 at `base_date`. `cumulative_returns.portfolio_pct` is `null` only at
+ * inception (before any record diverges from the 100 sentinel); real values
+ * flow through automatically after that.
  */
 const JUDGED: PortfolioEvaluation["status"][] = ["hit", "partial", "miss", "na"];
 
@@ -55,8 +56,8 @@ const handler = async (): Promise<NextResponse> => {
   // Cumulative returns from base to the latest performance record.
   const records = perf.records ?? [];
   const last = records.length > 0 ? records[records.length - 1] : null;
-  // portfolio_index is held at 100 until the indexing job is implemented; only
-  // surface a real portfolio_pct once any record diverges from the 100 sentinel.
+  // portfolio_index is rebased 100 at base_date; surface a real portfolio_pct
+  // once any record diverges from the 100 sentinel (i.e. after inception day).
   const portfolioImplemented = records.some((r) => r.portfolio_index !== 100);
   const cumulative_returns = {
     from_date: perf.base_date ?? null,
