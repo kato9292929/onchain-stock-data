@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-07-13T21:52:06.597Z",
+  "updated_at": "2026-07-17T21:49:32.148Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -78,10 +78,10 @@
       "ticker": "6323",
       "catalyst_target_date": "2026-07-10",
       "success_condition": "7/10前後の26年2月期1Q決算でウェハ搬送装置売上が前年同期比+20%超ならファブ投資再開のシグナルで上昇。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-07-17T21:48:37.151Z",
+      "evidence_url": "https://www.rorze.com/wp_rorze/wp-content/uploads/2026/07/meeting_2027_Q1.pdf",
+      "reasoning": "2026年7月9日15:30にローツェが開示した2027年2月期(第42期)第1四半期決算（success_conditionにある『26年2月期1Q』は文脈上27年2月期1Qを指すと解釈）では、全社売上高372.06億円・前年同期比+12.5%、営業利益102.3億円・同+21.2%、経常利益109.38億円・同+51.1%と大幅増益。会社説明資料では『生成AI普及で半導体設備投資が増加、好調な事業環境が継続』『半導体関連装置を中心とした増収』『受注高420億円で2四半期連続過去最高』とされ、ウェハ搬送を含む半導体関連装置は過去最高を更新。ファブ投資再開・拡大の方向性は明確に示された。一方で、ウェハ搬送装置単体の前年同期比を示す開示は確認できず、全社ベースの売上増収率は+12.5%と、success_conditionの『+20%超』の数値基準を明確には満たしていない。方向性は合致するが数値基準未達のためpartial判定。株価も翌7/10には急騰（前日比+535円の5121円）しており、市場はファブ投資再開シグナルとしてポジティブに評価している。"
     },
     {
       "week_of": "2026-06-22",
@@ -148,10 +148,10 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-07-10",
       "success_condition": "7月上旬発表の6月度月次出荷高が四半期合計で会社計画比+5%超なら後工程装置の強含み継続を示唆。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-07-17T21:49:32.148Z",
+      "evidence_url": "https://news.yahoo.co.jp/articles/9e93a70bb29bc0de2ce0a6f169990915b423b46a",
+      "reasoning": "4月22日発表の会社ガイダンスでは2026年4-6月期の出荷額を1,320億円と見込んでいたが、7月6日発表の速報では実績1,165億円（前年比+25.3%、前四半期比+18.7%）にとどまり、会社計画比では約-11.7%と未達。success_conditionの『会社計画比+5%超』の閾値には全く届かず、逆に計画を下回った。個別売上高は予想864億円に対し950億円（達成率110%）と上振れたが、success_conditionの対象である出荷額ベースでは計画未達のため、後工程装置の『計画超の強含み継続』のシグナルとしては成立しない。方向性としては生成AI需要で四半期最高更新と強いものの、定量基準は満たさない。"
     },
     {
       "week_of": "2026-06-29",
