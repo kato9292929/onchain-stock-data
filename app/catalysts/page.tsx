@@ -1,5 +1,12 @@
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import type { EvaluationStatus, ExternalCatalyst } from "@/lib/data";
+import {
+  ARTICLE_TITLES,
+  JUDGED,
+  SERIES,
+  hitRate,
+  splitDescription,
+} from "@/lib/physical-ai-scoreboard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,20 +21,6 @@ export const dynamic = "force-dynamic";
  * The paid machine-readable surface lives at /api/alpha/... — this page is the
  * human-facing counterpart and stays free on purpose.
  */
-
-const SERIES = "physical-ai";
-
-/** Editorial article titles (1-based), matching the six-part series. */
-const ARTICLE_TITLES: Record<number, string> = {
-  1: "日本・上場企業（決算型 catalyst）",
-  2: "日本・未上場スタートアップ（イベント型）",
-  3: "米国・上場 ロボティクス",
-  4: "米国・上場 半導体・センサ",
-  5: "米国・未上場 ロボット本体",
-  6: "米国・未上場 AI モデル・基盤",
-};
-
-const JUDGED: EvaluationStatus[] = ["hit", "partial", "miss", "na"];
 
 const STATUS_STYLE: Record<
   EvaluationStatus,
@@ -57,16 +50,6 @@ function StatusBadge({ status }: { status: EvaluationStatus }) {
   );
 }
 
-/** Split the folded "condition【外れ方向】fail" description into its two halves. */
-function splitDescription(desc: string): { condition: string; fail: string | null } {
-  const idx = desc.indexOf("【外れ方向】");
-  if (idx === -1) return { condition: desc, fail: null };
-  return {
-    condition: desc.slice(0, idx),
-    fail: desc.slice(idx + "【外れ方向】".length),
-  };
-}
-
 function CatalystRow({
   c,
   isSub,
@@ -74,7 +57,7 @@ function CatalystRow({
   c: ExternalCatalyst;
   isSub?: boolean;
 }) {
-  const { condition, fail } = splitDescription(c.catalyst_description);
+  const { condition, fail_direction: fail } = splitDescription(c.catalyst_description);
   const typeLabel = c.catalyst_type ? TYPE_LABEL[c.catalyst_type] : null;
   return (
     <div
@@ -129,16 +112,6 @@ function CatalystRow({
       )}
     </div>
   );
-}
-
-function hitRate(list: ExternalCatalyst[]) {
-  const counts = { hit: 0, partial: 0, miss: 0, na: 0, pending: 0 };
-  for (const c of list) counts[c.status] += 1;
-  const judged = counts.hit + counts.partial + counts.miss + counts.na;
-  // Partial counts as a half-hit; na (催告不能) is excluded from the denominator.
-  const scored = counts.hit + counts.partial + counts.miss;
-  const rate = scored > 0 ? (counts.hit + counts.partial * 0.5) / scored : null;
-  return { counts, judged, rate };
 }
 
 export default async function CatalystsScoreboardPage() {
