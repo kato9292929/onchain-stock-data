@@ -1,0 +1,52 @@
+name: Update Liquidity (daily)
+
+# Authoritative persistence runner for the xStock DEX liquidity snapshot.
+# Fetches real markets from tokens.xyz and commits data/liquidity.json (Vercel's
+# FS is read-only, and its runtime egress to tokens.xyz has proven unreliable —
+# doing the fetch here, where egress is open, is the robust path). The API/pages
+# read the committed file; getLiquidity()'s live path falls back to it.
+
+on:
+  schedule:
+    # 21:45 UTC daily == 06:45 JST next day (offset from the 21:30 performance job).
+    - cron: "45 21 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Share the portfolio-data group so data-committing jobs never race on push.
+concurrency:
+  group: portfolio-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Snapshot liquidity from tokens.xyz
+        run: npm run update:liquidity
+        env:
+          TOKENS_XYZ_API_KEY: ${{ secrets.TOKENS_XYZ_API_KEY }}
+
+      - name: Commit & push data
+        run: |
+          git config user.name "osd-portfolio-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/liquidity.json
+          if git diff --staged --quiet; then
+            echo "No liquidity changes to commit."
+          else
+            git commit -m "chore(liquidity): daily tokens.xyz DEX snapshot"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

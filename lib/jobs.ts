@@ -31,6 +31,9 @@ import {
   fetchExternalData,
   formatExternalDataForPrompt,
 } from "@/lib/external-data";
+import { isTokensXyzEnabled } from "@/lib/tokensXyz";
+import { writeLiquidityJson } from "@/lib/data";
+import { buildLiquiditySnapshot } from "@/lib/liquidity-snapshot";
 
 /**
  * Portfolio / performance update jobs (ported from Claude-Stock-Portfolio-Watch's
@@ -259,6 +262,53 @@ export async function runPerformanceUpdate(): Promise<PerformanceUpdateResult> {
     persisted: write.persisted,
     persist_reason: write.reason,
     benchmarks_live: { spy: benchmarks.spy, qqq: benchmarks.qqq },
+  };
+}
+
+export interface LiquidityUpdateResult {
+  ok: boolean;
+  universe?: number;
+  enriched?: number;
+  pairs?: number;
+  persisted?: boolean;
+  persist_reason?: string;
+  error?: string;
+}
+
+/**
+ * Daily liquidity snapshot — authoritative runner (GitHub Actions). Pulls real
+ * DEX liquidity from tokens.xyz and commits it to data/liquidity.json, so the
+ * endpoint/pages serve live data instead of the bundled sample. Refuses to
+ * persist an empty snapshot (missing key / upstream failure) so a bad run never
+ * clobbers the last-good file.
+ */
+export async function runLiquidityUpdate(): Promise<LiquidityUpdateResult> {
+  if (!isTokensXyzEnabled()) {
+    return { ok: false, error: "TOKENS_XYZ_API_KEY is not set" };
+  }
+  let snapshot;
+  try {
+    snapshot = await buildLiquiditySnapshot();
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+  if (snapshot.file.pairs.length === 0) {
+    return {
+      ok: false,
+      universe: snapshot.universe,
+      enriched: snapshot.enriched,
+      pairs: 0,
+      error: "empty snapshot — refusing to overwrite last-good liquidity.json",
+    };
+  }
+  const write = await writeLiquidityJson(snapshot.file);
+  return {
+    ok: write.persisted,
+    universe: snapshot.universe,
+    enriched: snapshot.enriched,
+    pairs: snapshot.file.pairs.length,
+    persisted: write.persisted,
+    persist_reason: write.reason,
   };
 }
 
