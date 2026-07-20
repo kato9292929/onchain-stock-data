@@ -92,6 +92,29 @@ export function withX402AndInternal(
   };
 }
 
+/**
+ * Wrap a handler as a FREE public endpoint (no x402 payment): OPTIONS → 204+CORS,
+ * every other method → the handler's response with CORS + expose headers, and a
+ * CORS-tagged 500 on throw. Use for public track-record surfaces that mirror a
+ * free web page. To start charging, swap this for `withPaywall`/`withSolanaOnlyPaywall`.
+ */
+export function withPublicCors(
+  handler: Handler,
+): (req: NextRequest) => Promise<NextResponse> {
+  return async (req: NextRequest) => {
+    if (req.method === "OPTIONS") return corsPreflight();
+    try {
+      return applyCors(await handler(req));
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "internal server error";
+      return applyCors(
+        NextResponse.json({ error: "internal_error", message }, { status: 500 }),
+      );
+    }
+  };
+}
+
 /** Shortcut: build the standard Base+Solana accepts for `price` and wrap. */
 export function withPaywall(
   handler: Handler,
