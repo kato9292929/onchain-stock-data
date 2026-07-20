@@ -1,7 +1,7 @@
 {
   "source": "live",
   "note": "Daily chained index of the Claude portfolio vs SPY / QQQ. Portfolio daily return = weighted (today_close / prior_close - 1) over current holdings, chained onto the prior index; rebased to 100 at base_date. Benchmarks rebased to 100 at the first captured close. Appended by .github/workflows/update-performance.yml (06:30 JST). Not investment advice.",
-  "updated_at": "2026-07-19T22:25:33.653Z",
+  "updated_at": "2026-07-20T22:30:17.613Z",
   "base_date": "2026-06-24",
   "records": [
     {
@@ -237,26 +237,35 @@
       "portfolio_return_pct": -15.76,
       "spy_return_pct": 1.37,
       "qqq_return_pct": -2.15
+    },
+    {
+      "date": "2026-07-20",
+      "portfolio_index": 85.42,
+      "spy_index": 101.21,
+      "qqq_index": 97.95,
+      "portfolio_return_pct": -14.58,
+      "spy_return_pct": 1.21,
+      "qqq_return_pct": -2.05
     }
   ],
   "base_spy_price": 733.24,
   "base_qqq_price": 710.62,
   "last_prices": {
-    "CRDO": 202.68,
-    "MU": 848.95,
-    "ALAB": 303.62,
+    "CRDO": 212.07,
+    "MU": 865.46,
+    "ALAB": 309.09,
     "VKTX": 38.86,
-    "POWL": 232.79,
+    "POWL": 228.28,
     "RKLB": 81.04,
-    "TMDX": 73.98,
+    "TMDX": 73.47,
     "NXT": 106.95,
     "CRWV": 96.58,
     "IOT": 31.14,
-    "TGS": 29.75,
+    "TGS": 30.11,
     "AAOI": 120.95,
-    "MOD": 229.34,
-    "VRT": 289.56,
-    "SMR": 7.72,
-    "NBIS": 177.71
+    "MOD": 227.88,
+    "VRT": 291.67,
+    "SMR": 7.96,
+    "NBIS": 182.62
   }
 }
