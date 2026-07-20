@@ -336,6 +336,25 @@ export async function writeLiquidityJson(
   }
 }
 
+/**
+ * Persist a holders snapshot to data/holders.json. Used by the daily
+ * update-holders job (GitHub Actions) so the committed file is real Birdeye
+ * on-chain holder data instead of the bundled sample.
+ */
+export async function writeHoldersJson(
+  file: HoldersFile,
+): Promise<{ persisted: boolean; reason?: string }> {
+  try {
+    await fs.writeFile(
+      path.join(DATA_DIR, "holders.json"),
+      JSON.stringify(file, null, 2) + "\n",
+    );
+    return { persisted: true };
+  } catch (e) {
+    return { persisted: false, reason: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 export const getIpos = () => loadJson<IposFile>("ipo.json");
 export const getHolders = () => loadJson<HoldersFile>("holders.json");
 export const getAlphaPosts = () => loadJson<AlphaPost[]>("alpha-posts.json");

@@ -32,8 +32,10 @@ import {
   formatExternalDataForPrompt,
 } from "@/lib/external-data";
 import { isTokensXyzEnabled } from "@/lib/tokensXyz";
-import { writeLiquidityJson } from "@/lib/data";
+import { isBirdeyeEnabled } from "@/lib/birdeye";
+import { writeLiquidityJson, writeHoldersJson } from "@/lib/data";
 import { buildLiquiditySnapshot } from "@/lib/liquidity-snapshot";
+import { buildHoldersSnapshot } from "@/lib/holders-snapshot";
 
 /**
  * Portfolio / performance update jobs (ported from Claude-Stock-Portfolio-Watch's
@@ -307,6 +309,49 @@ export async function runLiquidityUpdate(): Promise<LiquidityUpdateResult> {
     universe: snapshot.universe,
     enriched: snapshot.enriched,
     pairs: snapshot.file.pairs.length,
+    persisted: write.persisted,
+    persist_reason: write.reason,
+  };
+}
+
+export interface HoldersUpdateResult {
+  ok: boolean;
+  universe?: number;
+  fetched?: number;
+  persisted?: boolean;
+  persist_reason?: string;
+  error?: string;
+}
+
+/**
+ * Daily holders snapshot — authoritative runner (GitHub Actions). Pulls real
+ * on-chain holder distribution from Birdeye and commits it to data/holders.json.
+ * Refuses to persist an empty snapshot (missing key / upstream failure) so a bad
+ * run never clobbers the last-good file.
+ */
+export async function runHoldersUpdate(): Promise<HoldersUpdateResult> {
+  if (!isBirdeyeEnabled()) {
+    return { ok: false, error: "BIRDEYE_API_KEY is not set" };
+  }
+  let snapshot;
+  try {
+    snapshot = await buildHoldersSnapshot();
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+  if (snapshot.file.tokens.length === 0) {
+    return {
+      ok: false,
+      universe: snapshot.universe,
+      fetched: 0,
+      error: "empty snapshot — refusing to overwrite last-good holders.json",
+    };
+  }
+  const write = await writeHoldersJson(snapshot.file);
+  return {
+    ok: write.persisted,
+    universe: snapshot.universe,
+    fetched: snapshot.fetched,
     persisted: write.persisted,
     persist_reason: write.reason,
   };
