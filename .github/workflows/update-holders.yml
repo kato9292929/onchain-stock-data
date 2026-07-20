@@ -1,0 +1,52 @@
+name: Update Holders (daily)
+
+# Authoritative persistence runner for xStock on-chain holder distribution.
+# Fetches real holders from Birdeye and commits data/holders.json (Vercel's FS
+# is read-only, and doing the fetch here keeps request-time latency + the 60 rpm
+# Birdeye cap off the serving path). The API/pages read the committed file.
+
+on:
+  schedule:
+    # 22:00 UTC daily == 07:00 JST next day (offset from the 21:45 liquidity job).
+    - cron: "0 22 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Share the portfolio-data group so data-committing jobs never race on push.
+concurrency:
+  group: portfolio-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Snapshot holders from Birdeye
+        run: npm run update:holders
+        env:
+          BIRDEYE_API_KEY: ${{ secrets.BIRDEYE_API_KEY }}
+          TOKENS_XYZ_API_KEY: ${{ secrets.TOKENS_XYZ_API_KEY }}
+
+      - name: Commit & push data
+        run: |
+          git config user.name "osd-portfolio-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/holders.json
+          if git diff --staged --quiet; then
+            echo "No holders changes to commit."
+          else
+            git commit -m "chore(holders): daily Birdeye on-chain holder snapshot"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
