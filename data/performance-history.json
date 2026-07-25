@@ -1,7 +1,7 @@
 {
   "source": "live",
   "note": "Daily chained index of the Claude portfolio vs SPY / QQQ. Portfolio daily return = weighted (today_close / prior_close - 1) over current holdings, chained onto the prior index; rebased to 100 at base_date. Benchmarks rebased to 100 at the first captured close. Appended by .github/workflows/update-performance.yml (06:30 JST). Not investment advice.",
-  "updated_at": "2026-07-24T22:33:58.447Z",
+  "updated_at": "2026-07-25T22:26:10.573Z",
   "base_date": "2026-06-24",
   "records": [
     {
@@ -276,6 +276,15 @@
     },
     {
       "date": "2026-07-24",
+      "portfolio_index": 86.42,
+      "spy_index": 100.78,
+      "qqq_index": 96.29,
+      "portfolio_return_pct": -13.58,
+      "spy_return_pct": 0.78,
+      "qqq_return_pct": -3.71
+    },
+    {
+      "date": "2026-07-25",
       "portfolio_index": 86.42,
       "spy_index": 100.78,
       "qqq_index": 96.29,
