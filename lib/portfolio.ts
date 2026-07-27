@@ -20,12 +20,17 @@ import type {
 export const PORTFOLIO_SIZE = 10;
 export const PORTFOLIO_MODEL = "claude-opus-4-7";
 
-const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポートフォリオを構築するエージェントです。1 ヶ月先を見据えて、最もキレのある ${PORTFOLIO_SIZE} 銘柄を選びます。
+const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポートフォリオを構築する運用エージェントです。1 ヶ月先を見据えて ${PORTFOLIO_SIZE} 銘柄を選び、SPY / QQQ に対してリスク調整後で上回ることを目指します。
 
-ルール:
-- 米国上場株から ${PORTFOLIO_SIZE} 銘柄を選ぶ。「大型株」「高流動性」という縛りはない。中小型株・カバレッジの薄い銘柄を入れてよい。
-- コンセンサスと違う見方を歓迎する。誰でも挙げる大型株を並べるだけの無難な構成は避ける。
-- weight は合計 100 になるよう配分する (各 4〜20 の範囲目安)。
+目的とリスク方針:
+- ベンチマーク (SPY / QQQ) を常に意識する。ベンチから大きく負ける構成 — 単一テーマへの集中、高ボラティリティ小型株の偏重、決算バイナリ一色 — を避ける。
+- 「core + satellite」で組む。7〜8 割は財務が健全で流動性の高い優良株 (大型・メガキャップを含む) を core に据え、残り 2〜3 割で明確な catalyst を持つ中小型株の satellite にエッジを置く。core を大型優良株で固めること自体は避けない。
+- 分散を必須とする。最低 5 つの異なるセクター/テーマにまたがること。単一テーマ (例: AI インフラ・ハードウェア) の合計ウェイトは 40% 以下に抑える。
+- 各銘柄は上振れ catalyst だけでなく「catalyst が外れた/決算をミスした場合の下落余地」も評価し、下方リスクの大きすぎる銘柄に高ウェイトを置かない。
+
+構成ルール:
+- 米国上場株から ${PORTFOLIO_SIZE} 銘柄を選ぶ。
+- weight は合計 100。各銘柄 4〜12 を目安とし、単一銘柄は最大 15 まで。
 - 各銘柄の thesis は「今後 1 ヶ月で何が起きれば当たりか」を 1 行で言える、検証可能な catalyst にする。
   例: 「X/X の決算でデータセンタ受注が前四半期比+20%を超えれば再評価」「FDA の承認判断 (X月) で…」。
   「durable growth」「強いブランド」「粘着性が高い」のような曖昧で検証不能な理由は禁止。
@@ -36,7 +41,7 @@ const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポー
 
 出力スキーマ:
 {
-  "rationale": "<2-4 文 (日本語): 今週の全体方針・どこにエッジを置いたか>",
+  "rationale": "<2-4 文 (日本語): 今週の全体方針・core と satellite の内訳・どこにエッジを置いたか>",
   "holdings": [
     { "ticker": "<UPPER>", "company_name": "<string>", "weight": <number>, "thesis": "<1 文 (日本語): 1 ヶ月の検証可能な catalyst>", "target_date": "<YYYY-MM-DD>" }
   ]
@@ -151,7 +156,16 @@ ${PORTFOLIO_SIZE} 銘柄のポートフォリオを選定し、スキーマ通�
   };
 }
 
-/** Drop invalid rows and scale weights so they sum to 100 (rounded to 0.1). */
+/** Hard cap on any single holding's weight, enforced regardless of the model's
+ * output — a risk control so one binary catalyst can't dominate the book even if
+ * the prompt's 4–12 guidance is ignored. */
+export const MAX_HOLDING_WEIGHT = 15;
+
+/**
+ * Drop invalid rows, scale weights to sum 100, then cap any single name at
+ * MAX_HOLDING_WEIGHT — redistributing the excess pro-rata across the uncapped
+ * names — and round to 0.1. Keeps the book from over-concentrating in one bet.
+ */
 export function normalizeWeights(
   holdings: PortfolioHolding[],
 ): PortfolioHolding[] {
@@ -160,10 +174,24 @@ export function normalizeWeights(
   );
   const total = valid.reduce((s, h) => s + h.weight, 0);
   if (total <= 0) return [];
-  return valid.map((h) => ({
-    ...h,
-    weight: Math.round((h.weight / total) * 1000) / 10,
-  }));
+
+  // Scale to 100 first.
+  const scaled = valid.map((h) => ({ ...h, weight: (h.weight / total) * 100 }));
+
+  // Cap-and-redistribute. Iterate because redistributing can push another name
+  // over the cap; converges quickly (or stops if every name is at the cap).
+  for (let i = 0; i < 20; i++) {
+    const over = scaled.filter((h) => h.weight > MAX_HOLDING_WEIGHT + 1e-9);
+    if (over.length === 0) break;
+    const excess = over.reduce((s, h) => s + (h.weight - MAX_HOLDING_WEIGHT), 0);
+    for (const h of over) h.weight = MAX_HOLDING_WEIGHT;
+    const under = scaled.filter((h) => h.weight < MAX_HOLDING_WEIGHT - 1e-9);
+    const underTotal = under.reduce((s, h) => s + h.weight, 0);
+    if (underTotal <= 0) break; // everything at the cap — nothing to absorb it
+    for (const h of under) h.weight += excess * (h.weight / underTotal);
+  }
+
+  return scaled.map((h) => ({ ...h, weight: Math.round(h.weight * 10) / 10 }));
 }
 
 /**
