@@ -31,6 +31,7 @@ import {
   fetchExternalData,
   formatExternalDataForPrompt,
 } from "@/lib/external-data";
+import { getSignals, formatSignalsForPrompt } from "@/lib/signals";
 import { isTokensXyzEnabled } from "@/lib/tokensXyz";
 import { isBirdeyeEnabled } from "@/lib/birdeye";
 import { writeLiquidityJson, writeHoldersJson } from "@/lib/data";
@@ -78,7 +79,11 @@ export async function runPortfolioUpdate(
 
   // Best-effort external alt-data from AA (10s timeout, degrades to "").
   const externalData = await fetchExternalData();
-  const externalContext = formatExternalDataForPrompt(externalData);
+  // Curated external signals (bearish/structural/no-date included). Only judgeable
+  // + verified ones are ever scored elsewhere; here they all feed as context.
+  const signals = await getSignals();
+  const externalContext =
+    formatExternalDataForPrompt(externalData) + formatSignalsForPrompt(signals);
 
   const selected = await selectPortfolio({
     weekOf,
