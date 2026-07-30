@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-07-27T22:03:53.840Z",
+  "updated_at": "2026-07-30T22:10:05.823Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -418,10 +418,10 @@
       "ticker": "6594",
       "catalyst_target_date": "2026-07-23",
       "success_condition": "7/23予定の1Q決算でデータセンター向け水冷モジュール受注が前四半期比+30%以上なら上振れ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-07-30T22:10:05.823Z",
+      "evidence_url": "https://www.nikkei.com/nkd/disclosure/tdnr/20260630584148/",
+      "reasoning": "ニデックは会計不正問題（第三者委員会調査、東証の特別注意銘柄指定）を受けて、2026年4月27日に2026年3月期の決算発表を延期。さらに2026年6月30日には2026年3月期の有価証券報告書の提出期限を6月末→9月末へ延長する承認申請を発表。前提となる本決算・過年度訂正が未確定のため、target_date 2026-07-23 に予定されていたはずの2027年3月期第1四半期決算短信は開示されていない（対象日前後の適時開示は7/8のCG報告書、7/21の株主提訴請求のみ）。したがってデータセンター向け水冷モジュール受注の前四半期比を検証可能な決算数値が存在せず、success_conditionは判定不能（na）。なお岸田社長は2026年5月にデータセンター関連需要は好調と定性コメントしているが、+30%基準の裏付けにはならない。"
     },
     {
       "week_of": "2026-07-27",
