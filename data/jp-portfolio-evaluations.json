@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-07-30T22:10:05.823Z",
+  "updated_at": "2026-07-31T22:01:43.905Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -268,10 +268,10 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-07-24",
       "success_condition": "7/24前後の月次出荷速報でグラインダ出荷が四半期見通しを+5%上振れなら続伸",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-07-31T22:01:43.905Z",
+      "evidence_url": "https://www.disco.co.jp/jp/ir/library/doc/film/20260723.pdf",
+      "reasoning": "7/6の1Q(4-6月)個別出荷額速報は1,165億円で、前年同期比+25.3%と過去最高だったものの、4月時点の四半期ガイダンス1,320億円を約12%下回る未達。上振れ要因も消耗品中心で、グラインダを含む装置は『概ね予想通り』と報じられ、グラインダ出荷が四半期見通しを+5%上振れした事実は確認できない。さらに7/23発表の2027年3月期1Q決算・2Qガイダンス（純利益395億円）は市場コンセンサス（約473億円）を下回り、7/7の速報時も『良い速報でも売られた』と指摘される通り、続伸トリガーは成立していない。よって success_condition は miss。"
     },
     {
       "week_of": "2026-07-06",
