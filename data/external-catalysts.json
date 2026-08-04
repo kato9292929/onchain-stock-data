@@ -112,10 +112,12 @@
     "target_date": "2026-07-27",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "hit",
+    "judgement_date": "2026-08-04",
+    "evidence_urls": [
+      "https://jpn.nec.com/press/202605/20260515_01.html"
+    ],
+    "reasoning": "NECは2026年5月15日付リリースで米CSG Systems International買収の完了を公表しており（クロージングは2026年5月14日）、その後2026年7月29日発表の2027年3月期第1四半期決算短信および決算説明で、CSG連結を織り込む形で通期業績予想を売上収益3兆5000億円→3兆5400億円、Non-GAAP営業利益4200億円→4300億円へ上方修正した。すなわち2026年度（2027年3月期）内にCSG買収完了と業績織り込みがともに公表されており、success_conditionの達成方向を満たす。",
     "catalyst_type": "earnings",
     "date_confidence": "estimated",
     "country": "JP",
