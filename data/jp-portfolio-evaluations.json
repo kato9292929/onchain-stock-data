@@ -1,27 +1,27 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-08-04T22:09:44.344Z",
+  "updated_at": "2026-08-07T01:20:46.912Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
       "ticker": "4062",
       "catalyst_target_date": "2026-07-31",
       "success_condition": "7/31予定の26年3月期1Q決算でICパッケージ基板売上が前年同期比+25%超なら、AI向けABFの数量回復確認で再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-07T01:09:19.341Z",
+      "evidence_url": "https://www.media-ir.com/news/?p=177838",
+      "reasoning": "イビデン(4062)は2026年8月4日に2027年3月期第1四半期(2026年4-6月)決算短信を開示(catalyst_target_date 7/31から数日ずれるが、当初予定の1Q決算に該当)。全社売上高は前年同期比+26.4%増の1,232億19百万円、営業利益+52.4%増の268億80百万円と大幅増収増益。ICパッケージ基板を中核とする電子事業の売上高は前年同期比+37.7%増の775億22百万円、セグメント利益+52.4%増の213億75百万円で、success_conditionの『ICパッケージ基板売上前年同期比+25%超』を明確に上回った。生成AI向けサーバー用ICパッケージ基板(ABF/FC-BGA)の旺盛な需要と大野事業場の生産安定化、円安が牽引と会社・報道が説明。通期予想も上方修正(営業利益900→1,270億円)しており、『AI向けABFの数量回復確認で再評価』という材料は達成された。"
     },
     {
       "week_of": "2026-06-22",
       "ticker": "6857",
       "catalyst_target_date": "2026-07-30",
       "success_condition": "7/30前後の1Q決算でSoCテスタ受注が四半期で1,800億円超なら、HBM4立ち上げ需要を織り込み上方修正。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-07T01:11:20.138Z",
+      "evidence_url": "https://www.advantest.com/ja/news/2026/qnpuno0000000cnr-att/J_FR_FY2026_1Q.pdf",
+      "reasoning": "2026年7月29日発表のFY2026 1Q決算で、AI/HBM/推論AI・ASIC・DRAM関連テスタ需要の急拡大を明確な理由として、通期売上高1兆4,200億円→1兆7,140億円、営業利益6,275億円→8,460億円、純利益4,655億円→6,600億円と大幅な上方修正を実施。四半期売上は3,675億円(+39.3%)、テストシステム事業3,336億円(+38.7%)で、SoCテストシステムが牽引と明記。success_conditionの『HBM4立ち上げ需要を織り込み上方修正』という核心部分は明確に達成(hit相当)。ただし『SoCテスタ受注が四半期で1,800億円超』というSoCテスタ単独の四半期受注高については、決算短信ではセグメント売上のみ開示され、SoCテスタ単独の受注高として1,800億円超を直接裏付ける数値は開示資料からは特定できないため、数値条件は厳密には確認不能。以上より数値条件は未確認だが上方修正の方向性・材料は完全に整合するため partial と判定。"
     },
     {
       "week_of": "2026-06-22",
@@ -88,10 +88,10 @@
       "ticker": "6967",
       "catalyst_target_date": "2026-07-31",
       "success_condition": "7/31前後の1Q決算でフリップチップ基板売上が前年同期比+15%超ならAIサーバ向け回復確認で見直し買い。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-08-07T01:12:12.680Z",
+      "evidence_url": "https://www.jpx.co.jp/news/1023/20250520-11.html",
+      "reasoning": "新光電気工業(6967)はJICによるTOBを経て2025年6月6日に上場廃止となり非公開化された。したがって catalyst_target_date である2026年7月31日前後には、上場企業としての1Q決算短信や適時開示（TDnet）が制度上開示されず、フリップチップ基板売上の前年同期比+15%超という success_condition を検証できる一次情報が公開情報として存在しない。web検索でも該当四半期のセグメント別売上開示は確認できず、判定材料不足のため 'na' と判定する。"
     },
     {
       "week_of": "2026-06-22",
@@ -108,20 +108,20 @@
       "ticker": "6981",
       "catalyst_target_date": "2026-07-31",
       "success_condition": "2026/7/31想定の1Q決算でAIサーバ向けMLCC売上比率が拡大し営業利益が前年比+15%超なら当たり",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-07T01:13:00.811Z",
+      "evidence_url": "https://eetimes.itmedia.co.jp/ee/articles/2608/03/news034.html",
+      "reasoning": "2026年7月31日発表の2027年3月期1Q決算で、営業利益は985億円・前年同期比+59.8%と『+15%超』基準を大幅にクリア。AIサーバを中心とするデータセンター関連売上は前年比+81.1%（697億円）で、コンピュータ用途全体(+47%)や他用途(モビリティ+16.1%、通信+13.7%)を大きく上回り、MLCC売上比率の拡大が明確。MLCC単体BBレシオは1.47と受注も旺盛で、通期予想も営業利益4300億円へ上方修正。success_conditionの両条件を明確に充足するためhit判定。"
     },
     {
       "week_of": "2026-06-22",
       "ticker": "6806",
       "catalyst_target_date": "2026-07-30",
       "success_condition": "2026/7/30想定の1Q決算で受注高が前年同期比+20%超かつデータセンタ向け高速コネクタ比率が拡大なら当たり",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-07T01:14:19.828Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260804508515.pdf",
+      "reasoning": "2026/8/4開示の2027年3月期第1四半期決算短信および翌8/5の決算説明会資料により、当1Qの受注高は710.6億円で前年同期比+36.6%と、success_conditionの『+20%超』基準を大きく上回った。売上収益も前年同期比+26.8%（621億円）、営業利益+35.7%と好調。決算短信では『活発なAI関連投資による半導体、データセンターを中心とした設備投資需要の拡大』が産業用機器向け市場の成長を牽引したと明記されており、データセンタ/AI関連の高速コネクタ需要が業績拡大の主因であることが確認できる。データセンタ向け比率の具体数値は非開示だが、定性的にはAI・データセンタ関連需要が全体を牽引しており、方向性として比率拡大が読み取れる。受注条件を明確に満たし、データセンタ比率拡大も裏付け可能なため hit と判定。想定発表日7/30に対し実発表は8/4だった点は付言。"
     },
     {
       "week_of": "2026-06-29",
@@ -138,10 +138,10 @@
       "ticker": "6857",
       "catalyst_target_date": "2026-07-30",
       "success_condition": "7/30予定の1Q決算で通期売上ガイダンスが上方修正されればHBM/AI ASIC向けテスタ需要の継続を確認。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-07T01:15:10.138Z",
+      "evidence_url": "https://www.advantest.com/ja/news/2026/qnpuno0000000cmx-att/J_Info_20260729.pdf",
+      "reasoning": "2026年7月29日（catalyst_target_date 7/30の前日、大引け後）にアドバンテストは2027年3月期1Q決算と同時に通期業績予想の修正を開示。通期売上高予想は1兆4,200億円→1兆7,140億円（+29.3%）、営業利益は6,275億円→8,460億円、純利益は4,655億円→6,600億円と大幅上方修正。理由としてAI関連半導体（特に推論用AI半導体向け）のテスト需要が4月時点想定を大きく上回ることを明示しており、HBM/AI ASIC向けテスタ需要の継続というsuccess_conditionを明確に満たす。"
     },
     {
       "week_of": "2026-06-29",
@@ -408,10 +408,10 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-07-31",
       "success_condition": "7/31予定の1Q決算でパワー半導体・AIデータセンター電源事業が前年比+15%超なら再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-07T01:17:49.860Z",
+      "evidence_url": "https://global-net.co.jp/archives/13556",
+      "reasoning": "富士電機は2026年7月30日15:30に2027年3月期1Q決算を発表。全社では売上高2,733億円(前年同期比+10.2%)、営業利益250億円(+38.3%)と過去最高を更新し、通期・上期予想も上方修正した。ただしsuccess_conditionの2事業の内訳は方向が真逆：(1)パワー半導体(半導体セグメント)は売上高544億円(前年同期比▲0.7%)、営業利益31億円(▲37.3%)で、xEV向けパワー半導体の需要減により減収減益、+15%超の基準を明確に未達。(2)一方、AIデータセンター電源事業(エネルギーの施設・電源システム分野)はデータセンター向け需要増で牽引役となり、会社は通期で施設・電源システム売上高+30%水準を見込むなど大幅伸長。片方は明確に基準未達、片方は基準達成の可能性が高いためpartialと判定。"
     },
     {
       "week_of": "2026-07-13",
@@ -458,10 +458,10 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-07-31",
       "success_condition": "7月月次出荷高(7月末公表)が前年同月比+15%超なら後工程需要の強さ確認",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-08-07T01:19:27.176Z",
+      "evidence_url": "https://www.disco.co.jp/jp/ir/library/flash.html",
+      "reasoning": "ディスコ(6146)は四半期ごとの『個別売上高および出荷額の速報値』を適時開示する慣行はあるが、7月単月の月次出荷高を7月末に単独開示していない。2026年7月6日には4-6月期(1Q)の速報値(1,165億円)が開示され、7月23日には1Q決算(四半期出荷額1,359億円)が発表されているが、いずれも四半期ベースで『7月単月・前年同月比』を判定できるデータではない。よってsuccess_conditionの判定材料なし=na。"
     },
     {
       "week_of": "2026-07-27",
@@ -508,10 +508,10 @@
       "ticker": "6981",
       "catalyst_target_date": "2026-07-31",
       "success_condition": "7/31予想の第1四半期決算でMLCC出荷が前年比+10%超かつ通期見通し維持なら見直し買い",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-07T01:20:46.911Z",
+      "evidence_url": "https://eetimes.itmedia.co.jp/ee/articles/2608/03/news034.html",
+      "reasoning": "2026年7月31日発表の2027年3月期第1四半期決算で、売上収益は5,023億円（前年同期比+20.7%）、営業利益985億円（同+59.8%）と四半期過去最高を更新。MLCCを主軸とするコンデンサ事業はデータセンター関連（AIサーバ向け中心）が前年同期比+81.1%、コンピュータ向け+47.0%、モビリティ+16.1%、通信+13.7%と全用途で二桁増収となり、MLCC出荷は+10%超を明確に達成。通期見通しは『維持』ではなく上方修正（売上1.96兆円→2.11兆円、営業利益3,800億円→4,300億円）となり、条件の文言よりも強いポジティブサプライズを演出。株価は当日+15.59%のストップ高（7,416円）で応え、『見直し買い』のカタリストは完全に成就したためhitと判定。"
     },
     {
       "week_of": "2026-07-27",
