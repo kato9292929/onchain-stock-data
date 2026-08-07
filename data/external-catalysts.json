@@ -1066,10 +1066,12 @@
     "target_date": "2026-07-30",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "miss",
+    "judgement_date": "2026-08-07",
+    "evidence_urls": [
+      "https://telecomlead.com/semiconductor/qualcomm-q3-2026-revenue-hits-9-9-bn-as-automotive-jumps-61-iot-reaches-1-83-bn-and-ai-diversification-accelerates-126984"
+    ],
+    "reasoning": "2026年7月29日発表のQ3 FY2026決算で、QCT自動車売上は前年同期比+61%（15.88億ドル、前年同期9.84億ドル）と記録的成長を達成し、会社ガイダンスの約+50%を大きく上回った。23四半期連続の二桁成長を継続し、Q4ガイダンスも約+60%と加速方向。BMWとの複数世代契約でFY2026エグジットランレートも60億→70億ドルへ上方修正。CEOはメモリ・ウェハーコスト上昇を値上げで転嫁済みと説明し、ハンドセット以外への波及は限定的。submitterの想定した『自動車の伸び鈍化・メモリ市況波及』という外れ方向シナリオは実現せず、catalystは不成立（miss）。",
     "catalyst_type": "earnings",
     "date_confidence": "estimated",
     "country": "US",
