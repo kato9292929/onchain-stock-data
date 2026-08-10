@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-08-08T21:25:56.577Z",
+  "updated_at": "2026-08-10T21:36:29.369Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -618,6 +618,106 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-08-04",
       "success_condition": "8/4予定の1Q決算でパワー半導体・電力事業が営業利益前年同期比+15%超なら再評価。",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "2026年8月上旬発表の1Q決算でSoC/HBMテスタ受注が前年同期比+30%超かつ通期ガイダンス上方修正なら買い継続",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-08-12",
+      "success_condition": "8月中旬の1Q決算でICパッケージ基板売上が前四半期比+10%超、下期のAI向け新ライン稼働率言及があれば再評価",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "3110",
+      "catalyst_target_date": "2026-08-10",
+      "success_condition": "8月上旬の1Q決算でスペシャルガラスクロス（Tガラス/NEガラス）売上が前年同期比+25%超なら上振れ確認",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-08-14",
+      "success_condition": "8月中旬公表の7月月次出荷高が前年同月比+20%超、または四半期出荷が会社計画上振れなら継続保有",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6787",
+      "catalyst_target_date": "2026-08-07",
+      "success_condition": "8月上旬の1Q決算でAIサーバ向け高多層基板売上が前年同期比+30%超、通期上方修正なら追随",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6323",
+      "catalyst_target_date": "2026-09-11",
+      "success_condition": "9月上旬の本決算でウェハ搬送装置受注残が過去最高更新、来期ガイダンス+15%超なら評価上げ",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6920",
+      "catalyst_target_date": "2026-08-14",
+      "success_condition": "8月中旬の本決算でEUVマスク検査（ACTIS）受注件数が2桁台なら見直し買い、通期売上ガイダンス+10%超が条件",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "2802",
+      "catalyst_target_date": "2026-08-06",
+      "success_condition": "8月上旬の1Q決算で電子材料（ABFフィルム）売上が前年同期比+15%超、通期上方修正なら評価継続",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6594",
+      "catalyst_target_date": "2026-08-20",
+      "success_condition": "8月中旬の月次でデータセンター向け水冷／サーバファン受注が前年同月比+25%超なら継続",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-08-10",
+      "ticker": "6504",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10月末発表の2Q決算でパワー半導体売上が前年同期比+15%超、SiC能力増強計画のアップデートで通期上方修正なら買い増し",
       "status": "pending",
       "evaluated_at": null,
       "evidence_url": null,
