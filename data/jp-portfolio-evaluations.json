@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-08-10T21:36:29.369Z",
+  "updated_at": "2026-08-11T21:42:10.498Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -618,10 +618,10 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-08-04",
       "success_condition": "8/4予定の1Q決算でパワー半導体・電力事業が営業利益前年同期比+15%超なら再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-08-11T21:42:10.498Z",
+      "evidence_url": "https://global-net.co.jp/archives/13556",
+      "reasoning": "富士電機は2026年7月30日（当初予定8/4より前倒し的タイミング）に2027年3月期(2026年度)第1四半期決算を発表。全社では売上高+10.2%・営業利益+38.3%と過去最高更新で通期営業利益も1,565億円に上方修正されたが、success_conditionの中核である『パワー半導体』（半導体セグメント）は売上高544億円(-0.7%)・営業利益31億円で前年同期比-37.3%と大幅減益。xEV向けパワー半導体の需要減少と原材料価格高騰が響いた。電力（エネルギー）事業はデータセンタ・半導体工場向け受変電設備需要で好調とされ通期上方修正の主因になっているが、パワー半導体側が+15%超どころか大幅減益となっているため、『パワー半導体・電力事業が営業利益前年同期比+15%超』の条件は満たさない。判定はmiss。"
     },
     {
       "week_of": "2026-08-10",
