@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-08-11T21:42:10.498Z",
+  "updated_at": "2026-08-13T22:04:28.364Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -28,10 +28,10 @@
       "ticker": "2802",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5前後の1Q決算で電子材料セグメント売上が前年比+20%超ならABF需要拡大の再確認で上昇。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:44:46.287Z",
+      "evidence_url": "https://www.itmedia.co.jp/news/article/2608/07/2000000437/",
+      "reasoning": "2026年8月6日発表の2027年3月期1Q決算で、電子材料等を含むファンクショナルマテリアルズ事業の売上高は前年同期比154%（+54%）と、success_conditionの『前年比+20%超』を大幅に上回った。事業利益も同177%と伸長し、AI・サーバ向け高性能基板用ABFの需要好調を反映して通期業績予想も売上90億円・事業利益50億円の上方修正を実施。ABF需要拡大の再確認という catalyst の趣旨に合致し、hit と判定。"
     },
     {
       "week_of": "2026-06-22",
@@ -68,10 +68,10 @@
       "ticker": "7729",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6前後の1Q決算で半導体製造装置受注が前年同期比+30%超ならHBM裏面研削需要の取り込みで再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:46:03.215Z",
+      "evidence_url": "https://www.accretech.com/jp/ir/index/main/04/teaserItems2/0/linkList/05/link/BR_2027-3_1q_J_2.pdf",
+      "reasoning": "2026年8月4日開示の2027年3月期第1四半期決算説明会資料で、半導体製造装置部門の受注高が前年同期比『倍増』（約+100%）と明記され、success_conditionの+30%超を大幅に上回った。全社受注高も658億円で既往ピーク更新、半導体単体で500億円超。会社は半導体での強い引合い継続とキャパ増強のための追加投資検討開始も表明し、通期売上高+75億円・営業利益+40億円の上方修正を実施。HBM・生成AI関連需要の取り込みが裏付けられており、catalystは達成。"
     },
     {
       "week_of": "2026-06-22",
@@ -158,20 +158,20 @@
       "ticker": "3110",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5前後の1Q決算でグラスファイバ事業の営業利益が前年同期比+30%超ならAI基板向け特殊ガラスクロス需給逼迫を裏付け。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-08-13T21:46:52.658Z",
+      "evidence_url": "https://finance.yahoo.co.jp/quote/3110.T/disclosure",
+      "reasoning": "日東紡（3110）の2027年3月期 第1四半期決算短信の発表予定日は2026年8月5日で、Yahoo!ファイナンスの適時開示欄・株予報Pro・日経会社情報DIGITALのTDnetカレンダーで発表予定日として確認できる。ただし現在の週は2026-06-29であり、対象日付（8/5）まで約5週間先で、1Q決算短信はまだ開示されていない。したがってグラスファイバ事業の営業利益前年同期比+30%超という success_condition の達否を、決算短信・適時開示・IR資料から判定するための一次情報が存在せず、判定不能（na）。なお背景としては、日経報道（2026年2月・2025年9月）や複数の解説記事で、AIサーバー・パッケージ基板向けTガラス／NEガラスクロスの需給逼迫と福島新棟増設が確認されており、条件達成に向けたマクロ環境自体は追い風だが、これは1Q決算数値の実測を代替するものではない。"
     },
     {
       "week_of": "2026-06-29",
       "ticker": "2802",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予定の1Q決算で機能材料（ABF）売上が前年同期比+20%超なら先端パッケージ需要の継続を確認。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:47:47.559Z",
+      "evidence_url": "https://www.itmedia.co.jp/news/article/2608/07/2000000437/",
+      "reasoning": "2026年8月6日発表の2027年3月期第1四半期決算で、機能材料（ファンクショナルマテリアルズ、ABFが中核）の売上は前年同期比+54%（報道では『154%』水準）、事業利益は+77%と、success_condition『前年同期比+20%超』を大幅に上回った。AI・サーバ・ネットワーク向け高性能基板用ABF需要が好調で、会社は通期売上・事業利益・純利益予想をいずれも上方修正しており、先端パッケージ需要の継続が明確に確認できる。日経・ITmedia・株探・BigGo Finance・Investing.com（英文プレゼン要約）等で数値と方向性が一致。判定はhit。"
     },
     {
       "week_of": "2026-06-29",
@@ -228,10 +228,10 @@
       "ticker": "6857",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予定の1Q決算でSoCテスタ売上が前年比+30%以上かつ通期上方修正なら続伸",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:49:00.261Z",
+      "evidence_url": "https://www.advantest.com/ja/news/2026/qnpuno0000000cnr-att/J_FR_FY2026_1Q.pdf",
+      "reasoning": "決算発表は当初予定の8/6より前倒しの2026年7月29日に実施。1Q売上高3,675億円(前年同期比+39.3%)、営業利益1,900億円(+53.3%)、純利益1,748億円(+93.8%)といずれも四半期過去最高。SoCテスタを含むテストシステム事業部門の売上は3,336億円(+38.7%)で+30%基準を明確に上回り、会社側もSoCテストシステムで高性能SoC向け売上が『大幅に増加』と明記。さらに通期予想を売上高1兆4,200億→1兆7,140億円、営業利益6,275億→8,460億円、純利益4,655億→6,600億円へ大幅上方修正(市場コンセンサス超過)。翌7/30は大幅反発、31日も+16.34%と続伸しており、success_condition(1QのSoCテスタ売上前年比+30%以上かつ通期上方修正→続伸)を全項目で充足。"
     },
     {
       "week_of": "2026-07-06",
@@ -248,10 +248,10 @@
       "ticker": "3110",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5前後の1Q決算でTガラスクロス数量が前年比+20%超なら上放れ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-08-13T21:50:21.769Z",
+      "evidence_url": "https://finance.yahoo.co.jp/quote/3110.T/ai-topics",
+      "reasoning": "2026年8月5日発表の日東紡（3110）2027年3月期第1四半期決算短信では、電子材料事業の売上高が14,589百万円（前年同四半期比+29.5%）、営業利益が7,036百万円（同+70.0%）と大幅増収増益で、AIサーバー向けスペシャルガラス・低熱膨張ガラス（Tガラスクロス基材含む）の販売増加が明記され、通期予想も営業利益260億円→300億円へ上方修正された。ただし決算短信ではTガラスクロス『数量』単独での前年比数値は明示されておらず、電子材料事業全体は金額ベースで+29.5%増収と方向性はsuccess_conditionを支持する。一方で株価は8/5に前日比+12.15%（3,555円）まで上昇した後、翌8/6には-17.92%（2,918円）へ急反落しており、success_conditionの結果条件『上放れ』は実現しなかった。したがって決算内容は概ね好調（partial寄り）だが、最終判定の主眼である『上放れ』が達成されなかったためmissと判定する。"
     },
     {
       "week_of": "2026-07-06",
@@ -308,10 +308,10 @@
       "ticker": "7729",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予定の1Q決算でプローバ受注が前年比+20%超なら評価見直し",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:54:53.655Z",
+      "evidence_url": "https://www.accretech.com/jp/ir/index/main/04/teaserItems2/0/linkList/05/link/BR_2027-3_1q_J_2.pdf",
+      "reasoning": "2026/8/4開示の東京精密2027/3期1Q決算説明会資料および決算短信で、全社受注高は658億円と既往ピークを更新し、うち半導体受注は500億円超。プローバは上期受注構成比7割半ばで『好況継続』と明言、通期業績予想と設備投資計画を上方修正しプローバ中心に生産能力を増強すると発表。前年1Qが4.1%受注減で着地していたことを踏まえると、プローバ受注は前年同期比+20%を大きく上回る蓋然性が極めて高い。会社が四半期別のプローバ単独受注額を非開示のため厳密な数値照合はできないが、既往ピーク更新・上方修正・プローバ主導という材料構成はsuccess_conditionの『評価見直し』の趣旨を満たすと判断しhit。"
     },
     {
       "week_of": "2026-07-06",
@@ -328,10 +328,10 @@
       "ticker": "6857",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予定の1Q決算でHBMテスタ需要拡大により通期売上高ガイダンスを5%以上上方修正なら再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:55:45.924Z",
+      "evidence_url": "https://kabutan.jp/news/?b=k202607290036",
+      "reasoning": "Advantest（6857）は当初8/6予定の1Q決算を7/29に前倒し発表。通期売上高予想を1兆4,200億円→1兆7,140億円へ+20.7%（+2,940億円）上方修正し、営業利益も6,275億円→8,460億円へ+34.8%上方修正。AI/HBM関連テスタ需要拡大とテスタ市場規模見通し引き上げが背景と明示されており、success_conditionの『5%以上上方修正』を大きく超過。市場コンセンサス（営業利益約6,900億円）も上回り、決算翌日から株価は+10.85%、+16.34%と大幅高で反応。判定はhit。"
     },
     {
       "week_of": "2026-07-13",
@@ -348,10 +348,10 @@
       "ticker": "2802",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5予定の1Q決算で電子材料ABF部門が前年同期比+20%超の増収なら再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:56:46.484Z",
+      "evidence_url": "https://www.ajinomoto.co.jp/company/jp/ir/event/presentation/main/011111110/teaserItems1/00/linkList/01/link/FY25Q1_Results_J.pdf",
+      "reasoning": "2026年8月5日発表の1Q決算にて、電子材料を含むファンクショナルマテリアルズ事業の売上は前年同期比+54%（決算スライドではFunctional Materials部門で+154%との記載）と、success_conditionの+20%超を大幅に上回る増収を達成。事業利益もセグメントとして+177%増、通期ガイダンスも上方修正されており、AIサーバー向けABF需要による大幅増収が確認できるためhit判定。"
     },
     {
       "week_of": "2026-07-13",
@@ -398,10 +398,10 @@
       "ticker": "6787",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5予定の1Q決算でAIサーバ向け高多層基板売上比率が20%超なら再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-08-13T21:58:19.390Z",
+      "evidence_url": "https://s.kabutan.jp/stocks/6787/news/",
+      "reasoning": "catalyst_target_date は 2026-08-05 だが、メイコー(6787)の 2027年3月期1Q決算は実際には 2026-08-06 15:30 に開示された（週 2026-07-13 時点では未発表）。株探の速報で『4-6月期(1Q)経常は14％増益で着地』が確認でき、決算補足説明資料も同日開示。ただし success_condition の核心である『AIサーバ向け高多層基板の売上比率が20%超』という具体的KPIの数値開示は、決算短信・補足説明資料・IR資料・報道いずれからも確認できない。同社の連結セグメントは『電子回路基板等100%』の単一セグメント開示で、用途別の売上比率をピンポイントに開示していない。定性的には『衛星通信やAIサーバー向け基板の生産をベトナム第4工場で拡大』との言及があり方向性は合致するが、20%超という定量条件の充足可否は判定材料が不足しているため『na』とする。参考までに、市場反応は決算翌日に前日比-4.07%（23,790円）と売られており、AI向けの構成比が期待通りだったかどうかの直接的裏付けにはならない。"
     },
     {
       "week_of": "2026-07-13",
@@ -478,30 +478,30 @@
       "ticker": "3110",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予想の第1四半期決算でTガラスクロス寄与により営業利益前年比+30%超なら評価継続",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:59:12.246Z",
+      "evidence_url": "https://www.nikkei.com/nkd/disclosure/tdnr/20260805509788/",
+      "reasoning": "2026年8月5日開示の2027年3月期第1四半期決算短信で、営業利益は79.43億円・前年同期比+84.8%と、success_conditionの+30%超を大幅に上回った。AIサーバー向け電子材料（Tガラス／スペシャルガラス）を含む電子材料事業が業績を牽引した旨も明示され、寄与要因も一致。同日に通期営業利益予想も300億円へ上方修正されており、catalystは明確に達成（hit）と判定。発表日は8/6の1営業日前倒しだが、対象日付近の公表であり判定に影響しない。"
     },
     {
       "week_of": "2026-07-27",
       "ticker": "2802",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予想の第1四半期決算で電子材料(ABF)売上が前年比+20%超なら電子材料再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T21:59:54.654Z",
+      "evidence_url": "https://www.itmedia.co.jp/news/article/2608/07/2000000437/",
+      "reasoning": "2026年8月6日発表の2027年3月期第1四半期決算で、ABFを中核製品とするファンクショナルマテリアルズ（電子材料）事業の売上高は前年同期比154%（=+54%）、事業利益は同177%と大幅増。AI・高性能サーバ・ネットワーク機器向けABF販売好調を背景に通期予想も上方修正（売上高1兆7,320億円、事業利益2,020億円）。success_conditionの『電子材料(ABF)売上前年比+20%超』を大幅に上回っており、電子材料再評価の材料として明確にヒット。日経・時事通信・ITmedia等の複数媒体で確認。"
     },
     {
       "week_of": "2026-07-27",
       "ticker": "6787",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予想の第1四半期決算でAIサーバ向け基板寄与により営業利益前年比+25%超なら続伸",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-08-13T22:01:36.445Z",
+      "evidence_url": "https://finance.stockweather.co.jp/contents/dispPDF.aspx?disclosure=20260806511250",
+      "reasoning": "2026/8/6発表の27年3月期1Q決算は、売上高732億円(前年比+38.0%)、PCB売上+41.0%とAIサーバ向け基板寄与で増収基調だが、営業利益は5.6→6.1億円で前年同期比+8.7%(株探報道の経常利益は+14%)にとどまり、success_conditionの『+25%超』を大きく未達。PCB営業利益率が11.2%→9.3%へ低下、電子機器セグメントは0.8→0.5億円へ営業減益(-37.5%)と、増収に対して利益率が悪化。株価も決算当日8/6終値23,790円で前日比-4.07%と大幅下落し『続伸』条件も未達。よってmiss判定。"
     },
     {
       "week_of": "2026-07-27",
@@ -528,10 +528,10 @@
       "ticker": "6857",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8/6予定の1Q決算でHBM向けSoCテスタ受注が前年同期比+30%超・通期上方修正なら再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-13T22:02:58.708Z",
+      "evidence_url": "https://www.advantest.com/ja/news/2026/qnpuno0000000cnr-att/J_FR_FY2026_1Q.pdf",
+      "reasoning": "決算は2026年7月29日（catalyst_target_dateの8月6日より前倒し）に発表。1Q（4-6月）は売上高3,675億円(前年同期比+39.3%)・営業利益1,900億円(+53.3%)・純利益1,748億円(+93.8%)と四半期ベースで過去最高を更新。通期予想も売上高1兆4,200億円→1兆7,140億円、営業利益6,275億円→8,460億円(前期比+69.5%)、純利益4,655億円→6,600億円へ大幅上方修正。上方修正の主因はAI関連半導体、特に推論用AI半導体向けテスト需要が期初想定を大きく上回ることで、SoCテスタ出荷が牽引したと明示。したがってsuccess_conditionの『通期上方修正』は完全に満たし、AI/メモリ関連テスタ需要の方向性も条件と整合。ただしHBM向けSoCテスタに絞った受注の前年同期比+30%超という数値は、決算短信・適時開示ではHBM向けSoCテスタ単独カテゴリの受注YoYを個別に開示しておらず、数値カットでの厳密な検証は不能。総合的には条件の質的部分と通期上方修正は達成しているが、狭義の数値条件が直接確認できないため『partial』と判定。"
     },
     {
       "week_of": "2026-08-03",
@@ -578,10 +578,10 @@
       "ticker": "2802",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5予定の1Q決算で電子材料（ABF）売上が前年同期比+15%超なら評価継続。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T22:03:46.093Z",
+      "evidence_url": "https://www.itmedia.co.jp/news/article/2608/07/2000000437/",
+      "reasoning": "2026年8月6日発表の2027年3月期1Q決算で、ABFを中核とするファンクショナルマテリアルズ（電子材料等）セグメントの売上高が前年同期比154%（+54%）、事業利益が同177%と大幅増収増益。AI・サーバ・ネットワーク向け高性能基板用ABF販売好調が要因で、通期業績予想も上方修正（売上高1兆7320億円、事業利益2020億円）。success_conditionの『電子材料（ABF）売上が前年同期比+15%超』を大幅に上回り明確に達成、評価継続に該当する。なお発表日は8月5日ではなく8月6日で1日ずれた。"
     },
     {
       "week_of": "2026-08-03",
@@ -698,10 +698,10 @@
       "ticker": "2802",
       "catalyst_target_date": "2026-08-06",
       "success_condition": "8月上旬の1Q決算で電子材料（ABFフィルム）売上が前年同期比+15%超、通期上方修正なら評価継続",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-13T22:04:28.362Z",
+      "evidence_url": "https://www.itmedia.co.jp/news/article/2608/07/2000000437/",
+      "reasoning": "2026年8月6日大引け後に味の素（2802）は2027年3月期第1四半期決算を発表。<cite index=\"5-3\">第1四半期（4～6月）の実績で、ファンクショナルマテリアルズ（電子材料等、中核製品はABF＝味の素ビルドアップフィルム）は売上高が前年同期比154％、事業利益が同177％と大幅に伸びた</cite>ため、success_conditionの『ABFフィルム売上前年同期比+15%超』を大きく上回って達成（+54%）。加えて、<cite index=\"5-1,5-2\">2027年3月期の通期業績予想を上方修正し、AI・サーバ・ネットワーク向け高性能基板用電子材料販売の好調を反映して売上高を前回予想から90億円引き上げた1兆7320億円、事業利益を50億円増額した2020億円になる見通し</cite>とし、<cite index=\"3-2\">純利益も従来予想から35億円上方修正して1235億円</cite>とした。上方修正の要因は<cite index=\"3-3\">前期に本社ビルの売却益406億円を計上した反動で減益となるものの、AI向けサーバー需要の伸びなどを背景に半導体向け電子材料の需要が想定を上回る</cite>ためで、ABFを含む電子材料が業績を牽引。ABF売上+15%超と通期上方修正の両条件をクリアしており評価継続に該当。"
     },
     {
       "week_of": "2026-08-10",
