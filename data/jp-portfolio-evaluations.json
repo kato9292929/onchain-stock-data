@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-08-13T22:04:28.364Z",
+  "updated_at": "2026-08-14T21:35:16.122Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -38,10 +38,10 @@
       "ticker": "3110",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7前後の1Q決算でグラスファイバー事業の営業利益が前年同期比2倍以上なら、低誘電ガラスクロス需要拡大を再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-14T21:22:32.592Z",
+      "evidence_url": "https://finance.biggo.jp/news/jpx_tdnet_140120260805509788",
+      "reasoning": "2027年3月期1Q（2026/8/5開示）の電子材料事業（グラスファイバー本業）営業利益は7,036百万円で前年同期比+70.0%（1.7倍）にとどまり、success_conditionの『前年同期比2倍以上』は未達。ただし、AIサーバー・データセンター向け低誘電スペシャルガラス／ガラスクロス需要と価格改定効果により、電子材料売上+29.5%、全社営業利益+84.8%、通期予想上方修正（営業利益300億円）と、低誘電ガラスクロス需要拡大の方向性は明確に確認できるため、hitではなくpartialと判定。"
     },
     {
       "week_of": "2026-06-22",
@@ -98,10 +98,10 @@
       "ticker": "6787",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7前後の1Q決算でAI/データセンター向けPCB売上比率が30%超かつ営業利益率10%超ならマルチプル拡大。",
-      "status": "pending",
-      "evaluated_at": null,
+      "status": "na",
+      "evaluated_at": "2026-08-14T21:23:01.710Z",
       "evidence_url": null,
-      "reasoning": null
+      "reasoning": "対象週 2026-06-22 時点では、catalyst_target_date 2026-08-07 前後に予定される 2027年3月期 第1四半期決算はまだ発表されていない（約6週間先）。web 検索でも当該1Qの決算短信や適時開示、IR資料は確認できず、AI/データセンター向けPCB売上比率30%超および営業利益率10%超の達成可否を判定する一次情報が存在しないため 'na' とする。"
     },
     {
       "week_of": "2026-06-22",
@@ -128,10 +128,10 @@
       "ticker": "4062",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7予定の26/3期1Q決算で電子事業売上が前年同期比+25%超ならAIサーバ向けABF基板の数量回復を確認しリレート。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-14T21:23:33.608Z",
+      "evidence_url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20260804/20260731504718.pdf",
+      "reasoning": "2026年8月4日発表の2027年3月期1Q決算短信で、電子事業売上高は前年同期比+37.7%増の775億円となり、success_conditionの『+25%超』を大幅にクリア。生成AIサーバー向け・汎用サーバー向け高機能ICパッケージ基板の需要が想定を上回ったことが牽引役で、AIサーバ向けABF基板の数量回復が明確に確認された。通期営業利益予想も900億→1,270億円へ+41.1%上方修正され、リレート根拠として十分。発表日は当初予定8/7から8/4に前倒し。"
     },
     {
       "week_of": "2026-06-29",
@@ -178,10 +178,10 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8月上旬の本決算でEUVマスク検査装置の受注残が前四半期比増加に転じれば中期成長懸念が後退。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-14T21:25:24.271Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260806511603.pdf",
+      "reasoning": "2026年8月6日発表の2026年6月期本決算で、半導体関連装置（EUVマスク/ブランクス検査装置ACTISが主力）の受注高が1,722億円（前期比+208.5%）と急回復し、期末受注残高は3,013億円と高水準を維持。Q3時点で会社が受注高予想を1,700-2,200億→2,000-2,400億へ上方修正し、Q4に『ACTIS A200HiT』等のEUV系新規受注が加わって通期受注は2,375億円まで積み上がった。前四半期比で受注残は増加方向に転じたと判断され、さらに2027年6月期に売上高+25.8%・営業利益+18.8%の増収増益ガイダンスを提示したことから、中期成長懸念の後退というsuccess_conditionは達成された。ただしEUV検査装置単体の受注残数値の切り出し開示はなく、半導体関連装置一括の数値で評価している点は留意。"
     },
     {
       "week_of": "2026-06-29",
@@ -198,30 +198,30 @@
       "ticker": "6787",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/上旬の1Q決算で営業利益が前年同期比+20%超ならAIサーバ向け多層基板の利益寄与を確認。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-14T21:26:46.187Z",
+      "evidence_url": "https://finance.stockweather.co.jp/contents/dispPDF.aspx?disclosure=20260806511250",
+      "reasoning": "2026/8/6発表のFY2026 Q1決算で、売上高は前年同期比+38.0%（¥73.2B）、うちPCBセグメントが+41.0%と大幅増収でAIサーバ向け多層基板の需要拡大を示唆。しかし全社営業利益は前年5.6B→今期6.1B（+0.5B、+8.7%）にとどまり、success_conditionの『前年同期比+20%超』は未達。電子機器セグメント営業利益が0.8B→0.5B（-37.5%）と足を引っ張り、全社営業増益率を圧迫した。PCBセグメント営業利益は+16.7%でAIサーバ向け多層基板の利益寄与自体は確認できるため、方向性は合うが基準未達のpartialと判定。"
     },
     {
       "week_of": "2026-06-29",
       "ticker": "7729",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/上旬の1Q決算で半導体製造装置受注が前年同期比+25%超ならプロービング/ダイシング装置の構造的伸長を確認。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-14T21:27:57.480Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260804508092.pdf",
+      "reasoning": "東京精密(7729)は2026年8月4日に2027年3月期第1四半期決算を開示。決算説明会資料によれば、1Qの半導体製造装置部門の受注高は532億円で、会社想定を100億円以上上回り、前年同期比で半導体製造装置部門は『倍増』（約+96%、前年同期271億円 → 532億円）、全社受注高も前年同期比+83%と、生成AI/HPC・中国案件・OSAT向けを主因に極めて強い水準。success_conditionの『半導体製造装置受注 前年同期比+25%超』を大幅に上回り達成。加えて通期業績予想も売上高+75億円/営業利益+40億円の上方修正、設備投資計画も+40億円上方修正で、プロービング／ダイシング等半導体製造装置の構造的伸長が裏付けられた。したがって判定は hit。"
     },
     {
       "week_of": "2026-06-29",
       "ticker": "6590",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8月上旬の1Q決算でHBM向け洗浄/アニール装置を含む受注が前年同期比+30%超なら中小型後工程装置として再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-14T21:28:57.423Z",
+      "evidence_url": "https://finance.yahoo.co.jp/quote/6590.T",
+      "reasoning": "芝浦メカトロニクス（6590）は2026年8月6日に2027年3月期第1四半期決算短信を開示。売上高200億円（前年同期比▲7.0%）、営業利益28.5億円（同▲29.9%）と減収減益ながら、受注高は前年同期比+190.5%増と急拡大。生成AI用GPU向け先端パッケージ装置（後工程）の需要拡大とメモリ向け設備投資が背景で、同社が強みとする洗浄・アニール等の後工程装置カテゴリを含む受注全体が success_condition の閾値（+30%超）を大幅に上回った。開示資料内で『HBM』の固有語は本検索では直接確認できないものの、メモリ向け設備投資拡大と後工程装置需要という同条件の趣旨に整合。数値基準は明確に達成しているため hit と判定。なお株価は決算後に下落（4,980円→4,310円）しており減益反応が優勢で、市場の『再評価』が即時実現したかは別途要注意。"
     },
     {
       "week_of": "2026-07-06",
@@ -258,10 +258,10 @@
       "ticker": "2802",
       "catalyst_target_date": "2026-08-05",
       "success_condition": "8/5の1Q決算で電子材料(ABF)売上が前年比+25%超なら関連セクター牽引",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-14T21:34:43.132Z",
+      "evidence_url": "https://ng.investing.com/news/stock-market-news/ajinomoto-raises-fullyear-profit-guidance-on-strong-q1-results-93CH-2642205",
+      "reasoning": "味の素(2802)は2026年8月6日に2027年3月期第1四半期決算を発表。ABF製品を含むファンクショナルマテリアルズ事業の売上高は前年同期比+54%と、市場予想の30-40%を大きく上回り、success_conditionの+25%超を明確にクリア。AIサーバー向けABFの旺盛な需要が牽引し、事業利益は+27.3%（600億円）で四半期過去最高、通期ガイダンスも上方修正。半導体材料セクター牽引の条件も満たしたとみられる。"
     },
     {
       "week_of": "2026-07-06",
@@ -298,10 +298,10 @@
       "ticker": "6787",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7予定の1Q決算で車載/AI基板売上が前年比+15%超なら上振れ",
-      "status": "pending",
-      "evaluated_at": null,
+      "status": "na",
+      "evaluated_at": "2026-08-14T21:35:14.501Z",
       "evidence_url": null,
-      "reasoning": null
+      "reasoning": "判定基準日である2026年8月7日の1Q決算発表は、確認時点（週:2026-07-06）ではまだ実施されていない。複数の情報源で次回決算発表は『2026/08 上旬』の1Q決算と記載されており、実績値（車載/AI基板売上の前年比伸び率）が開示されていないため、success_condition（車載/AI基板売上が前年比+15%超）の達成可否は現時点で判定不能。なお2026年3月期通期は売上高2,405.74億円（前期比+16.3%）と車載向け・情報通信向け基板の需要拡大が牽引したとの記載はあるが、これは前期の通期実績であり、今回の1Q判定の直接的な材料にはならない。"
     },
     {
       "week_of": "2026-07-06",
