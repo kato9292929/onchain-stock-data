@@ -21,7 +21,7 @@
 /* Fallback display font (local) — primary is BubbledotICG-FinePos via CDN. */
 @font-face {
   font-family: "Geist Pixel Circle";
-  src: url("fonts/GeistPixel-Circle.woff2") format("woff2");
+  src: url("/landing/fonts/GeistPixel-Circle.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }

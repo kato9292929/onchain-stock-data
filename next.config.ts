@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    // Serve the static landing page (public/landing/index.html) at the site
+    // root. `beforeFiles` is required so this wins over the app-router `/`
+    // page; other routes (/portfolio, /catalysts, /api/*, …) are untouched.
+    return {
+      beforeFiles: [{ source: "/", destination: "/landing/index.html" }],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
+
   async redirects() {
     // Page routes only — the old /alpha* pages now live at /portfolio.
     // NOTE: API routes (/api/alpha/*) are intentionally NOT redirected; they
