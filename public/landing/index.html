@@ -78,42 +78,68 @@
         </div>
 
         <h1 class="headline anim-headline">
-          <span>Intelligence</span>
-          <span>Designed To Evolve</span>
+          <span>Claude-Run</span>
+          <span>Equity Research</span>
         </h1>
 
         <p class="subhead anim" style="--d: 0.28s">
-          Build applications that reason, adapt and collaborate using a modular
-          AI platform designed for production.
+          毎週 Claude が米国株・日本株を各 10 銘柄選定。1 ヶ月で検証できる
+          catalyst を thesis に、SPY / QQQ と日次で比較します。データは x402
+          でオンチェーン購入できます。
         </p>
 
-        <a href="#" class="cta anim" style="--d: 0.4s">Get Started</a>
+        <a href="/portfolio" class="cta anim" style="--d: 0.4s">ポートフォリオを見る</a>
       </main>
 
       <!-- ===================== STATS ===================== -->
       <footer class="stats">
         <div class="stat anim" style="--d: 0.5s">
-          <span class="stat-icon">&lt;</span>
-          <span class="stat-value" data-target="120" data-suffix="ms" data-decimals="0">0ms</span>
-          <span class="stat-label">Inference Time</span>
+          <span class="stat-icon">#</span>
+          <span class="stat-value" data-target="20" data-suffix="" data-decimals="0">0</span>
+          <span class="stat-label">米・日 選定銘柄 / 週</span>
         </div>
         <div class="stat anim" style="--d: 0.58s">
-          <span class="stat-icon">%</span>
-          <span class="stat-value" data-target="99.99" data-suffix="%" data-decimals="2">0.00%</span>
-          <span class="stat-label">Platform Uptime</span>
+          <span class="stat-icon">*</span>
+          <span class="stat-value" data-target="86" data-suffix="" data-decimals="0">0</span>
+          <span class="stat-label">採点中カタリスト</span>
         </div>
         <div class="stat anim" style="--d: 0.66s">
-          <span class="stat-icon">*</span>
-          <span class="stat-value" data-target="24" data-suffix="/7" data-decimals="0">0/7</span>
-          <span class="stat-label">Autonomous Runtime</span>
+          <span class="stat-icon">$</span>
+          <span class="stat-value" data-target="0.01" data-suffix="" data-decimals="2">0.00</span>
+          <span class="stat-label">x402 単価 (USDC)</span>
         </div>
         <div class="stat anim" style="--d: 0.74s">
-          <span class="stat-icon">#</span>
-          <span class="stat-value" data-target="2.4" data-suffix="M" data-decimals="1">0.0M</span>
-          <span class="stat-label">Context Windows</span>
+          <span class="stat-icon">@</span>
+          <span class="stat-value" data-target="2" data-suffix="" data-decimals="0">0</span>
+          <span class="stat-label">対応マーケット US / JP</span>
         </div>
       </footer>
     </div>
+
+    <!-- ===================== SUMMARIES ===================== -->
+    <section class="summaries">
+      <div class="summary-grid">
+        <a class="summary-card" href="/portfolio">
+          <h2 class="summary-title">Portfolio</h2>
+          <p class="summary-body">
+            毎週 Claude が米国株・日本株を各 10 銘柄選定。各銘柄に 1 ヶ月の検証可能な
+            catalyst（thesis）を付け、$10,000 起点で SPY / QQQ と日次比較します。
+            米国は <code>/api/alpha/portfolio/current</code>、日本は
+            <code>/api/alpha/jp/portfolio/current</code> で公開。
+          </p>
+          <span class="summary-link">ポートフォリオを見る →</span>
+        </a>
+        <a class="summary-card" href="/catalysts">
+          <h2 class="summary-title">Catalysts</h2>
+          <p class="summary-body">
+            「フィジカル AI」特集の日付つき予測 86 件を採点ストアに投入。期日到来後に
+            Claude が HIT / PARTIAL / MISS / N/A で日次採点し、当否を誰でも見られる
+            無料スコアボードにしています。機械可読 JSON も無料公開。
+          </p>
+          <span class="summary-link">スコアボードを見る →</span>
+        </a>
+      </div>
+    </section>
 
     <!-- ===================== MOBILE MENU ===================== -->
     <div class="menu-overlay" hidden></div>

@@ -19,13 +19,41 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  background: #000;
+}
+
 body {
-  background: var(--background);
+  /* Transparent so the shared fixed background video shows through; html paints
+     the black base behind it. */
+  background: transparent;
   color: var(--foreground);
-  /* match the top page (.osd-home) — sans base, with mono reserved for the
-     code/label bits that opt in via font-mono. */
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-    "Noto Sans JP", sans-serif;
+  /* Inter first to match the landing page, then the JP-capable system stack. */
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", "Noto Sans JP", sans-serif;
+}
+
+/* Shared background video (matches the landing top). Sits behind all content
+   via z-index:-1; a dark scrim keeps data tables/charts readable. */
+.site-bg,
+.site-bg-video,
+.site-bg-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-bg {
+  overflow: hidden;
+  background: #000;
+}
+.site-bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.site-bg-scrim {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 a {

@@ -43,24 +43,23 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* ---------- Background video ---------- */
+/* ---------- Background video (fixed so it stays behind on scroll) ---------- */
 .bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: #000;
   overflow: hidden;
   z-index: 0;
 }
 .bg-video {
-  position: absolute;
+  position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
@@ -76,9 +75,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
   padding: clamp(16px, 2.4vh, 28px) clamp(14px, 3vw, 32px);
 }
 
@@ -415,6 +413,80 @@ body.menu-open .burger span:nth-child(3) {
 .stat-label {
   color: var(--muted);
   font-size: clamp(11px, 1.2vw, 12.5px);
+}
+
+/* ============================================================
+   SUMMARIES (below the hero — Portfolio / Catalysts)
+   ============================================================ */
+.summaries {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: clamp(28px, 8vh, 80px) clamp(14px, 3vw, 32px) clamp(40px, 10vh, 96px);
+}
+.summary-grid {
+  width: 100%;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(16px, 2.4vw, 26px);
+}
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(22px, 3vw, 32px);
+  border-radius: 20px;
+  background: rgba(20, 20, 22, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.28s ease, background 0.28s ease;
+}
+.summary-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(28, 28, 31, 0.75);
+}
+.summary-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(22px, 3.4vw, 34px);
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.summary-body {
+  color: #cfcfcf;
+  font-size: clamp(13px, 1.4vw, 14.5px);
+  line-height: 1.7;
+}
+.summary-body code {
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 0.9em;
+  color: #e3c572;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 5px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.summary-link {
+  margin-top: auto;
+  padding-top: 4px;
+  color: #fff;
+  font-weight: 500;
+  font-size: clamp(13px, 1.4vw, 14.5px);
+}
+
+@media (max-width: 720px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
 }
 
 /* ============================================================
