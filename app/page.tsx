@@ -34,6 +34,23 @@ function MiniStat({
   );
 }
 
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  hit: { label: "HIT", className: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  partial: { label: "PARTIAL", className: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  miss: { label: "MISS", className: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  na: { label: "N/A", className: "bg-white/10 text-white/50 border-white/20" },
+  pending: { label: "PENDING", className: "bg-white/5 text-white/45 border-white/15" },
+};
+
+function StatusBadge({ status }: { status: string }) {
+  const s = STATUS_BADGE[status] ?? STATUS_BADGE.pending;
+  return (
+    <span className={`inline-block shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${s.className}`}>
+      {s.label}
+    </span>
+  );
+}
+
 export default async function Home() {
   const [perf, portfolio, catalysts] = await Promise.all([
     getPerformanceHistory().catch(() => null),
@@ -45,6 +62,14 @@ export default async function Home() {
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
 
+  // One representative company per article (prefer a main condition), so the top
+  // page lists all six Physical-AI article groups with a single name each.
+  const pickByArticle = new Map<number, (typeof board.catalysts)[number]>();
+  for (const c of board.catalysts) {
+    if (c.series_article == null || c.catalyst_role === "sub") continue;
+    if (!pickByArticle.has(c.series_article)) pickByArticle.set(c.series_article, c);
+  }
+
   return (
     <>
       <SiteNav />
@@ -55,9 +80,6 @@ export default async function Home() {
           <span>Claude-Run</span>
           <span>Equity Research</span>
         </h1>
-        <Link href="/portfolio" className="landing-cta">
-          View Portfolio
-        </Link>
       </section>
 
       {/* 01 · Catalysts — real overall scoreboard */}
@@ -80,6 +102,33 @@ export default async function Home() {
             <MiniStat label="Pending" value={o.counts.pending} />
           </div>
         </div>
+
+        {/* One company per article (all six Physical-AI groups). */}
+        <div className="mt-4 space-y-2">
+          {board.articles.map((a) => {
+            const c = pickByArticle.get(a.article);
+            return (
+              <div key={a.article} className="terminal-card p-3">
+                <div className="text-[11px] text-white/45">
+                  Article {a.article} · {a.title}
+                </div>
+                {c ? (
+                  <div className="mt-1 flex items-start gap-2">
+                    <span className="font-display text-white">{c.ticker}</span>
+                    <span className="min-w-0 flex-1 text-sm text-white/70">
+                      {c.company_name ? `${c.company_name} — ` : ""}
+                      {c.condition}
+                    </span>
+                    <StatusBadge status={c.status} />
+                  </div>
+                ) : (
+                  <div className="mt-1 text-sm text-white/40">—</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
         <Link href="/catalysts" className="landing-link">
           View scoreboard →
         </Link>
