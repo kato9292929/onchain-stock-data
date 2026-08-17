@@ -18,7 +18,7 @@ export function AllocationBreakdown({
   accentTickers?: Set<string>;
 }) {
   if (!holdings || holdings.length === 0) {
-    return <p className="text-sm text-zinc-500">保有銘柄がありません。</p>;
+    return <p className="text-sm text-white/45">No holdings.</p>;
   }
   const rows = [...holdings].sort((a, b) => b.weight - a.weight);
   const max = Math.max(...rows.map((h) => h.weight), 1);
@@ -27,7 +27,7 @@ export function AllocationBreakdown({
     <div className="terminal-card p-4">
       <div className="flex items-baseline justify-between mb-3">
         <h3 className="font-display text-base text-white">Allocation Breakdown</h3>
-        <span className="text-xs text-white/45">{rows.length} 銘柄</span>
+        <span className="text-xs text-white/45">{rows.length} holdings</span>
       </div>
       <div className="space-y-2">
         {rows.map((h) => {

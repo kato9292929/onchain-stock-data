@@ -430,19 +430,19 @@ body.menu-open .burger span:nth-child(3) {
   justify-content: center;
   padding: clamp(28px, 8vh, 80px) clamp(14px, 3vw, 32px) clamp(40px, 10vh, 96px);
 }
-.summary-grid {
+.summary-stack {
   width: 100%;
-  max-width: 920px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(16px, 2.4vw, 26px);
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vh, 28px);
 }
 .summary-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: clamp(22px, 3vw, 32px);
-  border-radius: 20px;
+  gap: 14px;
+  padding: clamp(26px, 4vw, 44px);
+  border-radius: 24px;
   background: rgba(20, 20, 22, 0.66);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -457,16 +457,23 @@ body.menu-open .burger span:nth-child(3) {
   border-color: rgba(255, 255, 255, 0.24);
   background: rgba(28, 28, 31, 0.75);
 }
+.summary-kicker {
+  font-family: var(--font-display);
+  font-size: clamp(11px, 1.2vw, 13px);
+  letter-spacing: -0.02em;
+  color: #8e8e8e;
+}
 .summary-title {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(22px, 3.4vw, 34px);
+  font-size: clamp(28px, 5vw, 46px);
   letter-spacing: -0.04em;
   color: #fff;
 }
 .summary-body {
+  max-width: 560px;
   color: #cfcfcf;
-  font-size: clamp(13px, 1.4vw, 14.5px);
+  font-size: clamp(13.5px, 1.5vw, 15px);
   line-height: 1.7;
 }
 .summary-body code {
@@ -478,19 +485,21 @@ body.menu-open .burger span:nth-child(3) {
   border-radius: 5px;
   white-space: nowrap;
 }
-.summary-link {
-  margin-top: auto;
-  padding-top: 4px;
-  color: #fff;
-  font-weight: 500;
-  font-size: clamp(13px, 1.4vw, 14.5px);
+.summary-cta {
+  margin-top: 6px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  font-size: clamp(13px, 1.4vw, 14px);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-@media (max-width: 720px) {
-  .summary-grid {
-    grid-template-columns: 1fr;
-    max-width: 480px;
-  }
+.summary-card:hover .summary-cta {
+  transform: translateX(3px);
 }
 
 /* ============================================================

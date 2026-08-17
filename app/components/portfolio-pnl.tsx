@@ -56,7 +56,7 @@ export function PortfolioPnl({
   baseDate: string;
 }) {
   if (!records || records.length === 0) {
-    return <p className="text-sm text-zinc-500">パフォーマンスデータがありません。</p>;
+    return <p className="text-sm text-white/45">No performance data.</p>;
   }
   const last = records[records.length - 1];
   const pVal = (INVEST * last.portfolio_index) / 100;
@@ -68,7 +68,7 @@ export function PortfolioPnl({
       <div className="flex items-baseline justify-between">
         <h3 className="font-display text-base text-white">Profit &amp; Loss</h3>
         <span className="text-xs text-white/45">
-          {baseDate} に $10,000 投資 · as of {last.date}
+          $10,000 invested on {baseDate} · as of {last.date}
         </span>
       </div>
 

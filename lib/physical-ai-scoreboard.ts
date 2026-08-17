@@ -11,12 +11,12 @@ export const SERIES = "physical-ai";
 
 /** Editorial article titles (1-based), matching the six-part series. */
 export const ARTICLE_TITLES: Record<number, string> = {
-  1: "日本・上場企業（決算型 catalyst）",
-  2: "日本・未上場スタートアップ（イベント型）",
-  3: "米国・上場 ロボティクス",
-  4: "米国・上場 半導体・センサ",
-  5: "米国・未上場 ロボット本体",
-  6: "米国・未上場 AI モデル・基盤",
+  1: "Japan · Listed (earnings catalysts)",
+  2: "Japan · Private startups (event-type)",
+  3: "US · Listed robotics",
+  4: "US · Listed semis & sensors",
+  5: "US · Private robot builders",
+  6: "US · Private AI models & infra",
 };
 
 export const JUDGED: EvaluationStatus[] = ["hit", "partial", "miss", "na"];

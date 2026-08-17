@@ -3,8 +3,8 @@ import Link from "next/link";
 /** US / JP segmented switch shared by the two portfolio pages. */
 export function PortfolioToggle({ active }: { active: "us" | "jp" }) {
   const tabs: { key: "us" | "jp"; href: string; label: string }[] = [
-    { key: "us", href: "/portfolio", label: "米国株 US" },
-    { key: "jp", href: "/portfolio/jp", label: "日本株 JP" },
+    { key: "us", href: "/portfolio", label: "US" },
+    { key: "jp", href: "/portfolio/jp", label: "JP" },
   ];
   return (
     <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1 text-sm backdrop-blur">

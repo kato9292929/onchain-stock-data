@@ -46,7 +46,7 @@ export function PortfolioSection({
   enrichmentTickers,
   tickerBaseHref,
   showTargetDate = false,
-  emptyMessage = "今週の選定はまだありません。",
+  emptyMessage = "No selection yet this week.",
 }: {
   title: string;
   subtitle?: React.ReactNode;
@@ -79,25 +79,25 @@ export function PortfolioSection({
       />
 
       {!p ? (
-        <p className="text-sm text-zinc-500">{emptyMessage}</p>
+        <p className="text-sm text-white/45">{emptyMessage}</p>
       ) : (
         <>
-          <div className="text-xs text-zinc-500 flex flex-wrap gap-x-4 gap-y-1">
-            <span>week_of: <span className="text-zinc-300">{p.week_of}</span></span>
-            <span>horizon: <span className="text-zinc-300">{p.horizon}</span></span>
-            <span>model: <span className="text-zinc-300">{p.model}</span></span>
-            <span>generated_at: <span className="text-zinc-300">{p.generated_at}</span></span>
+          <div className="text-xs text-white/45 flex flex-wrap gap-x-4 gap-y-1">
+            <span>week_of: <span className="text-white/75">{p.week_of}</span></span>
+            <span>horizon: <span className="text-white/75">{p.horizon}</span></span>
+            <span>model: <span className="text-white/75">{p.model}</span></span>
+            <span>generated_at: <span className="text-white/75">{p.generated_at}</span></span>
           </div>
 
           {p.rationale && (
-            <div className="terminal-card p-4 text-sm text-zinc-300">
+            <div className="terminal-card p-4 text-sm text-white/80">
               {p.rationale}
             </div>
           )}
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-zinc-500 text-left border-b border-zinc-800">
+              <thead className="text-white/45 text-left border-b border-white/10">
                 <tr>
                   <th className="py-2 pr-4">Ticker</th>
                   <th className="py-2 pr-4">Company</th>
@@ -112,7 +112,7 @@ export function PortfolioSection({
                 {p.holdings.map((h) => {
                   const up = h.ticker.toUpperCase();
                   return (
-                    <tr key={h.ticker} className="border-b border-zinc-900 align-top">
+                    <tr key={h.ticker} className="border-b border-white/5 align-top">
                       <td className="py-2 pr-4">
                         {tickerBaseHref ? (
                           <Link
@@ -125,7 +125,7 @@ export function PortfolioSection({
                           <span className="font-display text-white">{h.ticker}</span>
                         )}
                       </td>
-                      <td className="py-2 pr-4 text-zinc-400">
+                      <td className="py-2 pr-4 text-white/60">
                         <div>{h.company_name}</div>
                         {enrichmentTickers?.has(up) && (
                           <div className="mt-1">
@@ -133,13 +133,13 @@ export function PortfolioSection({
                           </div>
                         )}
                       </td>
-                      <td className="py-2 pr-4 text-right text-zinc-200">
+                      <td className="py-2 pr-4 text-right text-white/85">
                         {h.weight.toFixed(1)}%
                       </td>
-                      <td className="py-2 pr-4 text-right text-zinc-400">
+                      <td className="py-2 pr-4 text-right text-white/60">
                         {showTargetDate ? (h.target_date || "—") : fmtUsd(h.entry_price_usd)}
                       </td>
-                      <td className="py-2 text-zinc-400">{h.thesis}</td>
+                      <td className="py-2 text-white/60">{h.thesis}</td>
                     </tr>
                   );
                 })}
