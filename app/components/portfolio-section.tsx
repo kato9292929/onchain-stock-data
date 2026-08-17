@@ -29,18 +29,12 @@ const fmtUsd = (n?: number) =>
     ? n.toLocaleString("en-US", { style: "currency", currency: "USD" })
     : "—";
 
-function OnchainEnrichment({ ticker }: { ticker: string }) {
+function OnchainEnrichment() {
   return (
     <span className="inline-flex items-center gap-2 flex-wrap">
       <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
         Solana tokenized
       </span>
-      <Link href={`/liquidity?ticker=${ticker}`} className="text-[11px] text-gold">
-        liquidity
-      </Link>
-      <Link href="/holders" className="text-[11px] text-gold">
-        holders
-      </Link>
     </span>
   );
 }
@@ -74,8 +68,8 @@ export function PortfolioSection({
   return (
     <section className="space-y-4">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold">{title}</h2>
-        {subtitle && <p className="text-sm text-zinc-400">{subtitle}</p>}
+        <h2 className="font-display text-xl text-white">{title}</h2>
+        {subtitle && <p className="text-sm text-white/55">{subtitle}</p>}
       </div>
 
       <DataBanner
@@ -123,19 +117,19 @@ export function PortfolioSection({
                         {tickerBaseHref ? (
                           <Link
                             href={`${tickerBaseHref}/${h.ticker}`}
-                            className="text-gold-bright font-bold"
+                            className="font-display text-white"
                           >
                             {h.ticker}
                           </Link>
                         ) : (
-                          <span className="text-gold-bright font-bold">{h.ticker}</span>
+                          <span className="font-display text-white">{h.ticker}</span>
                         )}
                       </td>
                       <td className="py-2 pr-4 text-zinc-400">
                         <div>{h.company_name}</div>
                         {enrichmentTickers?.has(up) && (
                           <div className="mt-1">
-                            <OnchainEnrichment ticker={up} />
+                            <OnchainEnrichment />
                           </div>
                         )}
                       </td>

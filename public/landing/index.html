@@ -44,8 +44,15 @@
     <div class="page">
       <!-- ===================== HEADER ===================== -->
       <header class="site-header">
-        <a class="logo" href="#" aria-label="Home">
-          <img src="/landing/assets/logo.webp" alt="" width="52" height="52" />
+        <a class="logo" href="/" aria-label="Home">
+          <img
+            src="/landing/assets/logo.webp"
+            alt=""
+            width="52"
+            height="52"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+          />
+          <i class="fa-solid fa-chart-line logo-mark" style="display: none"></i>
         </a>
 
         <nav class="nav-pill" aria-label="Primary">
@@ -70,25 +77,12 @@
 
       <!-- ===================== HERO ===================== -->
       <main class="hero">
-        <div class="trust anim" style="--d: 0.05s">
-          <span class="avatar a1"><i class="fa-solid fa-chart-line"></i></span>
-          <span class="avatar a2"><i class="fa-solid fa-robot"></i></span>
-          <span class="avatar a3"><i class="fa-solid fa-link"></i></span>
-          <span class="trust-pill">Claude-run &middot; onchain via x402</span>
-        </div>
-
         <h1 class="headline anim-headline">
           <span>Claude-Run</span>
           <span>Equity Research</span>
         </h1>
 
-        <p class="subhead anim" style="--d: 0.28s">
-          毎週 Claude が米国株・日本株を各 10 銘柄選定。1 ヶ月で検証できる
-          catalyst を thesis に、SPY / QQQ と日次で比較します。データは x402
-          でオンチェーン購入できます。
-        </p>
-
-        <a href="/portfolio" class="cta anim" style="--d: 0.4s">ポートフォリオを見る</a>
+        <a href="/portfolio" class="cta anim" style="--d: 0.28s">ポートフォリオを見る</a>
       </main>
 
       <!-- ===================== STATS ===================== -->

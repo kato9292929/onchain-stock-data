@@ -7,15 +7,15 @@ export function PortfolioToggle({ active }: { active: "us" | "jp" }) {
     { key: "jp", href: "/portfolio/jp", label: "日本株 JP" },
   ];
   return (
-    <div className="inline-flex rounded-lg border border-zinc-800 bg-zinc-900/60 p-1 text-sm">
+    <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1 text-sm backdrop-blur">
       {tabs.map((t) => (
         <Link
           key={t.key}
           href={t.href}
-          className={`px-4 py-1.5 rounded-md hover:no-underline ${
+          className={`px-4 py-1.5 rounded-full transition-colors hover:no-underline ${
             active === t.key
-              ? "bg-gold/15 text-gold-bright font-bold"
-              : "text-zinc-400 hover:text-zinc-100"
+              ? "bg-white text-black font-semibold"
+              : "text-white/55 hover:text-white/90"
           }`}
         >
           {t.label}

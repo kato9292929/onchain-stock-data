@@ -67,7 +67,7 @@ function CatalystRow({
     >
       <div className="flex flex-wrap items-center gap-2">
         {isSub && <span className="text-[10px] font-bold text-zinc-500">補助線</span>}
-        <span className="font-bold text-gold-bright">{c.ticker}</span>
+        <span className="font-display text-white">{c.ticker}</span>
         <span className="text-sm text-zinc-300">{c.company_name ?? ""}</span>
         {typeLabel && (
           <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
@@ -103,7 +103,7 @@ function CatalystRow({
               href={u}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] text-gold underline decoration-dotted"
+              className="text-[11px] text-white/60 underline decoration-dotted"
             >
               根拠 ↗
             </a>
@@ -134,8 +134,10 @@ export default async function CatalystsScoreboardPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="text-2xl font-bold">Physical AI カタログ｜予測スコアボード</h1>
-        <p className="text-sm text-zinc-400">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white">
+          <span className="font-display">Physical AI</span> カタログ｜予測スコアボード
+        </h1>
+        <p className="text-sm text-white/55">
           「フィジカル AI」特集（全 6 記事）で挙げた、日付つきで検証可能な予測を Claude が
           日次で採点します。各条件は期日到来後に{" "}
           <span className="text-emerald-300">HIT</span> /{" "}
@@ -187,7 +189,7 @@ export default async function CatalystsScoreboardPage() {
               </h2>
               <span className="text-xs text-zinc-500">
                 的中率{" "}
-                <span className="font-bold text-gold-bright">
+                <span className="font-semibold text-white">
                   {stat.rate == null ? "—" : `${(stat.rate * 100).toFixed(0)}%`}
                 </span>{" "}
                 ・{stat.judged}/{rows.length} 判定済
@@ -226,15 +228,15 @@ function Metric({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded border border-zinc-800 bg-zinc-950/60 p-2 text-center">
+    <div className="rounded-xl border border-white/10 bg-white/5 p-2 text-center">
       <div
-        className={`text-xl font-bold tabular-nums ${
-          accent ? "text-gold-bright" : "text-zinc-200"
+        className={`text-xl font-semibold tabular-nums ${
+          accent ? "text-white" : "text-white/85"
         }`}
       >
         {value}
       </div>
-      <div className="text-[10px] uppercase tracking-wide text-zinc-500">{label}</div>
+      <div className="text-[10px] uppercase tracking-wide text-white/45">{label}</div>
     </div>
   );
 }

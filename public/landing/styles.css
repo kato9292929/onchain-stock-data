@@ -111,6 +111,10 @@ body {
   height: 72%;
   object-fit: contain;
 }
+.logo .logo-mark {
+  color: #111;
+  font-size: clamp(16px, 1.9vw, 20px);
+}
 .logo:hover {
   transform: scale(1.04);
 }

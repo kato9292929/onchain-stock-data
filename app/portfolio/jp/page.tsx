@@ -27,8 +27,8 @@ function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
   return (
     <div className="terminal-card p-4">
       <div className="flex items-baseline justify-between mb-2">
-        <h3 className="text-sm font-bold text-zinc-200">Catalyst hit-rate</h3>
-        <span className="text-xs text-zinc-500">judged {judged} 件</span>
+        <h3 className="font-display text-base text-white">Catalyst hit-rate</h3>
+        <span className="text-xs text-white/45">judged {judged} 件</span>
       </div>
       <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 text-sm">
         <span className="text-lg font-bold text-emerald-400 tabular-nums">
@@ -68,10 +68,10 @@ export default async function JpPortfolioPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="text-2xl font-bold">Claude Portfolio</h1>
-        <p className="text-sm text-zinc-400">
+        <h1 className="font-display text-3xl sm:text-4xl text-white">Claude Portfolio</h1>
+        <p className="text-sm text-white/55 max-w-2xl">
           AI・半導体・データセンター関連のサプライチェーンから毎週 10 銘柄を選定。日本株は{" "}
-          <code className="text-zinc-300">/api/alpha/jp/portfolio/current</code> で公開。
+          <code className="text-white/75">/api/alpha/jp/portfolio/current</code> で公開。
         </p>
         <PortfolioToggle active="jp" />
       </header>
@@ -93,7 +93,7 @@ export default async function JpPortfolioPage() {
 
       <p className="text-xs text-zinc-600">
         本ポートフォリオは Claude による情報提供であり投資助言ではありません。{" "}
-        <Link href="/portfolio" className="text-gold">
+        <Link href="/portfolio" className="text-white underline decoration-white/30 underline-offset-2">
           米国株 →
         </Link>
       </p>

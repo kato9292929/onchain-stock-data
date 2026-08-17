@@ -46,12 +46,12 @@ export default async function PortfolioPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="text-2xl font-bold">Claude Portfolio</h1>
-        <p className="text-sm text-zinc-400">
+        <h1 className="font-display text-3xl sm:text-4xl text-white">Claude Portfolio</h1>
+        <p className="text-sm text-white/55 max-w-2xl">
           毎週 Claude が選ぶ米国株・日本株の各 10 銘柄。1 ヶ月の検証可能な catalyst を
           thesis に。米国株は{" "}
-          <code className="text-zinc-300">/api/alpha/portfolio/current</code>、日本株は{" "}
-          <code className="text-zinc-300">/api/alpha/jp/portfolio/current</code> で公開。
+          <code className="text-white/75">/api/alpha/portfolio/current</code>、日本株は{" "}
+          <code className="text-white/75">/api/alpha/jp/portfolio/current</code> で公開。
         </p>
         <PortfolioToggle active="us" />
       </header>
@@ -70,7 +70,7 @@ export default async function PortfolioPage() {
           subtitle={
             <>
               週次の選定・入替は{" "}
-              <Link href="/alpha/portfolio/history" className="text-gold">
+              <Link href="/alpha/portfolio/history" className="text-white underline decoration-white/30 underline-offset-2">
                 history
               </Link>{" "}
               を参照。

@@ -26,8 +26,8 @@ export function AllocationBreakdown({
   return (
     <div className="terminal-card p-4">
       <div className="flex items-baseline justify-between mb-3">
-        <h3 className="text-sm font-bold text-zinc-200">Allocation Breakdown</h3>
-        <span className="text-xs text-zinc-500">{rows.length} 銘柄</span>
+        <h3 className="font-display text-base text-white">Allocation Breakdown</h3>
+        <span className="text-xs text-white/45">{rows.length} 銘柄</span>
       </div>
       <div className="space-y-2">
         {rows.map((h) => {
@@ -36,22 +36,22 @@ export function AllocationBreakdown({
           return (
             <div key={h.ticker} className="flex items-center gap-3">
               <div className="w-28 shrink-0 truncate">
-                <span className="text-gold-bright font-bold text-sm">{h.ticker}</span>
+                <span className="font-display text-sm text-white">{h.ticker}</span>
                 {accentTickers?.has(up) && (
                   <span
                     className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 align-middle"
                     title="Solana tokenized"
                   />
                 )}
-                <div className="text-[11px] text-zinc-500 truncate">{h.company_name}</div>
+                <div className="text-[11px] text-white/45 truncate">{h.company_name}</div>
               </div>
-              <div className="flex-1 h-5 rounded bg-zinc-900 overflow-hidden">
+              <div className="flex-1 h-5 rounded-full bg-white/5 overflow-hidden">
                 <div
-                  className="h-full rounded bg-gradient-to-r from-gold/40 to-gold-bright/80"
+                  className="h-full rounded-full bg-gradient-to-r from-white/25 to-white/75"
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <div className="w-14 shrink-0 text-right text-sm text-zinc-200 tabular-nums">
+              <div className="w-14 shrink-0 text-right text-sm text-white/85 tabular-nums">
                 {h.weight.toFixed(1)}%
               </div>
             </div>
