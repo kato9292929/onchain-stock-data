@@ -40,10 +40,10 @@ const WINDOWS: { key: string; days: number }[] = [
 
 function Stat({ label, value, sub, valueTone }: { label: string; value: string; sub?: string; valueTone?: string }) {
   return (
-    <div className="terminal-card p-3">
-      <div className="text-[11px] text-zinc-500">{label}</div>
-      <div className={`text-lg font-bold tabular-nums ${valueTone ?? "text-zinc-100"}`}>{value}</div>
-      {sub && <div className={`text-xs tabular-nums ${valueTone ?? "text-zinc-400"}`}>{sub}</div>}
+    <div className="terminal-card p-4">
+      <div className="text-[11px] text-white/45">{label}</div>
+      <div className={`mt-1 text-2xl font-semibold tabular-nums tracking-tight ${valueTone ?? "text-white"}`}>{value}</div>
+      {sub && <div className={`text-xs tabular-nums ${valueTone ?? "text-white/60"}`}>{sub}</div>}
     </div>
   );
 }
@@ -56,7 +56,7 @@ export function PortfolioPnl({
   baseDate: string;
 }) {
   if (!records || records.length === 0) {
-    return <p className="text-sm text-zinc-500">パフォーマンスデータがありません。</p>;
+    return <p className="text-sm text-white/45">No performance data.</p>;
   }
   const last = records[records.length - 1];
   const pVal = (INVEST * last.portfolio_index) / 100;
@@ -66,9 +66,9 @@ export function PortfolioPnl({
   return (
     <div className="space-y-4">
       <div className="flex items-baseline justify-between">
-        <h3 className="text-sm font-bold text-zinc-200">Profit &amp; Loss</h3>
-        <span className="text-xs text-zinc-500">
-          {baseDate} に $10,000 投資 · as of {last.date}
+        <h3 className="font-display text-base text-white">Profit &amp; Loss</h3>
+        <span className="text-xs text-white/45">
+          $10,000 invested on {baseDate} · as of {last.date}
         </span>
       </div>
 
@@ -89,10 +89,10 @@ export function PortfolioPnl({
         {WINDOWS.map((w) => {
           const r = windowReturn(records, w.days);
           return (
-            <span key={w.key} className="text-zinc-500">
+            <span key={w.key} className="text-white/45">
               {w.key}:{" "}
               {r === null ? (
-                <span className="text-zinc-600">—</span>
+                <span className="text-white/30">—</span>
               ) : (
                 <span className={tone(r)}>{fmtPct(r)}</span>
               )}
@@ -102,7 +102,7 @@ export function PortfolioPnl({
       </div>
 
       <div className="terminal-card p-4">
-        <p className="text-xs text-zinc-500 mb-3">
+        <p className="font-display text-sm text-white/80 mb-3">
           Profit History — Claude Portfolio vs SPY / QQQ (rebased 100 @ {baseDate})
         </p>
         <PerformanceChart records={records} />

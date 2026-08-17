@@ -46,12 +46,12 @@ export default async function PortfolioPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="text-2xl font-bold">Claude Portfolio</h1>
-        <p className="text-sm text-zinc-400">
-          毎週 Claude が選ぶ米国株・日本株の各 10 銘柄。1 ヶ月の検証可能な catalyst を
-          thesis に。米国株は{" "}
-          <code className="text-zinc-300">/api/alpha/portfolio/current</code>、日本株は{" "}
-          <code className="text-zinc-300">/api/alpha/jp/portfolio/current</code> で公開。
+        <h1 className="font-display text-3xl sm:text-4xl text-white">Claude Portfolio</h1>
+        <p className="text-sm text-white/55 max-w-2xl">
+          Ten US and ten JP names picked weekly by Claude, each with a verifiable
+          1-month catalyst. Published at{" "}
+          <code className="text-white/75">/api/alpha/portfolio/current</code> and{" "}
+          <code className="text-white/75">/api/alpha/jp/portfolio/current</code>.
         </p>
         <PortfolioToggle active="us" />
       </header>
@@ -66,14 +66,14 @@ export default async function PortfolioPage() {
 
       {us ? (
         <PortfolioSection
-          title="銘柄と thesis"
+          title="Holdings & thesis"
           subtitle={
             <>
-              週次の選定・入替は{" "}
-              <Link href="/alpha/portfolio/history" className="text-gold">
+              Weekly picks &amp; rotations — see{" "}
+              <Link href="/alpha/portfolio/history" className="text-white underline decoration-white/30 underline-offset-2">
                 history
-              </Link>{" "}
-              を参照。
+              </Link>
+              .
             </>
           }
           history={us}
@@ -81,12 +81,12 @@ export default async function PortfolioPage() {
           tickerBaseHref="/alpha/portfolio"
         />
       ) : (
-        <p className="text-sm text-zinc-500">米国株データを読み込めませんでした。</p>
+        <p className="text-sm text-white/45">Couldn&apos;t load US data.</p>
       )}
 
-      <p className="text-xs text-zinc-600">
-        本ポートフォリオは Claude による情報提供であり投資助言ではありません。表示の損益は
-        base_date 起点のインデックス（保有終値から日次連鎖）に $10,000 を当てた参考値です。
+      <p className="text-xs text-white/40">
+        Informational only — not investment advice. P&amp;L is an index rebased at
+        base_date (daily-chained from holding closes) applied to $10,000.
       </p>
     </div>
   );
