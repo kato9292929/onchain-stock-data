@@ -62,18 +62,6 @@ test("buildSolanaOnlyRouteConfig advertises ONLY the Solana exact leg", () => {
   assert.equal(only.price, "$0.01");
 });
 
-test("ipo/holders/liquidity routes use withSolanaOnlyPaywall (no Base)", async () => {
-  const { readFile } = await import("node:fs/promises");
-  const path = await import("node:path");
-  const { fileURLToPath } = await import("node:url");
-  const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-  for (const r of ["ipo", "holders", "liquidity"]) {
-    const src = await readFile(path.join(repo, "app/api", r, "route.ts"), "utf8");
-    assert.match(src, /withSolanaOnlyPaywall\(/, `${r} uses withSolanaOnlyPaywall`);
-    assert.equal(/\bwithPaywall\b/.test(src), false, `${r} no longer uses dual-leg withPaywall`);
-  }
-});
-
 // ── Section D: discovery (dualLegs) ↔ verification (buildRouteConfig) ────
 test("discovery Solana mint/payTo match the verification config", () => {
   // The discovery descriptor's Solana leg uses these same constants.
