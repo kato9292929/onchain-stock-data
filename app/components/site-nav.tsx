@@ -59,7 +59,7 @@ export function SiteNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative flex-1 whitespace-nowrap px-1.5 py-2 text-center text-sm font-medium tracking-[-0.01em] text-[#2e2e2e] transition-opacity hover:no-underline ${
+                className={`font-display relative flex-1 whitespace-nowrap px-1.5 py-2 text-center text-sm tracking-[-0.02em] text-[#2e2e2e]! transition-opacity hover:no-underline ${
                   active ? "opacity-100" : "opacity-50 hover:opacity-75"
                 }`}
               >
@@ -79,7 +79,7 @@ export function SiteNav() {
         {/* API pill */}
         <Link
           href="/api/alpha/catalysts/physical-ai"
-          className="inline-flex h-12 shrink-0 items-center whitespace-nowrap rounded-full bg-[#28282a] px-5 text-sm font-medium text-[#c8c8c8] transition-all hover:-translate-y-px hover:bg-[#323234] hover:text-white hover:no-underline"
+          className="font-display inline-flex h-12 shrink-0 items-center whitespace-nowrap rounded-full bg-[#28282a] px-5 text-sm text-[#c8c8c8]! transition-all hover:-translate-y-px hover:bg-[#323234] hover:text-white! hover:no-underline"
           style={{ boxShadow: SHADOW }}
         >
           API
