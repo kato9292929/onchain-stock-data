@@ -17,7 +17,7 @@ import {
 
 const DEFAULT_BASE_PAY_TO = "0xC67d94504696960bA0f2e7C3FeE703950734c00A";
 const DEFAULT_SOLANA_PAY_TO = "4s8XQC2WzRfgH8Xiep7ybnCW11VKRCMwxQF6jknx3VPf";
-const DEFAULT_PUBLIC_BASE_URL = "https://osd-coral.vercel.app";
+const DEFAULT_PUBLIC_BASE_URL = "https://osd.x402jp.com";
 
 export const PAY_TO_BASE = (process.env.WALLET_ADDRESS_BASE ??
   DEFAULT_BASE_PAY_TO) as `0x${string}`;
