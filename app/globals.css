@@ -56,9 +56,9 @@
   transform: translateY(-2px) scale(1.02);
 }
 .landing-section {
-  max-width: 1120px;
+  max-width: min(1360px, 94vw);
   margin: 0 auto;
-  padding: clamp(28px, 6vh, 60px) 20px;
+  padding: clamp(28px, 6vh, 60px) clamp(20px, 3vw, 40px);
 }
 .landing-kicker {
   font-family: var(--font-display);

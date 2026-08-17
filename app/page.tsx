@@ -142,16 +142,18 @@ export default async function Home() {
           <span className="landing-kicker">02 · Portfolio</span>
           <h2 className="landing-h2">Portfolio</h2>
         </div>
-        {perf && perf.records.length > 0 ? (
-          <PortfolioPnl records={perf.records} baseDate={perf.base_date} />
-        ) : (
-          <p className="text-sm text-white/45">No performance data.</p>
-        )}
-        {portfolio?.current && (
-          <div className="mt-4">
-            <AllocationBreakdown holdings={portfolio.current.holdings} />
+        <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
+          <div>
+            {perf && perf.records.length > 0 ? (
+              <PortfolioPnl records={perf.records} baseDate={perf.base_date} />
+            ) : (
+              <p className="text-sm text-white/45">No performance data.</p>
+            )}
           </div>
-        )}
+          {portfolio?.current && (
+            <AllocationBreakdown holdings={portfolio.current.holdings} />
+          )}
+        </div>
         <Link href="/portfolio" className="landing-link">
           View portfolio →
         </Link>
