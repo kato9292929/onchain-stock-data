@@ -16,6 +16,74 @@
   font-weight: 400;
 }
 
+/* ── Landing (top page) hero + embedded-preview sections ─────────────── */
+.landing-hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(36px, 9vh, 84px) 20px 24px;
+}
+.landing-headline {
+  font-family: var(--font-display);
+  color: #fff;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+  font-size: clamp(30px, 6.4vw, 78px);
+}
+.landing-headline span {
+  display: block;
+}
+.landing-cta {
+  margin-top: clamp(18px, 3vh, 30px);
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  font-size: clamp(13.5px, 1.5vw, 14.5px);
+  padding: 12px 26px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 0 22px rgba(255, 255, 255, 0.32), 0 0 44px rgba(255, 255, 255, 0.12);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.landing-cta:hover {
+  text-decoration: none;
+  transform: translateY(-2px) scale(1.02);
+}
+.landing-section {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: clamp(28px, 6vh, 60px) 20px;
+}
+.landing-kicker {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  color: #8e8e8e;
+}
+.landing-h2 {
+  font-family: var(--font-display);
+  color: #fff;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  font-size: clamp(30px, 5vw, 46px);
+}
+.landing-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: #fff;
+  font-weight: 600;
+}
+.landing-link:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
