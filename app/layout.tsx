@@ -40,6 +40,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased bg-black`}
     >
+      <head>
+        <link
+          href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col text-zinc-100">
         <div className="site-bg" aria-hidden="true">
           <video className="site-bg-video" autoPlay muted loop playsInline>

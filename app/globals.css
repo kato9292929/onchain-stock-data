@@ -4,6 +4,16 @@
   --background: #050505;
   --foreground: #f4f4f5;
   --accent: #c9a24b;
+  /* Retro dot-matrix display face (Latin), shared with the landing top. */
+  --font-display: "BubbledotICG-FinePos", "Geist Pixel Circle", ui-monospace,
+    monospace;
+}
+
+/* Landing-matched dot-matrix display for Latin headings / wordmark. */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  font-weight: 400;
 }
 
 @theme inline {
@@ -63,14 +73,17 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Glass card — matches the landing's summary cards (no more flat terminal box). */
 .terminal-card {
-  border: 1px solid #27272a;
-  background: #0a0a0a;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 20, 22, 0.6);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .terminal-card:hover {
-  border-color: #3f3f46;
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 /* ──────────────────────────────────────────────────────────────────────
