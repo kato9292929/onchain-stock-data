@@ -103,26 +103,28 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* One company per article (all six Physical-AI groups). */}
-        <div className="mt-4 space-y-2">
+        {/* One company per article — all six Physical-AI groups, 3 across. */}
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {board.articles.map((a) => {
             const c = pickByArticle.get(a.article);
             return (
-              <div key={a.article} className="terminal-card p-3">
+              <div key={a.article} className="terminal-card flex flex-col gap-2 p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-display text-sm text-white">
+                    {c ? c.ticker : "—"}
+                  </span>
+                  {c && <StatusBadge status={c.status} />}
+                </div>
                 <div className="text-[11px] text-white/45">
                   Article {a.article} · {a.title}
                 </div>
-                {c ? (
-                  <div className="mt-1 flex items-start gap-2">
-                    <span className="font-display text-white">{c.ticker}</span>
-                    <span className="min-w-0 flex-1 text-sm text-white/70">
-                      {c.company_name ? `${c.company_name} — ` : ""}
-                      {c.condition}
-                    </span>
-                    <StatusBadge status={c.status} />
-                  </div>
-                ) : (
-                  <div className="mt-1 text-sm text-white/40">—</div>
+                {c && (
+                  <p className="line-clamp-3 text-sm leading-relaxed text-white/70">
+                    {c.company_name ? (
+                      <span className="text-white/85">{c.company_name} — </span>
+                    ) : null}
+                    {c.condition}
+                  </p>
                 )}
               </div>
             );
