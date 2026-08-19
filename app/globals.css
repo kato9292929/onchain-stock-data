@@ -26,16 +26,21 @@
   text-align: center;
   padding: clamp(36px, 9vh, 84px) 20px 24px;
 }
-.landing-headline {
+.landing-title {
   font-family: var(--font-display);
   color: #fff;
   font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 1.12;
-  font-size: clamp(30px, 6.4vw, 78px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-size: clamp(30px, 6vw, 72px);
 }
-.landing-headline span {
-  display: block;
+.landing-tagline {
+  margin-top: clamp(10px, 1.6vh, 18px);
+  font-family: var(--font-inter), -apple-system, sans-serif;
+  color: #9c9a92;
+  font-size: clamp(13px, 1.5vw, 16px);
+  letter-spacing: 0.06em;
 }
 .landing-cta {
   margin-top: clamp(18px, 3vh, 30px);

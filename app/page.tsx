@@ -76,10 +76,8 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="landing-hero">
-        <h1 className="landing-headline">
-          <span>Claude-Run</span>
-          <span>Equity Research</span>
-        </h1>
+        <h1 className="landing-title">Onchain Stock Data</h1>
+        <p className="landing-tagline">Claude-Run Equity Research</p>
       </section>
 
       {/* 01 · Catalysts — real overall scoreboard */}
