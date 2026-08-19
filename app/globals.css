@@ -131,7 +131,7 @@ body {
   object-fit: cover;
 }
 .site-bg-scrim {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 a {
