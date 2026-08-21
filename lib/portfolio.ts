@@ -18,7 +18,7 @@ import type {
  */
 
 export const PORTFOLIO_SIZE = 10;
-export const PORTFOLIO_MODEL = "claude-opus-4-7";
+export const PORTFOLIO_MODEL = "claude-sonnet-5";
 
 const SYSTEM_PROMPT = `あなたは米国株のロング・オンリー・ポートフォリオを構築する運用エージェントです。1 ヶ月先を見据えて ${PORTFOLIO_SIZE} 銘柄を選び、SPY / QQQ に対してリスク調整後で上回ることを目指します。
 
