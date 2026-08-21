@@ -1,7 +1,7 @@
 /**
  * Daily catalyst evaluation. Reads data/portfolio-evaluations.json and, for
  * every `pending` entry whose `catalyst_target_date + 7 days` has already
- * passed, asks Claude (claude-opus-4-7, web search enabled) to judge the
+ * passed, asks Claude (claude-sonnet-5, web search enabled) to judge the
  * catalyst against the thesis + success_condition + news/price/SEC filings
  * around the target date, and records { status, evidence_url, reasoning }.
  *
@@ -23,7 +23,7 @@ const HISTORY_FILE = path.join(ROOT, "data", "portfolio-history.json");
 const EXTERNAL_FILE = path.join(ROOT, "data", "external-catalysts.json");
 const JP_HISTORY_FILE = path.join(ROOT, "data", "jp-portfolio-history.json");
 const JP_EVAL_FILE = path.join(ROOT, "data", "jp-portfolio-evaluations.json");
-const MODEL = "claude-opus-4-7";
+const MODEL = "claude-sonnet-5";
 const GRACE_DAYS = 7;
 const VALID_STATUS = new Set(["hit", "partial", "miss", "na"]);
 
