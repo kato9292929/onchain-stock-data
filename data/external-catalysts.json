@@ -1038,10 +1038,12 @@
     "target_date": "2026-08-13",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "partial",
+    "judgement_date": "2026-08-21",
+    "evidence_urls": [
+      "https://www.fool.com/earnings/call-transcripts/2026/08/21/deere-de-q3-2026-earnings-call-transcript/"
+    ],
+    "reasoning": "2026年8月20日発表のQ3 FY2026決算で、通期純利益ガイダンスは45億〜50億ドルのレンジ内どころか47.5億〜50億ドルへ上方修正され、外部提出catalystが想定した『下方修正』シナリオは発生しなかった。一方、Production & Precision Ag(大型農機)の営業利益率はQ3実績13.2%(前年13.6%から低下)、通期見通しも11〜12%とされ、成功条件の15.7%を大きく下回った。南米・欧州の大型農機需要軟化(セグメント売上6%減)は想定通り悪化方向に効いたが、Small Ag & Turf(18.4%)やConstruction & Forestry(12.1%)の好調で全社純利益・キャッシュフロー見通しはむしろ改善したため、2条件のうち1つは真逆(上振れ)、もう1つは想定通りの下振れとなり、完全なhitでもmissでもなくpartialと判定した。",
     "catalyst_type": "earnings",
     "date_confidence": "estimated",
     "country": "US",

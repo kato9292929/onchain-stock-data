@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-08-14T21:35:16.122Z",
+  "updated_at": "2026-08-21T23:13:31.971Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -58,10 +58,10 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-08-12",
       "success_condition": "8/12前後の通期決算で受注残が5,500億円超を維持できればEUVマスク検査独占ポジション維持を再確認。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-21T21:34:59.150Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260806511603.pdf",
+      "reasoning": "レーザーテックは2026年8月6日（目標日8/12前後）に2026年6月期決算を発表。受注高は前年比2.3倍の2,375億円へ急回復し、EUVマスク検査・ブランクス検査でのほぼ独占的なポジションを背景にAI向け先端半導体需要が牽引する構図は再確認された。しかし決算短信で開示された半導体関連装置の受注残高は3,013億円であり、success_conditionが求める『受注残5,500億円超』の基準には届かず、閾値の約55%水準にとどまった。会社全体の年間売上高も2,305億円規模であることを踏まえても、受注残高の絶対水準としては未達。方向性（独占ポジション・需要回復）は確認できたが、定量基準は満たしていないためpartialと判定。"
     },
     {
       "week_of": "2026-06-22",
@@ -238,10 +238,10 @@
       "ticker": "4062",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7予定の1Q決算でICパッケージ基板売上が前四半期比+10%超なら再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-21T21:38:25.164Z",
+      "evidence_url": "https://finance.biggo.jp/news/jpx_tdnet_140120260803507041",
+      "reasoning": "2026/8/4発表の2027年3月期1Q決算では電子事業(ICパッケージ基板)売上高が775億22百万円(前年同期比+37.7%)、営業利益213億75百万円(+52.4%)と大幅増収増益となり、通期予想も売上5500億円・営業利益1270億円へ上方修正され、株価は発表後一時+19%超急伸するなど市場は明確に再評価した。しかし、success_conditionが定める『前四半期比+10%超』を検証すると、2026年3月期通期の電子事業売上高(2433億16百万円)から同第3四半期累計(1719.2億円)を差し引いた第4四半期(1-3月)単独売上高は約713.96億円と推計され、今回の1Q(775.22億円)との前四半期比は約+8.6%にとどまり、+10%の閾値をわずかに下回る。増収増益・株価再評価という方向性は明確に達成されたが、指定の定量基準(QoQ+10%超)は厳密には未達のため部分達成(partial)と判定した。"
     },
     {
       "week_of": "2026-07-06",
@@ -278,20 +278,20 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-08-13",
       "success_condition": "8/13予定の通期決算でEUVマスク検査受注が前年比プラス転換なら反発",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-08-21T21:39:48.314Z",
+      "evidence_url": "https://media.rakuten-sec.net/articles/-/53216",
+      "reasoning": "レーザーテック(6920)の2026年6月期本決算は2026年8月6日に発表(catalyst_target_dateの8/13とは数日のずれあり)。EUVマスク検査装置(ACTIS)の受注高は前期の実質マイナス105億円から620億円へと明確に前年比プラス転換し、success_conditionの数値トリガー自体は満たされた。しかし通期は売上高8.3%減・営業利益14.3%減の減収減益であり、来期(2027年6月期)ガイダンスも市場コンセンサスをやや下回る水準だったため、市場は好感せず、決算発表翌営業日に株価は43,330円から37,460円へ急落するなど『大幅続落』となった。success_conditionが想定した『反発』という結果は実現しなかったため、catalyst全体としては未達(miss)と判定する。"
     },
     {
       "week_of": "2026-07-06",
       "ticker": "6323",
       "catalyst_target_date": "2026-08-14",
       "success_condition": "8月中旬の1Q決算で半導体搬送機受注残が前四半期比+8%超なら再評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-21T21:43:26.926Z",
+      "evidence_url": "https://www.nikkei.com/article/DGXZQOCC0971S0Z00C26A7000000/",
+      "reasoning": "6323ローツェの2027年2月期第1四半期決算短信（開示日2026-07-09、TDnet／日経報道で確認）によれば、半導体関連装置の受注残高は前四半期末（26年2月期末、505億円）比+117億円の622億円となり、前四半期比+約23.2%増と、success_conditionの『前四半期比+8%超』を大幅に上回った。受注高も前四半期比+80億円（+23.5%）増の420億円で2四半期連続の過去最高を更新するなど、受注面の力強さが確認された。通期業績予想（売上高+23%、純利益+46%）も据え置かれ増収増益基調が続いている。なお実際の1Q決算開示は2026-07-09で、catalyst_target_date（2026-08-14）より約1カ月早いが、8月中旬時点で参照可能な直近の1Q決算情報はこの内容であり、条件は明確に満たされている。"
     },
     {
       "week_of": "2026-07-06",
@@ -318,10 +318,10 @@
       "ticker": "6963",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7予定の1Q決算でSiCパワー売上が前四半期比プラス転換すればコンセンサス逆張りで反発",
-      "status": "pending",
-      "evaluated_at": null,
+      "status": "na",
+      "evaluated_at": "2026-08-21T21:49:02.705Z",
       "evidence_url": null,
-      "reasoning": null
+      "reasoning": "2026年8月7日予定の1Q決算(2027年3月期第1四半期)に関する決算短信・適時開示・会社IR・報道をweb検索で確認したが、該当する情報が一切見つからなかった。対象日はまだ到来していない、または検索可能な情報源に反映されていないため、SiCパワー売上の前四半期比動向を確認できず、success_conditionの達成可否を判定する材料がない。"
     },
     {
       "week_of": "2026-07-13",
@@ -338,10 +338,10 @@
       "ticker": "4062",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7予定の1Q決算でABF基板出荷がGB300向け立ち上がりで前年比+25%超なら上振れ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-21T21:51:16.961Z",
+      "evidence_url": "https://finance.limo.media/articles/detail/683",
+      "reasoning": "イビデン(4062)は2026年8月4日発表の2027年3月期第1四半期決算(短信予定日8/7近傍)で、連結売上高が前年同期比+26.4%(1,232億円)、営業利益+52.4%(269億円)と大幅増収増益を達成。特にABF基板(ICパッケージ基板)を主力とする電子事業セグメントの売上高は前年同期比+37.7%(775億円)、営業利益+52.4%(214億円)となり、success_conditionが定める『前年比+25%超』の基準を明確に上回った。会社はこの好調の要因として生成AI向け・汎用サーバー向け高機能ICパッケージ基板の受注堅調、大野事業場(量産拠点)の稼働安定化を挙げており、AIサーバー向けABF基板需要の急拡大(NVIDIA GB300等次世代AIサーバー立ち上がりが背景と市場では解説)が業績を牽引したことが確認できる。さらに同日、通期営業利益予想を900億円→1,270億円(+41%)へ大幅上方修正しており、市場予想(210億円)も大きく上回るなど、ポジティブサプライズとなった。以上より、数値基準・方向性ともにsuccess_conditionを明確に満たしたと判断し『hit』とする。"
     },
     {
       "week_of": "2026-07-13",
@@ -358,10 +358,10 @@
       "ticker": "3110",
       "catalyst_target_date": "2026-08-10",
       "success_condition": "8/10前後の1Q決算でスペシャルガラスクロス出荷高がAIサーバ基板向けで前年比+30%以上なら上振れ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "partial",
+      "evaluated_at": "2026-08-21T21:54:10.194Z",
+      "evidence_url": "https://finance.biggo.jp/news/jpx_tdnet_140120260805509788",
+      "reasoning": "3110日東紡績の2027年3月期1Q決算短信(2026/8/5開示)では、AIサーバー向け低誘電・低熱膨張スペシャルガラス(半導体パッケージ基板向け含む)の販売増と価格改定により、電子材料事業の売上高が前年同期比+29.5%(14,589百万円)、営業利益+70.0%(7,036百万円)となり、連結営業利益も+84.8%と大幅増益、通期営業利益予想も260億円→300億円に上方修正された。方向性は明確に上振れだが、success_conditionが求める『スペシャルガラスクロスのAIサーバ基板向け出荷高前年比+30%以上』という製品・用途別の個別数値開示はなく、確認できた最も近い代理指標(電子材料事業全体の売上成長率+29.5%、価格効果含む)は僅かに30%未達であるため、完全なhitとは断定できずpartialと判定した。"
     },
     {
       "week_of": "2026-07-13",
@@ -378,10 +378,10 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-08-12",
       "success_condition": "8/12予定の通期決算で受注残がEUVマスク検査需要で前年比+15%以上なら反発",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-08-21T22:01:51.505Z",
+      "evidence_url": "https://limo.media/articles/-/134838",
+      "reasoning": "レーザーテック(6920)の2026年6月期本決算は予定の8/12ではなく8/6に発表された。受注高は前期比+125.7%(1,052億円→2,375億円)と急回復したが、success_conditionが対象とする受注残高は3,229億円となり、前期末推定残高(約3,159億円)からの伸びは前年比約+2%にとどまり、+15%以上という基準には遠く及ばなかった。加えて、減収減益(売上高▲8.3%、営業利益▲14.3%)という決算内容と、2027年6月期の受注見通し(3,000-4,000億円)が市場の期待(4,000億円超)を下回ったことから、決算発表後の株価は反発するどころか43,330円から37,460円へ急落した。EUVマスク検査需要による受注残の大幅拡大という条件、および株価反発という結果のいずれも確認できず、success_conditionは達成されなかった。"
     },
     {
       "week_of": "2026-07-13",
@@ -428,10 +428,10 @@
       "ticker": "6857",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8/7予想の第1四半期決算でHBMテスタ牽引により営業利益コンセンサス超過かつ通期上方修正なら続伸",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-21T22:18:35.317Z",
+      "evidence_url": "https://www.advantest.com/ja/news/2026/qnpuno0000000cnr-att/J_FR_FY2026_1Q.pdf",
+      "reasoning": "アドバンテストは2026年7月29日発表の2027年3月期第1四半期決算で、売上高3,675億円(前年同期比+39.3%)、営業利益1,900億円(同+53.3%)と四半期ベース過去最高を記録し、市場コンセンサス(営業利益判定ライン約1,560億円、通期コンセンサス約6,900億円)を明確に上回った。牽引要因は推論AI向け半導体・DRAM(HBM含む)関連の専用テスタ需要拡大であり、会社は通期予想を売上高1兆4,200億円→1兆7,140億円、営業利益6,275億円→8,460億円、純利益4,655億円→6,600億円(+41.8%)へ大幅上方修正した。決算発表翌日に株価は一時16.7%高となり、日経平均全体を牽引、その後も上昇基調が続き8月5日時点で年初来高値圏に達するなど「続伸」も確認された。success_conditionの3要件(コンセンサス超過・通期上方修正・株価続伸)を全て満たしたためhitと判定。"
     },
     {
       "week_of": "2026-07-27",
@@ -448,10 +448,10 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-08-13",
       "success_condition": "8/13予想の通期決算でEUVマスク検査受注残が前年比プラス転換なら反発",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "miss",
+      "evaluated_at": "2026-08-21T22:46:25.681Z",
+      "evidence_url": "https://news.yahoo.co.jp/articles/ed2e9ba0d05de02f2a268b1e8f0ac271d65f59e4",
+      "reasoning": "レーザーテックは2026年8月6日に2026年6月期本決算を発表。受注残高は3,229億64百万円となり前期の受注急減の反動で前年比では小幅ながらプラス転換したとみられるが、success_conditionが期待した『反発』は起きず、決算翌営業日に株価は43,330円から37,460円へ13.5%超の急落となり、その後も8月14日終値38,820円まで1カ月で2割超下落する『逆方向』の値動きとなった。受注残の技術的な改善はあったが、catalyst本来の目的である株価反発は明確に不成立であるためmissと判定。"
     },
     {
       "week_of": "2026-07-27",
@@ -468,10 +468,10 @@
       "ticker": "6323",
       "catalyst_target_date": "2026-08-07",
       "success_condition": "8月上旬の四半期決算で搬送装置受注が前四半期比+5%以上なら中国向け底打ち確認",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "hit",
+      "evaluated_at": "2026-08-21T22:48:48.961Z",
+      "evidence_url": "https://www.rorze.com/wp_rorze/wp-content/uploads/2026/07/meeting_2027_Q1.pdf",
+      "reasoning": "ローツェの四半期決算は7月上旬・10月上旬・1月上旬・4月上旬に開示される制度であり、8月上旬に決算発表実績はない。2026-08-07時点で参照可能な直近の四半期決算は2026年7月9日発表の『2027年2月期第1四半期決算短信・決算説明資料』。同資料では受注高が前四半期比80億円増の420億円(+約23.5%)と大幅伸長し2四半期連続で過去最高を更新、増加の主因は中国・米国の大幅増加(台湾は反動減)と明記されている。これはsuccess_conditionの『前四半期比+5%以上』を大きく上回っており、直前の2026年2月期第2四半期資料で示されていた『中国向けが前期Q4を底として回復』という傾向とも整合し、中国向け搬送装置需要の底打ちが実数値で確認されたため、hitと判定した。"
     },
     {
       "week_of": "2026-07-27",
@@ -548,10 +548,10 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-08-14",
       "success_condition": "8月中旬公表の月次出荷高が200億円超なら先端パッケージ需要継続を示唆。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-08-21T23:11:51.970Z",
+      "evidence_url": "https://www.disco.co.jp/jp/ir/calendar/",
+      "reasoning": "ディスコ(6146)は月次出荷高を開示する制度を持たず、四半期ごとに『個別売上高および出荷額の速報値』を開示するのみ。2026年度第1四半期(4-6月)の速報値は2026年7月6日に開示済み、7月23日には7-9月期利益見通しを含む本決算を発表し株価が急落する材料となったが、これらは8月14日前後の『月次』開示ではない。IRカレンダー上も次の四半期速報は10月上旬(2Q, 7-9月期)に予定されており、8月中旬に相当する新規の出荷高開示イベントは確認できなかった。したがってsuccess_conditionを判定するための一次情報(該当する月次開示)が対象日時点で存在せず、na判定とした。"
     },
     {
       "week_of": "2026-08-03",
