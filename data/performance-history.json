@@ -1,7 +1,7 @@
 {
   "source": "live",
   "note": "Daily chained index of the Claude portfolio vs SPY / QQQ. Portfolio daily return = weighted (today_close / prior_close - 1) over current holdings, chained onto the prior index; rebased to 100 at base_date. Benchmarks rebased to 100 at the first captured close. Appended by .github/workflows/update-performance.yml (06:30 JST). Not investment advice.",
-  "updated_at": "2026-08-20T21:53:26.336Z",
+  "updated_at": "2026-08-21T23:14:05.110Z",
   "base_date": "2026-06-24",
   "records": [
     {
@@ -516,18 +516,27 @@
       "portfolio_return_pct": -13.05,
       "spy_return_pct": 4,
       "qqq_return_pct": 0.04
+    },
+    {
+      "date": "2026-08-21",
+      "portfolio_index": 87.39,
+      "spy_index": 104.43,
+      "qqq_index": 100.4,
+      "portfolio_return_pct": -12.61,
+      "spy_return_pct": 4.43,
+      "qqq_return_pct": 0.4
     }
   ],
   "base_spy_price": 733.24,
   "base_qqq_price": 710.62,
   "last_prices": {
-    "CRDO": 231.35,
+    "CRDO": 230.57,
     "MU": 823.03,
-    "ALAB": 290.52,
+    "ALAB": 284.97,
     "VKTX": 38.86,
     "POWL": 208.68,
     "RKLB": 81.04,
-    "TMDX": 90.85,
+    "TMDX": 94.77,
     "NXT": 106.95,
     "CRWV": 96.58,
     "IOT": 31.14,
@@ -539,12 +548,12 @@
     "NBIS": 187.77,
     "IESC": 744.54,
     "CLS": 331.44,
-    "MSFT": 481.15,
-    "NVDA": 216.85,
-    "META": 545.83,
-    "GOOGL": 340.67,
-    "JPM": 351.55,
-    "UNH": 384.85,
-    "COST": 933.51
+    "MSFT": 483.24,
+    "NVDA": 214.72,
+    "META": 549.9,
+    "GOOGL": 344.82,
+    "JPM": 351.58,
+    "UNH": 390.11,
+    "COST": 947.74
   }
 }
