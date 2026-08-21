@@ -153,6 +153,30 @@ function collectSearchUrls(blocks, urls) {
   }
 }
 
+/**
+ * Prompt caching: keep exactly one ephemeral cache breakpoint on the last
+ * content block of the last message. Anthropic caches the whole prefix up to
+ * that block, so each web-search loop turn re-reads the accumulated context
+ * (system + prior web-search results) from cache instead of paying full input
+ * price for it again. Old breakpoints are cleared each call so we never exceed
+ * the 4-breakpoint limit across the loop.
+ */
+function markLatestCache(messages) {
+  for (const m of messages) {
+    if (Array.isArray(m.content)) {
+      for (const b of m.content) {
+        if (b && typeof b === "object" && "cache_control" in b) {
+          delete b.cache_control;
+        }
+      }
+    }
+  }
+  const last = messages[messages.length - 1];
+  if (last && Array.isArray(last.content) && last.content.length > 0) {
+    last.content[last.content.length - 1].cache_control = { type: "ephemeral" };
+  }
+}
+
 function extractJson(text) {
   const fence = text.match(/```json\s*([\s\S]*?)```/i);
   const raw = fence ? fence[1] : text;
@@ -185,6 +209,11 @@ ${context ? `${context}\n` : ""}success_condition: ${condition}
 
 ${targetDate} 前後の${sources}を web 検索で確認し、success_condition の達成可否を判定してください。最後に指定の JSON を出力してください。`;
 
+  // Cache the fixed judging rubric (system) — reused across every due catalyst
+  // in a run and across every web-search loop turn.
+  const systemBlocks = [
+    { type: "text", text: system, cache_control: { type: "ephemeral" } },
+  ];
   const messages = [{ role: "user", content: userPrompt }];
   const searchUrls = new Set();
   const textParts = [];
@@ -192,7 +221,7 @@ ${targetDate} 前後の${sources}を web 検索で確認し、success_condition 
   let resp = await client.messages.create({
     model: MODEL,
     max_tokens: 4096,
-    system,
+    system: systemBlocks,
     tools: [webSearch],
     messages,
   });
@@ -206,10 +235,14 @@ ${targetDate} 前後の${sources}を web 検索で確認し、success_condition 
     }
     if (resp.stop_reason !== "pause_turn" || guard >= 6) break;
     messages.push({ role: "assistant", content: resp.content });
+    // Move the cache breakpoint to the newest turn so the accumulated prefix
+    // (system + userPrompt + prior web-search results) is cache-read, not
+    // re-charged full price, on this next call.
+    markLatestCache(messages);
     resp = await client.messages.create({
       model: MODEL,
       max_tokens: 4096,
-      system,
+      system: systemBlocks,
       tools: [webSearch],
       messages,
     });
