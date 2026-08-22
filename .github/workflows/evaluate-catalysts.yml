@@ -6,9 +6,13 @@ name: Evaluate Catalysts (daily)
 # (Vercel's FS is read-only/ephemeral, so git is the only durable store).
 
 on:
-  schedule:
-    # 21:00 UTC daily == 06:00 JST next day (offset from the 21:30 performance job).
-    - cron: "0 21 * * *"
+  # TEMPORARILY PAUSED for cost control (Anthropic API spend). The daily schedule
+  # is commented out; re-enable by uncommenting the cron once a spend cap is set
+  # and one dispatch run's cost has been verified. workflow_dispatch stays on so
+  # the job can still be triggered manually in the meantime.
+  # schedule:
+  #   # 21:00 UTC daily == 06:00 JST next day (offset from the 21:30 performance job).
+  #   - cron: "0 21 * * *"
   workflow_dispatch: {}
 
 permissions:

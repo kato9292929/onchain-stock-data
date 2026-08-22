@@ -6,9 +6,13 @@ name: Update JP Claude Portfolio (weekly)
 # Vercel redeploy that serves the fresh data.
 
 on:
-  schedule:
-    # 21:15 UTC Sunday == 06:15 JST Monday (15 min after the US portfolio job).
-    - cron: "15 21 * * 0"
+  # TEMPORARILY PAUSED for cost control (Anthropic API spend). The weekly schedule
+  # is commented out; re-enable by uncommenting the cron once a spend cap is set
+  # and one dispatch run's cost has been verified. workflow_dispatch stays on so
+  # the job can still be triggered manually in the meantime.
+  # schedule:
+  #   # 21:15 UTC Sunday == 06:15 JST Monday (15 min after the US portfolio job).
+  #   - cron: "15 21 * * 0"
   workflow_dispatch: {}
 
 permissions:
