@@ -1,434 +1,163 @@
 import Link from "next/link";
-import {
-  getStocks,
-  getIpos,
-  getLiquidity,
-  getHolders,
-  getPickup,
-  getPortfolioHistory,
-  type PickupItem,
-} from "@/lib/data";
-import { Reveal } from "./components/reveal";
+import { getPerformanceHistory, getPortfolioHistory } from "@/lib/data";
+import { readExternalCatalysts } from "@/lib/external-catalysts";
+import { buildScoreboard } from "@/lib/physical-ai-scoreboard";
+import { SiteNav } from "./components/site-nav";
+import { SiteFooter } from "./components/site-footer";
+import { PortfolioPnl } from "./components/portfolio-pnl";
+import { AllocationBreakdown } from "./components/allocation-breakdown";
 
 export const dynamic = "force-dynamic";
 
-// ── formatting helpers (always round; never show raw values) ────────────
-const fmtPrice = (n: number) =>
-  "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fmtPct = (n: number) => (n > 0 ? "+" : "") + n.toFixed(1) + "%";
-const fmtTvl = (n: number) => {
-  if (n >= 1e9) return "$" + (n / 1e9).toFixed(1) + "B";
-  if (n >= 1e6) return "$" + (n / 1e6).toFixed(1) + "M";
-  if (n >= 1e3) return "$" + (n / 1e3).toFixed(0) + "K";
-  return "$" + n.toFixed(0);
+/**
+ * Landing / top page. Hero + real embedded previews of the two live sections
+ * (Catalysts scoreboard, Portfolio P&L) built from the SAME components/data the
+ * detail pages use, each linking through to the full page.
+ */
+
+function MiniStat({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  accent?: boolean;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/5 p-2 text-center">
+      <div className={`text-lg font-semibold tabular-nums ${accent ? "text-white" : "text-white/85"}`}>
+        {value}
+      </div>
+      <div className="text-[10px] uppercase tracking-wide text-white/45">{label}</div>
+    </div>
+  );
+}
+
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  hit: { label: "HIT", className: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  partial: { label: "PARTIAL", className: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  miss: { label: "MISS", className: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  na: { label: "N/A", className: "bg-white/10 text-white/50 border-white/20" },
+  pending: { label: "PENDING", className: "bg-white/5 text-white/45 border-white/15" },
 };
-const fmtCount = (n: number) => n.toLocaleString("en-US");
 
-/** "@handle" derived from an x.com / twitter URL; falls back to the host. */
-function handleFromUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    const seg = u.pathname.split("/").filter(Boolean)[0];
-    if (seg && (/x\.com$/.test(u.hostname) || /twitter\.com$/.test(u.hostname))) {
-      return "@" + seg;
-    }
-    return u.hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
+function StatusBadge({ status }: { status: string }) {
+  const s = STATUS_BADGE[status] ?? STATUS_BADGE.pending;
+  return (
+    <span className={`inline-block shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${s.className}`}>
+      {s.label}
+    </span>
+  );
 }
-
-/** Coarse relative time ("1h", "3d") from an ISO timestamp. */
-function relTime(iso: string): string {
-  const then = Date.parse(iso);
-  if (Number.isNaN(then)) return "";
-  const mins = Math.max(0, Math.round((Date.now() - then) / 60000));
-  if (mins < 60) return `${Math.max(1, mins)}m`;
-  const hrs = Math.round(mins / 60);
-  if (hrs < 24) return `${hrs}h`;
-  return `${Math.round(hrs / 24)}d`;
-}
-
-function pickupStatus(item: PickupItem): { text: string; cls: string } {
-  // An explicit condition string wins; otherwise verifiable(green)/needs framing(gold).
-  if (item.condition) return { text: item.condition, cls: "cond" };
-  return item.catalyst_ready
-    ? { text: "verifiable", cls: "ok" }
-    : { text: "needs framing", cls: "cond" };
-}
-
-const NAV = [
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/stocks", label: "Stocks" },
-  { href: "/ipo", label: "IPO" },
-  { href: "/liquidity", label: "Liquidity" },
-  { href: "/holders", label: "Holders" },
-  { href: "/analyst", label: "Analyst" },
-];
-
-const PRICING = [
-  { lab: "quick", amt: "$0.50", det: "5 internal endpoints. 3–5 min.", feat: false },
-  { lab: "standard", amt: "$1.50", det: "+ recent SEC EDGAR filings. 10–15 min.", feat: true },
-  { lab: "deep", amt: "$3.00", det: "+ earnings-call transcript + comparables. 20–30 min.", feat: false },
-];
 
 export default async function Home() {
-  // Each source degrades independently; the page never fails on sample data.
-  const [pickup, stocks, ipos, liquidity, holders, portfolioHistory] =
-    await Promise.all([
-      getPickup().catch(() => null),
-      getStocks().catch(() => null),
-      getIpos().catch(() => null),
-      getLiquidity().catch(() => null),
-      getHolders().catch(() => null),
-      getPortfolioHistory().catch(() => null),
-    ]);
+  const [perf, portfolio, catalysts] = await Promise.all([
+    getPerformanceHistory().catch(() => null),
+    getPortfolioHistory().catch(() => null),
+    readExternalCatalysts().catch(() => []),
+  ]);
 
-  const portfolio = portfolioHistory?.current ?? null;
-  const pickupItems = pickup?.items ?? [];
-  const topStocks = (stocks?.stocks ?? []).slice(0, 4);
-  const upcomingIpos = (ipos?.ipos ?? []).slice(0, 4);
-  const topLiquidity = [...(liquidity?.pairs ?? [])]
-    .sort((a, b) => b.tvl_usd - a.tvl_usd)
-    .slice(0, 3);
-  const topHolders = [...(holders?.tokens ?? [])]
-    .sort((a, b) => b.holder_count - a.holder_count)
-    .slice(0, 3);
+  const asOf = new Date().toISOString().slice(0, 10);
+  const board = buildScoreboard(catalysts, asOf);
+  const o = board.overall;
+
+  // One representative company per article (prefer a main condition), so the top
+  // page lists all six Physical-AI article groups with a single name each.
+  const pickByArticle = new Map<number, (typeof board.catalysts)[number]>();
+  for (const c of board.catalysts) {
+    if (c.series_article == null || c.catalyst_role === "sub") continue;
+    if (!pickByArticle.has(c.series_article)) pickByArticle.set(c.series_article, c);
+  }
 
   return (
-    <div className="osd-home">
-      <Reveal />
+    <>
+      <SiteNav />
 
-      {/* nav */}
-      <nav className="osd-nav">
-        <div className="wrap nav-in">
-          <a className="brand" href="/">
-            Onchain Stock Data
-          </a>
-          <div className="nav-links">
-            {NAV.map((n) => (
-              <a key={n.label} href={n.href}>
-                {n.label}
-              </a>
-            ))}
-          </div>
-          <a className="pill" href="#agents">
-            for agents · x402
-          </a>
-        </div>
-      </nav>
-
-      {/* hero */}
-      <header className="wrap hero rv in">
-        <div className="eyebrow">onchain on solana · x402-native</div>
-        <h1>
-          Onchain stock data, <span className="gold">per call.</span>
-        </h1>
-        <p className="sub">
-          xStocks, IPOs, liquidity and holder maps on Solana. Free HTML in the
-          browser, x402 JSON for agents at $0.01 a call.
-        </p>
-      </header>
-
-      {/* Portfolio — the main feature, surfaced at the top */}
-      {portfolio ? (
-        <section id="portfolio">
-          <div className="wrap">
-            <div className="sec-head rv">
-              <div>
-                <div className="eyebrow">claude portfolio</div>
-                <h2>Portfolio</h2>
-              </div>
-              <p>
-                毎週 Claude が選ぶ米国株 10 銘柄。1 ヶ月の検証可能な catalyst を
-                thesis に。日本株を含む全体は{" "}
-                <Link href="/portfolio">/portfolio</Link> を参照。
-              </p>
-            </div>
-            <div className="pf rv">
-              <div className="pf-meta">
-                <span>
-                  week of <span className="k">{portfolio.week_of}</span> ·{" "}
-                  horizon <span className="k">{portfolio.horizon}</span> · model{" "}
-                  <span className="k">{portfolio.model}</span>
-                </span>
-                <Link href="/portfolio">View full portfolio →</Link>
-              </div>
-              {portfolio.rationale ? (
-                <div className="pf-rationale">{portfolio.rationale}</div>
-              ) : null}
-              <table className="pf-tbl">
-                <thead>
-                  <tr>
-                    <th>Ticker</th>
-                    <th className="hide-sm">Company</th>
-                    <th className="r">Weight</th>
-                    <th className="hide-sm">Thesis</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {portfolio.holdings.map((h) => (
-                    <tr key={h.ticker}>
-                      <td className="tk">{h.ticker}</td>
-                      <td className="co hide-sm">{h.company_name}</td>
-                      <td className="w r">{h.weight.toFixed(1)}%</td>
-                      <td className="th hide-sm">{h.thesis}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* Pickup */}
-      <section id="pickup">
-        <div className="wrap">
-          <div className="sec-head rv">
-            <div>
-              <div className="eyebrow">latest pickup</div>
-              <h2>Pickup</h2>
-            </div>
-            <p>
-              Curated market observations, summarized. Items with a date and a
-              condition get tracked as verifiable calls.
-            </p>
-          </div>
-          <div className="pick-grid">
-            {pickupItems.map((item) => {
-              const status = pickupStatus(item);
-              const rel = relTime(item.posted_at);
-              return (
-                <article className="pick rv" key={item.theme}>
-                  <span className="tag">{item.theme}</span>
-                  <div className="body">{item.summary}</div>
-                  <div className="meta">
-                    <span className="src">
-                      <b>{handleFromUrl(item.source_url)}</b>
-                      {rel ? ` · ${rel}` : ""}
-                    </span>
-                    <span className={`status ${status.cls}`}>{status.text}</span>
-                  </div>
-                  <a
-                    className="pick-link"
-                    href={item.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View on X →
-                  </a>
-                </article>
-              );
-            })}
-          </div>
-        </div>
+      {/* Hero */}
+      <section className="landing-hero">
+        <h1 className="landing-title">Onchain Stock Data</h1>
+        <p className="landing-tagline">Claude-Run Equity Research</p>
       </section>
 
-      {/* Overview */}
-      <section>
-        <div className="wrap">
-          <div className="sec-head rv">
-            <div>
-              <div className="eyebrow">at a glance</div>
-              <h2>Overview</h2>
-            </div>
-            <p>The latest few rows from each layer. Open any section for the full set.</p>
+      {/* 01 · Catalysts — real overall scoreboard */}
+      <section className="landing-section">
+        <div className="mb-4">
+          <span className="landing-kicker">01 · Scoreboard</span>
+          <h2 className="landing-h2">Catalysts</h2>
+        </div>
+        <div className="terminal-card p-5">
+          <div className="mb-3 flex items-baseline justify-between">
+            <span className="font-display text-white">Overall</span>
+            <span className="text-xs text-white/45">{o.total} conditions</span>
           </div>
-          <div className="ov-grid">
-            {/* Stocks */}
-            <div className="panel rv">
-              <div className="panel-head">
-                <span className="pt">Stocks</span>
-                <Link href="/stocks">View all →</Link>
-              </div>
-              {topStocks.map((s) => {
-                const tv = s.tokenized_versions[0];
-                const chg = s.price_change_24h_pct ?? 0;
-                return (
-                  <div className="prow" key={s.underlying_ticker}>
-                    <span className="nm">
-                      <span className="lbl">{s.company_name}</span>
-                      {tv ? <span className="sym">{tv.token_symbol}</span> : null}
-                    </span>
-                    <span className="vals">
-                      <span className="px">{fmtPrice(s.price_usd)}</span>
-                      <span className={chg >= 0 ? "up" : "down"}>{fmtPct(chg)}</span>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            <MiniStat label="Hit rate" accent value={o.hit_rate == null ? "—" : `${(o.hit_rate * 100).toFixed(0)}%`} />
+            <MiniStat label="HIT" value={o.counts.hit} />
+            <MiniStat label="PARTIAL" value={o.counts.partial} />
+            <MiniStat label="MISS" value={o.counts.miss} />
+            <MiniStat label="N/A" value={o.counts.na} />
+            <MiniStat label="Pending" value={o.counts.pending} />
+          </div>
+        </div>
 
-            {/* IPOs */}
-            <div className="panel rv">
-              <div className="panel-head">
-                <span className="pt">IPOs</span>
-                <Link href="/ipo">View all →</Link>
-              </div>
-              {upcomingIpos.map((i) => {
-                const status = i.primary_issuance_platforms?.[0]?.status ?? "upcoming";
-                const short = i.company_name.replace(/\s*[([].*$/, "").trim();
-                return (
-                  <div className="prow" key={i.ticker}>
-                    <span className="nm">
-                      <span className="lbl">{short}</span>
-                      <span className="sym">{i.ticker}</span>
-                    </span>
-                    <span className="meta-s">{status}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Liquidity */}
-            <div className="panel rv">
-              <div className="panel-head">
-                <span className="pt">Liquidity</span>
-                <Link href="/liquidity">View all →</Link>
-              </div>
-              {topLiquidity.map((p) => {
-                const venue = p.top_pools?.[0]?.venue ?? "DEX";
-                return (
-                  <div className="prow" key={p.token_symbol}>
-                    <span className="nm">
-                      <span className="lbl">{p.token_symbol} / USDC</span>
-                      <span className="sym">{venue}</span>
-                    </span>
-                    <span className="vals">
-                      <span className="px">TVL {fmtTvl(p.tvl_usd)}</span>
-                      <span className="meta-s">
-                        dev {Math.abs(p.deviation_pct).toFixed(2)}%
-                      </span>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Holders */}
-            <div className="panel rv">
-              <div className="panel-head">
-                <span className="pt">Holders</span>
-                <Link href="/holders">View all →</Link>
-              </div>
-              {topHolders.map((h) => (
-                <div className="prow" key={h.token_symbol}>
-                  <span className="nm">
-                    <span className="lbl">{h.token_symbol}</span>
+        {/* One company per article — all six Physical-AI groups, 3 across. */}
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {board.articles.map((a) => {
+            const c = pickByArticle.get(a.article);
+            return (
+              <div key={a.article} className="terminal-card flex flex-col gap-2 p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-display text-sm text-white">
+                    {c ? c.ticker : "—"}
                   </span>
-                  <span className="vals">
-                    <span className="px">{fmtCount(h.holder_count)} holders</span>
-                    <span className="meta-s">conc. {h.concentration_score.toFixed(2)}</span>
-                  </span>
+                  {c && <StatusBadge status={c.status} />}
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="text-[11px] text-white/45">
+                  Article {a.article} · {a.title}
+                </div>
+                {c && (
+                  <p className="line-clamp-3 text-sm leading-relaxed text-white/70">
+                    {c.company_name ? (
+                      <span className="text-white/85">{c.company_name} — </span>
+                    ) : null}
+                    {c.condition}
+                  </p>
+                )}
+              </div>
+            );
+          })}
         </div>
+
+        <Link href="/catalysts" className="landing-link">
+          View scoreboard →
+        </Link>
       </section>
 
-      {/* duality band */}
-      <section id="agents">
-        <div className="wrap rv">
-          <div className="band">
-            <div className="band-top">
-              <div className="eyebrow">one url, two faces</div>
-              <h2>Human or agent — same URL</h2>
-              <p>
-                User-Agent decides. Humans get the page; agents get HTTP 402 and
-                pay over x402 before the JSON returns.
-              </p>
-            </div>
-            <div className="duo">
-              <div className="pane">
-                <div className="who">
-                  <span className="ic">browser</span>
-                </div>
-                <div className="ret">
-                  <b>GET /api/stocks</b> → free HTML page
-                </div>
-                <div className="code">{`200 OK
-{
-  "source": "live",
-  "stocks": [{ "ticker": `}<span className="g">{`"NVDA"`}</span>{` }]
-}`}</div>
-              </div>
-              <div className="pane">
-                <div className="who">
-                  <span className="ic">agent</span> · curl / claude / gpt
-                </div>
-                <div className="ret">
-                  <b>GET /api/stocks</b> → 402, then JSON on payment
-                </div>
-                <div className="code">{`402 Payment Required
-{
-  `}<span className="k">{`"scheme"`}</span>{`: "exact",
-  `}<span className="k">{`"network"`}</span>{`: "base",
-  "maxAmountRequiredUsd": `}<span className="g">{`"0.01"`}</span>{`
-}`}</div>
-              </div>
-            </div>
-          </div>
+      {/* 02 · Portfolio — real P&L + chart */}
+      <section className="landing-section">
+        <div className="mb-4">
+          <span className="landing-kicker">02 · Portfolio</span>
+          <h2 className="landing-h2">Portfolio</h2>
         </div>
-      </section>
-
-      {/* analyst pricing */}
-      <section>
-        <div className="wrap">
-          <div className="sec-head rv">
-            <div>
-              <div className="eyebrow">paid analyst</div>
-              <h2>IC memos for agents</h2>
-            </div>
-            <p>
-              Hits five internal endpoints in parallel and returns a
-              Claude-structured IC memo. Settled in Base or Solana USDC.
-            </p>
-          </div>
-          <div className="price-grid">
-            {PRICING.map((p) => (
-              <div className={`price rv${p.feat ? " feat" : ""}`} key={p.lab}>
-                {p.feat ? <span className="feat-tag">standard</span> : null}
-                <div className="lab">{p.lab}</div>
-                <div className="amt">{p.amt}</div>
-                <div className="det">{p.det}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* footer */}
-      <footer className="osd-foot">
-        <div className="wrap foot-in">
+        <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
           <div>
-            <div className="brand" style={{ marginBottom: 14 }}>
-              <span className="dot" />
-              onchain stock data
-            </div>
-            <p className="disclaimer">
-              Not investment advice. Values are indicative — confirm the latest on
-              each exchange or chain before trading. xStocks and Backpack IPOs
-              Onchain carry regional and KYC restrictions.
-            </p>
-            <div className="copy">© 2026 x402 Inc.</div>
+            {perf && perf.records.length > 0 ? (
+              <PortfolioPnl records={perf.records} baseDate={perf.base_date} />
+            ) : (
+              <p className="text-sm text-white/45">No performance data.</p>
+            )}
           </div>
-          <div className="foot-links">
-            <Link href="/portfolio">Portfolio</Link>
-            <Link href="/stocks">Stocks</Link>
-            <Link href="/analyst">Analyst</Link>
-            <a href="#agents">x402</a>
-            <a
-              href="https://github.com/kato9292929/onchain-stock-data"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </a>
-          </div>
+          {portfolio?.current && (
+            <AllocationBreakdown holdings={portfolio.current.holdings} />
+          )}
         </div>
-      </footer>
-    </div>
+        <Link href="/portfolio" className="landing-link">
+          View portfolio →
+        </Link>
+      </section>
+
+      <SiteFooter />
+    </>
   );
 }

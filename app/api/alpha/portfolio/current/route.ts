@@ -1,44 +1,29 @@
 import { NextResponse } from "next/server";
 import { getPortfolioHistory } from "@/lib/data";
+import { corsPreflight, withPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Free public JSON of the current Claude Portfolio (for agents / external
- * tools). No x402 paywall — this is the open, transparent view. CORS-open.
+ * Current Claude US Portfolio (weekly 10-name selection) as JSON.
+ * Paid x402 endpoint (Base + Solana USDC). The free human view is the
+ * `/alpha/portfolio` HTML page; internal callers bypass with `X-Internal-Key`.
  */
-export function OPTIONS(): NextResponse {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Access-Control-Max-Age": "86400",
-    },
-  });
-}
-
-export async function GET(): Promise<NextResponse> {
+const handler = async (): Promise<NextResponse> => {
   const data = await getPortfolioHistory();
-  return new NextResponse(
-    JSON.stringify(
-      {
-        source: data.source,
-        updated_at: data.updated_at,
-        note: data.note,
-        current: data.current,
-      },
-      null,
-      2,
-    ),
-    {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
-        "cache-control": "public, max-age=60, s-maxage=300",
-        "access-control-allow-origin": "*",
-      },
-    },
-  );
-}
+  return NextResponse.json({
+    source: data.source,
+    updated_at: data.updated_at,
+    note: data.note,
+    current: data.current,
+  });
+};
+
+export const GET = withPaywall(handler, {
+  price: "$0.01",
+  description: "Claude US Portfolio - current weekly 10-name selection.",
+  resourcePath: "/api/alpha/portfolio/current",
+});
+
+export const OPTIONS = () => corsPreflight();

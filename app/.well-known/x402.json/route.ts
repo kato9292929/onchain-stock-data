@@ -10,8 +10,6 @@ import {
   SOLANA_NETWORK,
 } from "@/lib/x402";
 import { corsPreflight } from "@/lib/x402-route";
-import { PRICING_USD } from "@/lib/analyst/templates";
-import { PREDICT_PRICING_USD } from "@/lib/predict";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
@@ -56,43 +54,6 @@ function dualLegs(resourcePath: string, usd: number): AcceptLeg[] {
   ];
 }
 
-// Solana-only accept leg, for endpoints whose paywall presents Solana alone
-// (/api/ipo, /api/holders, /api/liquidity). Mirrors the Solana half of
-// dualLegs so discovery matches the route's 402 challenge.
-function solanaOnlyLeg(resourcePath: string, usd: number): AcceptLeg[] {
-  const resource = resourceUrl(resourcePath);
-  return [
-    {
-      scheme: "exact",
-      network: SOLANA_NETWORK,
-      amount: usdToBaseUnits(usd),
-      asset: ASSET_SOLANA_USDC,
-      payTo: PAY_TO_SOLANA,
-      resource,
-    },
-  ];
-}
-
-function analystLegs(): AcceptLeg[] {
-  // /api/analyst prices per `depth` body field — emit one pair of legs per
-  // tier so directory crawlers can show all three price points without
-  // re-querying. Resource URL stays the same; clients disambiguate by depth.
-  const out: AcceptLeg[] = [];
-  for (const depth of ["quick", "standard", "deep"] as const) {
-    out.push(...dualLegs("/api/analyst", PRICING_USD[depth]));
-  }
-  return out;
-}
-
-function predictLegs(): AcceptLeg[] {
-  // /api/predict prices per `depth` body field — one pair of legs per tier.
-  const out: AcceptLeg[] = [];
-  for (const depth of ["quick", "standard", "deep"] as const) {
-    out.push(...dualLegs("/api/predict", PREDICT_PRICING_USD[depth]));
-  }
-  return out;
-}
-
 export function OPTIONS(): NextResponse {
   return corsPreflight();
 }
@@ -102,80 +63,58 @@ export function GET(): NextResponse {
     version: 2,
     name: "Onchain Stock Data",
     description:
-      "Tokenized stock data APIs for AI agents (xStocks registry, IPO calendar, holders, DEX liquidity, alpha signals, IC memos).",
+      "Claude-run equity research for AI agents: weekly US/JP portfolios (holdings + verifiable catalysts, hit-rate vs SPY/QQQ) and dated-catalyst scoring. The Physical-AI catalyst scoreboard is free at /api/alpha/catalysts/physical-ai.",
     operator: "x402 Inc.",
     region: "APAC",
     base_url: PUBLIC_BASE_URL,
     endpoints: [
       {
-        path: "/api/stocks",
+        path: "/api/alpha/portfolio/current",
         method: "GET",
         description:
-          "Full xStocks registry with prices, volumes, and venues. `?tokenized=true` filters to onchain-traded names.",
-        accepts: dualLegs("/api/stocks", 0.01),
+          "Claude US Portfolio - current weekly 10-name selection (ticker, weight, thesis).",
+        accepts: dualLegs("/api/alpha/portfolio/current", 0.01),
       },
       {
-        path: "/api/stocks/:ticker",
+        path: "/api/alpha/portfolio/scorecard",
         method: "GET",
         description:
-          "Single-ticker detail record from the xStocks registry (e.g. /api/stocks/NVDA).",
-        accepts: dualLegs("/api/stocks/:ticker", 0.01),
+          "Claude US Portfolio scorecard - catalyst hit-rate + SPY/QQQ cumulative returns.",
+        accepts: dualLegs("/api/alpha/portfolio/scorecard", 0.01),
       },
       {
-        path: "/api/ipo",
+        path: "/api/alpha/jp/portfolio/current",
         method: "GET",
         description:
-          "Backpack IPOs Onchain calendar (Superstate × Solana). Solana USDC only.",
-        accepts: solanaOnlyLeg("/api/ipo", 0.01),
+          "Claude JP Portfolio - current weekly 10-name Japan-equity selection.",
+        accepts: dualLegs("/api/alpha/jp/portfolio/current", 0.01),
       },
       {
-        path: "/api/liquidity",
+        path: "/api/alpha/jp/scorecard",
         method: "GET",
         description:
-          "Tokenized stock DEX liquidity + price deviation vs underlying. Solana USDC only.",
-        accepts: solanaOnlyLeg("/api/liquidity", 0.01),
+          "Claude JP Portfolio scorecard - catalyst hit-rate (no benchmark index).",
+        accepts: dualLegs("/api/alpha/jp/scorecard", 0.01),
       },
       {
-        path: "/api/holders",
+        path: "/api/alpha/jp/catalysts",
         method: "GET",
-        description:
-          "Tokenized stock holders map + concentration scores. Solana USDC only.",
-        accepts: solanaOnlyLeg("/api/holders", 0.01),
+        description: "Claude JP dated catalysts.",
+        accepts: dualLegs("/api/alpha/jp/catalysts", 0.01),
       },
       {
-        path: "/api/alpha-posts",
-        method: "GET",
-        description:
-          "Curated Alpha Signals feed (owner-managed X post list).",
-        accepts: dualLegs("/api/alpha-posts", 0.01),
-      },
-      {
-        path: "/api/analyst",
+        path: "/api/alpha/catalyst/submit",
         method: "POST",
         description:
-          "Generate an IC memo for a ticker. Body: { ticker, depth: quick|standard|deep }. Price varies by depth — accepts legs cover all three tiers.",
-        accepts: analystLegs(),
+          "Submit an external catalyst for Claude verdict scoring. Body: { ticker, catalyst_description, target_date, submitter_contact? }.",
+        accepts: dualLegs("/api/alpha/catalyst/submit", 0.01),
       },
       {
-        path: "/api/predict",
-        method: "POST",
+        path: "/api/alpha/catalyst/:catalyst_id/score",
+        method: "GET",
         description:
-          "Claude buy/hold/sell predictions for multiple tickers. Body: { tickers: string[], horizon: 1w|1m|3m, depth: quick|standard|deep }. Price varies by depth — accepts legs cover all three tiers.",
-        accepts: predictLegs(),
-      },
-      {
-        path: "/api/wrappers/birdeye-ohlcv",
-        method: "POST",
-        description:
-          "x402 wrapper around Birdeye OHLCV for a Solana token. Body: { address, type, limit }. Returns the trimmed candle array.",
-        accepts: dualLegs("/api/wrappers/birdeye-ohlcv", 0.01),
-      },
-      {
-        path: "/api/wrappers/perplexity-research",
-        method: "POST",
-        description:
-          "x402 wrapper around Perplexity recent-news research. Body: { ticker, lookback_hours }. Returns top-3 events + catalyst suggestions + citations.",
-        accepts: dualLegs("/api/wrappers/perplexity-research", 0.05),
+          "Lookup the Claude verdict for a submitted external catalyst (pending|hit|partial|miss|na).",
+        accepts: dualLegs("/api/alpha/catalyst/:catalyst_id/score", 0.01),
       },
     ],
   };

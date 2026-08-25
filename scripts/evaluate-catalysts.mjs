@@ -1,7 +1,7 @@
 /**
  * Daily catalyst evaluation. Reads data/portfolio-evaluations.json and, for
  * every `pending` entry whose `catalyst_target_date + 7 days` has already
- * passed, asks Claude (claude-opus-4-7, web search enabled) to judge the
+ * passed, asks Claude (claude-sonnet-5, web search enabled) to judge the
  * catalyst against the thesis + success_condition + news/price/SEC filings
  * around the target date, and records { status, evidence_url, reasoning }.
  *
@@ -23,7 +23,7 @@ const HISTORY_FILE = path.join(ROOT, "data", "portfolio-history.json");
 const EXTERNAL_FILE = path.join(ROOT, "data", "external-catalysts.json");
 const JP_HISTORY_FILE = path.join(ROOT, "data", "jp-portfolio-history.json");
 const JP_EVAL_FILE = path.join(ROOT, "data", "jp-portfolio-evaluations.json");
-const MODEL = "claude-opus-4-7";
+const MODEL = "claude-sonnet-5";
 const GRACE_DAYS = 7;
 const VALID_STATUS = new Set(["hit", "partial", "miss", "na"]);
 
@@ -411,11 +411,19 @@ async function main() {
   let fileExternalsDirty = false;
   for (const entry of dueExternal) {
     try {
+      // Event-type catalysts are asymmetric: the success is that a specific
+      // disclosure/event HAPPENS by target_date, so ABSENCE by the deadline is
+      // a `miss`, not `na`. Spell this out so it overrides the JP prompt's
+      // default of treating "no material by the date" as `na`.
+      const eventRule =
+        entry.catalyst_type === "event"
+          ? "\n【判定ルール】これはイベント型 catalyst。target_date までに success_condition を満たす開示・事実が web 検索で確認できない場合は miss とすること（『何も公表されない＝miss』。na にはしない）。買収・上場廃止・事業消滅など catalyst 自体が無効化された場合のみ na。"
+          : "";
       const verdict = await evaluateOne(client, {
         ticker: entry.ticker,
         targetDate: entry.target_date,
         condition: entry.catalyst_description,
-        context: "外部提出 catalyst（submitter による）",
+        context: `外部提出 catalyst（submitter による）${eventRule}`,
         market: entry.market === "JP" ? "JP" : "US",
       });
       entry.status = verdict.status;

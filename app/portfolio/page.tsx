@@ -1,17 +1,23 @@
 import Link from "next/link";
-import { getPortfolioHistory, getJpPortfolioHistory, getStocks } from "@/lib/data";
+import {
+  getPortfolioHistory,
+  getPerformanceHistory,
+  getStocks,
+} from "@/lib/data";
 import { PortfolioSection } from "../components/portfolio-section";
+import { AllocationBreakdown } from "../components/allocation-breakdown";
+import { PortfolioPnl } from "../components/portfolio-pnl";
+import { PortfolioToggle } from "../components/portfolio-toggle";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Unified Claude Portfolio page: US and JP weekly selections on one page.
- * Each section degrades independently (null current → empty state). The API
- * routes (/api/alpha/portfolio/*, /api/alpha/jp/*) are unchanged — this is a
- * presentation-only page.
+ * US Claude Portfolio page: allocation breakdown + P&L ($10k rebased vs SPY/QQQ)
+ * + weekly holdings. The JP portfolio lives on its own page (/portfolio/jp).
+ * Presentation only — the API routes are unchanged.
  */
 
-/** Tickers with an xStock (Backed Finance) tokenized version — US enrichment only. */
+/** Tickers with an xStock (Backed Finance) tokenized version — US enrichment. */
 async function xstockTickers(): Promise<Set<string>> {
   try {
     const data = await getStocks();
@@ -31,65 +37,56 @@ async function xstockTickers(): Promise<Set<string>> {
 }
 
 export default async function PortfolioPage() {
-  const [us, jp, onchain] = await Promise.all([
+  const [us, perf, onchain] = await Promise.all([
     getPortfolioHistory().catch(() => null),
-    getJpPortfolioHistory().catch(() => null),
+    getPerformanceHistory().catch(() => null),
     xstockTickers(),
   ]);
 
   return (
-    <div className="space-y-10">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-bold">Claude Portfolio</h1>
-        <p className="text-sm text-zinc-400">
-          毎週 Claude が選ぶ米国株・日本株の各 10 銘柄。1 ヶ月の検証可能な
-          catalyst を thesis に。米国株は{" "}
-          <code className="text-zinc-300">/api/alpha/portfolio/current</code>、日本株は{" "}
-          <code className="text-zinc-300">/api/alpha/jp/portfolio/current</code>{" "}
-          で無料公開。
+    <div className="space-y-8">
+      <header className="space-y-3">
+        <h1 className="font-display text-3xl sm:text-4xl text-white">Claude Portfolio</h1>
+        <p className="text-sm text-white/55 max-w-2xl">
+          Ten US and ten JP names picked weekly by Claude, each with a verifiable
+          1-month catalyst. Published at{" "}
+          <code className="text-white/75">/api/alpha/portfolio/current</code> and{" "}
+          <code className="text-white/75">/api/alpha/jp/portfolio/current</code>.
         </p>
+        <PortfolioToggle active="us" />
       </header>
+
+      {perf && perf.records.length > 0 && (
+        <PortfolioPnl records={perf.records} baseDate={perf.base_date} />
+      )}
+
+      {us?.current && (
+        <AllocationBreakdown holdings={us.current.holdings} accentTickers={onchain} />
+      )}
 
       {us ? (
         <PortfolioSection
-          title="米国株"
+          title="Holdings & thesis"
           subtitle={
             <>
-              SPY / NASDAQ (QQQ) との比較は{" "}
-              <Link href="/alpha/portfolio/history" className="text-gold">
+              Weekly picks &amp; rotations — see{" "}
+              <Link href="/alpha/portfolio/history" className="text-white underline decoration-white/30 underline-offset-2">
                 history
-              </Link>{" "}
-              を参照。
+              </Link>
+              .
             </>
           }
           history={us}
           enrichmentTickers={onchain}
           tickerBaseHref="/alpha/portfolio"
-          showTargetDate
         />
       ) : (
-        <section className="space-y-2">
-          <h2 className="text-xl font-bold">米国株</h2>
-          <p className="text-sm text-zinc-500">データを読み込めませんでした。</p>
-        </section>
+        <p className="text-sm text-white/45">Couldn&apos;t load US data.</p>
       )}
 
-      {jp ? (
-        <PortfolioSection
-          title="日本株"
-          subtitle="AI・半導体・データセンター関連のサプライチェーンから選定。期日後に決算短信・適時開示で採点。"
-          history={jp}
-          showTargetDate
-        />
-      ) : (
-        <section className="space-y-2">
-          <h2 className="text-xl font-bold">日本株</h2>
-          <p className="text-sm text-zinc-500">データを読み込めませんでした。</p>
-        </section>
-      )}
-
-      <p className="text-xs text-zinc-600">
-        本ポートフォリオは Claude による情報提供であり投資助言ではありません。
+      <p className="text-xs text-white/40">
+        Informational only — not investment advice. P&amp;L is an index rebased at
+        base_date (daily-chained from holding closes) applied to $10,000.
       </p>
     </div>
   );
