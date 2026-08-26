@@ -187,6 +187,61 @@ export function buildSolanaOnlyRouteConfig(
   return { accepts, description, resource };
 }
 
+// ── Testnet (Base Sepolia) demo path ──────────────────────────────────────
+// A SEPARATE x402 stack for the MCP "agent pays" demo. It never touches the
+// mainnet server/config above: different network (eip155:84532), a different
+// facilitator (the free public x402.org one, which supports base-sepolia
+// exact — verified 2026-08-26), and its own resource server instance. Nothing
+// here changes how the production Base/Solana endpoints settle.
+
+/** Base Sepolia CAIP-2 id (testnet). */
+export const BASE_SEPOLIA_NETWORK: Network = "eip155:84532";
+
+/** Base Sepolia USDC (Circle testnet mint). */
+export const ASSET_BASE_SEPOLIA_USDC =
+  "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+
+/** Testnet receive address. Defaults to the mainnet Base payTo (same EVM
+ * address is valid on Base Sepolia); override with X402_TESTNET_PAY_TO. */
+export const PAY_TO_BASE_SEPOLIA = (process.env.X402_TESTNET_PAY_TO ??
+  PAY_TO_BASE) as `0x${string}`;
+
+/** Public, keyless facilitator that verifies/settles Base Sepolia exact. */
+export const TESTNET_FACILITATOR_URL =
+  process.env.X402_TESTNET_FACILITATOR_URL ?? "https://x402.org/facilitator";
+
+const testnetFacilitatorClient = new HTTPFacilitatorClient({
+  url: TESTNET_FACILITATOR_URL,
+});
+
+/** Dedicated testnet resource server (Base Sepolia only). */
+export const x402TestnetServer = new x402ResourceServer([
+  testnetFacilitatorClient,
+]);
+registerExactEvmScheme(x402TestnetServer);
+
+/**
+ * Build a v2 RouteConfig advertising ONLY the Base Sepolia USDC accept, for
+ * the testnet demo endpoints. Same exact scheme as mainnet, different network.
+ */
+export function buildTestnetRouteConfig(
+  price: string,
+  description: string,
+  resourcePath: string,
+): RouteConfig {
+  const resource = resourceUrl(resourcePath);
+  const accepts: PaymentOption[] = [
+    {
+      scheme: "exact",
+      network: BASE_SEPOLIA_NETWORK,
+      payTo: PAY_TO_BASE_SEPOLIA,
+      price,
+      extra: { resource },
+    },
+  ];
+  return { accepts, description, resource };
+}
+
 /**
  * Internal-auth bypass: callers that present the shared INTERNAL_API_KEY in
  * the `X-Internal-Key` header skip payment entirely. Useful for our own
