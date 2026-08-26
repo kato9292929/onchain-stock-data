@@ -4,8 +4,10 @@ import type { RouteConfig } from "@x402/core/server";
 import {
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
+  buildTestnetRouteConfig,
   isInternalAuthed,
   x402Server,
+  x402TestnetServer,
 } from "./x402";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
@@ -57,11 +59,12 @@ function applyCors(res: NextResponse): NextResponse {
 export function withX402AndInternal(
   handler: Handler,
   routeConfig: RouteConfig,
+  server: typeof x402Server = x402Server,
 ): (req: NextRequest) => Promise<NextResponse> {
   const wrapped = withX402(
     async (req: NextRequest) => handler(req),
     routeConfig,
-    x402Server,
+    server,
     undefined,
     undefined,
     // syncFacilitatorOnStart MUST be true. In @x402/next 2.13.0,
@@ -138,5 +141,23 @@ export function withSolanaOnlyPaywall(
   return withX402AndInternal(
     handler,
     buildSolanaOnlyRouteConfig(opts.price, opts.description, opts.resourcePath),
+  );
+}
+
+/**
+ * Shortcut: TESTNET paywall for the MCP "agent pays" demo. Presents a single
+ * Base Sepolia (eip155:84532) USDC accept and settles via the public x402.org
+ * facilitator — a completely separate stack from the mainnet `withPaywall`
+ * above (different network, facilitator, and resource server). Same
+ * internal-bypass + CORS behaviour. Use only for demo/testnet endpoints.
+ */
+export function withTestnetPaywall(
+  handler: Handler,
+  opts: { price: string; description: string; resourcePath: string },
+): (req: NextRequest) => Promise<NextResponse> {
+  return withX402AndInternal(
+    handler,
+    buildTestnetRouteConfig(opts.price, opts.description, opts.resourcePath),
+    x402TestnetServer,
   );
 }
