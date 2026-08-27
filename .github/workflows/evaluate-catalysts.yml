@@ -8,13 +8,9 @@ name: Evaluate Catalysts (weekly)
 # — a per-run cap (EVALUATE_MAX_PER_RUN) drains any backlog over subsequent runs.
 
 on:
-  # TEMPORARILY PAUSED for cost control (Anthropic API spend). The weekly schedule
-  # is commented out; re-enable by uncommenting the cron once a spend cap is set
-  # and one dispatch run's cost has been verified. workflow_dispatch stays on so
-  # the job can still be triggered manually in the meantime.
-  # schedule:
-  #   # 22:00 UTC Sunday == 07:00 JST Monday (after the weekly portfolio jobs).
-  #   - cron: "0 22 * * 0"
+  schedule:
+    # 22:00 UTC Sunday == 07:00 JST Monday (after the weekly portfolio jobs).
+    - cron: "0 22 * * 0"
   workflow_dispatch: {}
 
 permissions:
