@@ -148,7 +148,7 @@ ${JSON.stringify(
       // JP rows carry an extra target_date and longer Japanese theses; give the
       // model enough room so the 10-holding JSON never truncates mid-output
       // (a too-small budget previously corrupted later tickers).
-      max_tokens: 4_096,
+      max_tokens: 8_000,
       system: [
         { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
       ],
@@ -178,7 +178,10 @@ ${PORTFOLIO_SIZE} 銘柄のポートフォリオを選定し、スキーマ通�
   try {
     parsed = JSON.parse(stripCodeFences(text));
   } catch (e) {
-    return { ok: false, error: `Claude returned non-JSON: ${(e as Error).message}` };
+    return {
+      ok: false,
+      error: `Claude returned non-JSON (stop_reason=${resp.stop_reason}, len=${text.length}): ${(e as Error).message}; head=${JSON.stringify(text.slice(0, 120))}`,
+    };
   }
 
   if (!Array.isArray(parsed.holdings) || parsed.holdings.length === 0) {

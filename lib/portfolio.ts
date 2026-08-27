@@ -92,7 +92,7 @@ ${JSON.stringify(
   try {
     resp = await client.messages.create({
       model: PORTFOLIO_MODEL,
-      max_tokens: 3_000,
+      max_tokens: 8_000,
       system: [
         { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
       ],
@@ -123,7 +123,13 @@ ${PORTFOLIO_SIZE} 銘柄のポートフォリオを選定し、スキーマ通�
   try {
     parsed = JSON.parse(stripCodeFences(text));
   } catch (e) {
-    return { ok: false, error: `Claude returned non-JSON: ${(e as Error).message}` };
+    // Include stop_reason + a snippet so a truncated response (stop_reason
+    // "max_tokens" → raise max_tokens) is distinguishable from an empty/prose
+    // reply without a second paid run.
+    return {
+      ok: false,
+      error: `Claude returned non-JSON (stop_reason=${resp.stop_reason}, len=${text.length}): ${(e as Error).message}; head=${JSON.stringify(text.slice(0, 120))}`,
+    };
   }
 
   if (!Array.isArray(parsed.holdings) || parsed.holdings.length === 0) {
