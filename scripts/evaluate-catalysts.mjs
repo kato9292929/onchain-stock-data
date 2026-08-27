@@ -175,6 +175,13 @@ async function evaluateOne(
 ) {
   const isJp = market === "JP";
   const system = isJp ? SYSTEM_PROMPT_JP : SYSTEM_PROMPT;
+  // Cache the (large, identical-per-market) system prompt so every catalyst
+  // after the first — and every pause_turn continuation within a call — reads
+  // it from cache instead of re-billing the full input each time. Input is the
+  // dominant cost here (search-heavy, ~27:1 in:out), so this is the main lever.
+  const systemBlocks = [
+    { type: "text", text: system, cache_control: { type: "ephemeral" } },
+  ];
   const sources = isJp
     ? "決算短信・適時開示・会社IR・日経など"
     : "実際のニュース・株価・SEC ファイリング";
@@ -192,7 +199,7 @@ ${targetDate} 前後の${sources}を web 検索で確認し、success_condition 
   let resp = await client.messages.create({
     model: MODEL,
     max_tokens: 4096,
-    system,
+    system: systemBlocks,
     tools: [webSearch],
     messages,
   });
@@ -209,7 +216,7 @@ ${targetDate} 前後の${sources}を web 検索で確認し、success_condition 
     resp = await client.messages.create({
       model: MODEL,
       max_tokens: 4096,
-      system,
+      system: systemBlocks,
       tools: [webSearch],
       messages,
     });
@@ -381,9 +388,29 @@ async function main() {
     client = new Anthropic({ apiKey, timeout: 300_000 });
   }
 
+  // Backlog-burst guard. After an outage or a pause, many catalysts come due at
+  // once; judging them all in one run is what turned the Aug-21 post-topup run
+  // into a ~2-hour, ~$15 job. Cap the number judged per run — oldest-due first —
+  // and leave the rest `pending` for subsequent daily runs, so a backlog drains
+  // over days instead of firing as one costly batch. Tune via EVALUATE_MAX_PER_RUN.
+  const MAX_PER_RUN = Number(process.env.EVALUATE_MAX_PER_RUN ?? 12);
+  const tagged = [
+    ...dueInternal.map((e) => ({ e, date: e.catalyst_target_date })),
+    ...dueExternal.map((e) => ({ e, date: e.target_date })),
+    ...dueJp.map((e) => ({ e, date: e.catalyst_target_date })),
+  ].sort((a, b) => (a.date < b.date ? -1 : 1));
+  const runSet = new Set(tagged.slice(0, MAX_PER_RUN).map((t) => t.e));
+  if (tagged.length > MAX_PER_RUN) {
+    console.log(
+      `[evaluate] backlog guard: ${tagged.length} due, judging ${MAX_PER_RUN} oldest this run, ` +
+        `deferring ${tagged.length - MAX_PER_RUN} to later runs`,
+    );
+  }
+
   // ── Internal portfolio evaluations ──────────────────────────────────
   let internalUpdated = 0;
   for (const entry of dueInternal) {
+    if (!runSet.has(entry)) continue; // deferred by the backlog guard
     const thesis = thesisByKey.get(`${entry.week_of}::${entry.ticker}`) ?? "";
     try {
       const verdict = await evaluateOne(client, {
@@ -410,6 +437,7 @@ async function main() {
   let externalUpdated = 0;
   let fileExternalsDirty = false;
   for (const entry of dueExternal) {
+    if (!runSet.has(entry)) continue; // deferred by the backlog guard
     try {
       // Event-type catalysts are asymmetric: the success is that a specific
       // disclosure/event HAPPENS by target_date, so ABSENCE by the deadline is
@@ -454,6 +482,7 @@ async function main() {
   // ── JP portfolio catalysts ──────────────────────────────────────────
   let jpJudged = 0;
   for (const entry of dueJp) {
+    if (!runSet.has(entry)) continue; // deferred by the backlog guard
     try {
       const verdict = await evaluateOne(client, {
         ticker: entry.ticker,
