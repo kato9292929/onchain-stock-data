@@ -1,18 +1,20 @@
-name: Evaluate Catalysts (daily)
+name: Evaluate Catalysts (weekly)
 
-# Daily catalyst scoring for the Claude Portfolio. For every `pending` evaluation
+# Weekly catalyst scoring for the Claude Portfolio. For every `pending` evaluation
 # whose catalyst_target_date + 7 days has passed, Claude (web search enabled)
 # judges hit/partial/miss/na and the verdict is committed back to the repo
 # (Vercel's FS is read-only/ephemeral, so git is the only durable store).
+# Catalysts are spread across dozens of companies, so a weekly cadence is enough
+# — a per-run cap (EVALUATE_MAX_PER_RUN) drains any backlog over subsequent runs.
 
 on:
-  # TEMPORARILY PAUSED for cost control (Anthropic API spend). The daily schedule
+  # TEMPORARILY PAUSED for cost control (Anthropic API spend). The weekly schedule
   # is commented out; re-enable by uncommenting the cron once a spend cap is set
   # and one dispatch run's cost has been verified. workflow_dispatch stays on so
   # the job can still be triggered manually in the meantime.
   # schedule:
-  #   # 21:00 UTC daily == 06:00 JST next day (offset from the 21:30 performance job).
-  #   - cron: "0 21 * * *"
+  #   # 22:00 UTC Sunday == 07:00 JST Monday (after the weekly portfolio jobs).
+  #   - cron: "0 22 * * 0"
   workflow_dispatch: {}
 
 permissions:
