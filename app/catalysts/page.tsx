@@ -10,8 +10,7 @@ import {
 import {
   buildIrFairBoard,
   getIrFairFile,
-  TYPE_LABEL as IR_TYPE_LABEL,
-  type IrFairThemeBoard,
+  type IrFairSectorBoard,
 } from "@/lib/ir-fair-scoreboard";
 
 export const runtime = "nodejs";
@@ -120,45 +119,34 @@ function CatalystRow({
   );
 }
 
-const IR_TYPE_STYLE: Record<string, string> = {
-  earnings: "border-sky-500/30 text-sky-300 bg-sky-500/10",
-  mission: "border-violet-500/30 text-violet-300 bg-violet-500/10",
-  ir_event: "border-amber-500/30 text-amber-300 bg-amber-500/10",
-  policy: "border-emerald-500/30 text-emerald-300 bg-emerald-500/10",
-};
-
-function ThemeCard({ theme }: { theme: IrFairThemeBoard }) {
+function SectorCard({ sector }: { sector: IrFairSectorBoard }) {
   return (
     <div className="terminal-card flex flex-col gap-3 p-4">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <div className="font-display text-sm text-white">{theme.title_en}</div>
-          <div className="text-[11px] text-white/45">
-            {theme.id} · {theme.title_ja}
-          </div>
+          <div className="font-display text-sm text-white">{sector.title_en}</div>
+          <div className="text-[11px] text-white/45">{sector.title_ja}</div>
         </div>
-        <span
-          className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold ${IR_TYPE_STYLE[theme.type] ?? "border-white/20 text-white/50"}`}
-        >
-          {IR_TYPE_LABEL[theme.type]}
+        <span className="shrink-0 rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-white/60">
+          {sector.total}
         </span>
       </div>
       <div className="flex items-baseline justify-between text-[11px] text-white/50">
-        <span>{theme.total} companies</span>
-        {theme.active > 0 ? (
+        <span>{sector.total} companies</span>
+        {sector.active > 0 ? (
           <span>
             Hit rate{" "}
             <span className="font-semibold text-white">
-              {theme.hit_rate == null ? "—" : `${(theme.hit_rate * 100).toFixed(0)}%`}
+              {sector.hit_rate == null ? "—" : `${(sector.hit_rate * 100).toFixed(0)}%`}
             </span>{" "}
-            · {theme.active} active
+            · {sector.active} active
           </span>
         ) : (
           <span className="text-white/35">conditions pending</span>
         )}
       </div>
       <div className="flex flex-wrap gap-1">
-        {theme.companies.map((c) => (
+        {sector.companies.map((c) => (
           <span
             key={c.catalyst_id}
             title={c.company_name}
@@ -271,26 +259,26 @@ export default async function CatalystsScoreboardPage() {
       })}
 
       {/* IR Fair 2026 — sector-grouped roster */}
-      {irFair.themes.length > 0 && (
+      {irFair.sectors.length > 0 && (
         <section className="space-y-4 pt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
             <h2 className="text-lg font-bold text-white">
-              <span className="text-white/45">IR Fair 2026 · </span>10 sectors
+              <span className="text-white/45">IR Fair 2026 · </span>by sector
             </h2>
             <span className="text-xs text-white/45">
-              {irFair.overall.total} exhibitors · {irFair.overall.active} active ·{" "}
-              {irFair.overall.draft} draft
+              {irFair.overall.total} exhibitors · {irFair.overall.sectors} sectors ·{" "}
+              {irFair.overall.active} active · {irFair.overall.draft} draft
             </span>
           </div>
           <p className="max-w-2xl text-xs text-white/40">
-            Nikkei × TSE IR Fair 2026 exhibitors, grouped into 10 sectors. Each
+            Nikkei × TSE IR Fair 2026 exhibitors, grouped by TSE sector. Each
             company gets a dated, binary catalyst on the same framework as above —
             shown here as a roster while its success/fail condition is verified
             from primary sources. Draft entries are not scored.
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {irFair.themes.map((t) => (
-              <ThemeCard key={t.id} theme={t} />
+            {irFair.sectors.map((s) => (
+              <SectorCard key={s.id} sector={s} />
             ))}
           </div>
         </section>
