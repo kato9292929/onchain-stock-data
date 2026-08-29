@@ -170,7 +170,17 @@ export interface SectorRosterEntry extends IrFairCatalyst {
   sectorSlug: string;
 }
 
-/** Group the IR-Fair roster by meta-theme slug. */
+/** TSE market display order: Prime → Standard → Growth → (unknown). */
+const MARKET_RANK: Record<string, number> = {
+  プライム: 0,
+  スタンダード: 1,
+  グロース: 2,
+};
+function marketRank(m?: string): number {
+  return m != null && m in MARKET_RANK ? MARKET_RANK[m] : 3;
+}
+
+/** Group the IR-Fair roster by meta-theme slug, sorted market → code. */
 export function rosterBySlug(file: IrFairFile): Map<string, SectorRosterEntry[]> {
   const map = new Map<string, SectorRosterEntry[]>();
   for (const c of file.catalysts) {
@@ -179,6 +189,10 @@ export function rosterBySlug(file: IrFairFile): Map<string, SectorRosterEntry[]>
     map.get(slug)!.push({ ...c, sectorSlug: slug });
   }
   for (const list of map.values())
-    list.sort((a, b) => a.ticker.localeCompare(b.ticker));
+    list.sort(
+      (a, b) =>
+        marketRank(a.tse_market) - marketRank(b.tse_market) ||
+        a.ticker.localeCompare(b.ticker),
+    );
   return map;
 }

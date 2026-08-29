@@ -39,11 +39,23 @@ function Metric({ label, value, accent }: { label: string; value: string | numbe
   );
 }
 
+/** Split a Japanese prose paragraph into sentence bullets (deterministic, no
+ * LLM). Keeps the trailing 。/．and drops empties, so a wall of reasoning reads
+ * as points instead of one block. */
+function toBullets(text: string): string[] {
+  return text
+    .split(/(?<=[。．])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function CatalystRow({ c, isSub }: { c: ExternalCatalyst; isSub?: boolean }) {
   const { condition, fail_direction: fail } = splitDescription(c.catalyst_description);
   const typeLabel = c.catalyst_type ? TYPE_LABEL[c.catalyst_type] : null;
+  const bullets = c.reasoning ? toBullets(c.reasoning) : [];
   return (
-    <div className={`rounded border border-zinc-800 bg-zinc-950/60 p-3 ${isSub ? "ml-4 border-l-2 border-l-zinc-700" : ""}`}>
+    <div className={`rounded border border-zinc-800 bg-zinc-950/60 p-4 ${isSub ? "ml-4 border-l-2 border-l-zinc-700" : ""}`}>
+      {/* header: code · name · type · deadline · verdict */}
       <div className="flex flex-wrap items-center gap-2">
         {isSub && <span className="text-[10px] font-bold text-white/45">sub</span>}
         <span className="font-display text-white">{c.ticker}</span>
@@ -61,20 +73,44 @@ function CatalystRow({ c, isSub }: { c: ExternalCatalyst; isSub?: boolean }) {
           <StatusBadge status={c.status} />
         </span>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-zinc-300">{condition}</p>
-      {fail && (
-        <p className="mt-1 text-xs text-rose-300/70">
-          <span className="text-rose-400/60">外れ方向:</span> {fail}
+
+      {/* success / fail conditions */}
+      <div className="mt-3 space-y-1">
+        <p className="text-sm leading-relaxed text-zinc-300">
+          <span className="text-[11px] font-bold text-zinc-500">成立条件　</span>
+          {condition}
         </p>
-      )}
-      {c.reasoning && <p className="mt-2 text-xs leading-relaxed text-zinc-500">{c.reasoning}</p>}
-      {c.evidence_urls.length > 0 && (
-        <div className="mt-1 flex flex-wrap gap-2">
-          {c.evidence_urls.map((u) => (
-            <a key={u} href={u} className="text-[11px] text-sky-400/70 hover:text-sky-300" target="_blank" rel="noreferrer">
-              evidence ↗
-            </a>
-          ))}
+        {fail && (
+          <p className="text-xs leading-relaxed text-rose-300/70">
+            <span className="text-[11px] font-bold text-rose-400/60">外れ方向　</span>
+            {fail}
+          </p>
+        )}
+      </div>
+
+      {/* evidence: bulletized reasoning + source links */}
+      {(bullets.length > 0 || c.evidence_urls.length > 0) && (
+        <div className="mt-3 border-t border-white/5 pt-3">
+          <div className="text-[11px] font-bold text-zinc-500">根拠</div>
+          {bullets.length > 0 && (
+            <ul className="mt-1 space-y-0.5">
+              {bullets.map((b, i) => (
+                <li key={i} className="flex gap-1.5 text-xs leading-relaxed text-zinc-400">
+                  <span className="text-zinc-600">・</span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {c.evidence_urls.length > 0 && (
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {c.evidence_urls.map((u) => (
+                <a key={u} href={u} className="text-[11px] text-sky-400/70 hover:text-sky-300" target="_blank" rel="noreferrer">
+                  evidence ↗
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -136,7 +172,7 @@ export function ScoredBoard({ catalysts }: { catalysts: ExternalCatalyst[] }) {
                 · {stat.judged}/{rows.length} judged
               </span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {mains.map((m) => (
                 <div key={m.catalyst_id} className="space-y-2">
                   <CatalystRow c={m} />
