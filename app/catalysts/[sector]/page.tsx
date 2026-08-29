@@ -103,38 +103,39 @@ export default async function CatalystSectorPage({
 
       {/* Roster (IR Fair 2026 exhibitors) */}
       <section className="space-y-2">
-        <div className="flex items-baseline justify-between border-b border-white/10 pb-2">
-          <h2 className="text-sm font-bold text-white/70">
-            Roster · IR Fair 2026
-          </h2>
-          <span className="text-xs text-white/45">{roster.length} companies</span>
+        <div className="border-b border-white/10 pb-2">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-sm font-bold text-white/70">Roster · IR Fair 2026</h2>
+            <span className="text-xs text-white/45">{roster.length} companies</span>
+          </div>
+          <p className="mt-1 text-[11px] text-white/40">
+            条件は一次資料で確認後、Scored に昇格して採点対象になります。以下はその
+            前段の名簿（社名・コード。市場区分は取得時点のスナップショットで未検証）。
+          </p>
         </div>
         <div className="divide-y divide-white/5 overflow-hidden rounded border border-white/10">
           {roster.map((c) => (
             <div
               key={c.catalyst_id}
-              className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-white/[0.02] px-3 py-2"
+              className="grid grid-cols-[3.25rem_1fr_auto] items-center gap-x-3 bg-white/[0.02] px-3 py-2"
             >
               <span className="font-display text-sm tabular-nums text-white/80">
                 {c.ticker}
               </span>
-              <span className="text-sm text-zinc-300">{c.company_name}</span>
-              {c.tse_market && (
-                <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
-                  {c.tse_market}
+              <span className="truncate text-sm text-zinc-300">{c.company_name}</span>
+              <span className="flex items-center gap-2 justify-self-end">
+                {c.tse_market && (
+                  <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
+                    {c.tse_market}
+                  </span>
+                )}
+                <span className="hidden text-[11px] text-zinc-500 sm:inline">
+                  {c.sector}
                 </span>
-              )}
-              <span className="text-[11px] text-zinc-500">{c.sector}</span>
-              <span className="ml-auto text-[11px] text-white/35">
-                {c.stage === "active" ? "scored" : "condition pending"}
               </span>
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-white/35">
-          Roster from a provider snapshot — market/figures unverified. Names and
-          codes only until each company&apos;s dated condition is confirmed.
-        </p>
       </section>
     </div>
   );
