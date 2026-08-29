@@ -1,0 +1,141 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { readExternalCatalysts } from "@/lib/external-catalysts";
+import { SERIES } from "@/lib/physical-ai-scoreboard";
+import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
+import {
+  PHYSICAL_AI_SLUG,
+  SECTOR_BY_SLUG,
+  rosterBySlug,
+} from "@/lib/catalyst-sectors";
+import { ScoredBoard } from "../scored-board";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/**
+ * One catalyst sector. Either the Physical-AI scored series (slug
+ * "physical-ai") or an IR-Fair meta-theme: analysis header, any scored
+ * conditions, and the exhibitor roster (by name; draft = condition pending).
+ */
+
+function BackLink() {
+  return (
+    <Link href="/catalysts" className="text-xs text-white/45 hover:text-white/70">
+      ← All sectors
+    </Link>
+  );
+}
+
+export default async function CatalystSectorPage({
+  params,
+}: {
+  params: Promise<{ sector: string }>;
+}) {
+  const { sector: slug } = await params;
+
+  // Physical-AI: the existing scored editorial series.
+  if (slug === PHYSICAL_AI_SLUG) {
+    const all = await readExternalCatalysts().catch(() => []);
+    const pa = all.filter((c) => c.series === SERIES);
+    return (
+      <div className="space-y-6">
+        <BackLink />
+        <header className="space-y-2">
+          <h1 className="font-display text-3xl text-white">Physical AI</h1>
+          <p className="max-w-2xl text-sm text-white/55">
+            Six-part series on US &amp; Japan physical-AI names — robotics, semis
+            &amp; sensors, humanoid builders, and AI models &amp; infra. Each
+            condition is scored once its deadline passes.
+          </p>
+        </header>
+        {pa.length > 0 ? (
+          <ScoredBoard catalysts={pa} />
+        ) : (
+          <p className="text-sm text-white/45">No conditions.</p>
+        )}
+      </div>
+    );
+  }
+
+  // IR-Fair meta-theme.
+  const meta = SECTOR_BY_SLUG[slug];
+  if (!meta) notFound();
+
+  const irFile = await getIrFairFile().catch(() => null);
+  const roster =
+    rosterBySlug(
+      irFile ?? { source: "", note: "", updated_at: "", sectors: [], catalysts: [] },
+    ).get(slug) ?? [];
+  const active = roster.filter((c) => c.stage === "active");
+
+  return (
+    <div className="space-y-6">
+      <BackLink />
+      <header className="space-y-2">
+        <div className="flex flex-wrap items-baseline gap-2">
+          <h1 className="font-display text-3xl text-white">{meta.title_en}</h1>
+          <span className="text-white/45">{meta.title_ja}</span>
+        </div>
+        <span className="inline-block rounded border border-white/15 bg-white/5 px-2 py-0.5 text-[11px] font-bold text-white/60">
+          {meta.decision_type}
+        </span>
+        <p className="max-w-2xl text-sm leading-relaxed text-white/60">
+          {meta.analysis}
+        </p>
+      </header>
+
+      {/* Scored (active conditions) */}
+      <section className="space-y-2">
+        <h2 className="border-b border-white/10 pb-2 text-sm font-bold text-white/70">
+          Scored
+        </h2>
+        {active.length === 0 ? (
+          <p className="text-xs text-white/40">
+            No scored conditions yet — the roster below is verified and promoted
+            per company. A row is scored only after its deadline + success/fail
+            condition are confirmed from primary sources.
+          </p>
+        ) : (
+          <p className="text-xs text-white/40">{active.length} scored — see rows.</p>
+        )}
+      </section>
+
+      {/* Roster (IR Fair 2026 exhibitors) */}
+      <section className="space-y-2">
+        <div className="flex items-baseline justify-between border-b border-white/10 pb-2">
+          <h2 className="text-sm font-bold text-white/70">
+            Roster · IR Fair 2026
+          </h2>
+          <span className="text-xs text-white/45">{roster.length} companies</span>
+        </div>
+        <div className="divide-y divide-white/5 overflow-hidden rounded border border-white/10">
+          {roster.map((c) => (
+            <div
+              key={c.catalyst_id}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-white/[0.02] px-3 py-2"
+            >
+              <span className="font-display text-sm tabular-nums text-white/80">
+                {c.ticker}
+              </span>
+              <span className="text-sm text-zinc-300">{c.company_name}</span>
+              {c.tse_market && (
+                <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
+                  {c.tse_market}
+                </span>
+              )}
+              <span className="text-[11px] text-zinc-500">{c.sector}</span>
+              <span className="ml-auto text-[11px] text-white/35">
+                {c.stage === "active" ? "scored" : "condition pending"}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="text-[11px] text-white/35">
+          Roster from a provider snapshot — market/figures unverified. Names and
+          codes only until each company&apos;s dated condition is confirmed.
+        </p>
+      </section>
+    </div>
+  );
+}

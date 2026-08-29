@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getPerformanceHistory, getPortfolioHistory } from "@/lib/data";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { buildScoreboard } from "@/lib/physical-ai-scoreboard";
+import { SECTORS } from "@/lib/catalyst-sectors";
 import { SiteNav } from "./components/site-nav";
 import { SiteFooter } from "./components/site-footer";
 import { PortfolioPnl } from "./components/portfolio-pnl";
@@ -34,23 +35,6 @@ function MiniStat({
   );
 }
 
-const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  hit: { label: "HIT", className: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
-  partial: { label: "PARTIAL", className: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
-  miss: { label: "MISS", className: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
-  na: { label: "N/A", className: "bg-white/10 text-white/50 border-white/20" },
-  pending: { label: "PENDING", className: "bg-white/5 text-white/45 border-white/15" },
-};
-
-function StatusBadge({ status }: { status: string }) {
-  const s = STATUS_BADGE[status] ?? STATUS_BADGE.pending;
-  return (
-    <span className={`inline-block shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${s.className}`}>
-      {s.label}
-    </span>
-  );
-}
-
 export default async function Home() {
   const [perf, portfolio, catalysts] = await Promise.all([
     getPerformanceHistory().catch(() => null),
@@ -61,14 +45,6 @@ export default async function Home() {
   const asOf = new Date().toISOString().slice(0, 10);
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
-
-  // One representative company per article (prefer a main condition), so the top
-  // page lists all six Physical-AI article groups with a single name each.
-  const pickByArticle = new Map<number, (typeof board.catalysts)[number]>();
-  for (const c of board.catalysts) {
-    if (c.series_article == null || c.catalyst_role === "sub") continue;
-    if (!pickByArticle.has(c.series_article)) pickByArticle.set(c.series_article, c);
-  }
 
   return (
     <>
@@ -101,36 +77,29 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* One company per article — all six Physical-AI groups, 3 across. */}
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {board.articles.map((a) => {
-            const c = pickByArticle.get(a.article);
-            return (
-              <div key={a.article} className="terminal-card flex flex-col gap-2 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-display text-sm text-white">
-                    {c ? c.ticker : "—"}
-                  </span>
-                  {c && <StatusBadge status={c.status} />}
-                </div>
-                <div className="text-[11px] text-white/45">
-                  Article {a.article} · {a.title}
-                </div>
-                {c && (
-                  <p className="line-clamp-3 text-sm leading-relaxed text-white/70">
-                    {c.company_name ? (
-                      <span className="text-white/85">{c.company_name} — </span>
-                    ) : null}
-                    {c.condition}
-                  </p>
-                )}
-              </div>
-            );
-          })}
+        {/* Sectors — entry points into the per-sector catalyst pages. */}
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <Link
+            href="/catalysts/physical-ai"
+            className="terminal-card flex flex-col gap-1 p-3 transition hover:border-white/25"
+          >
+            <span className="font-display text-sm text-white">Physical AI</span>
+            <span className="text-[10px] text-white/45">Scored series</span>
+          </Link>
+          {SECTORS.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/catalysts/${s.slug}`}
+              className="terminal-card flex flex-col gap-1 p-3 transition hover:border-white/25"
+            >
+              <span className="font-display text-sm text-white">{s.title_en}</span>
+              <span className="text-[10px] text-white/45">{s.title_ja}</span>
+            </Link>
+          ))}
         </div>
 
         <Link href="/catalysts" className="landing-link">
-          View scoreboard →
+          View all sectors →
         </Link>
       </section>
 
