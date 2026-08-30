@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
-import { hitRate, SERIES } from "@/lib/physical-ai-scoreboard";
+import { ARTICLE_TITLES, hitRate, SERIES } from "@/lib/physical-ai-scoreboard";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { SECTORS, rosterBySlug } from "@/lib/catalyst-sectors";
 
@@ -21,7 +21,13 @@ export default async function CatalystsIndexPage() {
   ]);
 
   const pa = all.filter((c) => c.series === SERIES);
-  const paStat = hitRate(pa);
+  const paByArticle = new Map<number, typeof pa>();
+  for (const c of pa) {
+    const a = c.series_article ?? 0;
+    if (!paByArticle.has(a)) paByArticle.set(a, []);
+    paByArticle.get(a)!.push(c);
+  }
+  const paArticles = [...paByArticle.keys()].filter((a) => a > 0).sort((a, b) => a - b);
   const roster = rosterBySlug(
     irFile ?? { source: "", note: "", updated_at: "", sectors: [], catalysts: [] },
   );
@@ -40,26 +46,41 @@ export default async function CatalystsIndexPage() {
         </p>
       </header>
 
-      {/* Physical AI — the scored editorial series */}
-      <Link
-        href={`/catalysts/physical-ai`}
-        className="terminal-card block p-5 transition hover:border-white/25"
-      >
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <span className="font-display text-lg text-white">Physical AI</span>
-          <span className="text-xs text-white/45">
-            Hit rate{" "}
-            <span className="font-semibold text-white">
-              {paStat.rate == null ? "—" : `${(paStat.rate * 100).toFixed(0)}%`}
-            </span>{" "}
-            · {paStat.judged}/{pa.length} judged →
-          </span>
+      {/* Physical AI — 6 article cards (one per part of the series) */}
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
+          <h2 className="text-lg font-bold text-white">Physical AI</h2>
+          <span className="text-xs text-white/45">{pa.length} scored conditions</span>
         </div>
-        <p className="mt-1 text-sm text-white/55">
-          6-part series on US &amp; Japan physical-AI names (robotics, semis,
-          humanoid, AI models). {pa.length} scored conditions.
-        </p>
-      </Link>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {paArticles.map((a) => {
+            const rows = paByArticle.get(a)!;
+            const stat = hitRate(rows);
+            return (
+              <Link
+                key={a}
+                href={`/catalysts/physical-ai-${a}`}
+                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline"
+              >
+                <div className="text-[11px] text-white/45">Article {a}</div>
+                <div className="font-display text-sm text-white">
+                  {ARTICLE_TITLES[a] ?? "Other"}
+                </div>
+                <div className="mt-auto flex items-baseline justify-between text-[11px] text-white/50">
+                  <span>{rows.length} conditions</span>
+                  <span>
+                    Hit rate{" "}
+                    <span className="font-semibold text-white">
+                      {stat.rate == null ? "—" : `${(stat.rate * 100).toFixed(0)}%`}
+                    </span>{" "}
+                    · {stat.judged}/{rows.length} →
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
       {/* IR Fair 2026 — sector index */}
       <section className="space-y-4">
@@ -82,7 +103,7 @@ export default async function CatalystsIndexPage() {
               <Link
                 key={s.slug}
                 href={`/catalysts/${s.slug}`}
-                className="terminal-card flex flex-col gap-2 p-4 transition hover:border-white/25"
+                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>

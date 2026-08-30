@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
-import { SERIES } from "@/lib/physical-ai-scoreboard";
+import { ARTICLE_TITLES, SERIES } from "@/lib/physical-ai-scoreboard";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import {
   PHYSICAL_AI_SLUG,
@@ -34,23 +34,38 @@ export default async function CatalystSectorPage({
 }) {
   const { sector: slug } = await params;
 
-  // Physical-AI: the existing scored editorial series.
-  if (slug === PHYSICAL_AI_SLUG) {
+  // Physical-AI: the full series (slug "physical-ai") or one article
+  // (slug "physical-ai-N").
+  const paMatch = slug.match(/^physical-ai(?:-(\d+))?$/);
+  if (paMatch) {
+    const articleNo = paMatch[1] ? Number(paMatch[1]) : null;
     const all = await readExternalCatalysts().catch(() => []);
-    const pa = all.filter((c) => c.series === SERIES);
+    let pa = all.filter((c) => c.series === SERIES);
+    if (articleNo != null) pa = pa.filter((c) => c.series_article === articleNo);
+    if (articleNo != null && pa.length === 0) notFound();
+
+    const title =
+      articleNo != null
+        ? ARTICLE_TITLES[articleNo] ?? "Physical AI"
+        : "Physical AI";
     return (
       <div className="space-y-6">
         <BackLink />
         <header className="space-y-2">
-          <h1 className="font-display text-3xl text-white">Physical AI</h1>
-          <p className="max-w-2xl text-sm text-white/55">
-            Six-part series on US &amp; Japan physical-AI names — robotics, semis
-            &amp; sensors, humanoid builders, and AI models &amp; infra. Each
-            condition is scored once its deadline passes.
-          </p>
+          {articleNo != null && (
+            <div className="text-xs text-white/45">Physical AI · Article {articleNo}</div>
+          )}
+          <h1 className="font-display text-3xl text-white">{title}</h1>
+          {articleNo == null && (
+            <p className="max-w-2xl text-sm text-white/55">
+              Six-part series on US &amp; Japan physical-AI names — robotics, semis
+              &amp; sensors, humanoid builders, and AI models &amp; infra. Each
+              condition is scored once its deadline passes.
+            </p>
+          )}
         </header>
         {pa.length > 0 ? (
-          <ScoredBoard catalysts={pa} />
+          <ScoredBoard catalysts={pa} showOverall={articleNo == null} />
         ) : (
           <p className="text-sm text-white/45">No conditions.</p>
         )}
