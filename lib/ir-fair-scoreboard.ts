@@ -34,6 +34,13 @@ export interface IrFairCatalyst {
   tse_market?: string;
   sector: string;
   stage: IrFairStage;
+  /** One-line business line in the AI/sector thesis (from research). */
+  business_line?: string | null;
+  /** Latest disclosed figures (百万円 / JPY millions), from public IR. */
+  revenue?: number | null;
+  operating_income?: number | null;
+  fiscal_period?: string | null;
+  disclosed_at?: string | null;
   due_date: string | null;
   success_condition: string | null;
   fail_condition: string | null;

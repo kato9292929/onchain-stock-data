@@ -157,6 +157,10 @@ export const TICKER_OVERRIDE: Record<string, string> = {
   "5262": "infrastructure", //   日本ヒューム (ヒューム管)
   "7826": "semiconductors-fa", // フルヤ金属 (貴金属→半導体)
   "2760": "semiconductors-fa", // 東京エレクトロン デバイス (半導体商社)
+  // AI-supply-chain bottleneck names whose TSE sector defaults elsewhere.
+  "4062": "semiconductors-fa", // イビデン (化学→ICパッケージ基板)
+  "4004": "semiconductors-fa", // レゾナック (化学→半導体後工程材料)
+  "2802": "semiconductors-fa", // 味の素 (食料品→ABF 半導体基板材料)
 };
 
 /** Map an IR-Fair company to its meta-theme slug. */
