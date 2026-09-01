@@ -77,23 +77,44 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Sectors — entry points into the per-sector catalyst pages. */}
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          <Link
-            href="/catalysts/physical-ai"
-            className="terminal-card flex flex-col gap-1 p-3 transition hover:border-white/25"
-          >
-            <span className="font-display text-sm text-white">Physical AI</span>
-            <span className="text-[10px] text-white/45">Scored series</span>
-          </Link>
+        {/* Physical AI — 6 article cards */}
+        <div className="mt-6 mb-2 text-sm font-bold text-white/70">Physical AI</div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {board.articles.map((a) => (
+            <Link
+              key={a.article}
+              href={`/catalysts/physical-ai-${a.article}`}
+              className="terminal-card flex flex-col gap-2 p-5 no-underline transition hover:border-white/25 hover:no-underline!"
+            >
+              <span className="text-[11px] text-white/45">Article {a.article}</span>
+              <span className="font-display text-base text-white">{a.title}</span>
+              <span className="mt-auto text-[11px] text-white/55">
+                Hit rate{" "}
+                <span className="font-semibold text-white">
+                  {a.hit_rate == null ? "—" : `${(a.hit_rate * 100).toFixed(0)}%`}
+                </span>{" "}
+                · {a.judged}/{a.total} →
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        {/* IR Fair 2026 — sector cards */}
+        <div className="mt-8 mb-2 text-sm font-bold text-white/70">IR Fair 2026 · sectors</div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SECTORS.map((s) => (
             <Link
               key={s.slug}
               href={`/catalysts/${s.slug}`}
-              className="terminal-card flex flex-col gap-1 p-3 transition hover:border-white/25"
+              className="terminal-card flex flex-col gap-2 p-5 no-underline transition hover:border-white/25 hover:no-underline!"
             >
-              <span className="font-display text-sm text-white">{s.title_en}</span>
-              <span className="text-[10px] text-white/45">{s.title_ja}</span>
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-display text-base text-white">{s.title_en}</span>
+                <span className="shrink-0 rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-white/60">
+                  {s.decision_type}
+                </span>
+              </div>
+              <span className="text-[11px] text-white/45">{s.title_ja}</span>
             </Link>
           ))}
         </div>
