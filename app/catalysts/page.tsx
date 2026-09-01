@@ -60,7 +60,7 @@ export default async function CatalystsIndexPage() {
               <Link
                 key={a}
                 href={`/catalysts/physical-ai-${a}`}
-                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline"
+                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline!"
               >
                 <div className="text-[11px] text-white/45">Article {a}</div>
                 <div className="font-display text-sm text-white">
@@ -103,7 +103,7 @@ export default async function CatalystsIndexPage() {
               <Link
                 key={s.slug}
                 href={`/catalysts/${s.slug}`}
-                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline"
+                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline!"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
