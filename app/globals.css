@@ -36,11 +36,13 @@
     monospace;
 }
 
-/* Landing-matched dot-matrix display for Latin headings / wordmark. */
+/* Headings / wordmark on inner pages. Matches the landing top, which uses
+   Outfit for headings — so detail-page headings and nav labels share the same
+   modern face instead of the old dot-matrix display. */
 .font-display {
-  font-family: var(--font-display);
-  letter-spacing: -0.03em;
-  font-weight: 400;
+  font-family: "Outfit", var(--font-inter), -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 /* ── Landing (top page) hero + embedded-preview sections ─────────────── */
