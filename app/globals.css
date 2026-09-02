@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+/* ── Light landing (readable rebuild) ─────────────────────────────────── */
+/* Inter + Outfit are loaded via a <link> in app/layout.tsx (a CSS @import
+   after Tailwind's expansion is invalid — imports must precede all rules). */
+.font-outfit {
+  font-family: "Outfit", var(--font-inter), -apple-system, sans-serif;
+}
+.font-inter {
+  font-family: "Inter", var(--font-inter), -apple-system, sans-serif;
+}
+/* Seamless marquee: translate a doubled track by -50% forever. */
+@keyframes osd-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.osd-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: osd-marquee 40s linear infinite;
+}
+.osd-marquee:hover .osd-marquee-track {
+  animation-play-state: paused;
+}
+.osd-marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
 :root {
   --background: #050505;
   --foreground: #f4f4f5;
