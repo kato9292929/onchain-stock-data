@@ -5,9 +5,13 @@ name: Update Portfolio Performance (daily)
 # (Replaces the former vercel.json cron, which never persisted.)
 
 on:
-  schedule:
-    # 21:30 UTC daily == 06:30 JST next day
-    - cron: "30 21 * * *"
+  # DISABLED. The product no longer tracks portfolio P&L / benchmark returns
+  # (the site sells the prediction record, not returns), so the daily SPY/QQQ
+  # vs portfolio index is no longer generated. workflow_dispatch stays for a
+  # one-off manual run if ever needed; uncomment the schedule to resume.
+  # schedule:
+  #   # 21:30 UTC daily == 06:30 JST next day
+  #   - cron: "30 21 * * *"
   workflow_dispatch: {}
 
 permissions:
