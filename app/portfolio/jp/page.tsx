@@ -68,7 +68,7 @@ export default async function JpPortfolioPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="font-display text-3xl sm:text-4xl text-white">Claude Portfolio</h1>
+        <h1 className="font-display text-3xl sm:text-4xl text-white">Weekly Selection · JP</h1>
         <p className="text-sm text-white/55 max-w-2xl">
           Ten JP names picked weekly from the AI / semiconductor / data-center
           supply chain. Published at{" "}
