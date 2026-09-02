@@ -36,21 +36,21 @@ export default async function CatalystsIndexPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="font-display text-3xl text-white sm:text-4xl">Catalysts</h1>
-        <p className="max-w-2xl text-sm text-white/55">
+        <h1 className="font-display text-3xl text-slate-900 sm:text-4xl">Catalysts</h1>
+        <p className="max-w-2xl text-sm text-slate-500">
           Dated, verifiable predictions scored by Claude — each resolves to{" "}
-          <span className="text-emerald-300">HIT</span> /{" "}
-          <span className="text-amber-300">PARTIAL</span> /{" "}
-          <span className="text-rose-300">MISS</span> once its deadline passes.
+          <span className="text-emerald-600">HIT</span> /{" "}
+          <span className="text-amber-600">PARTIAL</span> /{" "}
+          <span className="text-rose-600">MISS</span> once its deadline passes.
           A free track record, organized by sector.
         </p>
       </header>
 
       {/* Physical AI — 6 article cards (one per part of the series) */}
       <section className="space-y-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
-          <h2 className="text-lg font-bold text-white">Physical AI</h2>
-          <span className="text-xs text-white/45">{pa.length} scored conditions</span>
+        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 pb-2">
+          <h2 className="text-lg font-bold text-slate-900">Physical AI</h2>
+          <span className="text-xs text-slate-400">{pa.length} scored conditions</span>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {paArticles.map((a) => {
@@ -60,17 +60,17 @@ export default async function CatalystsIndexPage() {
               <Link
                 key={a}
                 href={`/catalysts/physical-ai-${a}`}
-                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline!"
+                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-slate-300 hover:no-underline!"
               >
-                <div className="text-[11px] text-white/45">Article {a}</div>
-                <div className="font-display text-sm text-white">
+                <div className="text-[11px] text-slate-400">Article {a}</div>
+                <div className="font-display text-sm text-slate-900">
                   {ARTICLE_TITLES[a] ?? "Other"}
                 </div>
-                <div className="mt-auto flex items-baseline justify-between text-[11px] text-white/50">
+                <div className="mt-auto flex items-baseline justify-between text-[11px] text-slate-500">
                   <span>{rows.length} conditions</span>
                   <span>
                     Hit rate{" "}
-                    <span className="font-semibold text-white">
+                    <span className="font-semibold text-slate-900">
                       {stat.rate == null ? "—" : `${(stat.rate * 100).toFixed(0)}%`}
                     </span>{" "}
                     · {stat.judged}/{rows.length} →
@@ -84,11 +84,11 @@ export default async function CatalystsIndexPage() {
 
       {/* IR Fair 2026 — sector index */}
       <section className="space-y-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
-          <h2 className="text-lg font-bold text-white">IR Fair 2026 · sectors</h2>
-          <span className="text-xs text-white/45">{totalExhibitors} exhibitors</span>
+        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 pb-2">
+          <h2 className="text-lg font-bold text-slate-900">IR Fair 2026 · sectors</h2>
+          <span className="text-xs text-slate-400">{totalExhibitors} exhibitors</span>
         </div>
-        <p className="max-w-2xl text-xs text-white/40">
+        <p className="max-w-2xl text-xs text-slate-500">
           Cross-cutting thesis: TSE&apos;s &quot;improve sub-1.0 PBR&quot; push × IR
           strengthening — exhibiting at the IR fair signals a company coming to
           lift its own valuation. Each sector below reads that through a specific
@@ -103,23 +103,23 @@ export default async function CatalystsIndexPage() {
               <Link
                 key={s.slug}
                 href={`/catalysts/${s.slug}`}
-                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-white/25 hover:no-underline!"
+                className="terminal-card flex flex-col gap-2 p-4 no-underline transition hover:border-slate-300 hover:no-underline!"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <div className="font-display text-sm text-white">{s.title_en}</div>
-                    <div className="text-[11px] text-white/45">{s.title_ja}</div>
+                    <div className="font-display text-sm text-slate-900">{s.title_en}</div>
+                    <div className="text-[11px] text-slate-400">{s.title_ja}</div>
                   </div>
-                  <span className="shrink-0 rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-white/60">
+                  <span className="shrink-0 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-slate-500">
                     {s.decision_type}
                   </span>
                 </div>
-                <div className="mt-auto flex items-baseline justify-between text-[11px] text-white/50">
+                <div className="mt-auto flex items-baseline justify-between text-[11px] text-slate-500">
                   <span>{list.length} companies</span>
                   {active > 0 ? (
                     <span>{active} scored →</span>
                   ) : (
-                    <span className="text-white/35">conditions pending →</span>
+                    <span className="text-slate-300">conditions pending →</span>
                   )}
                 </div>
               </Link>
@@ -128,12 +128,12 @@ export default async function CatalystsIndexPage() {
         </div>
       </section>
 
-      <p className="text-xs text-white/40">
+      <p className="text-xs text-slate-400">
         Informational only — not investment advice. Roster figures are from a
         provider snapshot and unverified; a company is scored only after its
         deadline + condition are confirmed from primary sources. Machine-readable
         Physical-AI results are served at{" "}
-        <code className="text-white/60">/api/alpha/catalysts/physical-ai</code>.
+        <code className="text-slate-600">/api/alpha/catalysts/physical-ai</code>.
       </p>
     </div>
   );

@@ -7,15 +7,15 @@ export function PortfolioToggle({ active }: { active: "us" | "jp" }) {
     { key: "jp", href: "/portfolio/jp", label: "JP" },
   ];
   return (
-    <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1 text-sm backdrop-blur">
+    <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1 text-sm">
       {tabs.map((t) => (
         <Link
           key={t.key}
           href={t.href}
-          className={`px-4 py-1.5 rounded-full transition-colors hover:no-underline ${
+          className={`px-4 py-1.5 rounded-full transition-colors hover:no-underline! ${
             active === t.key
-              ? "bg-white text-black font-semibold"
-              : "text-white/55 hover:text-white/90"
+              ? "bg-white text-slate-900 font-semibold shadow-sm"
+              : "text-slate-500 hover:text-slate-800"
           }`}
         >
           {t.label}
