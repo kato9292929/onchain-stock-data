@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getPortfolioHistory } from "@/lib/data";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
-import { SECTORS } from "@/lib/catalyst-sectors";
 import { LandingHero } from "./components/landing-hero";
 import { RailMarquee } from "./components/rail-marquee";
 
@@ -88,17 +87,6 @@ export default async function Home() {
                   </span>{" "}
                   · {a.judged}/{a.total}
                 </div>
-              </Link>
-            ))}
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {SECTORS.map((s) => (
-              <Link
-                key={s.slug}
-                href={`/catalysts/${s.slug}`}
-                className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[12px] font-semibold text-slate-600 no-underline shadow-sm transition-all hover:border-slate-300 hover:text-[#0a1b33] hover:no-underline!"
-              >
-                {s.title_en}
               </Link>
             ))}
           </div>
