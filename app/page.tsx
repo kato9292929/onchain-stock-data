@@ -134,7 +134,7 @@ export default async function Home() {
               Developers
             </div>
             <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">
-              MCP · talk to the research
+              MCP · call the research
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
               osd ships a remote <span className="font-semibold text-slate-700">MCP server</span>.
