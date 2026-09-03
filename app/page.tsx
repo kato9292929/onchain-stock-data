@@ -127,6 +127,78 @@ export default async function Home() {
           </section>
         )}
 
+        {/* MCP — talk to the research */}
+        <section id="mcp" className="mt-16">
+          <div className="mb-4">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              Developers
+            </div>
+            <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">
+              MCP · talk to the research
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-500">
+              osd ships a remote <span className="font-semibold text-slate-700">MCP server</span>.
+              Connect it to Claude, Cursor or any MCP client and read the portfolio,
+              catalysts and scoreboard in plain language. Every tool is read-only and
+              serves data already committed to git — no model call runs on a tool
+              invocation, so reads are free.
+            </p>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            {/* tools */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                Tools
+              </div>
+              <ul className="mt-3 space-y-3">
+                {[
+                  ["portfolio_get", "Current US / JP selection — weights, thesis, catalyst dates."],
+                  ["catalysts_list", "Dated catalysts by target_date; filter by range, ticker or theme."],
+                  ["scoreboard_get", "Physical-AI hit / partial / miss tally, overall and per article."],
+                  ["signal_get", "Directional signals by ticker / theme (paid x402 testnet twin)."],
+                ].map(([name, desc]) => (
+                  <li key={name} className="flex flex-col gap-0.5">
+                    <code className="font-mono text-[13px] font-semibold text-[#0a1b33]">{name}</code>
+                    <span className="text-[13px] text-slate-500">{desc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* connect */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                Connect
+              </div>
+              <p className="mt-3 text-[13px] text-slate-500">Endpoint (streamable HTTP)</p>
+              <pre className="mt-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-700">
+                <code>https://osd.x402jp.com/api/mcp</code>
+              </pre>
+              <p className="mt-3 text-[13px] text-slate-500">Claude Code / CLI</p>
+              <pre className="mt-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3 text-[12px] text-slate-700">
+                <code>{`claude mcp add --transport http onchain-stock-data https://osd.x402jp.com/api/mcp`}</code>
+              </pre>
+              <p className="mt-3 text-[13px] text-slate-500">Or client config</p>
+              <pre className="mt-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3 text-[12px] leading-relaxed text-slate-700">
+                <code>{`{
+  "mcpServers": {
+    "onchain-stock-data": {
+      "type": "http",
+      "url": "https://osd.x402jp.com/api/mcp"
+    }
+  }
+}`}</code>
+              </pre>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-slate-400">
+            Reads are free (committed data, no model call).{" "}
+            <code className="text-slate-500">signal_get</code> has a paid x402 twin
+            settled per call on Base Sepolia (testnet) for the &ldquo;agent pays&rdquo; demo.
+          </p>
+        </section>
+
         <footer className="mt-16 border-t border-slate-200 py-8 text-xs text-slate-400">
           <p>
             Informational only — not investment advice. Predictions are scored
