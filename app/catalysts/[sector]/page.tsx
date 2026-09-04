@@ -73,6 +73,14 @@ export default async function CatalystSectorPage({
             </p>
           )}
         </header>
+        {articleNo === 2 && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-[13px] leading-relaxed text-amber-900">
+            <span className="font-bold">未公開株の注記　</span>
+            これらは売買シグナルではありません（トレード不可）。役割はフィジカルAIの
+            テーマ地図と、IPOパイプラインの先行監視です。判定は開示された事実
+            （提携・製品・調達＝マイルストンの有無）で行い、株価・評価額では判定しません。
+          </div>
+        )}
         {pa.length > 0 ? (
           <ScoredBoard catalysts={pa} showOverall={articleNo == null} />
         ) : (
