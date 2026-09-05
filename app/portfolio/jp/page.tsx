@@ -14,11 +14,11 @@ export const dynamic = "force-dynamic";
  */
 
 const STATUS_STYLE: Record<EvaluationStatus, { label: string; cls: string }> = {
-  hit: { label: "hit", cls: "text-emerald-400" },
-  partial: { label: "partial", cls: "text-amber-400" },
-  miss: { label: "miss", cls: "text-red-400" },
-  na: { label: "na", cls: "text-zinc-500" },
-  pending: { label: "pending", cls: "text-zinc-400" },
+  hit: { label: "hit", cls: "text-emerald-600" },
+  partial: { label: "partial", cls: "text-amber-600" },
+  miss: { label: "miss", cls: "text-rose-600" },
+  na: { label: "na", cls: "text-slate-400" },
+  pending: { label: "pending", cls: "text-slate-500" },
 };
 
 function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
@@ -27,23 +27,23 @@ function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
   return (
     <div className="terminal-card p-4">
       <div className="flex items-baseline justify-between mb-2">
-        <h3 className="font-display text-base text-white">Catalyst hit-rate</h3>
-        <span className="text-xs text-white/45">judged {judged}</span>
+        <h3 className="font-display text-base text-slate-900">Catalyst hit-rate</h3>
+        <span className="text-xs text-slate-400">judged {judged}</span>
       </div>
       <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 text-sm">
-        <span className="text-lg font-bold text-emerald-400 tabular-nums">
+        <span className="text-lg font-bold text-emerald-600 tabular-nums">
           {rate}
           {rate !== "—" && "%"}{" "}
-          <span className="text-xs font-normal text-zinc-500">hit</span>
+          <span className="text-xs font-normal text-slate-400">hit</span>
         </span>
         {(Object.keys(STATUS_STYLE) as EvaluationStatus[]).map((s) => (
-          <span key={s} className="text-zinc-500">
+          <span key={s} className="text-slate-400">
             {STATUS_STYLE[s].label}:{" "}
             <span className={`tabular-nums ${STATUS_STYLE[s].cls}`}>{counts[s]}</span>
           </span>
         ))}
       </div>
-      <p className="mt-2 text-xs text-zinc-600">
+      <p className="mt-2 text-xs text-slate-400">
         Scored by web search of earnings / disclosures 7 days after each deadline.
       </p>
     </div>
@@ -68,11 +68,11 @@ export default async function JpPortfolioPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="font-display text-3xl sm:text-4xl text-white">Weekly Selection · JP</h1>
-        <p className="text-sm text-white/55 max-w-2xl">
+        <h1 className="font-display text-3xl sm:text-4xl text-slate-900">Weekly Selection · JP</h1>
+        <p className="text-sm text-slate-500 max-w-2xl">
           Ten JP names picked weekly from the AI / semiconductor / data-center
           supply chain. Published at{" "}
-          <code className="text-white/75">/api/alpha/jp/portfolio/current</code>.
+          <code className="text-slate-700">/api/alpha/jp/portfolio/current</code>.
         </p>
         <PortfolioToggle active="jp" />
       </header>
@@ -89,12 +89,12 @@ export default async function JpPortfolioPage() {
           showTargetDate
         />
       ) : (
-        <p className="text-sm text-white/45">Couldn&apos;t load JP data.</p>
+        <p className="text-sm text-slate-400">Couldn&apos;t load JP data.</p>
       )}
 
-      <p className="text-xs text-white/40">
+      <p className="text-xs text-slate-400">
         Informational only — not investment advice.{" "}
-        <Link href="/portfolio" className="text-white underline decoration-white/30 underline-offset-2">
+        <Link href="/portfolio" className="text-slate-900 underline decoration-slate-300 underline-offset-2">
           US →
         </Link>
       </p>

@@ -10,11 +10,11 @@ import { ARTICLE_TITLES, hitRate, splitDescription } from "@/lib/physical-ai-sco
  */
 
 const STATUS_STYLE: Record<EvaluationStatus, { label: string; className: string }> = {
-  hit: { label: "HIT", className: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
-  partial: { label: "PARTIAL", className: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
-  miss: { label: "MISS", className: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
-  na: { label: "N/A", className: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30" },
-  pending: { label: "PENDING", className: "bg-zinc-800 text-zinc-400 border-zinc-700" },
+  hit: { label: "HIT", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  partial: { label: "PARTIAL", className: "bg-amber-50 text-amber-700 border-amber-200" },
+  miss: { label: "MISS", className: "bg-rose-50 text-rose-700 border-rose-200" },
+  na: { label: "N/A", className: "bg-slate-100 text-slate-500 border-slate-200" },
+  pending: { label: "PENDING", className: "bg-slate-100 text-slate-500 border-slate-200" },
 };
 
 const TYPE_LABEL: Record<NonNullable<ExternalCatalyst["catalyst_type"]>, string> = {
@@ -34,9 +34,9 @@ function StatusBadge({ status }: { status: EvaluationStatus }) {
 
 function Metric({ label, value, accent }: { label: string; value: string | number; accent?: boolean }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-2 text-center">
-      <div className={`text-lg font-semibold tabular-nums ${accent ? "text-white" : "text-white/85"}`}>{value}</div>
-      <div className="text-[10px] uppercase tracking-wide text-white/45">{label}</div>
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-2 text-center">
+      <div className={`text-lg font-semibold tabular-nums ${accent ? "text-slate-900" : "text-slate-700"}`}>{value}</div>
+      <div className="text-[10px] uppercase tracking-wide text-slate-400">{label}</div>
     </div>
   );
 }
@@ -62,24 +62,24 @@ function CatalystCard({ c, isSub }: { c: ExternalCatalyst; isSub?: boolean }) {
   const bullets = c.reasoning ? toBullets(c.reasoning) : [];
   return (
     <div
-      className={`rounded-lg border border-white/10 bg-white/[0.02] p-4 ${
-        isSub ? "border-l-2 border-l-zinc-600" : ""
+      className={`rounded-lg border border-slate-200 bg-white p-4 shadow-sm ${
+        isSub ? "border-l-2 border-l-slate-300" : ""
       }`}
     >
       {/* header: code · name · type · deadline · verdict */}
       <div className="flex flex-wrap items-center gap-2">
         {isSub && (
-          <span className="rounded bg-zinc-800 px-1 text-[10px] font-bold text-white/45">sub</span>
+          <span className="rounded bg-slate-100 px-1 text-[10px] font-bold text-slate-500">sub</span>
         )}
-        <span className="font-display text-white">{c.ticker}</span>
-        <span className="break-words text-sm text-zinc-300">{c.company_name ?? ""}</span>
+        <span className="font-display text-slate-900">{c.ticker}</span>
+        <span className="break-words text-sm text-slate-700">{c.company_name ?? ""}</span>
         {typeLabel && (
-          <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
+          <span className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">
             {typeLabel}
           </span>
         )}
         <span className="ml-auto flex items-center gap-2">
-          <span className="text-[11px] tabular-nums text-zinc-500">
+          <span className="text-[11px] tabular-nums text-slate-400">
             {c.target_date}
             {c.date_confidence === "confirmed" ? " (confirmed)" : " (est.)"}
           </span>
@@ -89,13 +89,13 @@ function CatalystCard({ c, isSub }: { c: ExternalCatalyst; isSub?: boolean }) {
 
       {/* success / fail conditions (wrap, never clip) */}
       <div className="mt-3 space-y-1">
-        <p className="text-sm leading-relaxed text-zinc-300 [overflow-wrap:anywhere]">
-          <span className="text-[11px] font-bold text-zinc-500">成立条件　</span>
+        <p className="text-sm leading-relaxed text-slate-700 [overflow-wrap:anywhere]">
+          <span className="text-[11px] font-bold text-slate-400">成立条件　</span>
           {condition}
         </p>
         {fail && (
-          <p className="text-xs leading-relaxed text-rose-300/70 [overflow-wrap:anywhere]">
-            <span className="text-[11px] font-bold text-rose-400/60">外れ方向　</span>
+          <p className="text-xs leading-relaxed text-rose-600 [overflow-wrap:anywhere]">
+            <span className="text-[11px] font-bold text-rose-500">外れ方向　</span>
             {fail}
           </p>
         )}
@@ -103,13 +103,13 @@ function CatalystCard({ c, isSub }: { c: ExternalCatalyst; isSub?: boolean }) {
 
       {/* evidence: bulletized reasoning + source links */}
       {(bullets.length > 0 || c.evidence_urls.length > 0) && (
-        <div className="mt-3 border-t border-white/5 pt-3">
-          <div className="text-[11px] font-bold text-zinc-500">根拠</div>
+        <div className="mt-3 border-t border-slate-100 pt-3">
+          <div className="text-[11px] font-bold text-slate-400">根拠</div>
           {bullets.length > 0 && (
             <ul className="mt-1 space-y-0.5">
               {bullets.map((b, i) => (
-                <li key={i} className="flex gap-1.5 text-xs leading-relaxed text-zinc-400">
-                  <span className="shrink-0 text-zinc-600">・</span>
+                <li key={i} className="flex gap-1.5 text-xs leading-relaxed text-slate-500">
+                  <span className="shrink-0 text-slate-300">・</span>
                   <span className="[overflow-wrap:anywhere]">{b}</span>
                 </li>
               ))}
@@ -121,7 +121,7 @@ function CatalystCard({ c, isSub }: { c: ExternalCatalyst; isSub?: boolean }) {
                 <a
                   key={u}
                   href={u}
-                  className="text-[11px] text-sky-400/70 hover:text-sky-300 [overflow-wrap:anywhere]"
+                  className="text-[11px] text-sky-600 hover:text-sky-700 [overflow-wrap:anywhere]"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -178,8 +178,8 @@ export function ScoredBoard({
       {showOverall && (
         <div className="terminal-card p-4">
           <div className="mb-3 flex items-baseline justify-between">
-            <h3 className="font-display text-base text-white">Overall</h3>
-            <span className="text-xs text-white/45">{series.length} conditions</span>
+            <h3 className="font-display text-base text-slate-900">Overall</h3>
+            <span className="text-xs text-slate-400">{series.length} conditions</span>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
             <Metric label="Hit rate" accent value={overall.rate == null ? "—" : `${(overall.rate * 100).toFixed(0)}%`} />
@@ -197,14 +197,14 @@ export function ScoredBoard({
         const stat = hitRate(rows);
         return (
           <section key={articleNo} className="space-y-3">
-            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/10 pb-2">
-              <h2 className="text-lg font-bold text-white">
-                <span className="text-white/45">Article {articleNo} · </span>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 pb-2">
+              <h2 className="text-lg font-bold text-slate-900">
+                <span className="text-slate-400">Article {articleNo} · </span>
                 {ARTICLE_TITLES[articleNo] ?? "Other"}
               </h2>
-              <span className="text-xs text-white/45">
+              <span className="text-xs text-slate-400">
                 Hit rate{" "}
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-slate-900">
                   {stat.rate == null ? "—" : `${(stat.rate * 100).toFixed(0)}%`}
                 </span>{" "}
                 · {stat.judged}/{rows.length} judged

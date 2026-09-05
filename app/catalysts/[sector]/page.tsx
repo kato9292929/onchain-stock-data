@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
 
 function BackLink() {
   return (
-    <Link href="/catalysts" className="text-xs text-white/45 hover:text-white/70">
+    <Link href="/catalysts" className="text-xs text-slate-400 hover:text-slate-600">
       ← All sectors
     </Link>
   );
@@ -62,21 +62,29 @@ export default async function CatalystSectorPage({
         <BackLink />
         <header className="space-y-2">
           {articleNo != null && (
-            <div className="text-xs text-white/45">Physical AI · Article {articleNo}</div>
+            <div className="text-xs text-slate-400">Physical AI · Article {articleNo}</div>
           )}
-          <h1 className="font-display text-3xl text-white">{title}</h1>
+          <h1 className="font-display text-3xl text-slate-900">{title}</h1>
           {articleNo == null && (
-            <p className="max-w-2xl text-sm text-white/55">
+            <p className="max-w-2xl text-sm text-slate-500">
               Six-part series on US &amp; Japan physical-AI names — robotics, semis
               &amp; sensors, humanoid builders, and AI models &amp; infra. Each
               condition is scored once its deadline passes.
             </p>
           )}
         </header>
+        {articleNo === 2 && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-[13px] leading-relaxed text-amber-900">
+            <span className="font-bold">未公開株の注記　</span>
+            これらは売買シグナルではありません（トレード不可）。役割はフィジカルAIの
+            テーマ地図と、IPOパイプラインの先行監視です。判定は開示された事実
+            （提携・製品・調達＝マイルストンの有無）で行い、株価・評価額では判定しません。
+          </div>
+        )}
         {pa.length > 0 ? (
           <ScoredBoard catalysts={pa} showOverall={articleNo == null} />
         ) : (
-          <p className="text-sm text-white/45">No conditions.</p>
+          <p className="text-sm text-slate-400">No conditions.</p>
         )}
       </div>
     );
@@ -99,71 +107,71 @@ export default async function CatalystSectorPage({
       <BackLink />
       <header className="space-y-2">
         <div className="flex flex-wrap items-baseline gap-2">
-          <h1 className="font-display text-3xl text-white">{meta.title_en}</h1>
-          <span className="text-white/45">{meta.title_ja}</span>
+          <h1 className="font-display text-3xl text-slate-900">{meta.title_en}</h1>
+          <span className="text-slate-400">{meta.title_ja}</span>
         </div>
-        <span className="inline-block rounded border border-white/15 bg-white/5 px-2 py-0.5 text-[11px] font-bold text-white/60">
+        <span className="inline-block rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-bold text-slate-500">
           {meta.decision_type}
         </span>
-        <p className="max-w-2xl text-sm leading-relaxed text-white/60">{meta.analysis}</p>
+        <p className="max-w-2xl text-sm leading-relaxed text-slate-600">{meta.analysis}</p>
       </header>
 
       {/* Researched (active) — sourced catalysts + latest financials */}
       <section className="space-y-3">
-        <div className="flex items-baseline justify-between border-b border-white/10 pb-2">
-          <h2 className="text-sm font-bold text-white/70">Researched</h2>
-          <span className="text-xs text-white/45">{active.length} companies</span>
+        <div className="flex items-baseline justify-between border-b border-slate-200 pb-2">
+          <h2 className="text-sm font-bold text-slate-700">Researched</h2>
+          <span className="text-xs text-slate-400">{active.length} companies</span>
         </div>
         {active.length === 0 ? (
-          <p className="text-xs text-white/40">
+          <p className="text-xs text-slate-400">
             まだ無し。名簿を一次資料で1社ずつ裏取りしてここに昇格させます（決算値＋
             判定条件＋出典）。締切到来後に HIT/MISS を採点。
           </p>
         ) : (
           <div className="space-y-3">
             {active.map((c) => (
-              <div key={c.catalyst_id} className="rounded-lg border border-white/10 bg-white/[0.02] p-4">
+              <div key={c.catalyst_id} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-display text-white">{c.ticker}</span>
-                  <span className="break-words text-sm text-zinc-300">{c.company_name}</span>
+                  <span className="font-display text-slate-900">{c.ticker}</span>
+                  <span className="break-words text-sm text-slate-700">{c.company_name}</span>
                   {c.tse_market && (
-                    <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
+                    <span className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">
                       {c.tse_market}
                     </span>
                   )}
-                  <span className="ml-auto flex items-center gap-2 text-[11px] tabular-nums text-zinc-500">
+                  <span className="ml-auto flex items-center gap-2 text-[11px] tabular-nums text-slate-400">
                     {c.due_date && <span>締切 {c.due_date}</span>}
-                    <span className="rounded border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 font-bold text-zinc-400">
+                    <span className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-bold text-slate-500">
                       PENDING
                     </span>
                   </span>
                 </div>
 
                 {c.business_line && (
-                  <p className="mt-2 text-sm leading-relaxed text-white/70 [overflow-wrap:anywhere]">
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600 [overflow-wrap:anywhere]">
                     {c.business_line}
                   </p>
                 )}
 
                 {(c.revenue != null || c.operating_income != null) && (
-                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-zinc-400">
-                    <span>売上 <span className="tabular-nums text-zinc-200">{fmtMoney(c.revenue)}</span></span>
-                    <span>営業利益 <span className="tabular-nums text-zinc-200">{fmtMoney(c.operating_income)}</span></span>
-                    {c.fiscal_period && <span className="text-zinc-500">{c.fiscal_period}</span>}
-                    {c.disclosed_at && <span className="text-zinc-500">発表 {c.disclosed_at}</span>}
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-500">
+                    <span>売上 <span className="tabular-nums text-slate-800">{fmtMoney(c.revenue)}</span></span>
+                    <span>営業利益 <span className="tabular-nums text-slate-800">{fmtMoney(c.operating_income)}</span></span>
+                    {c.fiscal_period && <span className="text-slate-400">{c.fiscal_period}</span>}
+                    {c.disclosed_at && <span className="text-slate-400">発表 {c.disclosed_at}</span>}
                   </div>
                 )}
 
-                <div className="mt-3 space-y-1 border-t border-white/5 pt-3">
+                <div className="mt-3 space-y-1 border-t border-slate-100 pt-3">
                   {c.success_condition && (
-                    <p className="text-sm leading-relaxed text-zinc-300 [overflow-wrap:anywhere]">
-                      <span className="text-[11px] font-bold text-zinc-500">成立条件　</span>
+                    <p className="text-sm leading-relaxed text-slate-700 [overflow-wrap:anywhere]">
+                      <span className="text-[11px] font-bold text-slate-400">成立条件　</span>
                       {c.success_condition}
                     </p>
                   )}
                   {c.fail_condition && (
-                    <p className="text-xs leading-relaxed text-rose-300/70 [overflow-wrap:anywhere]">
-                      <span className="text-[11px] font-bold text-rose-400/60">外れ方向　</span>
+                    <p className="text-xs leading-relaxed text-rose-600 [overflow-wrap:anywhere]">
+                      <span className="text-[11px] font-bold text-rose-500">外れ方向　</span>
                       {c.fail_condition}
                     </p>
                   )}
@@ -174,7 +182,7 @@ export default async function CatalystSectorPage({
                     href={c.source}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-block text-[11px] text-sky-400/70 hover:text-sky-300 [overflow-wrap:anywhere]"
+                    className="mt-2 inline-block text-[11px] text-sky-600 hover:text-sky-700 [overflow-wrap:anywhere]"
                   >
                     出典 ↗
                   </a>
@@ -187,31 +195,31 @@ export default async function CatalystSectorPage({
 
       {/* Roster (IR Fair 2026 exhibitors, not yet researched) */}
       <section className="space-y-2">
-        <div className="border-b border-white/10 pb-2">
+        <div className="border-b border-slate-200 pb-2">
           <div className="flex items-baseline justify-between">
-            <h2 className="text-sm font-bold text-white/70">Roster · IR Fair 2026</h2>
-            <span className="text-xs text-white/45">{draft.length} companies</span>
+            <h2 className="text-sm font-bold text-slate-700">Roster · IR Fair 2026</h2>
+            <span className="text-xs text-slate-400">{draft.length} companies</span>
           </div>
-          <p className="mt-1 text-[11px] text-white/40">
+          <p className="mt-1 text-[11px] text-slate-400">
             一次資料で裏取り後、決算値＋判定条件を付けて Researched に昇格します。以下は
             その前段の名簿（社名・コード。市場区分は取得時点のスナップショットで未検証）。
           </p>
         </div>
-        <div className="divide-y divide-white/5 overflow-hidden rounded border border-white/10">
+        <div className="divide-y divide-slate-100 overflow-hidden rounded border border-slate-200">
           {draft.map((c) => (
             <div
               key={c.catalyst_id}
-              className="grid grid-cols-[3.25rem_1fr_auto] items-center gap-x-3 bg-white/[0.02] px-3 py-2"
+              className="grid grid-cols-[3.25rem_1fr_auto] items-center gap-x-3 bg-white px-3 py-2"
             >
-              <span className="font-display text-sm tabular-nums text-white/80">{c.ticker}</span>
-              <span className="truncate text-sm text-zinc-300">{c.company_name}</span>
+              <span className="font-display text-sm tabular-nums text-slate-800">{c.ticker}</span>
+              <span className="truncate text-sm text-slate-700">{c.company_name}</span>
               <span className="flex items-center gap-2 justify-self-end">
                 {c.tse_market && (
-                  <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-[10px] text-zinc-400">
+                  <span className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">
                     {c.tse_market}
                   </span>
                 )}
-                <span className="hidden text-[11px] text-zinc-500 sm:inline">{c.sector}</span>
+                <span className="hidden text-[11px] text-slate-400 sm:inline">{c.sector}</span>
               </span>
             </div>
           ))}

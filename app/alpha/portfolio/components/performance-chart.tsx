@@ -19,7 +19,7 @@ import type { PerformanceRecord } from "@/lib/data";
 export function PerformanceChart({ records }: { records: PerformanceRecord[] }) {
   if (!records || records.length === 0) {
     return (
-      <p className="text-sm text-zinc-500">パフォーマンスデータがありません。</p>
+      <p className="text-sm text-slate-400">パフォーマンスデータがありません。</p>
     );
   }
 
@@ -34,26 +34,26 @@ export function PerformanceChart({ records }: { records: PerformanceRecord[] }) 
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: -8 }}>
-          <CartesianGrid stroke="#27272a" strokeDasharray="3 3" />
-          <XAxis dataKey="date" stroke="#71717a" tick={{ fontSize: 11 }} minTickGap={24} />
+          <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" />
+          <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 11 }} minTickGap={24} />
           <YAxis
-            stroke="#71717a"
+            stroke="#94a3b8"
             tick={{ fontSize: 11 }}
             domain={["auto", "auto"]}
             width={48}
           />
           <Tooltip
             contentStyle={{
-              background: "#09090b",
-              border: "1px solid #27272a",
+              background: "#ffffff",
+              border: "1px solid #e2e8f0",
               borderRadius: 6,
               fontSize: 12,
             }}
-            labelStyle={{ color: "#a1a1aa" }}
+            labelStyle={{ color: "#475569" }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Line type="monotone" dataKey="Portfolio" stroke="#22d3ee" dot={false} strokeWidth={2} />
-          <Line type="monotone" dataKey="SPY" stroke="#a1a1aa" dot={false} strokeWidth={1.5} />
+          <Line type="monotone" dataKey="Portfolio" stroke="#0ea5e9" dot={false} strokeWidth={2} />
+          <Line type="monotone" dataKey="SPY" stroke="#94a3b8" dot={false} strokeWidth={1.5} />
           <Line type="monotone" dataKey="QQQ" stroke="#f59e0b" dot={false} strokeWidth={1.5} />
         </LineChart>
       </ResponsiveContainer>
