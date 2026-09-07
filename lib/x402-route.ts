@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
 import type { RouteConfig } from "@x402/core/server";
+import type { Price } from "@x402/core/types";
 import {
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
@@ -121,7 +122,7 @@ export function withPublicCors(
 /** Shortcut: build the standard Base+Solana accepts for `price` and wrap. */
 export function withPaywall(
   handler: Handler,
-  opts: { price: string; description: string; resourcePath: string },
+  opts: { price: Price; description: string; resourcePath: string },
 ): (req: NextRequest) => Promise<NextResponse> {
   return withX402AndInternal(
     handler,
@@ -136,7 +137,7 @@ export function withPaywall(
  */
 export function withSolanaOnlyPaywall(
   handler: Handler,
-  opts: { price: string; description: string; resourcePath: string },
+  opts: { price: Price; description: string; resourcePath: string },
 ): (req: NextRequest) => Promise<NextResponse> {
   return withX402AndInternal(
     handler,
@@ -153,7 +154,7 @@ export function withSolanaOnlyPaywall(
  */
 export function withTestnetPaywall(
   handler: Handler,
-  opts: { price: string; description: string; resourcePath: string },
+  opts: { price: Price; description: string; resourcePath: string },
 ): (req: NextRequest) => Promise<NextResponse> {
   return withX402AndInternal(
     handler,

@@ -7,7 +7,7 @@ import type {
   RouteConfig,
 } from "@x402/core/server";
 import type { PaymentOption } from "@x402/core/http";
-import type { Network } from "@x402/core/types";
+import type { Network, Price } from "@x402/core/types";
 import { registerExactEvmScheme } from "@x402/evm/exact/server";
 import { registerExactSvmScheme } from "@x402/svm/exact/server";
 import { createFacilitatorConfig, facilitator } from "@coinbase/x402";
@@ -30,14 +30,25 @@ export const PAY_TO_SOLANA =
   DEFAULT_SOLANA_PAY_TO;
 
 export const BASE_NETWORK: Network = "eip155:8453";
-export const SOLANA_NETWORK: Network = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
+
+// Solana network (CAIP-2). Defaults to mainnet-beta. `X402_SOLANA_NETWORK` lets
+// a preview deployment advertise devnet (solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1…)
+// for the one-shot devnet wiring smoke (§4) without changing production, which
+// stays mainnet by default.
+export const SOLANA_NETWORK: Network = (process.env.X402_SOLANA_NETWORK ??
+  "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp") as Network;
 
 // USDC contract / mint addresses on each chain. Surfaced in the
 // `/.well-known/x402.json` descriptor so directory crawlers (x402scan, Pay.sh)
 // can confirm what asset each accept leg settles in without re-deriving from
 // `network`.
 export const ASSET_BASE_USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-export const ASSET_SOLANA_USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+// Solana USDC-SPL mint. Mainnet (Circle) is the default — confirmed canonical
+// value. `SOLANA_USDC_MINT` overrides it for a devnet preview (Circle devnet
+// USDC = 4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU).
+export const ASSET_SOLANA_USDC =
+  process.env.SOLANA_USDC_MINT ??
+  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
 // Canonical origin used to build absolute `resource` URLs in v2 accept legs
 // and in the discovery JSON. `X402_PUBLIC_BASE_URL` lets a self-hoster point
@@ -135,8 +146,18 @@ registerExactSvmScheme(x402Server);
  *     bind a settled payment back to the specific endpoint that priced it,
  *     without needing to re-parse the top-level resource for every leg.
  */
+/**
+ * Atomic USDC price on Solana. `amount` is base units (USDC has 6 decimals,
+ * so 100 = 0.0001 USDC) and `asset` is the SPL mint. Passing this exact
+ * AssetAmount as a route price makes the 402 challenge advertise
+ * maxAmountRequired="100" verbatim, rather than deriving it from a "$…" string.
+ */
+export function solanaUsdcUnits(baseUnits: string | number): Price {
+  return { amount: String(baseUnits), asset: ASSET_SOLANA_USDC };
+}
+
 export function buildRouteConfig(
-  price: string,
+  price: Price,
   description: string,
   resourcePath: string,
 ): RouteConfig {
@@ -170,7 +191,7 @@ export function buildRouteConfig(
  * other paid endpoints keep the dual-leg `buildRouteConfig`.
  */
 export function buildSolanaOnlyRouteConfig(
-  price: string,
+  price: Price,
   description: string,
   resourcePath: string,
 ): RouteConfig {
@@ -225,7 +246,7 @@ registerExactEvmScheme(x402TestnetServer);
  * the testnet demo endpoints. Same exact scheme as mainnet, different network.
  */
 export function buildTestnetRouteConfig(
-  price: string,
+  price: Price,
   description: string,
   resourcePath: string,
 ): RouteConfig {
