@@ -65,3 +65,21 @@ Each non-dry run writes `proof/x402-weekly-<date>.json`:
 
 and the workflow commits it, so the on-chain record of "paid ~197 per-call every
 week" is in git and clickable on Solscan.
+
+## EDINET endpoint (same rail, separate sweep)
+
+`/api/edinet/{code}` is a second paid endpoint on the **same** Solana exact-svm
+rail (`withSolanaUsdcMicroPaywall`, 100 units, network/mint/==100 safety valve).
+`code` is a 4-digit TSE ticker (→ 5-digit securities code) or a securities code;
+it returns that company's recent EDINET disclosures (metadata) from the official
+EDINET API v2, filtered by securities code. Terms compliance is baked in: every
+payload carries `source: "出典：金融庁 EDINET"` and `processed_by`, data is fetched
+only via the v2 API, and each date's document list is cached weekly. Requires the
+`EDINET_API_KEY` deploy secret (Vercel). Free descriptor at `/api/edinet`.
+
+The buyer is reused for the sweep via `.github/workflows/x402-edinet-sweep.yml`
+with `ENDPOINT_TEMPLATE=/api/edinet/{ticker}` and `SPEND_NAMESPACE=edinet` — a
+**separate job, separate spend cap** (`EDINET_WEEKLY_SPEND_CAP_UNITS`) and a
+separate proof file (`proof/x402-edinet-<date>.json`). Same gated runbook
+(dry-run → devnet-smoke → one measured mainnet run → approve → uncomment
+`schedule:`).

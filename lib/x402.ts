@@ -156,6 +156,36 @@ export function solanaUsdcUnits(baseUnits: string | number): Price {
   return { amount: String(baseUnits), asset: ASSET_SOLANA_USDC };
 }
 
+/**
+ * Safety valve for the micro-priced Solana endpoints: assert the built route
+ * config charges EXACTLY one Solana USDC accept at `units` base units. Throws
+ * at module load (route import) if the network, mint, or amount ever drift —
+ * so a misconfigured endpoint fails closed (500 on every request) instead of
+ * silently charging the wrong network/asset/amount.
+ */
+export function assertSolanaExactUsdc(rc: RouteConfig, units: string): void {
+  const raw = rc.accepts;
+  const accepts: PaymentOption[] = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  if (accepts.length !== 1) {
+    throw new Error(`[x402 safety] expected exactly 1 accept, got ${accepts.length}`);
+  }
+  const a = accepts[0];
+  if (a.network !== SOLANA_NETWORK) {
+    throw new Error(`[x402 safety] network must be ${SOLANA_NETWORK}, got ${a.network}`);
+  }
+  const price = a.price;
+  if (
+    typeof price !== "object" ||
+    price === null ||
+    (price as { amount?: unknown }).amount !== units ||
+    (price as { asset?: unknown }).asset !== ASSET_SOLANA_USDC
+  ) {
+    throw new Error(
+      `[x402 safety] price must be { amount: "${units}", asset: ${ASSET_SOLANA_USDC} }, got ${JSON.stringify(price)}`,
+    );
+  }
+}
+
 export function buildRouteConfig(
   price: Price,
   description: string,

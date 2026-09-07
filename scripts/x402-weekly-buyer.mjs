@@ -40,6 +40,12 @@ import {
 } from "@solana/kit";
 
 const BASE_URL = (process.env.OSD_BASE_URL ?? "https://osd.x402jp.com").replace(/\/$/, "");
+// Endpoint swept, with {ticker} substituted per roster entry. Defaults to the
+// catalyst endpoint; the EDINET sweep passes /api/edinet/{ticker}.
+const ENDPOINT_TEMPLATE = process.env.ENDPOINT_TEMPLATE ?? "/api/catalyst/{ticker}";
+// Spend namespace — keeps each sweep's proof log (and, via the workflow, its
+// spend cap) separate. "catalyst" and "edinet" never share a budget or a file.
+const SPEND_NAMESPACE = (process.env.SPEND_NAMESPACE ?? "catalyst").replace(/[^a-z0-9_-]/gi, "");
 const PRICE_UNITS = Number(process.env.PRICE_UNITS ?? 100);
 const CAP_UNITS = Number(process.env.WEEKLY_SPEND_CAP_UNITS ?? 30000);
 const MAX_TICKERS = Number(process.env.MAX_TICKERS ?? 0);
@@ -94,9 +100,9 @@ async function main() {
     const client = new x402Client();
     registerExactSvmScheme(client, { signer });
     http = new x402HTTPClient(client);
-    console.log(`[buyer] wallet ${signer.address} | ${roster.length} tickers | price ${PRICE_UNITS} units | cap ${CAP_UNITS} units`);
+    console.log(`[buyer:${SPEND_NAMESPACE}] wallet ${signer.address} | ${ENDPOINT_TEMPLATE} | ${roster.length} tickers | price ${PRICE_UNITS} units | cap ${CAP_UNITS} units`);
   } else {
-    console.log(`[buyer] DRY_RUN — probing 402 for ${roster.length} tickers (no signing, no spend)`);
+    console.log(`[buyer:${SPEND_NAMESPACE}] DRY_RUN — probing 402 for ${roster.length} × ${ENDPOINT_TEMPLATE} (no signing, no spend)`);
   }
 
   const results = [];
@@ -109,7 +115,7 @@ async function main() {
       skipped = roster.length - results.length;
       break;
     }
-    const url = `${BASE_URL}/api/catalyst/${encodeURIComponent(ticker)}`;
+    const url = `${BASE_URL}${ENDPOINT_TEMPLATE.replace("{ticker}", encodeURIComponent(ticker))}`;
     try {
       const r1 = await fetch(url, { method: "GET" });
       if (r1.status !== 402) {
@@ -155,6 +161,8 @@ async function main() {
 
   const summary = {
     at: new Date().toISOString(),
+    namespace: SPEND_NAMESPACE,
+    endpoint_template: ENDPOINT_TEMPLATE,
     base_url: BASE_URL,
     dry_run: DRY_RUN,
     tickers: roster.length,
@@ -167,7 +175,7 @@ async function main() {
 
   fs.mkdirSync(PROOF_DIR, { recursive: true });
   const stamp = summary.at.slice(0, 10);
-  const outFile = path.join(PROOF_DIR, `x402-weekly-${stamp}.json`);
+  const outFile = path.join(PROOF_DIR, `x402-${SPEND_NAMESPACE}-${stamp}.json`);
   fs.writeFileSync(outFile, JSON.stringify({ summary, results }, null, 2) + "\n");
 
   console.log(

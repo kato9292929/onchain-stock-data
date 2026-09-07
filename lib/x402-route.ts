@@ -3,10 +3,12 @@ import { withX402 } from "@x402/next";
 import type { RouteConfig } from "@x402/core/server";
 import type { Price } from "@x402/core/types";
 import {
+  assertSolanaExactUsdc,
   buildRouteConfig,
   buildSolanaOnlyRouteConfig,
   buildTestnetRouteConfig,
   isInternalAuthed,
+  solanaUsdcUnits,
   x402Server,
   x402TestnetServer,
 } from "./x402";
@@ -143,6 +145,26 @@ export function withSolanaOnlyPaywall(
     handler,
     buildSolanaOnlyRouteConfig(opts.price, opts.description, opts.resourcePath),
   );
+}
+
+/**
+ * Guarded shortcut for the micro-priced Solana rail (catalyst, edinet, …):
+ * builds a single Solana USDC accept at exactly `units` base units and runs the
+ * safety valve (`assertSolanaExactUsdc`) at import time, so the endpoint fails
+ * closed if network / mint / amount ever drift. Same internal-bypass + CORS as
+ * withPaywall. This is the one wrapper the fixed-price Solana endpoints use.
+ */
+export function withSolanaUsdcMicroPaywall(
+  handler: Handler,
+  opts: { units: string; description: string; resourcePath: string },
+): (req: NextRequest) => Promise<NextResponse> {
+  const rc = buildSolanaOnlyRouteConfig(
+    solanaUsdcUnits(opts.units),
+    opts.description,
+    opts.resourcePath,
+  );
+  assertSolanaExactUsdc(rc, opts.units); // safety valve: network / mint / == units
+  return withX402AndInternal(handler, rc);
 }
 
 /**

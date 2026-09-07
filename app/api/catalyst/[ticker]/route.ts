@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withSolanaOnlyPaywall, corsPreflight } from "@/lib/x402-route";
-import { solanaUsdcUnits } from "@/lib/x402";
+import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 
@@ -72,9 +71,9 @@ async function handler(req: NextRequest): Promise<NextResponse> {
   return NextResponse.json({ error: "ticker not found", ticker }, { status: 404 });
 }
 
-export const GET = withSolanaOnlyPaywall(handler, {
+export const GET = withSolanaUsdcMicroPaywall(handler, {
   // 100 base units = 0.0001 USDC (6 decimals) on Solana mainnet.
-  price: solanaUsdcUnits("100"),
+  units: "100",
   description:
     "Per-company catalyst + latest disclosed financials (research). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/catalyst/:ticker",
