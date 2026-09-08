@@ -52,11 +52,11 @@ jobs:
       - name: Run EDINET sweep
         env:
           AA_SOLANA_SECRET_KEY: ${{ secrets.AA_SOLANA_SECRET_KEY }}
-          # Separate cap for the EDINET namespace (default 30000 = 0.03 USDC/run).
-          WEEKLY_SPEND_CAP_UNITS: ${{ vars.EDINET_WEEKLY_SPEND_CAP_UNITS || '30000' }}
+          # Separate cap for the EDINET namespace (default 500000 = 0.5 USDC/run).
+          WEEKLY_SPEND_CAP_UNITS: ${{ vars.EDINET_WEEKLY_SPEND_CAP_UNITS || '500000' }}
           ENDPOINT_TEMPLATE: "/api/edinet/{ticker}"
           SPEND_NAMESPACE: "edinet"
-          PRICE_UNITS: "100"
+          PRICE_UNITS: "1000"
           DELAY_MS: "600"
           INPUT_MODE: ${{ inputs.mode }}
           INPUT_ONLY_TICKER: ${{ inputs.only_ticker }}

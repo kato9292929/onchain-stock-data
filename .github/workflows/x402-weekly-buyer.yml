@@ -60,9 +60,9 @@ jobs:
           # Funded buyer wallet (JSON array or base58). NEVER commit this — set it
           # as a GitHub Actions secret. Use a devnet-funded key for devnet-smoke.
           AA_SOLANA_SECRET_KEY: ${{ secrets.AA_SOLANA_SECRET_KEY }}
-          # Hard spend cap in USDC base units (default 30000 = 0.03 USDC/run).
-          WEEKLY_SPEND_CAP_UNITS: ${{ vars.WEEKLY_SPEND_CAP_UNITS || '30000' }}
-          PRICE_UNITS: "100"
+          # Hard spend cap in USDC base units (default 500000 = 0.5 USDC/run).
+          WEEKLY_SPEND_CAP_UNITS: ${{ vars.WEEKLY_SPEND_CAP_UNITS || '500000' }}
+          PRICE_UNITS: "1000"
           DELAY_MS: "500"
           INPUT_MODE: ${{ inputs.mode }}
           INPUT_ONLY_TICKER: ${{ inputs.only_ticker }}

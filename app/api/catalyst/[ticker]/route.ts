@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
  * market-price/market-cap data). Unsigned → 402; signed → 200. Static read —
  * Anthropic cost 0.
  *
- * Priced at 100 USDC base units = 0.0001 USDC (6 decimals), settled in
+ * Priced at 1000 USDC base units = 0.001 USDC (6 decimals), settled in
  * USDC-SPL on Solana mainnet only. The AA weekly buyer
  * (scripts/x402-weekly-buyer.mjs) hits this for the whole roster so every
  * per-call payment lands as an on-chain tx verifiable on Solscan.
@@ -72,8 +72,10 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 }
 
 export const GET = withSolanaUsdcMicroPaywall(handler, {
-  // 100 base units = 0.0001 USDC (6 decimals) on Solana mainnet.
-  units: "100",
+  // 1000 base units = 0.001 USDC (6 decimals) on Solana mainnet. Kept above the
+  // facilitator's gas-sponsorship floor so a dust payment isn't rejected (0.0001
+  // < sponsored SOL gas → facilitator refuses; 0.001 clears it).
+  units: "1000",
   description:
     "Per-company catalyst + latest disclosed financials (research). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/catalyst/:ticker",

@@ -22,8 +22,8 @@ async function handler(_req: NextRequest): Promise<NextResponse> {
     param: "code = 4-digit TSE ticker (→ 5-digit securities code) or a 5-digit securities code",
     query: { days: `lookback window, 1–31 (default ${DEFAULT_WINDOW_DAYS})` },
     price: {
-      amount_base_units: "100",
-      amount_usdc: 0.0001,
+      amount_base_units: "1000",
+      amount_usdc: 0.001,
       asset: ASSET_SOLANA_USDC,
       network: "solana",
       scheme: "exact",
