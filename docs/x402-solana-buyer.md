@@ -54,6 +54,30 @@ devnet wallet.
 4. **Enable weekly** (only after owner approval): uncomment the `schedule:` block in
    the workflow.
 
+## Autopilot (arm once, then self-driving)
+
+`scripts/x402-autopilot.mjs` (`npm run x402:autopilot`) lets the agent run the
+whole catalyst sweep itself, with the only human step being a one-time arm.
+
+- **Default OFF.** Nothing runs (no spend) unless `CATALYST_AUTOPILOT=true`.
+- **Upstash state machine** `unstarted → run0_ok → smoke_ok → live`, so a
+  redeploy or a scheduler firing twice never replays a money step:
+  - `run0` — dry-run probe (no spend) → `run0_ok`
+  - `smoke` — exactly ONE mainnet tx, lock-guarded → `smoke_ok`
+  - `live` — full-roster weekly sweep, at most once per `AUTOPILOT_SWEEP_INTERVAL_MS`
+    (default 6.5 days), lock-guarded
+- Invoke it periodically from any scheduler (Railway cron, GH schedule) — it is
+  safe at any cadence; it only acts when a step is due.
+
+**The one human action:** confirm the buyer wallet (shared Circle wallet) holds
+USDC + a little SOL and `SOLANA_RPC_URL` is set, then set `CATALYST_AUTOPILOT=true`
+once. From there the agent does run0 → 1 mainnet smoke → weekly sweeps on its own.
+Real funds move only after the arm.
+
+Env: `CATALYST_AUTOPILOT`, `UPSTASH_REDIS_REST_URL`/`_TOKEN`, `AA_SOLANA_SECRET_KEY`,
+`WEEKLY_SPEND_CAP_UNITS`, `AUTOPILOT_SWEEP_INTERVAL_MS`. (EDINET autopilot comes
+after catalyst is proven live.)
+
 ## Proof output
 
 Each non-dry run writes `proof/x402-weekly-<date>.json`:
