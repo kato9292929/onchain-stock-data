@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
  * documents.json; original filings unchanged). Data is fetched only via the
  * official EDINET API v2 and each date list is cached weekly.
  *
- * Priced at 100 USDC base units (0.0001 USDC), settled in USDC-SPL on Solana.
+ * Priced at 1000 USDC base units (0.001 USDC), settled in USDC-SPL on Solana.
  */
 async function handler(req: NextRequest): Promise<NextResponse> {
   // withX402 doesn't forward Next dynamic params — read the last path segment.
@@ -54,7 +54,7 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 }
 
 export const GET = withSolanaUsdcMicroPaywall(handler, {
-  units: "100",
+  units: "1000",
   description:
     "One company's recent EDINET disclosures (出典：金融庁 EDINET). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/edinet/:code",

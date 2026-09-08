@@ -21,8 +21,8 @@
  * Env:
  *   AA_SOLANA_SECRET_KEY   funded buyer key — JSON array (solana-keygen) or base58 (Phantom)
  *   OSD_BASE_URL           default https://osd.x402jp.com (point at a devnet preview for the smoke)
- *   PRICE_UNITS            per-call USDC base units (default 100 = 0.0001 USDC) — must match the server
- *   WEEKLY_SPEND_CAP_UNITS hard cap in base units (default 30000 = 0.03 USDC)
+ *   PRICE_UNITS            per-call USDC base units (default 1000 = 0.001 USDC) — must match the server
+ *   WEEKLY_SPEND_CAP_UNITS hard cap in base units (default 500000 = 0.5 USDC)
  *   MAX_TICKERS            cap the roster size (default 0 = all)
  *   ONLY_TICKER            pay a single ticker (the devnet smoke)
  *   DELAY_MS               pause between calls (default 400) to be gentle on RPC/facilitator
@@ -46,8 +46,8 @@ const ENDPOINT_TEMPLATE = process.env.ENDPOINT_TEMPLATE ?? "/api/catalyst/{ticke
 // Spend namespace — keeps each sweep's proof log (and, via the workflow, its
 // spend cap) separate. "catalyst" and "edinet" never share a budget or a file.
 const SPEND_NAMESPACE = (process.env.SPEND_NAMESPACE ?? "catalyst").replace(/[^a-z0-9_-]/gi, "");
-const PRICE_UNITS = Number(process.env.PRICE_UNITS ?? 100);
-const CAP_UNITS = Number(process.env.WEEKLY_SPEND_CAP_UNITS ?? 30000);
+const PRICE_UNITS = Number(process.env.PRICE_UNITS ?? 1000);
+const CAP_UNITS = Number(process.env.WEEKLY_SPEND_CAP_UNITS ?? 500000);
 const MAX_TICKERS = Number(process.env.MAX_TICKERS ?? 0);
 const ONLY_TICKER = (process.env.ONLY_TICKER ?? "").trim().toUpperCase();
 const DELAY_MS = Number(process.env.DELAY_MS ?? 400);
