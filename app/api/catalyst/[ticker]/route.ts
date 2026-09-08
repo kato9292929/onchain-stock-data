@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withPaywall, corsPreflight } from "@/lib/x402-route";
+import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 
@@ -7,9 +7,15 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * PAID (x402 per-call): one company's catalyst + latest disclosed financials,
- * from our own research (EDINET not used; no market-price/market-cap data).
- * Unsigned → 402; signed → 200. Static read — Anthropic cost 0.
+ * PAID (x402 per-call, Solana mainnet exact-svm): one company's catalyst +
+ * latest disclosed financials, from our own research (EDINET not used; no
+ * market-price/market-cap data). Unsigned → 402; signed → 200. Static read —
+ * Anthropic cost 0.
+ *
+ * Priced at 100 USDC base units = 0.0001 USDC (6 decimals), settled in
+ * USDC-SPL on Solana mainnet only. The AA weekly buyer
+ * (scripts/x402-weekly-buyer.mjs) hits this for the whole roster so every
+ * per-call payment lands as an on-chain tx verifiable on Solscan.
  */
 async function handler(req: NextRequest): Promise<NextResponse> {
   // withX402 doesn't forward Next dynamic params — read the last path segment.
@@ -65,10 +71,11 @@ async function handler(req: NextRequest): Promise<NextResponse> {
   return NextResponse.json({ error: "ticker not found", ticker }, { status: 404 });
 }
 
-export const GET = withPaywall(handler, {
-  price: "$0.02",
+export const GET = withSolanaUsdcMicroPaywall(handler, {
+  // 100 base units = 0.0001 USDC (6 decimals) on Solana mainnet.
+  units: "100",
   description:
-    "Per-company catalyst + latest disclosed financials (research). Settled per call via x402.",
+    "Per-company catalyst + latest disclosed financials (research). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/catalyst/:ticker",
 });
 

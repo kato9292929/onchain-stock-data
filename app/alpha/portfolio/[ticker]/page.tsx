@@ -28,38 +28,38 @@ export default async function PortfolioTickerPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/alpha/portfolio" className="text-xs text-zinc-500">
+      <Link href="/alpha/portfolio" className="text-xs text-slate-400">
         ← Claude Portfolio
       </Link>
 
       <header className="space-y-1">
-        <h1 className="text-2xl font-bold">
-          <span className="text-gold-bright">{holding.ticker}</span>{" "}
-          <span className="text-zinc-400 text-lg">{holding.company_name}</span>
+        <h1 className="text-2xl font-bold text-slate-900">
+          <span className="text-slate-900">{holding.ticker}</span>{" "}
+          <span className="text-slate-500 text-lg">{holding.company_name}</span>
         </h1>
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-slate-400">
           weight {holding.weight.toFixed(1)}% · week of {data.current?.week_of}
         </p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="terminal-card p-4">
-          <p className="text-xs text-zinc-500">entry price</p>
-          <p className="text-lg text-zinc-100">{fmtUsd(entry)}</p>
+          <p className="text-xs text-slate-400">entry price</p>
+          <p className="text-lg text-slate-900">{fmtUsd(entry)}</p>
         </div>
         <div className="terminal-card p-4">
-          <p className="text-xs text-zinc-500">current price</p>
-          <p className="text-lg text-zinc-100">{fmtUsd(currentPrice)}</p>
+          <p className="text-xs text-slate-400">current price</p>
+          <p className="text-lg text-slate-900">{fmtUsd(currentPrice)}</p>
         </div>
         <div className="terminal-card p-4">
-          <p className="text-xs text-zinc-500">since entry</p>
+          <p className="text-xs text-slate-400">since entry</p>
           <p
             className={`text-lg ${
               changePct == null
-                ? "text-zinc-500"
+                ? "text-slate-400"
                 : changePct >= 0
-                  ? "text-emerald-400"
-                  : "text-red-400"
+                  ? "text-emerald-600"
+                  : "text-rose-600"
             }`}
           >
             {changePct == null ? "—" : fmtPct(changePct)}
@@ -68,11 +68,11 @@ export default async function PortfolioTickerPage({
       </div>
 
       <div className="terminal-card p-4">
-        <p className="text-xs text-zinc-500 mb-2">Claude thesis</p>
-        <p className="text-sm text-zinc-200">{holding.thesis}</p>
+        <p className="text-xs text-slate-400 mb-2">Claude thesis</p>
+        <p className="text-sm text-slate-700">{holding.thesis}</p>
       </div>
 
-      <p className="text-xs text-zinc-600">
+      <p className="text-xs text-slate-400">
         本ポートフォリオは Claude による情報提供であり投資助言ではありません。
         current price は osd の /api/stocks (tokens.xyz 経由) を参照しています。
       </p>

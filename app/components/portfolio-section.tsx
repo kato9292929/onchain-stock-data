@@ -32,7 +32,7 @@ const fmtUsd = (n?: number) =>
 function OnchainEnrichment() {
   return (
     <span className="inline-flex items-center gap-2 flex-wrap">
-      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
         Solana tokenized
       </span>
     </span>
@@ -68,8 +68,8 @@ export function PortfolioSection({
   return (
     <section className="space-y-4">
       <div className="space-y-1">
-        <h2 className="font-display text-xl text-white">{title}</h2>
-        {subtitle && <p className="text-sm text-white/55">{subtitle}</p>}
+        <h2 className="font-display text-xl text-slate-900">{title}</h2>
+        {subtitle && <p className="text-sm text-slate-500">{subtitle}</p>}
       </div>
 
       <DataBanner
@@ -79,25 +79,25 @@ export function PortfolioSection({
       />
 
       {!p ? (
-        <p className="text-sm text-white/45">{emptyMessage}</p>
+        <p className="text-sm text-slate-400">{emptyMessage}</p>
       ) : (
         <>
-          <div className="text-xs text-white/45 flex flex-wrap gap-x-4 gap-y-1">
-            <span>week_of: <span className="text-white/75">{p.week_of}</span></span>
-            <span>horizon: <span className="text-white/75">{p.horizon}</span></span>
-            <span>model: <span className="text-white/75">{p.model}</span></span>
-            <span>generated_at: <span className="text-white/75">{p.generated_at}</span></span>
+          <div className="text-xs text-slate-400 flex flex-wrap gap-x-4 gap-y-1">
+            <span>week_of: <span className="text-slate-700">{p.week_of}</span></span>
+            <span>horizon: <span className="text-slate-700">{p.horizon}</span></span>
+            <span>model: <span className="text-slate-700">{p.model}</span></span>
+            <span>generated_at: <span className="text-slate-700">{p.generated_at}</span></span>
           </div>
 
           {p.rationale && (
-            <div className="terminal-card p-4 text-sm text-white/80">
+            <div className="terminal-card p-4 text-sm text-slate-700">
               {p.rationale}
             </div>
           )}
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-white/45 text-left border-b border-white/10">
+              <thead className="text-slate-400 text-left border-b border-slate-200">
                 <tr>
                   <th className="py-2 pr-4">Ticker</th>
                   <th className="py-2 pr-4">Company</th>
@@ -112,20 +112,20 @@ export function PortfolioSection({
                 {p.holdings.map((h) => {
                   const up = h.ticker.toUpperCase();
                   return (
-                    <tr key={h.ticker} className="border-b border-white/5 align-top">
+                    <tr key={h.ticker} className="border-b border-slate-100 align-top">
                       <td className="py-2 pr-4">
                         {tickerBaseHref ? (
                           <Link
                             href={`${tickerBaseHref}/${h.ticker}`}
-                            className="font-display text-white"
+                            className="font-display text-slate-900"
                           >
                             {h.ticker}
                           </Link>
                         ) : (
-                          <span className="font-display text-white">{h.ticker}</span>
+                          <span className="font-display text-slate-900">{h.ticker}</span>
                         )}
                       </td>
-                      <td className="py-2 pr-4 text-white/60">
+                      <td className="py-2 pr-4 text-slate-500">
                         <div>{h.company_name}</div>
                         {enrichmentTickers?.has(up) && (
                           <div className="mt-1">
@@ -133,13 +133,13 @@ export function PortfolioSection({
                           </div>
                         )}
                       </td>
-                      <td className="py-2 pr-4 text-right text-white/85">
+                      <td className="py-2 pr-4 text-right text-slate-700">
                         {h.weight.toFixed(1)}%
                       </td>
-                      <td className="py-2 pr-4 text-right text-white/60">
+                      <td className="py-2 pr-4 text-right text-slate-500">
                         {showTargetDate ? (h.target_date || "—") : fmtUsd(h.entry_price_usd)}
                       </td>
-                      <td className="py-2 text-white/60">{h.thesis}</td>
+                      <td className="py-2 text-slate-500">{h.thesis}</td>
                     </tr>
                   );
                 })}

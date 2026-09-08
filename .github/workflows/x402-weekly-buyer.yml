@@ -1,0 +1,96 @@
+name: x402 weekly buyer (Solana)
+
+# AA weekly buyer: pays /api/catalyst/{ticker} for the whole roster in USDC on
+# Solana, so every per-call settlement lands as an on-chain tx (Solscan-verifiable).
+#
+# COST ACTION — real funds on mainnet. The schedule is intentionally DISABLED.
+# Per the repo cost-governance rules, enable the weekly `schedule:` ONLY after,
+# in order: (a) a funded AA wallet exists (USDC + a little SOL for gas);
+# (b) the spend cap secret is set; (c) ONE devnet-smoke run passes (mode:
+# devnet-smoke, a single ticker); (d) ONE manual mainnet-weekly run is executed
+# and its real cost is measured/reported; (e) the owner explicitly approves.
+# Only then uncomment the `schedule:` block below.
+#
+#  schedule:
+#    # Mondays 22:10 UTC. Keep AFTER the weekly portfolio jobs so the roster is fresh.
+#    - cron: "10 22 * * 1"
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (probe 402, no spend) | devnet-smoke (1 tx on devnet) | mainnet-weekly (real)"
+        type: choice
+        options: [dry-run, devnet-smoke, mainnet-weekly]
+        default: dry-run
+      only_ticker:
+        description: "Single ticker (devnet-smoke). Leave blank for the full roster."
+        type: string
+        default: ""
+      max_tickers:
+        description: "Cap roster size (0 = all)."
+        type: string
+        default: "0"
+      base_url:
+        description: "Endpoint base URL. Blank = production (mainnet). For devnet-smoke, a devnet-serving preview URL."
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: x402-weekly-buyer
+  cancel-in-progress: false
+
+jobs:
+  buy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run buyer
+        env:
+          # Funded buyer wallet (JSON array or base58). NEVER commit this — set it
+          # as a GitHub Actions secret. Use a devnet-funded key for devnet-smoke.
+          AA_SOLANA_SECRET_KEY: ${{ secrets.AA_SOLANA_SECRET_KEY }}
+          # Hard spend cap in USDC base units (default 30000 = 0.03 USDC/run).
+          WEEKLY_SPEND_CAP_UNITS: ${{ vars.WEEKLY_SPEND_CAP_UNITS || '30000' }}
+          PRICE_UNITS: "100"
+          DELAY_MS: "500"
+          INPUT_MODE: ${{ inputs.mode }}
+          INPUT_ONLY_TICKER: ${{ inputs.only_ticker }}
+          INPUT_MAX_TICKERS: ${{ inputs.max_tickers }}
+          INPUT_BASE_URL: ${{ inputs.base_url }}
+        run: |
+          set -euo pipefail
+          export MAX_TICKERS="${INPUT_MAX_TICKERS:-0}"
+          [ -n "${INPUT_ONLY_TICKER}" ] && export ONLY_TICKER="${INPUT_ONLY_TICKER}"
+          [ -n "${INPUT_BASE_URL}" ] && export OSD_BASE_URL="${INPUT_BASE_URL}"
+          case "${INPUT_MODE}" in
+            dry-run)        export DRY_RUN=1 ;;
+            devnet-smoke)   : "${ONLY_TICKER:?devnet-smoke needs only_ticker}" ;;
+            mainnet-weekly) : ;;
+            *) echo "unknown mode ${INPUT_MODE}" >&2; exit 1 ;;
+          esac
+          node scripts/x402-weekly-buyer.mjs
+
+      - name: Commit proof
+        if: ${{ inputs.mode != 'dry-run' }}
+        run: |
+          git config user.name "osd-x402-buyer-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add proof/ || true
+          if git diff --staged --quiet; then
+            echo "No proof changes to commit."
+          else
+            git commit -m "chore(x402): weekly buyer proof (${{ inputs.mode }})"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

@@ -41,12 +41,12 @@ export default async function PortfolioPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-3">
-        <h1 className="font-display text-3xl sm:text-4xl text-white">Weekly Selection</h1>
-        <p className="text-sm text-white/55 max-w-2xl">
+        <h1 className="font-display text-3xl sm:text-4xl text-slate-900">Weekly Selection</h1>
+        <p className="text-sm text-slate-500 max-w-2xl">
           Ten US and ten JP names picked weekly by Claude, each with a verifiable
           1-month catalyst — a research selection, not a fund. Published at{" "}
-          <code className="text-white/75">/api/alpha/portfolio/current</code> and{" "}
-          <code className="text-white/75">/api/alpha/jp/portfolio/current</code>.
+          <code className="text-slate-700">/api/alpha/portfolio/current</code> and{" "}
+          <code className="text-slate-700">/api/alpha/jp/portfolio/current</code>.
         </p>
         <PortfolioToggle active="us" />
       </header>
@@ -61,7 +61,7 @@ export default async function PortfolioPage() {
           subtitle={
             <>
               Weekly picks &amp; rotations — see{" "}
-              <Link href="/alpha/portfolio/history" className="text-white underline decoration-white/30 underline-offset-2">
+              <Link href="/alpha/portfolio/history" className="text-slate-900 underline decoration-slate-300 underline-offset-2">
                 history
               </Link>
               .
@@ -72,10 +72,10 @@ export default async function PortfolioPage() {
           tickerBaseHref="/alpha/portfolio"
         />
       ) : (
-        <p className="text-sm text-white/45">Couldn&apos;t load US data.</p>
+        <p className="text-sm text-slate-400">Couldn&apos;t load US data.</p>
       )}
 
-      <p className="text-xs text-white/40">
+      <p className="text-xs text-slate-400">
         Informational only — not investment advice. This is a weekly research
         selection with dated catalysts; it is not a fund and no return / benchmark
         performance is tracked.
