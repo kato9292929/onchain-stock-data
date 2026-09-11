@@ -18,19 +18,38 @@ const BASE = "https://api.edinet-fsa.go.jp/api/v2";
 /** 規約: 出典表示。Attach verbatim to every response built from EDINET data. */
 export const SOURCE_LABEL = "出典：金融庁 EDINET";
 
-/** 規約: 加工の明示。We filter by securities code and reshape fields; the
- * underlying filings are not altered. */
+/** 規約: 加工の明示。We locate the company's latest annual/quarterly/half-year
+ * report by securities code and extract the standard XBRL financial elements
+ * (sales / operating income / net income) from the official type=5 CSV; the
+ * original filings themselves are not altered. */
 export const PROCESSED_BY =
-  "onchain-stock-data — EDINET API v2 の documents.json(type=2) を証券コードで抽出し、" +
-  "必要項目のみ再整形（原本の開示書類そのものは改変していない）。";
+  "onchain-stock-data — EDINET API v2 で当該証券コードの最新の有価証券報告書／" +
+  "四半期・半期報告書を特定し、書類取得(type=5 CSV)のXBRL標準要素から" +
+  "売上高・営業利益・純利益・会計期間のみ抽出・再整形（原本の開示書類は改変していない）。" +
+  "決算短信はTDnet管轄のためEDINETの対象外。";
 
-/** Weekly cache (seconds) for each date's document list. */
+/** Weekly cache (seconds) for each date's document list and each doc's financials. */
 const WEEK_SECONDS = 7 * 24 * 60 * 60;
 
-/** Default lookback window (calendar days) when scanning for a company's
- * recent filings. Kept small so a cold sweep is a bounded number of cached
- * date-list fetches shared across every ticker. */
+/** Default lookback window (calendar days) for the metadata-only endpoint. */
 export const DEFAULT_WINDOW_DAYS = 14;
+
+/**
+ * Window (calendar days) scanned to find a company's latest financial report.
+ * Post-2024 most filers lodge an 有報 (annual) + 半期 (semi-annual) on EDINET,
+ * so ~120 days reliably catches the most recent one for the common March
+ * fiscal-year filers; companies with nothing in the window return
+ * financials_available:false rather than a fabricated figure.
+ */
+export const FINANCIAL_WINDOW_DAYS = 120;
+
+/**
+ * EDINET doc_type codes that carry audited/reviewed financial statements:
+ *   120 = 有価証券報告書 (annual), 140 = 四半期報告書 (quarterly, pre-2024),
+ *   160 = 半期報告書 (semi-annual). 決算短信 is NOT here — it is filed on TDnet,
+ *   not EDINET, so it is out of scope by design.
+ */
+export const REPORT_DOC_TYPES = ["120", "140", "160"];
 
 export interface EdinetDoc {
   doc_id: string;
@@ -128,4 +147,282 @@ export async function getRecentDocumentsForCompany(
     .sort((a, b) => (a.submit_datetime ?? "").localeCompare(b.submit_datetime ?? ""))
     .reverse();
   return { sec_code: sec, documents: docs };
+}
+
+// ── Financials extraction ───────────────────────────────────────────────────
+
+export interface EdinetFinancials {
+  sec_code: string;
+  financials_available: boolean;
+  filer_name: string | null;
+  doc_id: string | null;
+  doc_type_code: string | null;
+  doc_description: string | null;
+  submit_datetime: string | null;
+  period: { start: string | null; end: string | null };
+  unit: "JPY";
+  sales: number | null;
+  operating_income: number | null;
+  net_income: number | null;
+}
+
+/** Fetch a chunk of dates' lists with bounded concurrency (gentle on EDINET). */
+async function fetchDateLists(dates: string[], concurrency = 8): Promise<EdinetDoc[]> {
+  const out: EdinetDoc[] = [];
+  for (let i = 0; i < dates.length; i += concurrency) {
+    const batch = dates.slice(i, i + concurrency);
+    const lists = await Promise.all(batch.map((d) => getDocumentsForDate(d)));
+    for (const l of lists) out.push(...l);
+  }
+  return out;
+}
+
+/**
+ * The company's single latest financial report (有報/四半期/半期) within the
+ * scan window, or null if none is filed there. Each date list is weekly-cached
+ * and shared, so a sweep pays the window cost once, not per company.
+ */
+export async function getLatestReport(
+  ticker: string,
+  windowDays: number = FINANCIAL_WINDOW_DAYS,
+): Promise<EdinetDoc | null> {
+  const sec = secCodeFor(ticker);
+  const today = new Date();
+  const dates: string[] = [];
+  for (let i = 0; i < windowDays; i++) {
+    const d = new Date(today);
+    d.setUTCDate(today.getUTCDate() - i);
+    dates.push(ymd(d));
+  }
+  const all = await fetchDateLists(dates);
+  const reports = all.filter(
+    (doc) =>
+      doc.sec_code === sec &&
+      doc.doc_type_code != null &&
+      REPORT_DOC_TYPES.includes(doc.doc_type_code),
+  );
+  if (reports.length === 0) return null;
+  reports.sort((a, b) => (b.submit_datetime ?? "").localeCompare(a.submit_datetime ?? ""));
+  return reports[0];
+}
+
+/** Candidate XBRL element local-names (after the ":") per metric, priority order.
+ * Namespace-agnostic (jppfs_cor / jpigp_cor / jpcrp_cor …) — we match the local
+ * name so JGAAP, IFRS and the "主要な経営指標等" summary are all covered. */
+const ELEMENTS: Record<"sales" | "operating_income" | "net_income", string[]> = {
+  sales: [
+    "NetSales",
+    "OperatingRevenue1",
+    "OperatingRevenue2",
+    "RevenueIFRS",
+    "NetSalesIFRS",
+    "SalesRevenueIFRS",
+    "TotalNetRevenuesIFRS",
+    "RevenuesUSGAAP",
+    "NetSalesSummaryOfBusinessResults",
+    "RevenueIFRSSummaryOfBusinessResults",
+    "OperatingRevenuesSummaryOfBusinessResults",
+    "OrdinaryIncomeBankingBusinessSummaryOfBusinessResults",
+  ],
+  operating_income: [
+    "OperatingIncome",
+    "OperatingProfitLossIFRS",
+    "OperatingIncomeLossIFRS",
+    "OperatingProfitLoss",
+    "OperatingIncomeSummaryOfBusinessResults",
+  ],
+  net_income: [
+    "ProfitLossAttributableToOwnersOfParent",
+    "ProfitLoss",
+    "ProfitLossAttributableToOwnersOfParentIFRS",
+    "ProfitLossIFRS",
+    "NetIncome",
+    "ProfitLossAttributableToOwnersOfParentSummaryOfBusinessResults",
+    "NetIncomeLossSummaryOfBusinessResults",
+  ],
+};
+
+interface CsvRow {
+  element: string; // local name after ":"
+  relYear: string; // 相対年度
+  consolidated: string; // 連結・個別
+  periodType: string; // 期間・時点
+  unit: string; // 単位
+  value: string; // 値
+}
+
+/** Parse one EDINET type=5 CSV (UTF-16LE, tab-separated) into rows we care about. */
+function parseCsv(bytes: Uint8Array): CsvRow[] {
+  const text = Buffer.from(bytes).toString("utf16le").replace(/^﻿/, "");
+  const lines = text.split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const header = lines[0].split("\t");
+  const idx = (name: string) => header.findIndex((h) => h.trim() === name);
+  const iEl = idx("要素ID");
+  const iRel = idx("相対年度");
+  const iCon = idx("連結・個別");
+  const iPer = idx("期間・時点");
+  const iUnit = idx("単位");
+  const iVal = idx("値");
+  if (iEl < 0 || iVal < 0) return [];
+  const rows: CsvRow[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const c = lines[i].split("\t");
+    if (c.length <= iEl) continue;
+    const element = (c[iEl] ?? "").split(":").pop() ?? "";
+    if (!element) continue;
+    rows.push({
+      element,
+      relYear: iRel >= 0 ? (c[iRel] ?? "").trim() : "",
+      consolidated: iCon >= 0 ? (c[iCon] ?? "").trim() : "",
+      periodType: iPer >= 0 ? (c[iPer] ?? "").trim() : "",
+      unit: iUnit >= 0 ? (c[iUnit] ?? "").trim() : "",
+      value: (c[iVal] ?? "").trim(),
+    });
+  }
+  return rows;
+}
+
+/** True if the row is the current-period, JPY, monetary value we want. */
+function isCurrentJpy(r: CsvRow): boolean {
+  const jpy = r.unit.includes("円") || r.unit.toUpperCase().includes("JPY");
+  const current = r.relYear === "当期" || r.relYear === "";
+  return jpy && current && r.value !== "" && !Number.isNaN(Number(r.value));
+}
+
+/** Pick a metric's value from parsed rows: current + JPY, preferring 連結 over 個別,
+ * trying each candidate element in priority order. Returns null if none match. */
+function pickMetric(rows: CsvRow[], candidates: string[]): number | null {
+  for (const pref of ["連結", "個別", ""]) {
+    for (const name of candidates) {
+      const hit = rows.find(
+        (r) =>
+          r.element === name &&
+          isCurrentJpy(r) &&
+          (pref === "" ? true : r.consolidated === pref),
+      );
+      if (hit) return Number(hit.value);
+    }
+  }
+  return null;
+}
+
+/** Download a doc's type=5 CSV bundle and extract the three headline figures.
+ * Weekly-cached by docID in Upstash (when configured) so each report's ZIP is
+ * fetched from EDINET at most once per week. Never throws — returns nulls. */
+async function extractFinancials(
+  docId: string,
+): Promise<Pick<EdinetFinancials, "sales" | "operating_income" | "net_income">> {
+  const empty = { sales: null, operating_income: null, net_income: null };
+  const cached = await finCacheGet(docId);
+  if (cached) return cached;
+  try {
+    const url = `${BASE}/documents/${encodeURIComponent(docId)}?type=5&Subscription-Key=${encodeURIComponent(apiKey())}`;
+    const res = await fetch(url, { next: { revalidate: WEEK_SECONDS } });
+    if (!res.ok) return empty;
+    const buf = new Uint8Array(await res.arrayBuffer());
+    const { unzipSync } = await import("fflate");
+    const files = unzipSync(buf);
+    const rows: CsvRow[] = [];
+    for (const [name, data] of Object.entries(files)) {
+      if (!name.toLowerCase().endsWith(".csv")) continue;
+      rows.push(...parseCsv(data));
+    }
+    const out = {
+      sales: pickMetric(rows, ELEMENTS.sales),
+      operating_income: pickMetric(rows, ELEMENTS.operating_income),
+      net_income: pickMetric(rows, ELEMENTS.net_income),
+    };
+    await finCacheSet(docId, out);
+    return out;
+  } catch {
+    return empty;
+  }
+}
+
+/** Latest real financials for a company (headline P&L from the newest report). */
+export async function getCompanyFinancials(
+  ticker: string,
+  windowDays: number = FINANCIAL_WINDOW_DAYS,
+): Promise<EdinetFinancials> {
+  const sec = secCodeFor(ticker);
+  const base: EdinetFinancials = {
+    sec_code: sec,
+    financials_available: false,
+    filer_name: null,
+    doc_id: null,
+    doc_type_code: null,
+    doc_description: null,
+    submit_datetime: null,
+    period: { start: null, end: null },
+    unit: "JPY",
+    sales: null,
+    operating_income: null,
+    net_income: null,
+  };
+  const doc = await getLatestReport(ticker, windowDays);
+  if (!doc) return base;
+  const fin = await extractFinancials(doc.doc_id);
+  const available = fin.sales != null || fin.operating_income != null || fin.net_income != null;
+  return {
+    ...base,
+    financials_available: available,
+    filer_name: doc.filer_name,
+    doc_id: doc.doc_id,
+    doc_type_code: doc.doc_type_code,
+    doc_description: doc.doc_description,
+    submit_datetime: doc.submit_datetime,
+    period: { start: doc.period_start, end: doc.period_end },
+    sales: fin.sales,
+    operating_income: fin.operating_income,
+    net_income: fin.net_income,
+  };
+}
+
+// ── Upstash weekly cache for extracted financials (REST, no SDK) ─────────────
+
+function upstashEnv(): { url?: string; token?: string } {
+  return {
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  };
+}
+
+async function finCacheGet(
+  docId: string,
+): Promise<Pick<EdinetFinancials, "sales" | "operating_income" | "net_income"> | null> {
+  const { url, token } = upstashEnv();
+  if (!url || !token) return null;
+  try {
+    const res = await fetch(`${url}/get/edinet:fin:${encodeURIComponent(docId)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { result?: string | null };
+    return j.result ? JSON.parse(j.result) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function finCacheSet(
+  docId: string,
+  value: Pick<EdinetFinancials, "sales" | "operating_income" | "net_income">,
+): Promise<void> {
+  const { url, token } = upstashEnv();
+  if (!url || !token) return;
+  try {
+    await fetch(
+      `${url}/set/edinet:fin:${encodeURIComponent(docId)}?EX=${WEEK_SECONDS}`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
+        body: JSON.stringify(value),
+        cache: "no-store",
+      },
+    );
+  } catch {
+    // best-effort cache; ignore
+  }
 }
