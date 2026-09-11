@@ -1,23 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
 import {
-  getRecentDocumentsForCompany,
-  DEFAULT_WINDOW_DAYS,
+  getCompanyFinancials,
+  FINANCIAL_WINDOW_DAYS,
   SOURCE_LABEL,
   PROCESSED_BY,
 } from "@/lib/edinet";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Cold cache: the first request of the week scans a window of daily lists +
+// downloads one report's CSV. Give it room; warm requests return in ms.
+export const maxDuration = 60;
 
 /**
  * PAID (x402 per-call, Solana mainnet exact-svm — same rail as /api/catalyst):
- * one company's recent EDINET disclosures (metadata) by securities/TSE code.
+ * one company's LATEST real financials from EDINET (sales / operating income /
+ * net income), extracted from the newest 有報・四半期・半期 report's type=5 CSV.
  *
  * Terms compliance: every payload carries `source` = "出典：金融庁 EDINET" and
- * `processed_by` (we filter by securities code and reshape the v2
- * documents.json; original filings unchanged). Data is fetched only via the
- * official EDINET API v2 and each date list is cached weekly.
+ * `processed_by`. Data is fetched only via the official EDINET API v2; date
+ * lists and per-report extractions are cached weekly. Figures never fabricated —
+ * a company with no extractable report returns nulls + financials_available:false.
  *
  * Priced at 1000 USDC base units (0.001 USDC), settled in USDC-SPL on Solana.
  */
@@ -27,22 +31,31 @@ async function handler(req: NextRequest): Promise<NextResponse> {
   const seg = url.pathname.split("/").filter(Boolean);
   const code = decodeURIComponent(seg[seg.length - 1] ?? "").toUpperCase();
   const days = Math.min(
-    31,
-    Math.max(1, Number(url.searchParams.get("days")) || DEFAULT_WINDOW_DAYS),
+    400,
+    Math.max(1, Number(url.searchParams.get("days")) || FINANCIAL_WINDOW_DAYS),
   );
 
   try {
-    const { sec_code, documents } = await getRecentDocumentsForCompany(code, days);
+    const fin = await getCompanyFinancials(code, days);
     return NextResponse.json({
       source: SOURCE_LABEL,
       processed_by: PROCESSED_BY,
-      fetched_via: "EDINET API v2 (documents.json type=2)",
+      fetched_via: "EDINET API v2 (documents.json type=2 + 書類取得 type=5 CSV)",
       cache: "weekly",
       code,
-      sec_code,
+      sec_code: fin.sec_code,
       window_days: days,
-      count: documents.length,
-      documents,
+      financials_available: fin.financials_available,
+      filer_name: fin.filer_name,
+      doc_id: fin.doc_id,
+      doc_type_code: fin.doc_type_code,
+      doc_description: fin.doc_description,
+      submit_datetime: fin.submit_datetime,
+      period: fin.period,
+      unit: fin.unit,
+      sales: fin.sales,
+      operating_income: fin.operating_income,
+      net_income: fin.net_income,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "edinet error";
@@ -56,7 +69,7 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 export const GET = withSolanaUsdcMicroPaywall(handler, {
   units: "1000",
   description:
-    "One company's recent EDINET disclosures (出典：金融庁 EDINET). Settled per call in USDC on Solana (exact-svm).",
+    "One company's latest EDINET financials — sales / operating income / net income (出典：金融庁 EDINET). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/edinet/:code",
 });
 

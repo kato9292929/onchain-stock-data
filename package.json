@@ -11,8 +11,8 @@
     "update:performance": "tsx scripts/update-performance.ts",
     "backfill:catalysts": "node scripts/backfill-catalyst-targets.mjs",
     "evaluate:catalysts": "node scripts/evaluate-catalysts.mjs",
-  "x402:buyer": "node scripts/x402-weekly-buyer.mjs",
-  "x402:autopilot": "node scripts/x402-autopilot.mjs",
+    "x402:buyer": "node scripts/x402-weekly-buyer.mjs",
+    "x402:autopilot": "node scripts/x402-autopilot.mjs",
     "seed:physical-ai": "node scripts/seed-physical-ai-catalysts.mjs",
     "test": "node --import tsx --test scripts/__tests__/*.test.mjs"
   },
@@ -28,6 +28,7 @@
     "@x402/next": "2.13.0",
     "@x402/svm": "2.13.0",
     "clsx": "^2.1.1",
+    "fflate": "^0.8.3",
     "lucide-react": "^1.39.0",
     "mcp-handler": "^2.1.1",
     "motion": "^13.1.1",
