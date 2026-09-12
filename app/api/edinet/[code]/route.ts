@@ -40,6 +40,8 @@ async function handler(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       source: SOURCE_LABEL,
       processed_by: PROCESSED_BY,
+      // Deploy marker — a one-line check that the financials pipeline is live.
+      pipeline: "edinet-financials-v1",
       fetched_via: "EDINET API v2 (documents.json type=2 + 書類取得 type=5 CSV)",
       cache: "weekly",
       code,
