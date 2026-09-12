@@ -211,39 +211,58 @@ export async function getLatestReport(
  * name so JGAAP, IFRS and the "主要な経営指標等" summary are all covered. */
 const ELEMENTS: Record<"sales" | "operating_income" | "net_income", string[]> = {
   sales: [
+    // JGAAP — primary statement
     "NetSales",
     "OperatingRevenue1",
     "OperatingRevenue2",
+    "NetSalesOfCompletedConstructionContracts",
+    // IFRS — primary statement
     "RevenueIFRS",
     "NetSalesIFRS",
     "SalesRevenueIFRS",
     "TotalNetRevenuesIFRS",
     "RevenuesUSGAAP",
+    // 主要な経営指標等 (Summary of Business Results) — standardized per filing
     "NetSalesSummaryOfBusinessResults",
     "RevenueIFRSSummaryOfBusinessResults",
+    "NetSalesIFRSSummaryOfBusinessResults",
+    "SalesRevenueIFRSSummaryOfBusinessResults",
+    "RevenuesIFRSSummaryOfBusinessResults",
     "OperatingRevenuesSummaryOfBusinessResults",
     "OrdinaryIncomeBankingBusinessSummaryOfBusinessResults",
   ],
   operating_income: [
+    // JGAAP
     "OperatingIncome",
+    "OperatingProfitLoss",
+    // IFRS
     "OperatingProfitLossIFRS",
     "OperatingIncomeLossIFRS",
-    "OperatingProfitLoss",
+    "ProfitLossFromOperatingActivitiesIFRS",
+    // Summary
     "OperatingIncomeSummaryOfBusinessResults",
+    "OperatingProfitLossIFRSSummaryOfBusinessResults",
   ],
   net_income: [
+    // JGAAP
     "ProfitLossAttributableToOwnersOfParent",
     "ProfitLoss",
+    "NetIncome",
+    // IFRS
     "ProfitLossAttributableToOwnersOfParentIFRS",
     "ProfitLossIFRS",
-    "NetIncome",
+    // Summary
     "ProfitLossAttributableToOwnersOfParentSummaryOfBusinessResults",
+    "ProfitLossAttributableToOwnersOfParentIFRSSummaryOfBusinessResults",
     "NetIncomeLossSummaryOfBusinessResults",
   ],
 };
 
 interface CsvRow {
+  elementId: string; // full 要素ID (with namespace prefix)
   element: string; // local name after ":"
+  itemName: string; // 項目名
+  contextId: string; // コンテキストID
   relYear: string; // 相対年度
   consolidated: string; // 連結・個別
   periodType: string; // 期間・時点
@@ -251,7 +270,9 @@ interface CsvRow {
   value: string; // 値
 }
 
-/** Parse one EDINET type=5 CSV (UTF-16LE, tab-separated) into rows we care about. */
+/** Parse one EDINET type=5 CSV (UTF-16LE, tab-separated). Throws on a malformed
+ * structure (no header / missing key columns) so callers can fail loud rather
+ * than silently returning empty. */
 function parseCsv(bytes: Uint8Array): CsvRow[] {
   const text = Buffer.from(bytes).toString("utf16le").replace(/^﻿/, "");
   const lines = text.split(/\r?\n/);
@@ -259,20 +280,29 @@ function parseCsv(bytes: Uint8Array): CsvRow[] {
   const header = lines[0].split("\t");
   const idx = (name: string) => header.findIndex((h) => h.trim() === name);
   const iEl = idx("要素ID");
+  const iName = idx("項目名");
+  const iCtx = idx("コンテキストID");
   const iRel = idx("相対年度");
   const iCon = idx("連結・個別");
   const iPer = idx("期間・時点");
   const iUnit = idx("単位");
   const iVal = idx("値");
-  if (iEl < 0 || iVal < 0) return [];
+  if (iEl < 0 || iVal < 0) {
+    // Not the tab/UTF-16 schema we expect — signal to the caller.
+    throw new Error("EDINET CSV: unexpected structure (要素ID/値 columns not found)");
+  }
   const rows: CsvRow[] = [];
   for (let i = 1; i < lines.length; i++) {
     const c = lines[i].split("\t");
     if (c.length <= iEl) continue;
-    const element = (c[iEl] ?? "").split(":").pop() ?? "";
+    const elementId = (c[iEl] ?? "").trim();
+    const element = elementId.split(":").pop() ?? "";
     if (!element) continue;
     rows.push({
+      elementId,
       element,
+      itemName: iName >= 0 ? (c[iName] ?? "").trim() : "",
+      contextId: iCtx >= 0 ? (c[iCtx] ?? "").trim() : "",
       relYear: iRel >= 0 ? (c[iRel] ?? "").trim() : "",
       consolidated: iCon >= 0 ? (c[iCon] ?? "").trim() : "",
       periodType: iPer >= 0 ? (c[iPer] ?? "").trim() : "",
@@ -307,37 +337,91 @@ function pickMetric(rows: CsvRow[], candidates: string[]): number | null {
   return null;
 }
 
-/** Download a doc's type=5 CSV bundle and extract the three headline figures.
- * Weekly-cached by docID in Upstash (when configured) so each report's ZIP is
- * fetched from EDINET at most once per week. Never throws — returns nulls. */
+/** Download a doc's type=5 CSV bundle and return every parsed row. FAIL LOUD:
+ * throws on a fetch error, a non-ZIP payload, or a bundle with no CSV rows — a
+ * structural failure is surfaced, not swallowed as "no financials". */
+async function fetchReportRows(docId: string): Promise<CsvRow[]> {
+  const url = `${BASE}/documents/${encodeURIComponent(docId)}?type=5&Subscription-Key=${encodeURIComponent(apiKey())}`;
+  const res = await fetch(url, { next: { revalidate: WEEK_SECONDS } });
+  if (!res.ok) throw new Error(`EDINET type=5 fetch failed (${res.status}) for ${docId}`);
+  const buf = new Uint8Array(await res.arrayBuffer());
+  const { unzipSync } = await import("fflate");
+  const files = unzipSync(buf); // throws if not a valid ZIP
+  const rows: CsvRow[] = [];
+  for (const [name, data] of Object.entries(files)) {
+    if (!name.toLowerCase().endsWith(".csv")) continue;
+    rows.push(...parseCsv(data));
+  }
+  if (rows.length === 0) {
+    throw new Error(`EDINET type=5 bundle has no parseable CSV rows for ${docId}`);
+  }
+  return rows;
+}
+
+/** Extract the three headline figures from a report. Weekly-cached by docID in
+ * Upstash. Fail-loud on structural errors (propagated); a clean parse with no
+ * matching element returns nulls (a legitimate "not found", not an error). */
 async function extractFinancials(
   docId: string,
 ): Promise<Pick<EdinetFinancials, "sales" | "operating_income" | "net_income">> {
-  const empty = { sales: null, operating_income: null, net_income: null };
   const cached = await finCacheGet(docId);
   if (cached) return cached;
-  try {
-    const url = `${BASE}/documents/${encodeURIComponent(docId)}?type=5&Subscription-Key=${encodeURIComponent(apiKey())}`;
-    const res = await fetch(url, { next: { revalidate: WEEK_SECONDS } });
-    if (!res.ok) return empty;
-    const buf = new Uint8Array(await res.arrayBuffer());
-    const { unzipSync } = await import("fflate");
-    const files = unzipSync(buf);
-    const rows: CsvRow[] = [];
-    for (const [name, data] of Object.entries(files)) {
-      if (!name.toLowerCase().endsWith(".csv")) continue;
-      rows.push(...parseCsv(data));
-    }
-    const out = {
-      sales: pickMetric(rows, ELEMENTS.sales),
-      operating_income: pickMetric(rows, ELEMENTS.operating_income),
-      net_income: pickMetric(rows, ELEMENTS.net_income),
-    };
-    await finCacheSet(docId, out);
-    return out;
-  } catch {
-    return empty;
-  }
+  const rows = await fetchReportRows(docId); // fail loud
+  const out = {
+    sales: pickMetric(rows, ELEMENTS.sales),
+    operating_income: pickMetric(rows, ELEMENTS.operating_income),
+    net_income: pickMetric(rows, ELEMENTS.net_income),
+  };
+  await finCacheSet(docId, out);
+  return out;
+}
+
+/** Debug dump — the raw XBRL element rows of a company's latest report, so the
+ * real element IDs for sales/operating income/net income can be confirmed from
+ * fact instead of guessed. Current-period / 連結 / JPY rows are surfaced first.
+ * Unprocessed; behind the same paywall as the main endpoint. */
+export interface EdinetElementDump {
+  doc: EdinetDoc | null;
+  count: number;
+  elements: Array<{
+    element_id: string;
+    item_name: string;
+    context: string;
+    rel_year: string;
+    consolidated: string;
+    period_type: string;
+    unit: string;
+    value: string;
+  }>;
+}
+
+export async function dumpReportElements(
+  ticker: string,
+  windowDays: number = FINANCIAL_WINDOW_DAYS,
+  limit = 600,
+): Promise<EdinetElementDump> {
+  const doc = await getLatestReport(ticker, windowDays);
+  if (!doc) return { doc: null, count: 0, elements: [] };
+  const rows = await fetchReportRows(doc.doc_id); // fail loud
+  const score = (r: CsvRow) =>
+    (r.relYear === "当期" ? 4 : 0) +
+    (r.consolidated === "連結" ? 2 : 0) +
+    (r.unit.includes("円") || r.unit.toUpperCase().includes("JPY") ? 1 : 0);
+  const sorted = [...rows].sort((a, b) => score(b) - score(a));
+  return {
+    doc,
+    count: rows.length,
+    elements: sorted.slice(0, limit).map((r) => ({
+      element_id: r.elementId,
+      item_name: r.itemName,
+      context: r.contextId,
+      rel_year: r.relYear,
+      consolidated: r.consolidated,
+      period_type: r.periodType,
+      unit: r.unit,
+      value: r.value,
+    })),
+  };
 }
 
 /** Latest real financials for a company (headline P&L from the newest report). */
