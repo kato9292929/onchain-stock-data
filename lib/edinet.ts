@@ -164,6 +164,10 @@ export interface EdinetFinancials {
   sales: number | null;
   operating_income: number | null;
   net_income: number | null;
+  /** Diagnostic (only when financials_available is false): the biggest current
+   * 連結 JPY rows, so the real revenue/income element IDs are visible in the
+   * normal response — no debug query needed. */
+  debug_unmatched?: UnmatchedRow[];
 }
 
 /** Fetch a chunk of dates' lists with bounded concurrency (gentle on EDINET). */
@@ -411,22 +415,58 @@ async function fetchReportRows(docId: string): Promise<CsvRow[]> {
   return rows;
 }
 
-/** Extract the three headline figures from a report. Weekly-cached by docID in
- * Upstash. Fail-loud on structural errors (propagated); a clean parse with no
- * matching element returns nulls (a legitimate "not found", not an error). */
-async function extractFinancials(
-  docId: string,
-): Promise<Pick<EdinetFinancials, "sales" | "operating_income" | "net_income">> {
+export interface UnmatchedRow {
+  element_id: string;
+  item_name: string;
+  consolidated: string;
+  value: string;
+}
+
+/** The largest current-period JPY monetary rows, deduped by element, 連結 first.
+ * Attached to the response when extraction fails so the real revenue/income
+ * element IDs are visible (sales/opinc/net income are among the biggest figures)
+ * without needing the debug query. Diagnostic only, never used as a value. */
+function topMonetaryRows(rows: CsvRow[], limit: number): UnmatchedRow[] {
+  const seen = new Set<string>();
+  return rows
+    .filter((r) => isCurrentJpy(r))
+    .sort((a, b) => {
+      const con = (b.consolidated === "連結" ? 1 : 0) - (a.consolidated === "連結" ? 1 : 0);
+      if (con !== 0) return con;
+      return Math.abs(Number(b.value)) - Math.abs(Number(a.value));
+    })
+    .filter((r) => (seen.has(r.elementId) ? false : (seen.add(r.elementId), true)))
+    .slice(0, limit)
+    .map((r) => ({
+      element_id: r.elementId,
+      item_name: r.itemName,
+      consolidated: r.consolidated,
+      value: r.value,
+    }));
+}
+
+/** Extract the three headline figures from a report. Cached by docID in Upstash
+ * ONLY on success (a null result is never cached, so a mapping fix takes effect
+ * immediately). Fail-loud on structural errors; a clean parse with no matching
+ * element returns nulls + a diagnostic `unmatched` sample. */
+async function extractFinancials(docId: string): Promise<{
+  sales: number | null;
+  operating_income: number | null;
+  net_income: number | null;
+  unmatched: UnmatchedRow[];
+}> {
   const cached = await finCacheGet(docId);
-  if (cached) return cached;
+  if (cached) return { ...cached, unmatched: [] };
   const rows = await fetchReportRows(docId); // fail loud
-  const out = {
+  const values = {
     sales: pickMetric(rows, ELEMENTS.sales),
     operating_income: pickMetric(rows, ELEMENTS.operating_income),
     net_income: pickMetric(rows, ELEMENTS.net_income),
   };
-  await finCacheSet(docId, out);
-  return out;
+  const available =
+    values.sales != null || values.operating_income != null || values.net_income != null;
+  if (available) await finCacheSet(docId, values); // cache successes only
+  return { ...values, unmatched: available ? [] : topMonetaryRows(rows, 40) };
 }
 
 /** Debug dump — the raw XBRL element rows of a company's latest report, so the
@@ -543,6 +583,7 @@ export async function getCompanyFinancials(
     sales: fin.sales,
     operating_income: fin.operating_income,
     net_income: fin.net_income,
+    debug_unmatched: available ? undefined : fin.unmatched,
   };
 }
 
@@ -561,7 +602,7 @@ async function finCacheGet(
   const { url, token } = upstashEnv();
   if (!url || !token) return null;
   try {
-    const res = await fetch(`${url}/get/edinet:fin:${encodeURIComponent(docId)}`, {
+    const res = await fetch(`${url}/get/edinet:fin:v2:${encodeURIComponent(docId)}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
@@ -581,7 +622,7 @@ async function finCacheSet(
   if (!url || !token) return;
   try {
     await fetch(
-      `${url}/set/edinet:fin:${encodeURIComponent(docId)}?EX=${WEEK_SECONDS}`,
+      `${url}/set/edinet:fin:v2:${encodeURIComponent(docId)}?EX=${WEEK_SECONDS}`,
       {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
