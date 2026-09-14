@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
 import {
   getCompanyFinancials,
+  dumpReportElements,
   FINANCIAL_WINDOW_DAYS,
   SOURCE_LABEL,
   PROCESSED_BY,
@@ -34,6 +35,22 @@ async function handler(req: NextRequest): Promise<NextResponse> {
     400,
     Math.max(1, Number(url.searchParams.get("days")) || FINANCIAL_WINDOW_DAYS),
   );
+
+  // Debug: dump the raw XBRL element rows of the latest report, to confirm the
+  // real element IDs by fact. Unprocessed; same paywall as the main endpoint.
+  if (url.searchParams.get("debug") === "elements") {
+    const dump = await dumpReportElements(code, days);
+    return NextResponse.json({
+      source: SOURCE_LABEL,
+      pipeline: "edinet-financials-v1",
+      debug: true,
+      note: "デバッグ用・未加工のXBRL要素ダンプ（当期・連結・JPY を優先表示）",
+      code,
+      doc: dump.doc,
+      count: dump.count,
+      elements: dump.elements,
+    });
+  }
 
   try {
     const fin = await getCompanyFinancials(code, days);
