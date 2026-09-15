@@ -24,9 +24,33 @@ export const SOURCE_LABEL = "出典：金融庁 EDINET";
  * original filings themselves are not altered. */
 export const PROCESSED_BY =
   "onchain-stock-data — EDINET API v2 で当該証券コードの最新の有価証券報告書／" +
-  "四半期・半期報告書を特定し、書類取得(type=5 CSV)のXBRL標準要素から" +
-  "売上高・営業利益・純利益・会計期間のみ抽出・再整形（原本の開示書類は改変していない）。" +
+  "四半期・半期報告書を特定し、書類メタデータと会計期間を再整形して供給" +
+  "（原本の開示書類は改変していない）。売上高・営業利益・純利益の数値抽出は、" +
+  "連結／個別・タクソノミ差（JGAAP／IFRS／会社拡張要素）の取り扱いで信頼性を" +
+  "確保できていないため現在は提供を停止（financials_available:false）。" +
   "決算短信はTDnet管轄のためEDINETの対象外。";
+
+/**
+ * Financial-figure extraction is DISABLED.
+ *
+ * The candidate-element + first-match extractor is structurally too fragile for
+ * EDINET's heterogeneity: IFRS filers use company-extension elements (e.g.
+ * Toyota's OperatingRevenuesIFRSKeyFinancialData) that aren't in a fixed
+ * candidate list, the same standard element repeats across contexts
+ * (連結/個別/前期/セグメント), and there is no canonical sales/OP/NI element across
+ * JGAAP/IFRS/US-GAAP/銀行/保険. It shipped wrong values live (Sony sales ¥1,644億
+ * and a net loss; Toyota mixing 単体 sales with 連結 net income). Rather than serve
+ * fabricated-looking figures, the paid endpoint returns disclosure metadata +
+ * accounting period only. The parser/extractor code is retained (dormant) for a
+ * future taxonomy-mapped rewrite; flip this to true only after per-taxonomy maps
+ * + strict context selection are validated against known actuals for real filers.
+ */
+export const FINANCIALS_ENABLED = false;
+
+/** Honest status attached to every payload while extraction is disabled. */
+export const FINANCIALS_PAUSED_NOTE =
+  "財務数値（売上高・営業利益・純利益）は現在提供していません。抽出の信頼性を" +
+  "確保できていないため一時停止中で、書類メタデータと会計期間のみ供給します。";
 
 /** Weekly cache (seconds) for each date's document list and each doc's financials. */
 const WEEK_SECONDS = 7 * 24 * 60 * 60;
@@ -164,6 +188,13 @@ export interface EdinetFinancials {
   sales: number | null;
   operating_income: number | null;
   net_income: number | null;
+  /** Present while FINANCIALS_ENABLED is false: an honest note that figures are
+   * intentionally not served (metadata + period only). */
+  financials_note?: string;
+  /** Diagnostic (only when financials_available is false): the biggest current
+   * 連結 JPY rows, so the real revenue/income element IDs are visible in the
+   * normal response — no debug query needed. */
+  debug_unmatched?: UnmatchedRow[];
 }
 
 /** Fetch a chunk of dates' lists with bounded concurrency (gentle on EDINET). */
@@ -221,8 +252,9 @@ export async function getLatestReport(
  */
 const ELEMENTS: Record<"sales" | "operating_income" | "net_income", string[]> = {
   sales: [
-    "NetSalesSummaryOfBusinessResults", // JGAAP
-    "RevenueIFRSSummaryOfBusinessResults", // IFRS
+    "NetSalesSummaryOfBusinessResults", // JGAAP 売上高
+    "RevenueIFRSSummaryOfBusinessResults", // IFRS 売上収益
+    "OperatingRevenuesIFRSKeyFinancialData", // IFRS 営業収益 (finance-arm filers: Toyota/Sony)
     "RevenuesUSGAAPSummaryOfBusinessResults", // USGAAP
     "NetSales", // JGAAP primary-statement alternate (jppfs_cor)
     "RevenueIFRS", // IFRS primary-statement alternate (jpigp_cor)
@@ -243,7 +275,7 @@ const ELEMENTS: Record<"sales" | "operating_income" | "net_income", string[]> = 
   ],
 };
 
-interface CsvRow {
+export interface CsvRow {
   elementId: string; // full 要素ID (with namespace prefix)
   element: string; // local name after ":"
   itemName: string; // 項目名
@@ -314,8 +346,9 @@ function parseTsv(text: string): string[][] {
 
 /** Parse a decoded EDINET CSV into typed rows. Throws on a genuine structural
  * mismatch (9-column header 要素ID…値 not found) — fail loud on the paid path;
- * the debug endpoint catches it and returns diagnostics instead. */
-function parseCsv(bytes: Uint8Array): CsvRow[] {
+ * the debug endpoint catches it and returns diagnostics instead. Exported for
+ * unit tests (synthetic UTF-16LE bytes → rows). */
+export function parseCsv(bytes: Uint8Array): CsvRow[] {
   const table = parseTsv(decodeCsv(bytes));
   if (table.length < 2) throw new Error("EDINET CSV: no data rows");
   const header = table[0].map((h) => h.trim());
@@ -362,21 +395,59 @@ function isCurrentJpy(r: CsvRow): boolean {
   return jpy && current && r.value !== "" && !Number.isNaN(Number(r.value));
 }
 
-/** Pick a metric's value from parsed rows: current + JPY, preferring 連結 over 個別,
- * trying each candidate element in priority order. Returns null if none match. */
+/**
+ * True if the row's value is the CONSOLIDATED (連結) group figure.
+ *
+ * The 「連結・個別」CSV column is useless — EDINET fills it with "その他" for the
+ * 主要な経営指標等 rows regardless of which table they belong to. The real
+ * distinction lives in the CONTEXT ID: the consolidated group total sits on the
+ * base period context (e.g. `CurrentYearDuration`), while the parent-only (単体)
+ * figure is tagged `..._NonConsolidatedMember` and any segment / other breakdown
+ * carries some other `..._…Member` axis. So: reject NonConsolidated, and reject
+ * every dimensional Member context — what's left is the consolidated total.
+ *
+ * A 単体-only filer (no subsidiaries) has no NonConsolidatedMember rows at all;
+ * its figures live on the base context too, so they still pass here.
+ */
+function isConsolidatedContext(ctx: string): boolean {
+  if (/NonConsolidated/i.test(ctx)) return false;
+  if (/Member/.test(ctx)) return false; // any dimensional member = a breakdown, not the group total
+  return true;
+}
+
+/**
+ * Pick a metric's value from parsed rows: current + JPY, trying each candidate
+ * element in priority order. Prefers the CONSOLIDATED-context row (see
+ * isConsolidatedContext); only if no candidate has a consolidated row does it
+ * fall back to any context (covers 単体-only filers). Returns null if none match.
+ */
 function pickMetric(rows: CsvRow[], candidates: string[]): number | null {
-  for (const pref of ["連結", "個別", ""]) {
-    for (const name of candidates) {
-      const hit = rows.find(
-        (r) =>
-          r.element === name &&
-          isCurrentJpy(r) &&
-          (pref === "" ? true : r.consolidated === pref),
-      );
-      if (hit) return Number(hit.value);
-    }
+  for (const name of candidates) {
+    const hit = rows.find(
+      (r) => r.element === name && isCurrentJpy(r) && isConsolidatedContext(r.contextId),
+    );
+    if (hit) return Number(hit.value);
+  }
+  for (const name of candidates) {
+    const hit = rows.find((r) => r.element === name && isCurrentJpy(r));
+    if (hit) return Number(hit.value);
   }
   return null;
+}
+
+/** Pure extraction of the three headline figures from parsed rows (consolidated
+ * preferred via context). Exported so it can be unit-tested against synthetic
+ * rows without touching the network. */
+export function extractFromRows(rows: CsvRow[]): {
+  sales: number | null;
+  operating_income: number | null;
+  net_income: number | null;
+} {
+  return {
+    sales: pickMetric(rows, ELEMENTS.sales),
+    operating_income: pickMetric(rows, ELEMENTS.operating_income),
+    net_income: pickMetric(rows, ELEMENTS.net_income),
+  };
 }
 
 /** Choose the report-body CSV(s) from a type=5 bundle: the 有報 body is the
@@ -411,22 +482,58 @@ async function fetchReportRows(docId: string): Promise<CsvRow[]> {
   return rows;
 }
 
-/** Extract the three headline figures from a report. Weekly-cached by docID in
- * Upstash. Fail-loud on structural errors (propagated); a clean parse with no
- * matching element returns nulls (a legitimate "not found", not an error). */
-async function extractFinancials(
-  docId: string,
-): Promise<Pick<EdinetFinancials, "sales" | "operating_income" | "net_income">> {
+export interface UnmatchedRow {
+  element_id: string;
+  item_name: string;
+  context: string;
+  consolidated: boolean;
+  value: string;
+}
+
+/** The largest current-period JPY monetary rows, deduped by element, consolidated
+ * first. Attached to the response when extraction fails so the real revenue/income
+ * element IDs are visible (sales/opinc/net income are among the biggest figures)
+ * without needing the debug query. Diagnostic only, never used as a value. */
+function topMonetaryRows(rows: CsvRow[], limit: number): UnmatchedRow[] {
+  const seen = new Set<string>();
+  return rows
+    .filter((r) => isCurrentJpy(r))
+    .sort((a, b) => {
+      const con =
+        (isConsolidatedContext(b.contextId) ? 1 : 0) -
+        (isConsolidatedContext(a.contextId) ? 1 : 0);
+      if (con !== 0) return con;
+      return Math.abs(Number(b.value)) - Math.abs(Number(a.value));
+    })
+    .filter((r) => (seen.has(r.elementId) ? false : (seen.add(r.elementId), true)))
+    .slice(0, limit)
+    .map((r) => ({
+      element_id: r.elementId,
+      item_name: r.itemName,
+      context: r.contextId,
+      consolidated: isConsolidatedContext(r.contextId),
+      value: r.value,
+    }));
+}
+
+/** Extract the three headline figures from a report. Cached by docID in Upstash
+ * ONLY on success (a null result is never cached, so a mapping fix takes effect
+ * immediately). Fail-loud on structural errors; a clean parse with no matching
+ * element returns nulls + a diagnostic `unmatched` sample. */
+async function extractFinancials(docId: string): Promise<{
+  sales: number | null;
+  operating_income: number | null;
+  net_income: number | null;
+  unmatched: UnmatchedRow[];
+}> {
   const cached = await finCacheGet(docId);
-  if (cached) return cached;
+  if (cached) return { ...cached, unmatched: [] };
   const rows = await fetchReportRows(docId); // fail loud
-  const out = {
-    sales: pickMetric(rows, ELEMENTS.sales),
-    operating_income: pickMetric(rows, ELEMENTS.operating_income),
-    net_income: pickMetric(rows, ELEMENTS.net_income),
-  };
-  await finCacheSet(docId, out);
-  return out;
+  const values = extractFromRows(rows);
+  const available =
+    values.sales != null || values.operating_income != null || values.net_income != null;
+  if (available) await finCacheSet(docId, values); // cache successes only
+  return { ...values, unmatched: available ? [] : topMonetaryRows(rows, 40) };
 }
 
 /** Debug dump — the raw XBRL element rows of a company's latest report, so the
@@ -479,7 +586,7 @@ export async function dumpReportElements(
     }
     const score = (r: CsvRow) =>
       (r.relYear === "当期" ? 4 : 0) +
-      (r.consolidated === "連結" ? 2 : 0) +
+      (isConsolidatedContext(r.contextId) ? 2 : 0) +
       (r.unit.includes("円") || r.unit.toUpperCase().includes("JPY") ? 1 : 0);
     const sorted = [...rows].sort((a, b) => score(b) - score(a));
     return {
@@ -529,20 +636,29 @@ export async function getCompanyFinancials(
   };
   const doc = await getLatestReport(ticker, windowDays);
   if (!doc) return base;
-  const fin = await extractFinancials(doc.doc_id);
-  const available = fin.sales != null || fin.operating_income != null || fin.net_income != null;
-  return {
+  const meta: EdinetFinancials = {
     ...base,
-    financials_available: available,
     filer_name: doc.filer_name,
     doc_id: doc.doc_id,
     doc_type_code: doc.doc_type_code,
     doc_description: doc.doc_description,
     submit_datetime: doc.submit_datetime,
     period: { start: doc.period_start, end: doc.period_end },
+  };
+  // Extraction is disabled — serve disclosure metadata + period only, never a
+  // figure. (Skips the type=5 fetch too.) See FINANCIALS_ENABLED.
+  if (!FINANCIALS_ENABLED) {
+    return { ...meta, financials_available: false, financials_note: FINANCIALS_PAUSED_NOTE };
+  }
+  const fin = await extractFinancials(doc.doc_id);
+  const available = fin.sales != null || fin.operating_income != null || fin.net_income != null;
+  return {
+    ...meta,
+    financials_available: available,
     sales: fin.sales,
     operating_income: fin.operating_income,
     net_income: fin.net_income,
+    debug_unmatched: available ? undefined : fin.unmatched,
   };
 }
 
@@ -561,7 +677,7 @@ async function finCacheGet(
   const { url, token } = upstashEnv();
   if (!url || !token) return null;
   try {
-    const res = await fetch(`${url}/get/edinet:fin:${encodeURIComponent(docId)}`, {
+    const res = await fetch(`${url}/get/edinet:fin:v2:${encodeURIComponent(docId)}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
@@ -581,7 +697,7 @@ async function finCacheSet(
   if (!url || !token) return;
   try {
     await fetch(
-      `${url}/set/edinet:fin:${encodeURIComponent(docId)}?EX=${WEEK_SECONDS}`,
+      `${url}/set/edinet:fin:v2:${encodeURIComponent(docId)}?EX=${WEEK_SECONDS}`,
       {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },

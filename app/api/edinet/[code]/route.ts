@@ -75,6 +75,11 @@ async function handler(req: NextRequest): Promise<NextResponse> {
       sales: fin.sales,
       operating_income: fin.operating_income,
       net_income: fin.net_income,
+      // Present while figure extraction is disabled: honest "metadata only" note.
+      financials_note: fin.financials_note,
+      // Present only when financials_available is false: the biggest current-年度
+      // 連結 JPY rows, so the real element IDs are visible without ?debug.
+      debug_unmatched: fin.debug_unmatched,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "edinet error";
