@@ -13,10 +13,10 @@ import { fileURLToPath } from "node:url";
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const readJson = async (p) => JSON.parse(await readFile(path.join(REPO, p), "utf8"));
 
-test("seed source: 60 main + 26 sub across 6 articles, every sub links a main", async () => {
+test("seed source: 63 main + 26 sub across 6 articles, every sub links a main", async () => {
   const seed = await readJson("data/physical-ai-catalysts.seed.json");
-  assert.equal(seed.length, 86);
-  assert.equal(seed.filter((r) => r.role === "main").length, 60);
+  assert.equal(seed.length, 89);
+  assert.equal(seed.filter((r) => r.role === "main").length, 63);
   assert.equal(seed.filter((r) => r.role === "sub").length, 26);
 
   const mainKeys = new Set(
@@ -41,11 +41,15 @@ test("seed source: 60 main + 26 sub across 6 articles, every sub links a main", 
 test("store: physical-ai entries seeded, pending, sub linked, description folds fail direction", async () => {
   const store = await readJson("data/external-catalysts.json");
   const pa = store.filter((c) => c.series === "physical-ai");
-  assert.equal(pa.length, 86);
+  assert.equal(pa.length, 89);
 
+  // Entries start "pending"; the daily evaluate-catalysts judge then moves each
+  // past-due one to a judged status. Assert the value is in the valid enum
+  // rather than pinning "pending" (which the live store outgrows).
+  const VALID_STATUS = new Set(["pending", "hit", "partial", "miss", "na"]);
   const byId = new Map(pa.map((c) => [c.catalyst_id, c]));
   for (const c of pa) {
-    assert.equal(c.status, "pending");
+    assert.ok(VALID_STATUS.has(c.status), `${c.ticker} status ${c.status} is valid`);
     assert.ok(c.catalyst_description.includes("【外れ方向】"), `${c.ticker} folds fail direction`);
     if (c.catalyst_role === "sub") {
       assert.ok(byId.has(c.parent_catalyst_id), `${c.ticker} sub parent exists`);
