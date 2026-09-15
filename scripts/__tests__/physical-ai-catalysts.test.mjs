@@ -41,7 +41,12 @@ test("seed source: 63 main + 26 sub across 6 articles, every sub links a main", 
 test("store: physical-ai entries seeded, pending, sub linked, description folds fail direction", async () => {
   const store = await readJson("data/external-catalysts.json");
   const pa = store.filter((c) => c.series === "physical-ai");
-  assert.equal(pa.length, 89);
+  // The store's physical-ai set must stay 1:1 with the editorial seed. Assert
+  // that relationally (store count === seed count) rather than pinning a second
+  // magic number, so adding to one but not the other is caught as drift — the
+  // exact bug that broke this suite once the store gained 3 un-back-ported mains.
+  const seed = await readJson("data/physical-ai-catalysts.seed.json");
+  assert.equal(pa.length, seed.length, "store physical-ai count matches seed");
 
   // Entries start "pending"; the daily evaluate-catalysts judge then moves each
   // past-due one to a judged status. Assert the value is in the valid enum
