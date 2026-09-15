@@ -24,9 +24,33 @@ export const SOURCE_LABEL = "出典：金融庁 EDINET";
  * original filings themselves are not altered. */
 export const PROCESSED_BY =
   "onchain-stock-data — EDINET API v2 で当該証券コードの最新の有価証券報告書／" +
-  "四半期・半期報告書を特定し、書類取得(type=5 CSV)のXBRL標準要素から" +
-  "売上高・営業利益・純利益・会計期間のみ抽出・再整形（原本の開示書類は改変していない）。" +
+  "四半期・半期報告書を特定し、書類メタデータと会計期間を再整形して供給" +
+  "（原本の開示書類は改変していない）。売上高・営業利益・純利益の数値抽出は、" +
+  "連結／個別・タクソノミ差（JGAAP／IFRS／会社拡張要素）の取り扱いで信頼性を" +
+  "確保できていないため現在は提供を停止（financials_available:false）。" +
   "決算短信はTDnet管轄のためEDINETの対象外。";
+
+/**
+ * Financial-figure extraction is DISABLED.
+ *
+ * The candidate-element + first-match extractor is structurally too fragile for
+ * EDINET's heterogeneity: IFRS filers use company-extension elements (e.g.
+ * Toyota's OperatingRevenuesIFRSKeyFinancialData) that aren't in a fixed
+ * candidate list, the same standard element repeats across contexts
+ * (連結/個別/前期/セグメント), and there is no canonical sales/OP/NI element across
+ * JGAAP/IFRS/US-GAAP/銀行/保険. It shipped wrong values live (Sony sales ¥1,644億
+ * and a net loss; Toyota mixing 単体 sales with 連結 net income). Rather than serve
+ * fabricated-looking figures, the paid endpoint returns disclosure metadata +
+ * accounting period only. The parser/extractor code is retained (dormant) for a
+ * future taxonomy-mapped rewrite; flip this to true only after per-taxonomy maps
+ * + strict context selection are validated against known actuals for real filers.
+ */
+export const FINANCIALS_ENABLED = false;
+
+/** Honest status attached to every payload while extraction is disabled. */
+export const FINANCIALS_PAUSED_NOTE =
+  "財務数値（売上高・営業利益・純利益）は現在提供していません。抽出の信頼性を" +
+  "確保できていないため一時停止中で、書類メタデータと会計期間のみ供給します。";
 
 /** Weekly cache (seconds) for each date's document list and each doc's financials. */
 const WEEK_SECONDS = 7 * 24 * 60 * 60;
@@ -164,6 +188,9 @@ export interface EdinetFinancials {
   sales: number | null;
   operating_income: number | null;
   net_income: number | null;
+  /** Present while FINANCIALS_ENABLED is false: an honest note that figures are
+   * intentionally not served (metadata + period only). */
+  financials_note?: string;
   /** Diagnostic (only when financials_available is false): the biggest current
    * 連結 JPY rows, so the real revenue/income element IDs are visible in the
    * normal response — no debug query needed. */
@@ -609,17 +636,25 @@ export async function getCompanyFinancials(
   };
   const doc = await getLatestReport(ticker, windowDays);
   if (!doc) return base;
-  const fin = await extractFinancials(doc.doc_id);
-  const available = fin.sales != null || fin.operating_income != null || fin.net_income != null;
-  return {
+  const meta: EdinetFinancials = {
     ...base,
-    financials_available: available,
     filer_name: doc.filer_name,
     doc_id: doc.doc_id,
     doc_type_code: doc.doc_type_code,
     doc_description: doc.doc_description,
     submit_datetime: doc.submit_datetime,
     period: { start: doc.period_start, end: doc.period_end },
+  };
+  // Extraction is disabled — serve disclosure metadata + period only, never a
+  // figure. (Skips the type=5 fetch too.) See FINANCIALS_ENABLED.
+  if (!FINANCIALS_ENABLED) {
+    return { ...meta, financials_available: false, financials_note: FINANCIALS_PAUSED_NOTE };
+  }
+  const fin = await extractFinancials(doc.doc_id);
+  const available = fin.sales != null || fin.operating_income != null || fin.net_income != null;
+  return {
+    ...meta,
+    financials_available: available,
     sales: fin.sales,
     operating_income: fin.operating_income,
     net_income: fin.net_income,

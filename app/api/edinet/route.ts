@@ -23,7 +23,7 @@ async function handler(_req: NextRequest): Promise<NextResponse> {
     param: "code = 4-digit TSE ticker (→ 5-digit securities code) or a 5-digit securities code",
     query: { days: `report scan window, 1–400 (default ${FINANCIAL_WINDOW_DAYS})` },
     returns:
-      "latest report's financials — sales, operating_income, net_income (JPY), period, doc_id, submit_datetime; financials_available:false with nulls when nothing extractable (never fabricated)",
+      "latest disclosure metadata — filer_name, doc_id, doc_type_code, doc_description, submit_datetime and the accounting period. Headline figures (sales / operating_income / net_income) are currently NOT served: extraction is paused for reliability, so they return null with financials_available:false (never fabricated).",
     price: {
       amount_base_units: "1000",
       amount_usdc: 0.001,
