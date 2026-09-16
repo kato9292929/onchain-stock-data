@@ -14,6 +14,7 @@
     "x402:buyer": "node scripts/x402-weekly-buyer.mjs",
     "x402:autopilot": "node scripts/x402-autopilot.mjs",
     "seed:physical-ai": "node scripts/seed-physical-ai-catalysts.mjs",
+    "mcp:inspect": "node scripts/mcp-inspect.mjs",
     "test": "node --import tsx --test scripts/__tests__/*.test.mjs"
   },
   "dependencies": {

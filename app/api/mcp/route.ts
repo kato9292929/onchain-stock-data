@@ -7,7 +7,7 @@ import {
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { getSignals } from "@/lib/signals";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
-import { PUBLIC_BASE_URL } from "@/lib/x402";
+import { PUBLIC_BASE_URL, BASE_SEPOLIA_NETWORK } from "@/lib/x402";
 
 /**
  * Remote MCP server for Onchain Stock Data.
@@ -24,6 +24,18 @@ import { PUBLIC_BASE_URL } from "@/lib/x402";
  * client (AA) against the HTTP endpoint, not by a vanilla MCP client.
  *
  * Mounted as a single web-standard handler (mcp-handler v2) at /api/mcp.
+ *
+ * FREE / PAID line (kept in sync with the README):
+ *   - FREE, unsigned MCP reads (all 4 tools here): portfolio_get, catalysts_list,
+ *     scoreboard_get, signal_get. Every tool is read-only (annotations:
+ *     readOnlyHint:true, destructiveHint:false) and serves committed git data —
+ *     no model call, so a tool invocation costs nothing to run.
+ *   - PAID access lives on the HTTP per-call endpoints, NOT on this MCP surface:
+ *       · /api/catalyst/:ticker and /api/edinet/:code — x402 402-gated, settled
+ *         per call in USDC on Solana mainnet at PER_CALL_PRICE (0.001 USDC).
+ *       · /api/testnet/signal — the paid twin of signal_get (Base Sepolia
+ *         testnet demo), priced separately (X402_TESTNET_SIGNAL_PRICE).
+ *   - NO subscription / metered account billing exists anywhere (out of scope).
  */
 
 export const runtime = "nodejs";
@@ -42,9 +54,18 @@ const handler = createMcpHandler(
     server.registerTool(
       "portfolio_get",
       {
+        title: "Get weekly portfolio (US/JP)",
         description:
           "Current Claude-selected equity portfolio (weights, thesis, catalyst target dates) for the US or JP book.",
         inputSchema: z.object({ market: z.enum(["us", "jp"]).default("us") }),
+        // FREE, read-only. Serves committed research; no external calls, no writes.
+        annotations: {
+          title: "Get weekly portfolio (US/JP)",
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
       },
       async ({ market }) => {
         const file =
@@ -75,8 +96,16 @@ const handler = createMcpHandler(
     server.registerTool(
       "catalysts_list",
       {
+        title: "List dated catalysts",
         description:
           "Dated numeric catalysts sorted by target_date (ascending). Filter by date range, ticker, or theme (series).",
+        annotations: {
+          title: "List dated catalysts",
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
         inputSchema: z.object({
           from: z
             .string()
@@ -120,9 +149,17 @@ const handler = createMcpHandler(
     server.registerTool(
       "scoreboard_get",
       {
+        title: "Get Physical-AI scoreboard",
         description:
           "Free scoreboard: hit/partial/miss tally of the Physical-AI dated catalysts, overall and per article.",
         inputSchema: z.object({}),
+        annotations: {
+          title: "Get Physical-AI scoreboard",
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
       },
       async () => {
         const all = await readExternalCatalysts().catch(() => []);
@@ -146,8 +183,17 @@ const handler = createMcpHandler(
     server.registerTool(
       "signal_get",
       {
+        title: "Get directional signals (x402 paid twin)",
         description:
           "Pre-generated directional signals for a ticker or theme. This is the resource with a paid x402 testnet twin (see `payment`); the values here are read-only committed data.",
+        // Read here is FREE; the paid gate is the HTTP twin /api/testnet/signal.
+        annotations: {
+          title: "Get directional signals (x402 paid twin)",
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
         inputSchema: z.object({
           ticker: z.string().optional(),
           theme: z
@@ -186,7 +232,7 @@ const handler = createMcpHandler(
           })),
           payment: {
             note: "Paid access to this resource is settled per-call via x402 on Base Sepolia (testnet). A vanilla MCP client reads for free here; an x402-capable agent pays at the HTTP endpoint.",
-            network: "eip155:84532",
+            network: BASE_SEPOLIA_NETWORK,
             resource: `${PUBLIC_BASE_URL}/api/testnet/signal`,
           },
         });

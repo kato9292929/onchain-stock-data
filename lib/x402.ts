@@ -157,6 +157,26 @@ export function solanaUsdcUnits(baseUnits: string | number): Price {
 }
 
 /**
+ * Canonical per-call price for osd's PAID mainnet endpoints
+ * (`/api/catalyst/:ticker`, `/api/edinet/:code`): settled `exact` in USDC on
+ * Solana. Single source of truth — routes and their descriptors reference these
+ * fields and never re-literal the amount, so the price is changed in one place.
+ *
+ * `base_units` is atomic USDC (6 decimals) → "1000" = 0.001 USDC. Kept above the
+ * facilitator's dust floor (a sub-0.001 charge is worth less than sponsored SOL
+ * gas, so the facilitator refuses it). The testnet `signal_get` twin
+ * (`/api/testnet/signal`, Base Sepolia) prices separately — see
+ * `X402_TESTNET_SIGNAL_PRICE` — and is NOT covered by this constant.
+ */
+export const PER_CALL_PRICE = {
+  base_units: "1000",
+  usdc: 0.001,
+  asset: "USDC",
+  network: "solana",
+  scheme: "exact",
+} as const;
+
+/**
  * Safety valve for the micro-priced Solana endpoints: assert the built route
  * config charges EXACTLY one Solana USDC accept at `units` base units. Throws
  * at module load (route import) if the network, mint, or amount ever drift —
