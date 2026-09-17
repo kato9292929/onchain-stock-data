@@ -1,5 +1,12 @@
 # Onchain Stock Data
 
+**Live product:** https://osd.x402jp.com/
+
+**Product boundary:** this is a research, selection, and measurement product.
+It does not execute trades or provide personalised investment advice. Every
+published portfolio, catalyst, and score should be read together with its
+timestamp and recorded source data.
+
 Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を統合した API + Web ページ。
 
 ブラウザからは無料の HTML ページ、エージェント (Claude / GPT / curl / Python requests 等) からは [x402](https://x402.org) で有料の JSON エンドポイントとして配信します。価格はエンドポイントにより `$0.01`（データ系）・`$0.05`（Perplexity ラッパー）・`$0.50`〜`$3.00`（Analyst / Predict の depth 別）。Claude Portfolio 系（`/api/alpha/...`）は**無料公開**です。
@@ -458,4 +465,5 @@ npx vercel --prod
 
 ## License
 
-MIT (予定)
+No open-source license has been published for this repository yet. Reuse is
+not granted until a license file is added.
