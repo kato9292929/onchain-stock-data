@@ -19,6 +19,33 @@ Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を
 | `/analyst`   | エージェント向け有料 IC memo (上記 5 API を並列で叩いて Claude で統合) |
 | `/portfolio` · `/portfolio/jp` | Claude が毎週選ぶ米株・日本株 各 10 銘柄。ページはブラウザ無料 (Allocation・$10k P&L vs SPY/QQQ・履歴)。JSON API は x402 有料 |
 
+## MCP server (`/api/mcp`)
+
+osd の公開済みリサーチを **MCP ツール**として開放しています（Claude / ChatGPT から「話しかけるだけ」で読める）。`app/api/mcp/route.ts`、`mcp-handler` v2、Streamable HTTP。**MCP の 4 ツールはすべて無料・読み取り専用**（署名不要）で、呼び出しに Anthropic モデル呼び出しは発生しません（コスト 0）。
+
+| tool | title | annotation | 内容 |
+|---|---|---|---|
+| `portfolio_get` | Get weekly portfolio (US/JP) | `readOnlyHint:true` / `destructiveHint:false` | 今週の米株/日本株ポートフォリオ（weights・thesis・catalyst 期日） |
+| `catalysts_list` | List dated catalysts | 同上 | 期日つきカタリスト（`from`/`to`/`ticker`/`theme`/`limit` で絞り込み） |
+| `scoreboard_get` | Get Physical-AI scoreboard | 同上 | Physical-AI カタリストの hit/partial/miss 集計 |
+| `signal_get` | Get directional signals (x402 paid twin) | 同上 | 方向性シグナル。**有料 x402 版の双子**あり（下記） |
+
+**無料 / 有料の線:**
+
+- **無料（署名不要）** — MCP の 4 ツール（`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`）と無料 descriptor（`/api/catalyst`・`/api/edinet`）。
+- **有料（x402・HTTP 402 ゲート、per-call）** — `/api/catalyst/{ticker}`・`/api/edinet/{code}`。**USDC・Solana mainnet・`exact`・0.001 USDC**（= 1000 base units）で per-call 決済。価格は `lib/x402.ts` の **`PER_CALL_PRICE` に一元化**（ルート/ descriptor はこの定数を参照し、値を直書きしない）。`/api/edinet/{code}` は現状**書類メタ＋会計期間のみ**供給（`financials_available:false`）。
+- **有料（testnet デモ）** — `signal_get` の双子 `/api/testnet/signal` は Base Sepolia USDC で別価格（`X402_TESTNET_SIGNAL_PRICE`、既定 `$0.05`）。MCP ツール側の読み取りは無料、支払いは HTTP エンドポイント側で発生。
+- **サブスク課金は非採用**（アカウント・会員・月額課金の基盤もコードも文言も無い。スコープ外）。
+
+**検証（MCP Inspector 手順・サンプル入出力）:** `docs/mcp-inspect.md`。ローカルは `npm run dev` の後 `MCP_URL=http://localhost:3000/api/mcp npm run mcp:inspect`（`initialize → tools/list → tools/call ×4` を回し、annotation 欠落・未定義ツール・402 不整合で fail loud）。GUI は `npx @modelcontextprotocol/inspector`（Streamable HTTP・URL に `/api/mcp`）。
+
+**§区分B（キー・組織・実walletが要る／サンドボックス外・未確定＝断定しない）:**
+
+1. 本番 MCP 疎通（Claude / ChatGPT → `https://osd.x402jp.com/api/mcp`）。
+2. コネクタディレクトリ提出の前提（Team/Enterprise 組織、OAuth = DCR or CIMD ＋ `https://claude.ai/api/mcp/auth_callback` 登録、スクショ 3〜5 枚 ≥1000px、テストアカウント）。
+3. **OAuth × x402 両立可否は未確定**。無料ツールを OAuth でディレクトリ掲載しつつ有料双子（`signal_get`／per-call）を x402 のまま両立できるかは、Inspector / 実接続で確定してから記述する。両立不可ならディレクトリには無料ツールのみ掲載し、x402 は別チャネルとして残す。
+4. per-call の実決済確認は本番・実 wallet でのみ（サンドボックス不可）。
+
 ## API
 
 すべて JSON を返します。`User-Agent` で人 / エージェントを判定し、有料エンドポイントはエージェントに HTTP 402 で x402 challenge を返します（ブラウザ UA には対応する HTML ページ or 200 を返す）。

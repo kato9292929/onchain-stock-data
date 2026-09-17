@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
+import { PER_CALL_PRICE } from "@/lib/x402";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,10 +73,8 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 }
 
 export const GET = withSolanaUsdcMicroPaywall(handler, {
-  // 1000 base units = 0.001 USDC (6 decimals) on Solana mainnet. Kept above the
-  // facilitator's gas-sponsorship floor so a dust payment isn't rejected (0.0001
-  // < sponsored SOL gas → facilitator refuses; 0.001 clears it).
-  units: "1000",
+  // Canonical per-call price (0.001 USDC on Solana mainnet); see PER_CALL_PRICE.
+  units: PER_CALL_PRICE.base_units,
   description:
     "Per-company catalyst + latest disclosed financials (research). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/catalyst/:ticker",

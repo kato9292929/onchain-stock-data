@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
+import { PER_CALL_PRICE } from "@/lib/x402";
 import {
   getCompanyFinancials,
   dumpReportElements,
@@ -91,7 +92,7 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 }
 
 export const GET = withSolanaUsdcMicroPaywall(handler, {
-  units: "1000",
+  units: PER_CALL_PRICE.base_units,
   description:
     "One company's latest EDINET financials — sales / operating income / net income (出典：金融庁 EDINET). Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/edinet/:code",
