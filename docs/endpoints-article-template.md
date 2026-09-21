@@ -50,6 +50,19 @@ Onchain Stock Data（OSD）の各エンドポイントを、note / ブログ / X
 - `/api/testnet/signal` は **テストネット**（Base Sepolia）。本番の実決済ではないので、記事で「本番で支払える」と書かない。
 - `/api/cron/*` は内部専用（`CRON_SECRET`）。有料エンドポイントは `X-Internal-Key` で課金スキップ可。
 
+### 機械可読な一覧（記事の裏取り用）
+
+`/.well-known/x402.json` が同じ内容を返します: 有料は `endpoints`（`/api/alpha/...` ＋ per-call 2 本）、無料は `free_endpoints`、MCP は `mcp`、テストネットは `testnet_endpoints`。**記事の価格・パスはここと突き合わせれば裏が取れます**。
+
+```bash
+curl -s https://osd.x402jp.com/.well-known/x402.json | jq '{
+  paid:    [.endpoints[]      | {path, amount: .accepts[0].amount}],
+  free:    [.free_endpoints[] | .path],
+  mcp:     .mcp.tools,
+  testnet: [.testnet_endpoints[] | {path, price}]
+}'
+```
+
 ---
 
 ## A. 記事まるごとの雛形（OSD 全体を紹介する回）

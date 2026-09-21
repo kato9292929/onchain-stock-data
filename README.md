@@ -104,6 +104,14 @@ POST /api/cron/update-performance       # 同上
 # /alpha/portfolio/history  /alpha/portfolio/[ticker]
 ```
 
+### Discovery (`/.well-known/x402.json`)
+
+directory crawler (x402scan / Pay.sh) 向けの機械可読な記述子。**有料リソースは `endpoints`**（`/api/alpha/...` 7 本＝$0.01 dual-leg ＋ per-call 2 本＝`PER_CALL_PRICE`・Solana のみ）、**無料は `free_endpoints`**、**MCP は `mcp`**、**テストネットのデモは `testnet_endpoints`** に分けて載せます。無料 / テストネットを `endpoints` に混ぜないのは、課金対象を走査するクローラが「支払えない項目」や「Sepolia の項目を本番」と誤解しないようにするためです。
+
+価格は `lib/x402.ts` の定数を参照しており、記述子側で直書きしません。`scripts/__tests__/discovery-descriptor.test.mjs` が、**記述子の全パスが実在するルートファイルに解決できること**・per-call が `PER_CALL_PRICE` の Solana 1 leg であること・削除済みエンドポイントを広告していないことを検証します（記述子がまたコードからズレたらテストが落ちます）。
+
+> 注意: 記述子の accept leg は **crawler 向けメタデータ**で、実際に AA が settle に使うのはエンドポイントを叩いて返る**本体 402** です（`feePayer` は本体 402 にのみ載る）。詳細は [docs/x402-solana-reference.md](docs/x402-solana-reference.md) §5。
+
 ### Sample response (200・free)
 
 無料の索引エンドポイント (`GET /api/catalyst`) の実測レスポンス（抜粋）。`paid_resource` が有料側の URL テンプレートを指し、`researched: true` の銘柄だけ有料詳細に中身があります。
