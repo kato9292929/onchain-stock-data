@@ -302,6 +302,12 @@ curl https://osd.x402jp.com/api/alpha/catalyst/ext_xxxxxxxx/score
 
 `/api/cron/update-portfolio`（週次）は実行時に `AA_EXTERNAL_DATA_URL`（AA の `/api/latest-external-data`）を fetch し、取得できれば Claude の選定プロンプトに「External alt data」context section として append します（Birdeye OHLCV サマリ + Perplexity ニュース/catalyst）。**10 秒タイムアウト・失敗時は external data 無しで選定続行**（graceful degradation）。詳細は [docs/alternadata-for-agents.md](docs/alternadata-for-agents.md)。
 
+### Facilitator の選定と障害時の振る舞い
+
+どの facilitator に verify/settle を委ねるかは**売り手であるこのリポジトリ**が決めます。配線・障害時の degrade・Circle facilitator を採用しなかった理由は [docs/facilitator-design.md](docs/facilitator-design.md) に記録しています。
+
+要点: facilitator が 1 つ落ちても、**verify 可能な leg だけに絞った 402 を返して売り続けます**（例: CDP 停止時は Solana 単 leg）。全滅時のみ `503 + Retry-After`（`payment_unavailable`）で、500 も無料の 200 も返しません。`lib/x402-route.ts` の `verifiableAccepts()` が該当ロジックで、`scripts/__tests__/facilitator-degradation.test.mjs` が実 SDK ＋ モック facilitator で固定しています。
+
 ### Solana payments（供給側 / Solana で叩かれる側）
 
 osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受け付けます**。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。Solana の検証/settle は**公式 `@payai/facilitator` パッケージ**（`https://facilitator.payai.network`）に委ねます。
