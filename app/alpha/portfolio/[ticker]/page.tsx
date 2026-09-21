@@ -74,7 +74,7 @@ export default async function PortfolioTickerPage({
 
       <p className="text-xs text-slate-400">
         本ポートフォリオは Claude による情報提供であり投資助言ではありません。
-        current price は osd の /api/stocks (tokens.xyz 経由) を参照しています。
+        current price は tokens.xyz を参照しています (キー未設定時は同梱サンプルにフォールバック)。
       </p>
     </div>
   );

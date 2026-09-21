@@ -7,24 +7,30 @@ It does not execute trades or provide personalised investment advice. Every
 published portfolio, catalyst, and score should be read together with its
 timestamp and recorded source data.
 
-Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を統合した API + Web ページ。
+Claude が選ぶ米株・日本株ポートフォリオと、日付つきカタリストの採点記録を配信する API + Web ページ。
 
-ブラウザからは無料の HTML ページ、エージェント (Claude / GPT / curl / Python requests 等) からは [x402](https://x402.org) で有料の JSON エンドポイントとして配信します。価格はエンドポイントにより `$0.01`（データ系）・`$0.05`（Perplexity ラッパー）・`$0.50`〜`$3.00`（Analyst / Predict の depth 別）。Claude Portfolio 系（`/api/alpha/...`）は**無料公開**です。
+人はブラウザで **HTML ページを無料**で読み、AI エージェントは **MCP（無料・読み取り専用）** か **[x402](https://x402.org) の有料 JSON エンドポイント**で同じ研究データを取れます。有料は 3 レーン: Claude Portfolio / Catalyst 系 `/api/alpha/...` が **$0.01**（Base + Solana dual-leg）、per-call の `/api/catalyst/{ticker}`・`/api/edinet/{code}` が **0.001 USDC**（Solana のみ・`lib/x402.ts` の `PER_CALL_PRICE`）、`/api/testnet/signal` が **$0.05**（Base Sepolia・テストネットのデモ）。**`/api/alpha/...` は無料ではありません**（無料なのは HTML ページと MCP、および下記の無料 JSON 3 本）。
 
-- Live site: https://osd-coral.vercel.app
+- Live site (canonical): https://osd.x402jp.com — x402 の `resource` URL が名乗るホスト (`X402_PUBLIC_BASE_URL`)
+- Vercel デプロイ別名: https://osd-coral.vercel.app
 - Repo: https://github.com/kato9292929/onchain-stock-data
+
+> **公開 API のスコープ**: `/api/stocks`・`/api/ipo`・`/api/liquidity`・`/api/holders`・`/api/analyst`・`/api/predict`・`/api/alpha-posts`・`/api/wrappers/*` と、ページ `/stocks`・`/ipo`・`/liquidity`・`/holders`・`/analyst` は commit `1ac413d` (*feat(scope): trim public API to Portfolio + Catalysts only*) で**削除済み**です（現在 404）。`lib/analyst/`・`lib/predict.ts`・`lib/wrappers.ts` と `app/components/portfolio-pnl.tsx` はコードとしては残っていますが、**どの公開ルート／ページからも呼ばれていません**（`lib/tokensXyz.ts` は現役 — 下記 Data sources 参照）。
 
 ## Features
 
-| Path         | 内容                                                                 |
-|--------------|----------------------------------------------------------------------|
-| `/stocks`    | xStocks 60+ — mint address, 現在価格, 24h vol, venues, 上場株財務 |
-| `/ipo`       | Backpack IPOs Onchain (Superstate × Solana) waitlist                 |
-| `/liquidity` | tokens.xyz 集約 DEX プール (Jupiter / Raydium / Orca / Meteora) の TVL と公式価格 vs DEX 価格乖離 |
-| `/holders`   | Helius RPC 由来の保有者数・上位ホルダー・集中度スコア                |
-| `/alpha`     | オーナーが手動キュレーションした X 投稿の埋め込み                    |
-| `/analyst`   | エージェント向け有料 IC memo (上記 5 API を並列で叩いて Claude で統合) |
-| `/portfolio` · `/portfolio/jp` | Claude が毎週選ぶ米株・日本株 各 10 銘柄。ページはブラウザ無料 (Allocation・$10k P&L vs SPY/QQQ・履歴)。JSON API は x402 有料 |
+| Path | 内容 | 課金 |
+|------|------|------|
+| `/portfolio` | Claude が毎週選ぶ米株 10 銘柄。Allocation・thesis・1か月カタリスト | 無料 (HTML) |
+| `/portfolio/jp` | Claude が毎週選ぶ日本株 10 銘柄。Allocation・catalyst hit-rate・thesis | 無料 (HTML) |
+| `/alpha/portfolio/history` | portfolio 履歴 + SPY/QQQ 比較チャート（**日次更新は停止中・データは凍結**） | 無料 (HTML) |
+| `/alpha/portfolio/[ticker]` | 銘柄詳細 (Claude full thesis・entry/current price) | 無料 (HTML) |
+| `/catalysts` · `/catalysts/[sector]` | Physical AI シリーズの日付つきカタリストと採点記録 | 無料 (HTML) |
+| `/api/mcp` | MCP サーバ (`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`) | 無料・署名不要 |
+| `/api/alpha/...` | 上記ページの JSON 版 + 外部 catalyst の投稿/判定 | **x402 有料 $0.01** |
+| `/api/catalyst/{ticker}` · `/api/edinet/{code}` | 個別銘柄のカタリスト詳細 / EDINET 開示メタ | **x402 有料 0.001 USDC** |
+
+`/alpha`・`/alpha/portfolio`・`/alpha/jp` は `/portfolio` へリダイレクトします (`next.config.ts`)。
 
 ## MCP server (`/api/mcp`)
 
@@ -55,70 +61,63 @@ osd の公開済みリサーチを **MCP ツール**として開放していま�
 
 ## API
 
-すべて JSON を返します。`User-Agent` で人 / エージェントを判定し、有料エンドポイントはエージェントに HTTP 402 で x402 challenge を返します（ブラウザ UA には対応する HTML ページ or 200 を返す）。
+すべて JSON を返します。有料エンドポイントは未署名リクエストに HTTP 402 の x402 challenge を返します。
 
 **課金・決済レーンの区分:**
 
-- **有料 (Base USDC + Solana USDC の dual-leg)** — 402 に両チェーンの leg を提示し、caller が払ったチェーンを検証。株データ系＋ Claude Portfolio / Catalyst の JSON API。
-- **有料 (Solana USDC のみ)** — `/api/ipo`・`/api/holders`・`/api/liquidity`。402 は Solana leg のみ。
-- **無料** — 各 **HTML ページ**（`/portfolio`・`/portfolio/jp` などブラウザ表示）は無料。**JSON API はすべて上記いずれかの課金対象**（Claude Portfolio / Catalyst 系 `/api/alpha/...` も x402 有料）。
+- **無料 (署名不要)** — `/api/mcp` の 4 ツールと、`/api/alpha/catalysts/physical-ai`・`/api/catalyst`・`/api/edinet` の 3 本。各 **HTML ページ**も無料。
+- **有料 $0.01 (Base USDC + Solana USDC の dual-leg)** — Claude Portfolio / Catalyst 系の JSON API (`/api/alpha/...`)。402 に両チェーンの leg を提示し、caller が払ったチェーンを検証。
+- **有料 0.001 USDC (Solana USDC のみ・`exact`)** — per-call の `/api/catalyst/{ticker}`・`/api/edinet/{code}`。価格は `lib/x402.ts` の `PER_CALL_PRICE` に一元化（ルート/descriptor はこの定数を参照し、値を直書きしない）。
+- **有料 $0.05 (Base Sepolia USDC・テストネット)** — `/api/testnet/signal`。MCP の `signal_get` の有料双子で、**本番の実決済ではありません**。
 - **内部専用** — `/api/cron/*`（`CRON_SECRET`）。有料エンドポイントは `X-Internal-Key` で課金スキップ可。
 
 ```text
-# ── 有料: Base + Solana dual-leg ──
-GET  /api/stocks                        # 全銘柄 ($0.01)
-GET  /api/stocks?tokenized=true         # tokenized のみ
-GET  /api/stocks/:ticker                # NVDA / TSLA / AAPL 等 ($0.01)
-GET  /api/alpha-posts                   # Alpha Signals (オーナーキュレーション) ($0.01)
-POST /api/analyst                       # Claude が IC memo を生成 (depth 別 $0.50/$1.50/$3.00)
-POST /api/predict                       # Claude 銘柄予測 buy/hold/sell (depth 別 $0.50/$1.50/$3.00)
-POST /api/wrappers/birdeye-ohlcv        # Birdeye OHLCV の x402 ラッパー ($0.01)
-POST /api/wrappers/perplexity-research  # Perplexity research の x402 ラッパー ($0.05)
+# ── 無料 (署名不要) ──
+GET  /api/alpha/catalysts/physical-ai   # Physical AI カタリスト scoreboard (hit-rate + 記事別内訳)
+GET  /api/catalyst                      # カタリスト対象企業の索引 (ticker/社名/セクター/researched)
+GET  /api/edinet                        # EDINET 有料エンドポイントの仕様・価格 descriptor
+     /api/mcp                           # MCP (Streamable HTTP): portfolio_get / catalysts_list
+                                        #                        scoreboard_get / signal_get
 
-# ── 有料: Solana USDC のみ ──
-GET  /api/ipo                           # Backpack IPOs Onchain calendar ($0.01)
-GET  /api/liquidity                     # DEX プール + 乖離率 (overview) ($0.01)
-GET  /api/liquidity?ticker=NVDA         # 単一銘柄の流動性ランク済みプール
-GET  /api/holders                       # 保有者マップ + 集中度 ($0.01)
+# ── 有料 $0.01: Base + Solana dual-leg ──
+GET  /api/alpha/portfolio/current       # 現在の Claude US Portfolio (10 銘柄・JSON)
+GET  /api/alpha/portfolio/scorecard     # US catalyst hit-rate + SPY/QQQ 累積比較
+GET  /api/alpha/jp/portfolio/current    # 現在の Claude JP Portfolio (日本株・JSON)
+GET  /api/alpha/jp/scorecard            # JP catalyst hit-rate (ベンチ指数なし)
+GET  /api/alpha/jp/catalysts            # JP dated catalysts 一覧 (legacy 互換面)
+POST /api/alpha/catalyst/submit         # 外部 catalyst を投稿 (Phase A)
+GET  /api/alpha/catalyst/:id/score      # 投稿 catalyst の判定結果
 
-# ── 有料: Claude Portfolio / Catalyst (Base + Solana dual-leg) ──
-# ※ HTML ページ (/portfolio, /portfolio/jp) は無料。以下の JSON API のみ有料。
-GET  /api/alpha/portfolio/current       # 現在の Claude US Portfolio (10 銘柄・JSON) ($0.01)
-GET  /api/alpha/portfolio/scorecard     # US catalyst hit-rate + SPY/QQQ 累積比較 ($0.01)
-GET  /api/alpha/jp/portfolio/current    # 現在の Claude JP Portfolio (日本株・JSON) ($0.01)
-GET  /api/alpha/jp/scorecard            # JP catalyst hit-rate (ベンチ指数なし) ($0.01)
-GET  /api/alpha/jp/catalysts            # JP dated catalysts 一覧 ($0.01)
-POST /api/alpha/catalyst/submit         # 外部 catalyst を投稿 (Phase A) ($0.01)
-GET  /api/alpha/catalyst/:id/score      # 投稿 catalyst の判定結果 ($0.01)
+# ── 有料 0.001 USDC: Solana USDC のみ (PER_CALL_PRICE) ──
+GET  /api/catalyst/:ticker              # 個別銘柄のカタリスト + 開示済み財務
+GET  /api/edinet/:code                  # EDINET 直近開示メタ + 会計期間 (財務数値は現状 null)
+
+# ── 有料 $0.05: Base Sepolia (テストネット・デモ) ──
+GET  /api/testnet/signal                # signal_get の有料双子
+
+# ── 内部専用 ──
+POST /api/cron/update-portfolio         # CRON_SECRET / INTERNAL_API_KEY
+POST /api/cron/update-performance       # 同上
 
 # ── 無料 (HTML ページ・x402 なし) ──
-# /portfolio /portfolio/jp /stocks /ipo /liquidity /holders /analyst /alpha
-# — ブラウザ表示は無料。JSON API は上記の課金対象。
+# /  /portfolio  /portfolio/jp  /catalysts  /catalysts/[sector]
+# /alpha/portfolio/history  /alpha/portfolio/[ticker]
 ```
 
-### Sample response (200・browser)
+### Sample response (200・free)
 
-全レスポンスに `source` と `updated_at` が付きます。`source` はデータ由来を示し、`"sample-data"` は同梱 `data/*.json` フォールバック（API キー未設定時）、それ以外は tokens.xyz / Helius など**ライブ取得元の名前**です。呼び出し側はこれでライブか同梱サンプルかを判別できます（本番でキー未設定のエンドポイントは `"sample-data"` を返します）。
+無料の索引エンドポイント (`GET /api/catalyst`) の実測レスポンス（抜粋）。`paid_resource` が有料側の URL テンプレートを指し、`researched: true` の銘柄だけ有料詳細に中身があります。
 
 ```json
 {
-  "source": "sample-data",
-  "updated_at": "2026-05-23T19:00:00Z",
-  "stocks": [
-    {
-      "underlying_ticker": "NVDA",
-      "company_name": "NVIDIA Corporation",
-      "price_usd": 142.36,
-      "tokenized_versions": [
-        {
-          "token_symbol": "NVDAx",
-          "chain": "Solana",
-          "mint_address": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
-          "current_price_usd": 142.18,
-          "venues": ["Kraken", "Bybit", "Jupiter", "Raydium", "Phantom"]
-        }
-      ]
-    }
+  "source": "onchain-stock-data · catalyst index",
+  "note": "Free preview. Per-company catalyst + financials is a paid x402 call at /api/catalyst/{ticker}.",
+  "paid_resource": "https://osd.x402jp.com/api/catalyst/{ticker}",
+  "count": 197,
+  "researched": 13,
+  "companies": [
+    { "ticker": "2760", "name": "東京エレクトロン デバイス", "sector": "卸売業", "researched": true },
+    { "ticker": "2802", "name": "味の素", "sector": "食料品", "researched": true }
   ]
 }
 ```
@@ -128,34 +127,34 @@ GET  /api/alpha/catalyst/:id/score      # 投稿 catalyst の判定結果 ($0.01
 実際の 402 は **x402 v2 のヘッダ transport** です。支払い要件はレスポンスボディではなく **`PAYMENT-REQUIRED` ヘッダ (base64(JSON))** に載り、**ボディは空 `{}`**（v2 仕様。空ボディはエラーではありません）。
 
 ```bash
-$ curl -sD - https://osd-coral.vercel.app/api/ipo -o /dev/null
+$ curl -sD - https://osd.x402jp.com/api/catalyst/7203 -o /dev/null
 HTTP/2 402
 access-control-expose-headers: PAYMENT-REQUIRED, PAYMENT-RESPONSE, ...
 payment-required: eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiOiJQYXltZW50IHJlcXVpcmVkIiwi...   # base64(JSON)
 content-type: application/json
 ```
 
-`payment-required` を base64 デコードした中身（`/api/ipo` = Solana-only の実測例）:
+`payment-required` をデコードした中身（`/api/catalyst/:ticker` = Solana-only。下記は `lib/x402.ts` の定数から組み立てた構造例で、実測値の確認は本番で行ってください）:
 
 ```json
 {
   "x402Version": 2,
   "error": "Payment required",
   "resource": {
-    "url": "https://osd-coral.vercel.app/api/ipo",
-    "description": "Backpack IPOs Onchain calendar (Superstate × Solana).",
+    "url": "https://osd.x402jp.com/api/catalyst/:ticker",
+    "description": "Per-company catalyst + latest disclosed financials (research). Settled per call in USDC on Solana (exact-svm).",
     "mimeType": ""
   },
   "accepts": [
     {
       "scheme": "exact",
       "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-      "amount": "10000",
+      "amount": "1000",
       "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       "payTo": "4s8XQC2WzRfgH8Xiep7ybnCW11VKRCMwxQF6jknx3VPf",
       "maxTimeoutSeconds": 300,
       "extra": {
-        "resource": "https://osd-coral.vercel.app/api/ipo",
+        "resource": "https://osd.x402jp.com/api/catalyst/:ticker",
         "feePayer": "<PayAI facilitator が /supported で配る値・毎回ローテート>"
       }
     }
@@ -163,10 +162,11 @@ content-type: application/json
 }
 ```
 
-- `/api/ipo`・`/api/holders`・`/api/liquidity` は **Solana USDC のみ**（上記の 1 leg）。
-- `/api/stocks`・`/api/analyst` 等の dual-leg endpoint は、これに **Base (`eip155:8453`) USDC の leg** が加わった 2 leg を返します。
-- 金額は atomic 文字列（USDC 6 桁。`"10000"` = $0.01）。`amount` が v2 の金額フィールド。
+- `/api/catalyst/:ticker`・`/api/edinet/:code` は **Solana USDC のみ**（上記の 1 leg・`amount` は `PER_CALL_PRICE.base_units` = `"1000"`）。起動時に `assertSolanaExactUsdc` が network / mint / 金額を検証し、ドリフトしていれば **fail closed**（500）になります。
+- `/api/alpha/...` の dual-leg endpoint は、これに **Base (`eip155:8453`) USDC の leg** が加わった 2 leg を返します（`amount` は `"10000"` = $0.01）。
+- 金額は atomic 文字列（USDC 6 桁。`"1000"` = 0.001 USDC、`"10000"` = $0.01）。`amount` が v2 の金額フィールド。
 - `extra.feePayer` は Solana のスポンサー送金用に PayAI facilitator が `/supported` 経由でリクエスト毎に注入します（ローテートするため固定値ではない）。
+- **ハンドラが 4xx を返すと決済はキャンセル**されます（`@x402/next` の `handleSettlement` が `status >= 400` で `cancel()`）。存在しない ticker / catalyst_id の空振りには課金されません。
 
 > 決済が成立すると 200 レスポンスに `PAYMENT-RESPONSE` ヘッダ (base64(JSON)) が付き、Solana の場合は `transaction`（base58 tx 署名）が入ります。solscan で `payTo` への USDC 着金を確認できます。
 
@@ -175,165 +175,90 @@ x402 client 側からは `x402-fetch` でハンドリングできます:
 ```ts
 import { wrapFetchWithPayment } from "x402-fetch";
 const fetchWithPay = wrapFetchWithPayment(fetch, wallet);
-const res = await fetchWithPay("https://onchain-stock-data.vercel.app/api/stocks");
+const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 ```
 
 ## Data sources
 
-Solana 上のトークン化株式の解決と流動性ランクは **tokens.xyz Assets API** に集約しています。上場株財務は `yfinance`、IPO は Backpack、holders は Helius のまま。
+配信しているのは **自前のリサーチ成果**（Claude の選定・カタリスト採点）と、**一次開示のメタデータ**です。市場データの「配信」（価格・板・出来高の API）は現行スコープ外で、価格はページ表示の補助として参照しているだけです。
 
-`TOKENS_XYZ_API_KEY` を設定すると `/api/stocks`・`/api/stocks/:ticker`・`/api/liquidity` は tokens.xyz をライブソースとして使い、未設定時は同梱の `data/*.json` サンプルにフォールバックします。
+| データ | 中身 | 由来 |
+|--------|------|------|
+| Claude Portfolio (US / JP) | 週次の 10 銘柄選定・thesis・入替履歴 | `lib/jobs.ts` が Claude を呼び、`data/portfolio-history.json`・`data/jp-portfolio-history.json` に commit |
+| Performance（**更新停止中**） | SPY/QQQ vs portfolio index の日次系列 | `data/performance-history.json`。`update-performance` workflow は **schedule 無効化済み**（本製品は予測記録を出すのが目的で、リターン追跡はしない）。`/alpha/portfolio/history` は凍結済みデータを表示します。 |
+| Catalyst 採点 (Physical AI シリーズ) | 日付つきカタリストと hit/partial/miss/na 判定 | `data/external-catalysts.json`（`evaluate-catalysts` workflow が Claude + web search で判定し commit） |
+| IR Fair カタリスト | 企業別カタリスト + 開示済み財務 (JPY 百万) | `data/ir-fair-2026-catalysts.json` |
+| EDINET | 直近の提出書類メタ + 会計期間 | EDINET API v2 (`documents.json` type=2 + 書類取得 type=5 CSV)・週次キャッシュ |
+| Signals | 事前生成の方向性シグナル | `data/signals.json`（`lib/signals.ts`。呼び出し時のモデル実行なし） |
+| 株価・xStock variant | `/portfolio` の xStock 判定と `/alpha/portfolio/[ticker]` の current price | tokens.xyz Assets API（`lib/tokensXyz.ts` 経由・`TOKENS_XYZ_API_KEY`）。未設定なら `data/stocks.json` にフォールバック。 |
+| External alt data (任意) | AA の `/api/latest-external-data` | `AA_EXTERNAL_DATA_URL`。週次 portfolio cron が best-effort で取得（10 秒タイムアウト・失敗時はスキップ） |
 
-- **Tokens API (tokens.xyz)** — Solana Foundation 管理の統一資産レジストリ (`api.tokens.xyz/v1`)。xStock + Ondo + PreStocks の全 variant を canonical な `assetId` に解決し、流動性ランク済みの markets (Jupiter / Raydium / Orca / Meteora を集約) を返す。**xStocks レジストリ解決・価格・出来高・DEX プール / 流動性は tokens.xyz が一次ソース**。
-  - `/v1/assets/curated?list=stocks` → `/api/stocks`
-  - `/v1/assets/resolve?ref=<ticker>` (+ `/variants`) → `/api/stocks/:ticker`
-  - `/v1/assets/:assetId/markets?mint=<variant mint>` → `/api/liquidity?ticker=<sym>`
-- **上場株財務** — `yfinance` (Python) または各取引所公式 API (tokens.xyz では取得不可・範囲外)
-- **Backpack IPOs Onchain** — https://backpack.exchange/ipo-access (`/api/ipo`)
-- **保有者マップ** — Helius RPC (`getTokenLargestAccounts`, `getProgramAccounts`) (`/api/holders`)
-- **Alpha posts** — `data/alpha-posts.json` をオーナーが手動編集 (`/api/alpha-posts`)
+> **EDINET の財務数値は現在サーブしていません。** 抽出の信頼性確保のため一時停止中で、`sales` / `operating_income` / `net_income` は `null`・`financials_available:false` を返します（推測値を返すことはしません）。
+>
+> `data/liquidity.json`・`data/holders.json`・`data/ipo.json`・`data/alpha-posts.json`・`data/sample-analyst-output.json` は削除済みエンドポイント時代の残置ファイルで、**現行の公開ルート／ページからは読まれていません**。`data/stocks.json` だけは `TOKENS_XYZ_API_KEY` 未設定時のフォールバックとして現役です。
 
-> 旧構成の Birdeye (`public-api.birdeye.so`) / Jupiter price API (`lite-api.jup.ag`) / Raydium / Orca / Meteora の個別呼び出しと手動管理の `data/stocks.json` は tokens.xyz に置き換え済みです (`data/stocks.json` と `data/liquidity.json` は `TOKENS_XYZ_API_KEY` 未設定時の backward fallback としてのみ残置)。
+## 環境変数
 
-## Analyst (`POST /api/analyst`)
-
-エージェント向け有料エンドポイント。リクエスト時に上記 5 API を並列で叩き、Claude (Anthropic) で構造化された IC memo に統合して返します。
-
-### Request
-
-```bash
-POST /api/analyst
-Content-Type: application/json
-
-{
-  "ticker": "SPCX",      // 必須
-  "depth":  "standard"   // 任意 — quick | standard | deep (default: standard)
-}
-```
-
-### Pricing & depth
-
-| depth      | sources                                                | time      | price (USDC) |
-|------------|--------------------------------------------------------|-----------|--------------|
-| `quick`    | 5 internal endpoints                                   | 3-5 min   | **$0.50**    |
-| `standard` | + SEC EDGAR filings (recent)                           | 10-15 min | **$1.50**    |
-| `deep`     | + earnings call transcript + comparable financials     | 20-30 min | **$3.00**    |
-
-決済は Base USDC または Solana USDC を [x402](https://x402.org) で受領。
-
-> **Facilitator 構成**: 有料 endpoint は 2 つの facilitator を併用します。**Base (eip155:8453)** は従来どおり CDP (`@coinbase/x402`)、**Solana (solana:*)** は PayAI (`@payai/facilitator`・`https://facilitator.payai.network`) で検証/settle します。`x402ResourceServer` に CDP を先頭にした配列で渡し、SDK が `getSupported()` のマップでネットワークごとに自動振り分け。PayAI 無料 tier はキー不要、本番拡張時のみ `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` を設定します。PayAI client の構築に失敗しても CDP 単独 (Base のみ) に degrade し、Base 経路は不変です。
-
-### Auth modes
-
-| Caller                                       | Behavior |
-|----------------------------------------------|----------|
-| Browser (Mozilla / Safari / Chrome UA)       | `GET /analyst` ページ (HTML) を返す。`POST /api/analyst` は HTML を返さず、後述の挙動。 |
-| Agent (`curl`, Claude, GPT, Python requests) | HTTP 402 x402 challenge を返す。x402 payment 完了後にレポート生成。 |
-| Internal (`X-Internal-Key: $INTERNAL_API_KEY`) | 課金スキップ・HTTP 200 で直接レポート生成。自社 backend や AA から使う想定。 |
-
-### Sample call
-
-```bash
-# Internal (free, AA / self-hosted)
-curl -X POST https://onchain-stock-data.vercel.app/api/analyst \
-  -H "Content-Type: application/json" \
-  -H "X-Internal-Key: $INTERNAL_API_KEY" \
-  -d '{"ticker": "SPCX", "depth": "standard"}'
-
-# Agent (x402-charged)
-curl -X POST https://onchain-stock-data.vercel.app/api/analyst \
-  -H "Content-Type: application/json" \
-  -d '{"ticker": "SPCX", "depth": "standard"}'
-# → HTTP 402, body includes Base USDC + Solana USDC accept options
-```
-
-`data/sample-analyst-output.json` に SPCX standard のサンプル出力を同梱しています (このリポジトリの初期版はハンドクラフト — 実 Claude 生成版に置き換えるには `ANTHROPIC_API_KEY` を設定したデプロイ環境で上記 curl を実行)。
-
-### 位置付け (vs agentic.market)
-
-- `agentic.market` は米国上場株中心の AI 投資分析エージェント。
-- 本 Analyst は **APAC + Solana onchain (xStocks) + Backpack IPOs Onchain** にデータ起点を持つことで補完関係。
-- 共通スキーマで IC memo を出すため、agentic と組み合わせて多面評価できます。
-
-### 環境変数
-
-| Var                 | 必須 | 用途 |
-|---------------------|------|------|
-| `TOKENS_XYZ_API_KEY`| yes* | tokens.xyz Assets API 認証 (`/api/stocks`・`/api/stocks/:ticker`・`/api/liquidity`)。未設定時は `data/*.json` にフォールバック。 |
-| `ANTHROPIC_API_KEY` | yes  | Claude API 呼び出し (`POST /api/analyst`・`POST /api/predict`・週次 portfolio cron) |
-| `INTERNAL_API_KEY`  | opt  | 内部認証 (`X-Internal-Key` ヘッダ)。未設定なら内部認証ルートは無効。 |
-| `CRON_SECRET`       | opt  | Vercel Cron 認証 (`Authorization: Bearer <CRON_SECRET>`)。`/api/cron/*` で使用。 |
-| `SMART_MONEY_URL`   | opt  | `/api/predict` depth=deep が叩く Nansen Smart Money screener。 |
-| `BENCHMARK_PROVIDER`| opt  | 日次 performance cron の SPY/QQQ 取得元 (既定 `yahoo`)。 |
-
-\* 本番では必須。Vercel の Project Settings → Environment Variables に `TOKENS_XYZ_API_KEY` を投入してください (`tok_...` 形式・リポジトリには直書きしない)。
+| Var | 必須 | 用途 |
+|-----|------|------|
+| `ANTHROPIC_API_KEY` | yes | Claude API 呼び出し（週次 portfolio 選定 cron・catalyst 採点 workflow） |
+| `TOKENS_XYZ_API_KEY` | opt | tokens.xyz Assets API。`/portfolio` の xStock 判定と `/alpha/portfolio/[ticker]` の current price に使用。未設定なら `data/stocks.json` にフォールバック。 |
+| `INTERNAL_API_KEY` | opt | 内部認証 (`X-Internal-Key` ヘッダ)。有料エンドポイントの課金スキップ。未設定なら無効。 |
+| `CRON_SECRET` | opt | `/api/cron/*` の認証 (`Authorization: Bearer <CRON_SECRET>`)。 |
+| `BENCHMARK_PROVIDER` | opt | performance job の SPY/QQQ 取得元（既定 `yahoo`）。**同 job の schedule は無効化済み**で、手動実行時のみ使用。 |
+| `AA_EXTERNAL_DATA_URL` | opt | 週次 portfolio cron が取り込む AA の external alt data。未設定ならスキップ。 |
+| `X402_PUBLIC_BASE_URL` | opt | x402 の `resource` URL に使う正規オリジン（既定 `https://osd.x402jp.com`）。 |
+| `SOLANA_RECEIVE_ADDRESS` | opt | Solana USDC の受取アドレス（402 の `payTo`）。未設定なら `WALLET_ADDRESS_SOLANA` → 既定値。 |
+| `WALLET_ADDRESS_BASE` | opt | Base USDC の受取アドレス。 |
+| `CDP_API_KEY_ID` / `CDP_API_KEY_SECRET` | opt | Base (EVM) の facilitator 認証。未設定なら `FACILITATOR_URL` → 匿名 CDP の順。 |
+| `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` | opt | Solana の PayAI facilitator（無料 tier はキー不要）。 |
+| `X402_TESTNET_SIGNAL_PRICE` | opt | `/api/testnet/signal` の価格（既定 `$0.05`）。 |
+| `X402_TESTNET_PAY_TO` / `X402_TESTNET_FACILITATOR_URL` | opt | テストネット (Base Sepolia) の受取先・facilitator。 |
+| `X402_SOLANA_NETWORK` / `SOLANA_USDC_MINT` | opt | devnet プレビュー用の上書き。本番は mainnet 既定のまま。 |
 
 `.env.example` を参照。Vercel デプロイ時は Project Settings → Environment Variables から投入してください。
-
-## Predict (`POST /api/predict`)
-
-複数銘柄の buy / hold / sell 予測を Claude が返す有料エンドポイント。osd 内部のデータソース (`/api/stocks` の価格・出来高、`/api/liquidity` の DEX 流動性、cross-market context、deep では Nansen Smart Money) を **1 回の Claude synthesis** に渡します (循環呼び出しや N+1 の Claude 呼び出しは避け、`lib/*` を直接利用)。
-
-```bash
-POST /api/predict
-Content-Type: application/json
-
-{
-  "tickers": ["NVDA", "TSLA", "AAPL"],   // 必須
-  "horizon": "1m",                         // 1w | 1m | 3m
-  "depth":   "standard"                    // quick | standard | deep
-}
-```
-
-| depth      | 価格 (USDC) | 上限 ticker 数 | 追加データ |
-|------------|-------------|----------------|------------|
-| `quick`    | **$0.50**   | 5              | 価格・24h 出来高 |
-| `standard` | **$1.50**   | 10             | + DEX 流動性 + cross-market |
-| `deep`     | **$3.00**   | 10             | + Nansen Smart Money (`SMART_MONEY_URL`) |
-
-レスポンスは各 ticker の `predict` (buy/hold/sell)・`confidence` (low/medium/high)・`reasoning`・`data_summary`・`current/target price`。x402 は既存と同じ Base + Solana の 2 leg・depth 別課金 (`/api/analyst` と同パターン)。内部呼び出しは `X-Internal-Key` で課金スキップ。
 
 ## Claude Portfolio (`/portfolio`)
 
 毎週月曜朝 6 時 (JST) に Claude が選ぶ米株・日本株の各 10 銘柄。**HTML ページはブラウザ無料公開**、**JSON API (`/api/alpha/...`) はエージェント向けに x402 有料 ($0.01・Base + Solana)** (旧 claudestock.vercel.app を osd に統合)。
 
-- `/portfolio` — 米国株: Allocation Breakdown ＋ $10,000 投資の P&L (vs SPY/QQQ・Profit History チャート) ＋ 10 銘柄/thesis
+- `/portfolio` — 米国株: Allocation Breakdown ＋ 10 銘柄/thesis ＋ 各銘柄の検証可能な 1 か月カタリスト。**ファンドではなく選定記録**なので、P&L / ベンチマーク追跡は載せません。
 - `/portfolio/jp` — 日本株: Allocation Breakdown ＋ catalyst hit-rate ＋ 10 銘柄/thesis (ベンチ指数なし)
-- `/alpha/portfolio/history` — 過去の portfolio 履歴 + SPY/QQQ 比較チャート
+- `/alpha/portfolio/history` — 過去の portfolio 履歴 + SPY/QQQ 比較チャート（recharts）。**日次の performance 更新は停止済みで、チャートは凍結データ**です。
 - `/alpha/portfolio/[ticker]` — 銘柄詳細 (Claude full thesis・entry/current price)
 - `GET /api/alpha/portfolio/current` — 同じ選定を JSON で (x402 有料 $0.01・agent / 外部 tool 用)
 
-P&L は `performance-history.json` の `portfolio_index`（保有終値から日次連鎖・base_date 起点 100 リベース）に $10,000 を当てた参考値。`/alpha/portfolio/history` には recharts による比較チャートと週次の銘柄入替タイムラインを表示します。
-
 ### 永続化は GitHub Actions (Vercel Cron ではない)
 
-データは `data/portfolio-history.json` (週次) と `data/performance-history.json` (日次) に保存し、**git commit して履歴を残します** (透明性)。**Vercel の FS は read-only/ephemeral で書き込みが残らない**ため、定期実行は **GitHub Actions** が唯一の正です (各 commit が Vercel 再デプロイをトリガし最新が反映)。`vercel.json` の cron 定義は撤去済み。
+データは `data/portfolio-history.json`・`data/jp-portfolio-history.json`（週次）と `data/external-catalysts.json`（カタリスト判定）に保存し、**git commit して履歴を残します** (透明性)。**Vercel の FS は read-only/ephemeral で書き込みが残らない**ため、定期実行は **GitHub Actions** が唯一の正です (各 commit が Vercel 再デプロイをトリガし最新が反映)。`vercel.json` の cron 定義は撤去済み。
 
 | workflow | schedule (UTC) | JST | 処理 |
 |----------|----------------|-----|------|
-| `.github/workflows/update-portfolio.yml` | `0 21 * * 0` | 月 06:00 | `npm run update:portfolio` → 10 銘柄選定 → `portfolio-history.json` を commit/push |
-| `.github/workflows/update-performance.yml` | `30 21 * * *` | 翌 06:30 | `npm run update:performance` → SPY/QQQ 記録 → `performance-history.json` を commit/push |
+| `update-portfolio.yml` | `0 21 * * 0` | 月 06:00 | `npm run update:portfolio` → 米株 10 銘柄選定 → `portfolio-history.json` を commit/push |
+| `update-jp-portfolio.yml` | `15 21 * * 0` | 月 06:15 | `npm run update:jp-portfolio` → 日本株 10 銘柄選定 → `jp-portfolio-history.json` を commit/push |
+| `evaluate-catalysts.yml` | `0 22 * * 0` | 月 07:00 | `npm run evaluate:catalysts` → 期日を過ぎた catalyst を Claude (web search) が hit/partial/miss/na 判定 → commit/push（`EVALUATE_MAX_PER_RUN` でバックログを分割消化） |
+| `update-performance.yml` | **無効**（`schedule:` はコメントアウト） | — | `workflow_dispatch` のみ残置。リターン追跡をやめたため日次更新は停止。 |
+| `x402-weekly-buyer.yml` · `x402-edinet-sweep.yml` | **無効**（コスト action） | — | mainnet の実 USDC を使う AA buyer。**スケジュールは意図的に無効**。有効化には wallet 資金・spend cap・devnet smoke・実測 1 回・オーナー承認が順に必要（`AGENTS.md` のコストガバナンス）。 |
 
-各 workflow は `npm ci` 後に `tsx scripts/update-*.ts` を実行し、`lib/jobs.ts` の生成関数を**直接**呼びます (`/api/predict` を HTTP で叩かない = 循環・二重課金なし)。手動実行は GitHub の Actions タブから `workflow_dispatch`。両 workflow は同一 `concurrency` group で push 競合を回避。
+各 workflow は `npm ci` 後に `tsx scripts/update-*.ts` 等を実行し、`lib/jobs.ts` の生成関数を**直接**呼びます (HTTP 経由で自分の API を叩かない = 循環・二重課金なし)。commit 先は `${GITHUB_REF_NAME}`（= 実行中のブランチ。本番は `main`）。手動実行は GitHub の Actions タブから `workflow_dispatch`。portfolio 系の workflow は同一 `concurrency` group で push 競合を回避。
 
 **必要な GitHub Actions secrets:**
 
 | secret | 必須 | 用途 |
 |--------|------|------|
-| `ANTHROPIC_API_KEY` | yes | 週次の銘柄選定 (update-portfolio) |
-| `TOKENS_XYZ_API_KEY` | opt | current price 参照 (未設定なら `data/stocks.json` フォールバック) |
-| `BENCHMARK_PROVIDER` | opt | SPY/QQQ 取得元 (既定 `yahoo`) |
+| `ANTHROPIC_API_KEY` | yes | 週次の銘柄選定 (update-portfolio / update-jp-portfolio) と catalyst 判定 (evaluate-catalysts) |
+| `BENCHMARK_PROVIDER` | opt | SPY/QQQ 取得元 (既定 `yahoo`)。`update-performance` を手動実行する場合のみ。 |
 
-`/api/cron/update-portfolio` と `/api/cron/update-performance` は手動トリガ用に残置 (`CRON_SECRET` / `INTERNAL_API_KEY` 認証) ですが、Vercel 上では書き込みが残らないため永続化は GitHub Actions 側で行います。`/api/predict` は有料 endpoint として従来どおり。
+`/api/cron/update-portfolio` と `/api/cron/update-performance` は手動トリガ用に残置 (`CRON_SECRET` / `INTERNAL_API_KEY` 認証) ですが、Vercel 上では書き込みが残らないため永続化は GitHub Actions 側で行います。
 
 ## External Catalyst Scoring (Phase A)
 
-AI エージェントや開発者が **catalyst（株価材料）を投げ込み、後日 Claude が hit/partial/miss/na を判定**する無料 endpoint です。内部 Claude Portfolio の catalyst 採点パイプライン (`evaluate-catalysts`) を外部開放したもので、[AlternaData for agents](docs/alternadata-for-agents.md) 構想の Phase A にあたります。
+AI エージェントや開発者が **catalyst（株価材料）を投げ込み、後日 Claude が hit/partial/miss/na を判定**する x402 有料 endpoint です（投稿・判定参照とも **$0.01**・Base + Solana dual-leg）。内部 Claude Portfolio の catalyst 採点パイプライン (`evaluate-catalysts`) を外部開放したもので、[AlternaData for agents](docs/alternadata-for-agents.md) 構想の Phase A にあたります。
 
 ### 投稿 — `POST /api/alpha/catalyst/submit`
 
 ```bash
-curl -X POST https://osd-coral.vercel.app/api/alpha/catalyst/submit \
+curl -X POST https://osd.x402jp.com/api/alpha/catalyst/submit \
   -H "Content-Type: application/json" \
   -d '{"ticker":"NVDA","catalyst_description":"Q2 earnings beats consensus","target_date":"2026-08-28"}'
 ```
@@ -356,37 +281,14 @@ Body: `ticker`(1–10 英数字・必須) / `catalyst_description`(10–500 字�
 ### 判定結果 — `GET /api/alpha/catalyst/:catalyst_id/score`
 
 ```bash
-curl https://osd-coral.vercel.app/api/alpha/catalyst/ext_xxxxxxxx/score
+curl https://osd.x402jp.com/api/alpha/catalyst/ext_xxxxxxxx/score
 ```
 
-`status` は `pending | hit | partial | miss | na`。`target_date + 7 日`経過後に日次 `evaluate-catalysts` workflow が Claude (web search) で判定し、`judgement_date` / `evidence_urls` / `reasoning` を埋めます。`evidence_urls` は web 検索結果に実在した URL のみ（hallucination 防止）。存在しない `catalyst_id` は `404`。
+`status` は `pending | hit | partial | miss | na`。`target_date + 7 日`経過後に週次 `evaluate-catalysts` workflow が Claude (web search) で判定し、`judgement_date` / `evidence_urls` / `reasoning` を埋めます。`evidence_urls` は web 検索結果に実在した URL のみ（hallucination 防止）。存在しない `catalyst_id` は `404`。
 
 > 永続化は GitHub Actions が git commit する `data/external-catalysts.json`。Vercel の FS は read-only のため、submit 時の書き込みは best-effort（id はレスポンスで必ず返る）。
 
-## x402 Data Wrappers (Phase 1)
-
-外部 alt data API を x402 paywall でラップした有料 endpoint。AA（alt-data エージェント）がこれを daily で叩いて自前のパイプラインに供給します。API key は **server-side のみ**で使用し、レスポンスには含めません。CORS open・force-dynamic。`X-Internal-Key` で課金スキップ。
-
-**支払いは Base USDC / Solana USDC のどちらでも可**（dual-leg）。402 challenge に両チェーンの leg を提示し、caller が払ったチェーンの proof を検証します（Base=CDP facilitator、Solana=PayAI facilitator）。詳細は下記「Solana payments」。
-
-| endpoint | 価格 | 上流 | env |
-|----------|------|------|-----|
-| `POST /api/wrappers/birdeye-ohlcv` | **$0.01** / call (USDC on Base or Solana) | Birdeye OHLCV | `BIRDEYE_API_KEY` |
-| `POST /api/wrappers/perplexity-research` | **$0.05** / call (USDC on Base or Solana) | Perplexity | `PERPLEXITY_API_KEY` |
-
-```bash
-# Birdeye OHLCV — Solana token, 30 本の日足
-curl -X POST https://osd-coral.vercel.app/api/wrappers/birdeye-ohlcv \
-  -H "Content-Type: application/json" \
-  -d '{"address":"<solana_token_address>","type":"1D","limit":30}'
-# → { "address": "...", "candles": [{ "ts","o","h","l","c","v" }, ...], "fetched_at": "..." }
-
-# Perplexity research — 直近 24h のニュース + catalyst 提案 + citations
-curl -X POST https://osd-coral.vercel.app/api/wrappers/perplexity-research \
-  -H "Content-Type: application/json" \
-  -d '{"ticker":"NVDA","lookback_hours":24}'
-# → { "ticker","lookback_hours","events":[{title,date,source_url,catalyst_suggestion}],"citations":[...],"fetched_at":"..." }
-```
+## External data / Solana payments
 
 ### Claude Portfolio cron への external data 統合
 
@@ -405,14 +307,9 @@ osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受
 | `SOLANA_RECEIVE_ADDRESS` | Solana USDC の受取アドレス（402 challenge の payTo）。未設定なら `WALLET_ADDRESS_SOLANA` → デフォルトの順でフォールバック。 |
 | `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET` | PayAI の JWT 認証（本番拡張時のみ・無料 tier 不要）。 |
 
-## Alpha Signals
+## Signals (`signal_get` / `/api/testnet/signal`)
 
-`/alpha` セクションは「オーナーが注目している X 投稿」のキュレーション枠です。
-
-- post の追加・削除は `data/alpha-posts.json` を直接編集
-- スキーマは `{ "url": "https://x.com/<account>/status/<id>", "added_at": "ISO 8601" }`
-- 表示は Twitter (X) 公式の `widgets.js` 埋め込み (blockquote 形式・dark theme)
-- **Claude Code / 自動 bot は post を追加・削除しません**
+`data/signals.json` に事前生成した方向性シグナルを置き、MCP の `signal_get`（無料・読み取り）と、その有料双子 `/api/testnet/signal`（**Base Sepolia・テストネット**・既定 `$0.05`）から配信します。呼び出し時に Anthropic モデルは実行しません（コスト 0）。テストネット側は mainnet の x402 スタックとは別インスタンス・別 facilitator で、本番の決済経路には影響しません。
 
 ## ローカル開発
 
@@ -433,12 +330,19 @@ npm run build
 エンドポイント手動テスト:
 
 ```bash
-# 人として叩く (200)
-curl -A "Mozilla/5.0" http://localhost:3000/api/stocks | head
+# 無料エンドポイント (200)
+curl -s http://localhost:3000/api/catalyst | head -c 400
+curl -s http://localhost:3000/api/edinet | head -c 400
+curl -s http://localhost:3000/api/alpha/catalysts/physical-ai | head -c 400
 
-# エージェントとして叩く (402 x402 challenge)
-curl http://localhost:3000/api/stocks
+# MCP ハンドシェイク + 4 ツール呼び出し (docs/mcp-inspect.md)
+MCP_URL=http://localhost:3000/api/mcp npm run mcp:inspect
+
+# 有料エンドポイント (402 x402 challenge)
+curl -sD - http://localhost:3000/api/catalyst/7203 -o /dev/null
 ```
+
+> 有料ルートは起動時に facilitator の `getSupported()` を読みます。facilitator へ到達できないネットワーク（サンドボックス等）では 402 ではなく **500** になります。無料ルート・MCP・ページは影響を受けません。
 
 ## デプロイ (Vercel)
 
@@ -447,14 +351,16 @@ npx vercel
 npx vercel --prod
 ```
 
-`data/*.json` を cron / GitHub Actions で毎朝更新する想定 (1 日 1 回・06:00 JST など)。更新スクリプト本体はこのリポジトリには未同梱。
+データ更新は GitHub Actions が実行します（`update-portfolio`・`update-performance`・`evaluate-catalysts`）。各 workflow は `${GITHUB_REF_NAME}`（= 実行中のブランチ、本番は `main`）へ `data/*.json` を commit し、その commit が Vercel の再デプロイをトリガします。スクリプト本体は `scripts/update-*.ts`・`scripts/evaluate-catalysts.mjs`。
 
 ## Tech stack
 
 - Next.js 16 (App Router) + TypeScript + Tailwind v4
-- `@solana/web3.js` (mint metadata)
-- `x402-next`, `x402-fetch` (payment handshake)
-- `lucide-react` (icons)
+- `@x402/core` / `@x402/next` / `@x402/evm` / `@x402/svm` (x402 v2 resource server)
+- `@coinbase/x402` (Base facilitator) + `@payai/facilitator` (Solana facilitator)
+- `mcp-handler` + `@modelcontextprotocol/sdk` (`/api/mcp`)
+- `@anthropic-ai/sdk` (週次選定 / カタリスト採点の cron)
+- `recharts` (performance チャート), `lucide-react` (icons), `motion`
 
 ## 免責事項
 
