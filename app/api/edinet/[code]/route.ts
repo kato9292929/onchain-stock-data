@@ -17,13 +17,20 @@ export const maxDuration = 60;
 
 /**
  * PAID (x402 per-call, Solana mainnet exact-svm — same rail as /api/catalyst):
- * one company's LATEST real financials from EDINET (sales / operating income /
- * net income), extracted from the newest 有報・四半期・半期 report's type=5 CSV.
+ * one company's LATEST disclosure from EDINET — filer name, doc id / type /
+ * description, submission datetime and the accounting period, located from the
+ * newest 有報・四半期・半期 report.
+ *
+ * The headline figures (sales / operating income / net income) are part of the
+ * response shape but are NOT currently served: extraction is paused
+ * (lib/edinet.ts `FINANCIALS_ENABLED = false`) because the candidate-element
+ * approach shipped wrong values live, so they return null alongside
+ * `financials_available:false` and `financials_note`. Figures are never
+ * fabricated. Keep the paywall `description` below in step with this.
  *
  * Terms compliance: every payload carries `source` = "出典：金融庁 EDINET" and
  * `processed_by`. Data is fetched only via the official EDINET API v2; date
- * lists and per-report extractions are cached weekly. Figures never fabricated —
- * a company with no extractable report returns nulls + financials_available:false.
+ * lists and per-report extractions are cached weekly.
  *
  * Priced at 1000 USDC base units (0.001 USDC), settled in USDC-SPL on Solana.
  */
@@ -93,8 +100,12 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 
 export const GET = withSolanaUsdcMicroPaywall(handler, {
   units: PER_CALL_PRICE.base_units,
+  // What the 402 challenge shows a buyer, so it states what actually comes
+  // back. Figure extraction is paused (lib/edinet.ts FINANCIALS_ENABLED), and
+  // this used to advertise "sales / operating income / net income" — a promise
+  // the response has not kept since. Keep the two in step.
   description:
-    "One company's latest EDINET financials — sales / operating income / net income (出典：金融庁 EDINET). Settled per call in USDC on Solana (exact-svm).",
+    "One company's latest EDINET disclosure: filer, document id / type / description, submission datetime and the accounting period (出典：金融庁 EDINET). Headline figures (sales / operating income / net income) are NOT served — they return null with financials_available:false. Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/edinet/:code",
 });
 

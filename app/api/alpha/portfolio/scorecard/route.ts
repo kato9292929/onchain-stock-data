@@ -59,6 +59,11 @@ const handler = async (): Promise<NextResponse> => {
       ticker: e.ticker,
       status: e.status,
       catalyst_target_date: e.catalyst_target_date,
+      // "distilled" = the condition was extracted from the thesis by the
+      // one-shot backfill; "thesis" = the free-text thesis went in verbatim,
+      // as the weekly auto-register does. The two are not equally strict, so
+      // split on this before comparing hit-rates across them.
+      condition_source: e.condition_source ?? null,
       evaluated_at: e.evaluated_at,
       evidence_url: e.evidence_url,
       reasoning: e.reasoning,

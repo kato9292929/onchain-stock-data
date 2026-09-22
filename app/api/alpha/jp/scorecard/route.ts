@@ -38,6 +38,9 @@ const handler = async (): Promise<NextResponse> => {
       ticker: e.ticker,
       status: e.status,
       catalyst_target_date: e.catalyst_target_date,
+      // Always "thesis" for JP — the auto-register carries the free-text
+      // thesis in as the condition. Surfaced so callers can align JP and US.
+      condition_source: e.condition_source ?? null,
       evaluated_at: e.evaluated_at,
       evidence_url: e.evidence_url,
       reasoning: e.reasoning,

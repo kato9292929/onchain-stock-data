@@ -206,6 +206,17 @@ export interface PortfolioEvaluation {
   ticker: string;
   catalyst_target_date: string;
   success_condition: string;
+  /**
+   * Where `success_condition` came from, because the two generations are not
+   * equally strict and must not be pooled into one hit-rate:
+   *  - "distilled" — the one-shot backfill asked Claude to extract a concise,
+   *    machine-checkable condition out of the free-text thesis (the 28 US rows
+   *    seeded in 2026-05/06).
+   *  - "thesis" — the weekly auto-register copies the thesis in verbatim (every
+   *    JP row, and every US row from 2026-09-21 on).
+   * Absent on rows written before the field existed; treat that as unknown.
+   */
+  condition_source?: "distilled" | "thesis";
   status: EvaluationStatus;
   evaluated_at: string | null;
   evidence_url: string | null;

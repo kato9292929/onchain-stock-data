@@ -250,6 +250,20 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 
 各 workflow は `npm ci` 後に `tsx scripts/update-*.ts` 等を実行し、`lib/jobs.ts` の生成関数を**直接**呼びます (HTTP 経由で自分の API を叩かない = 循環・二重課金なし)。commit 先は `${GITHUB_REF_NAME}`（= 実行中のブランチ。本番は `main`）。手動実行は GitHub の Actions タブから `workflow_dispatch`。portfolio 系の workflow は同一 `concurrency` group で push 競合を回避。
 
+### カタリスト判定のカバレッジ
+
+`evaluate-catalysts` は、`portfolio-history.json` / `jp-portfolio-history.json` の各 holding から **pending 行を自動生成**し、`catalyst_target_date + 7 日`を過ぎたものを Claude（web search）が判定します。US 側はこの自動生成が無く、一度きりの backfill で播かれた2週分を判定し終えた 2026-07-08 以降**新しい行が作られていませんでした**（US scorecard がそこで止まっていた原因）。現在は US も自動生成しますが、範囲を限定しています:
+
+| 週 | 扱い |
+|---|---|
+| **2026-09-21 以降** | 自動生成する（`US_AUTOREGISTER_FROM`）。期日は約1か月先なので、順次 due になり一斉発火しない |
+| **2026-06-29 〜 09-14**（約55件） | **保留**。過去の期日を web search で正確に判定できるかが未検証なので、1〜2件の実測とコスト計測を経てから可否を決める（コスト action・オーナー承認が前提） |
+| **2026-06-15 以前**（49件） | **スコープ外**。当時の holdings に `target_date` が無く、判定の基準が存在しない（`backfill-catalyst-targets.mjs` はこれを thesis から抽出するために作られた一度きりのスクリプト） |
+
+判定枠は `EVALUATE_MAX_PER_RUN`（既定 **12 件/回**）。US / 外部投稿 / JP の**3系統で共有**しますが、**各系統から順番に取る**ため 1 系統のバックログが他を枯らしません（系統内は期日の古い順）。**合計の上限は変わらない**ので、1回あたりのコストは以前と同じです。
+
+各評価行には `condition_source` が付きます。`distilled` = backfill が thesis から抽出した条件（US の既存28行）、`thesis` = thesis 原文をそのまま条件に使ったもの（以降の US・JP 全件）。**粒度が違うので、hit-rate を比較するときは必ず分けて集計してください。** `/api/alpha/portfolio/scorecard` と `/api/alpha/jp/scorecard` の `recent_evaluations` にも出ます。
+
 **必要な GitHub Actions secrets:**
 
 | secret | 必須 | 用途 |

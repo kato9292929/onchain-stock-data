@@ -25,6 +25,25 @@ const JP_HISTORY_FILE = path.join(ROOT, "data", "jp-portfolio-history.json");
 const JP_EVAL_FILE = path.join(ROOT, "data", "jp-portfolio-evaluations.json");
 const MODEL = "claude-sonnet-5";
 const GRACE_DAYS = 7;
+
+/**
+ * US portfolio holdings are auto-registered as pending evaluations only from
+ * this week onward.
+ *
+ * The US flow was never self-bootstrapping the way JP is: rows came from a
+ * one-shot backfill (scripts/backfill-catalyst-targets.mjs), so once those were
+ * judged in July 2026 nothing new was ever registered and the US scorecard
+ * froze at two weeks of history. Registering every past week at once would put
+ * ~55 already-due catalysts into the queue in one go — the backlog burst the
+ * cost rules in AGENTS.md exist to prevent — so the default cutoff is the week
+ * this was fixed. Catalysts registered from here are ~1 month out, which means
+ * they come due gradually and cost nothing extra today.
+ *
+ * Weeks before 2026-06-29 have no `target_date` on their holdings at all and
+ * are skipped regardless. To judge the older backlog, lower this deliberately
+ * (and measure one run first — that is a paid decision, not a default).
+ */
+const US_AUTOREGISTER_FROM = process.env.US_AUTOREGISTER_FROM ?? "2026-09-21";
 const VALID_STATUS = new Set(["hit", "partial", "miss", "na"]);
 
 const SYSTEM_PROMPT = `あなたは米国株のイベント検証アナリストです。ある銘柄の catalyst（株価材料）が達成されたかを、提示された thesis と success_condition、および対象日付付近の実際のニュース・株価・SEC ファイリングを web 検索で確認して判定します。
@@ -254,8 +273,10 @@ async function main() {
     ? evalsFile.evaluations
     : [];
 
-  // Build a (week_of, ticker) → thesis lookup from portfolio history.
+  // Build a (week_of, ticker) → thesis lookup from portfolio history, and
+  // auto-register pending rows for recent weeks (see US_AUTOREGISTER_FROM).
   const thesisByKey = new Map();
+  let internalCreated = 0;
   try {
     const history = JSON.parse(await readFile(HISTORY_FILE, "utf8"));
     const portfolios = [
@@ -268,6 +289,49 @@ async function main() {
         const key = `${p.week_of}::${String(h.ticker ?? "").toUpperCase()}`;
         if (!thesisByKey.has(key)) thesisByKey.set(key, String(h.thesis ?? ""));
       }
+    }
+
+    // Mirror of the JP self-bootstrapping block below, windowed to recent
+    // weeks. Holdings without a `target_date` (every week before 2026-06-29)
+    // are skipped — there is nothing to judge them against.
+    const usSeen = new Set(
+      evaluations.map(
+        (e) => `${e.week_of}::${String(e.ticker ?? "").toUpperCase()}`,
+      ),
+    );
+    for (const p of portfolios) {
+      if (!p?.week_of || !Array.isArray(p.holdings)) continue;
+      if (p.week_of < US_AUTOREGISTER_FROM) continue;
+      for (const h of p.holdings) {
+        const ticker = String(h.ticker ?? "").toUpperCase();
+        if (!ticker || !h.target_date) continue;
+        const key = `${p.week_of}::${ticker}`;
+        if (usSeen.has(key)) continue;
+        usSeen.add(key);
+        evaluations.push({
+          week_of: p.week_of,
+          ticker,
+          catalyst_target_date: h.target_date,
+          // The holdings carry no distilled condition — only the free-text
+          // thesis — so it goes in verbatim, exactly as the JP flow does. Rows
+          // seeded by the old backfill carry a Claude-distilled condition
+          // instead, so the two generations differ in granularity and
+          // `condition_source` keeps them separable when hit-rates are
+          // aggregated. Do not compare the two without splitting on it.
+          success_condition: String(h.thesis ?? ""),
+          condition_source: "thesis",
+          status: "pending",
+          evaluated_at: null,
+          evidence_url: null,
+          reasoning: null,
+        });
+        internalCreated += 1;
+      }
+    }
+    if (internalCreated > 0) {
+      console.log(
+        `[evaluate] registered ${internalCreated} US pending rows (weeks >= ${US_AUTOREGISTER_FROM})`,
+      );
     }
   } catch (e) {
     console.warn(`[evaluate] could not load thesis lookup: ${e.message}`);
@@ -338,6 +402,8 @@ async function main() {
           ticker,
           catalyst_target_date: h.target_date,
           success_condition: String(h.thesis ?? ""),
+          // Free-text thesis, not a distilled condition — see the US block.
+          condition_source: "thesis",
           status: "pending",
           evaluated_at: null,
           evidence_url: null,
@@ -375,7 +441,7 @@ async function main() {
 
   const anyDue =
     dueInternal.length > 0 || dueExternal.length > 0 || dueJp.length > 0;
-  if (!anyDue && jpCreated === 0) {
+  if (!anyDue && jpCreated === 0 && internalCreated === 0) {
     console.log("[evaluate] nothing due — exiting without changes");
     return;
   }
@@ -394,16 +460,39 @@ async function main() {
   // and leave the rest `pending` for subsequent daily runs, so a backlog drains
   // over days instead of firing as one costly batch. Tune via EVALUATE_MAX_PER_RUN.
   const MAX_PER_RUN = Number(process.env.EVALUATE_MAX_PER_RUN ?? 12);
-  const tagged = [
-    ...dueInternal.map((e) => ({ e, date: e.catalyst_target_date })),
-    ...dueExternal.map((e) => ({ e, date: e.target_date })),
-    ...dueJp.map((e) => ({ e, date: e.catalyst_target_date })),
-  ].sort((a, b) => (a.date < b.date ? -1 : 1));
-  const runSet = new Set(tagged.slice(0, MAX_PER_RUN).map((t) => t.e));
-  if (tagged.length > MAX_PER_RUN) {
+
+  // The cap is shared by all three lanes, and it used to be spent by merging
+  // them and judging the globally oldest first. That starves whichever lane has
+  // newer dates: a single lane sitting on a backlog of old catalysts would take
+  // every slot for weeks while the others waited. Take from each lane in turn
+  // instead — still oldest-first WITHIN a lane, so nothing jumps its queue, but
+  // every lane makes progress on every run. The per-run ceiling is unchanged,
+  // so this costs exactly what it did before.
+  const byDate = (a, b) => (a.date < b.date ? -1 : 1);
+  const lanes = [
+    dueInternal.map((e) => ({ e, date: e.catalyst_target_date })).sort(byDate),
+    dueExternal.map((e) => ({ e, date: e.target_date })).sort(byDate),
+    dueJp.map((e) => ({ e, date: e.catalyst_target_date })).sort(byDate),
+  ];
+  const picked = [];
+  for (let rank = 0; picked.length < MAX_PER_RUN; rank += 1) {
+    let tookAny = false;
+    for (const lane of lanes) {
+      if (picked.length >= MAX_PER_RUN) break;
+      if (rank >= lane.length) continue;
+      picked.push(lane[rank]);
+      tookAny = true;
+    }
+    if (!tookAny) break; // every lane exhausted
+  }
+  const runSet = new Set(picked.map((t) => t.e));
+  const totalDue = lanes.reduce((n, lane) => n + lane.length, 0);
+  if (totalDue > MAX_PER_RUN) {
     console.log(
-      `[evaluate] backlog guard: ${tagged.length} due, judging ${MAX_PER_RUN} oldest this run, ` +
-        `deferring ${tagged.length - MAX_PER_RUN} to later runs`,
+      `[evaluate] backlog guard: ${totalDue} due (us ${lanes[0].length}, ` +
+        `external ${lanes[1].length}, jp ${lanes[2].length}), judging ` +
+        `${picked.length} this run — oldest first within each lane, taken in ` +
+        `turn so no lane starves — deferring ${totalDue - picked.length}`,
     );
   }
 
@@ -505,10 +594,14 @@ async function main() {
     }
   }
 
-  if (internalUpdated > 0) {
+  // Persist US evaluations when rows were registered and/or judged.
+  if (internalUpdated > 0 || internalCreated > 0) {
     evalsFile.updated_at = new Date().toISOString();
+    evalsFile.evaluations = evaluations;
     await writeFile(EVAL_FILE, `${JSON.stringify(evalsFile, null, 2)}\n`, "utf8");
-    console.log(`[evaluate] wrote ${EVAL_FILE} (${internalUpdated} updated)`);
+    console.log(
+      `[evaluate] wrote ${EVAL_FILE} (registered ${internalCreated}, judged ${internalUpdated})`,
+    );
   }
   if (fileExternalsDirty) {
     await writeFile(
@@ -529,6 +622,7 @@ async function main() {
   }
   if (
     internalUpdated === 0 &&
+    internalCreated === 0 &&
     externalUpdated === 0 &&
     jpJudged === 0 &&
     jpCreated === 0
