@@ -84,7 +84,7 @@ export function GET(): NextResponse {
         path: "/api/alpha/portfolio/scorecard",
         method: "GET",
         description:
-          "Claude US Portfolio scorecard - catalyst hit-rate + SPY/QQQ cumulative returns.",
+          "Claude US Portfolio scorecard - catalyst hit-rate and the most recent verdicts. No returns or benchmark data.",
         accepts: solanaOnlyLeg("/api/alpha/portfolio/scorecard", ALPHA_PRICE_UNITS),
       },
       {

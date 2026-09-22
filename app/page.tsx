@@ -4,6 +4,8 @@ import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { LandingHero } from "./components/landing-hero";
 import { RailMarquee } from "./components/rail-marquee";
+import { SolanaMark } from "./components/solana-mark";
+import { PER_CALL_PRICE } from "@/lib/x402";
 
 export const dynamic = "force-dynamic";
 
@@ -127,6 +129,85 @@ export default async function Home() {
           </section>
         )}
 
+        {/* x402 — the payment rail. Every paid call settles on Solana. */}
+        <section id="x402" className="mt-16">
+          <div className="mb-4">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              Agents
+            </div>
+            <h2 className="font-outfit flex flex-wrap items-center gap-3 text-2xl font-semibold text-[#0a1b33]">
+              Pay per call on
+              <span className="inline-flex items-center gap-2">
+                <SolanaMark className="h-[0.8em] w-auto" title={null} />
+                <span className="bg-gradient-to-r from-[#00FFA3] to-[#DC1FFF] bg-clip-text text-transparent">
+                  Solana
+                </span>
+              </span>
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-500">
+              No account, no API key, no subscription. An agent calls a paid
+              endpoint, gets an HTTP <span className="font-semibold text-slate-700">402</span>,
+              signs a USDC payment and retries — settled onchain in about a
+              second. <span className="font-semibold text-slate-700">USDC on Solana is the only rail</span>:
+              the facilitator sponsors the gas, so the buyer never needs SOL.
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-[#0a152d] shadow-sm">
+            <div className="h-1 w-full bg-gradient-to-r from-[#00FFA3] to-[#DC1FFF]" />
+            <div className="grid gap-px bg-white/10 sm:grid-cols-2">
+              {[
+                {
+                  price: `${PER_CALL_PRICE.usdc} USDC`,
+                  unit: "per call",
+                  what: "Per-company lookups",
+                  detail: "/api/catalyst/{ticker} · /api/edinet/{code}",
+                },
+                {
+                  price: "$0.01",
+                  unit: "per call",
+                  what: "Portfolio & catalyst scoring",
+                  detail: "/api/alpha/… — selections, hit-rate, catalyst verdicts",
+                },
+              ].map((row) => (
+                <div key={row.what} className="bg-[#0a152d] p-6">
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-outfit text-2xl font-semibold text-white tabular-nums">
+                      {row.price}
+                    </span>
+                    <span className="text-[11px] uppercase tracking-wide text-slate-400">
+                      {row.unit}
+                    </span>
+                  </div>
+                  <div className="mt-2 text-[13px] font-semibold text-white/90">{row.what}</div>
+                  <code className="mt-1 block font-mono text-[11px] leading-relaxed text-slate-400">
+                    {row.detail}
+                  </code>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/10 px-6 py-4 text-[11px] text-slate-400">
+              <span className="inline-flex items-center gap-1.5">
+                <SolanaMark className="h-3 w-auto" title={null} />
+                USDC-SPL · <code className="font-mono">exact</code> · mainnet
+              </span>
+              <span>Gas sponsored — no SOL needed</span>
+              <span>404s are never charged</span>
+              <Link
+                href="/.well-known/x402.json"
+                className="font-semibold text-white! hover:underline"
+              >
+                /.well-known/x402.json →
+              </Link>
+            </div>
+          </div>
+
+          <p className="mt-3 text-xs text-slate-400">
+            Reading is free — the pages above, and the MCP tools below, need no
+            payment and no signature.
+          </p>
+        </section>
+
         {/* MCP — talk to the research */}
         <section id="mcp" className="mt-16">
           <div className="mb-4">
@@ -193,9 +274,11 @@ export default async function Home() {
             </div>
           </div>
           <p className="mt-3 text-xs text-slate-400">
-            Reads are free (committed data, no model call).{" "}
-            <code className="text-slate-500">signal_get</code> has a paid x402 twin
-            settled per call on Base Sepolia (testnet) for the &ldquo;agent pays&rdquo; demo.
+            Reads are free (committed data, no model call). The paid endpoints
+            above settle on Solana;{" "}
+            <code className="text-slate-500">signal_get</code> additionally has a
+            demo twin on Base Sepolia (testnet funds) for exercising the 402 →
+            sign → 200 loop without spending anything real.
           </p>
         </section>
 

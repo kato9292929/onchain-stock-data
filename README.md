@@ -81,7 +81,7 @@ GET  /api/edinet                        # EDINET 有料エンドポイントの�
 
 # ── 有料 $0.01: Solana USDC のみ ──
 GET  /api/alpha/portfolio/current       # 現在の Claude US Portfolio (10 銘柄・JSON)
-GET  /api/alpha/portfolio/scorecard     # US catalyst hit-rate + SPY/QQQ 累積比較
+GET  /api/alpha/portfolio/scorecard     # US catalyst hit-rate + 直近の判定一覧（リターン非掲載）
 GET  /api/alpha/jp/portfolio/current    # 現在の Claude JP Portfolio (日本株・JSON)
 GET  /api/alpha/jp/scorecard            # JP catalyst hit-rate (ベンチ指数なし)
 GET  /api/alpha/jp/catalysts            # JP dated catalysts 一覧 (legacy 互換面)
@@ -193,7 +193,7 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 | データ | 中身 | 由来 |
 |--------|------|------|
 | Claude Portfolio (US / JP) | 週次の 10 銘柄選定・thesis・入替履歴 | `lib/jobs.ts` が Claude を呼び、`data/portfolio-history.json`・`data/jp-portfolio-history.json` に commit |
-| Performance（**更新停止中・非表示**） | SPY/QQQ vs portfolio index の日次系列 | `data/performance-history.json`（2026-09-01 で停止）。`update-performance` workflow は **schedule 無効化済み**（本製品は予測記録を出すのが目的で、リターン追跡はしない）。**どのページからも表示していません**。唯一 `/api/alpha/portfolio/scorecard` の `cumulative_returns` が凍結値を返します。 |
+| Performance（**廃止**） | SPY/QQQ vs portfolio index の日次系列 | `data/performance-history.json`（2026-09-01 で停止）。`update-performance` workflow は schedule 無効化済み。**ページからも API からも一切出していません**（`/api/alpha/portfolio/scorecard` の `cumulative_returns` も削除）。本製品が公開するのは予測の記録であってリターンではない。ファイルは履歴として残置。 |
 | Catalyst 採点 (Physical AI シリーズ) | 日付つきカタリストと hit/partial/miss/na 判定 | `data/external-catalysts.json`（`evaluate-catalysts` workflow が Claude + web search で判定し commit） |
 | IR Fair カタリスト | 企業別カタリスト + 開示済み財務 (JPY 百万) | `data/ir-fair-2026-catalysts.json` |
 | EDINET | 直近の提出書類メタ + 会計期間 | EDINET API v2 (`documents.json` type=2 + 書類取得 type=5 CSV)・週次キャッシュ |

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
+import { SolanaMark } from "./solana-mark";
 
 /**
  * Light, readable landing hero: rounded white card with a muted background
@@ -44,13 +45,24 @@ export function LandingHero() {
         <p className="font-inter mt-5 max-w-md text-[14px] leading-relaxed text-[#64748b] md:text-[15px]">
           Weekly US &amp; Japan stock picks with dated, numeric catalysts — each
           scored HIT / PARTIAL / MISS once its deadline passes. A public,
-          verifiable track record, delivered over REST and x402.
+          verifiable track record. Free to read over MCP; agents pay per call
+          with x402.
         </p>
+
+        <Link
+          href="#x402"
+          className="font-inter mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/90 px-4 py-2 text-[12px] font-semibold text-[#0a1b33]! shadow-sm backdrop-blur-sm transition-all hover:border-slate-300 hover:no-underline!"
+        >
+          <SolanaMark className="h-3 w-auto" title={null} />
+          Paid in USDC on Solana
+          <span className="text-slate-400">· no SOL needed</span>
+        </Link>
+
         <Link href="/catalysts">
           <motion.span
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="font-inter mt-7 inline-flex items-center gap-1 rounded-full bg-[#0a152d] px-6 py-3 text-[13px] font-semibold text-white shadow-sm"
+            className="font-inter mt-4 inline-flex items-center gap-1 rounded-full bg-[#0a152d] px-6 py-3 text-[13px] font-semibold text-white shadow-sm"
           >
             View catalysts <ChevronRight className="h-4 w-4" />
           </motion.span>
