@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
 import type { RouteConfig } from "@x402/core/server";
+import type { PaymentOption } from "@x402/core/http";
 import type { Price } from "@x402/core/types";
 import {
   assertSolanaExactUsdc,
@@ -59,25 +60,79 @@ function applyCors(res: NextResponse): NextResponse {
  * - every response (200 / 402 / error) carries the CORS headers so
  *   browser-based agents can read the challenge cross-origin.
  */
+/**
+ * The x402 protocol version these routes speak. Mirrors the constant
+ * @x402/core uses internally to index facilitator-supported kinds.
+ */
+const X402_VERSION = 2;
+
+/** A RouteConfig's accept legs, always as an array. */
+function acceptsOf(routeConfig: RouteConfig): PaymentOption[] {
+  const raw = routeConfig.accepts;
+  return Array.isArray(raw) ? raw : raw ? [raw] : [];
+}
+
+/**
+ * The accept legs a live facilitator can verify right now.
+ *
+ * `buildPaymentRequirements` THROWS for a network whose facilitator never
+ * reported its supported kinds, and the loop that walks `accepts` does not
+ * catch it. So one unreachable facilitator takes down every route advertising
+ * a leg on its network — a CDP outage would 500 each dual-leg /api/alpha/*
+ * request even while Solana settles normally through PayAI. Filtering to the
+ * live legs lets the route keep serving the chain that still works.
+ */
+export function verifiableAccepts(
+  routeConfig: RouteConfig,
+  server: Pick<typeof x402Server, "getSupportedKind"> = x402Server,
+): PaymentOption[] {
+  return acceptsOf(routeConfig).filter((leg) => {
+    try {
+      return (
+        server.getSupportedKind(X402_VERSION, leg.network, leg.scheme) !==
+        undefined
+      );
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
+ * True when the SDK failed because a facilitator was unreachable rather than
+ * because the request was bad. Message matching is the only signal the SDK
+ * offers (both cases throw a plain Error), so anything unrecognised keeps
+ * falling through to the generic 500 below.
+ */
+function isFacilitatorUnavailable(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : "";
+  return (
+    message.includes("Facilitator does not support") ||
+    message.includes("no supported payment kinds loaded")
+  );
+}
+
 export function withX402AndInternal(
   handler: Handler,
   routeConfig: RouteConfig,
   server: typeof x402Server = x402Server,
 ): (req: NextRequest) => Promise<NextResponse> {
-  const wrapped = withX402(
-    async (req: NextRequest) => handler(req),
-    routeConfig,
-    server,
-    undefined,
-    undefined,
-    // syncFacilitatorOnStart MUST be true. In @x402/next 2.13.0,
-    // prepareHttpServer().init() short-circuits when this is false and never
-    // calls facilitator.initialize(), so getSupportedKind() returns undefined
-    // and buildPaymentRequirements throws "Facilitator does not support exact
-    // on eip155:8453" → HTTP 500 on every unpaid request. true fetches the
-    // supported kinds on startup and lazily re-syncs per request.
-    true, // syncFacilitatorOnStart
-  );
+  const buildWrapped = (config: RouteConfig) =>
+    withX402(
+      async (req: NextRequest) => handler(req),
+      config,
+      server,
+      undefined,
+      undefined,
+      // syncFacilitatorOnStart MUST be true. In @x402/next 2.13.0,
+      // prepareHttpServer().init() short-circuits when this is false and never
+      // calls facilitator.initialize(), so getSupportedKind() returns undefined
+      // and buildPaymentRequirements throws "Facilitator does not support exact
+      // on eip155:8453" → HTTP 500 on every unpaid request. true fetches the
+      // supported kinds on startup and lazily re-syncs per request.
+      true, // syncFacilitatorOnStart
+    );
+  const wrapped = buildWrapped(routeConfig);
   return async (req: NextRequest) => {
     if (req.method === "OPTIONS") return corsPreflight();
     try {
@@ -86,11 +141,49 @@ export function withX402AndInternal(
         : await wrapped(req);
       return applyCors(res);
     } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "internal server error";
+
+      if (isFacilitatorUnavailable(err)) {
+        // One or more facilitators are down (outage, revoked key, exhausted
+        // quota). Re-issue the challenge with whatever legs remain verifiable
+        // rather than 500-ing a route whose other chain is healthy.
+        const live = verifiableAccepts(routeConfig, server);
+        const advertised = acceptsOf(routeConfig);
+        if (live.length > 0 && live.length < advertised.length) {
+          const dropped = advertised
+            .filter((leg) => !live.includes(leg))
+            .map((leg) => leg.network)
+            .join(", ");
+          console.warn(
+            `[x402] facilitator unavailable for ${dropped} on ${routeConfig.resource ?? "route"} — serving ${live.map((l) => l.network).join(", ")} only`,
+          );
+          try {
+            return applyCors(
+              await buildWrapped({ ...routeConfig, accepts: live })(req),
+            );
+          } catch {
+            // Every surviving leg failed too — fall through to 503.
+          }
+        }
+        // Nothing is verifiable: the caller cannot pay right now, and that is
+        // a temporary upstream condition, not a bug in their request. 503 +
+        // Retry-After tells an agent to come back instead of giving up.
+        return applyCors(
+          NextResponse.json(
+            {
+              error: "payment_unavailable",
+              message:
+                "No payment facilitator is currently reachable; the paid resource cannot be served. Retry shortly.",
+            },
+            { status: 503, headers: { "Retry-After": "60" } },
+          ),
+        );
+      }
+
       // Surface a CORS-tagged 500 so browser-based callers can read the
       // failure body. Without this, fetch() reports a generic CORS error
       // and the agent can't tell init failure from a network blip.
-      const message =
-        err instanceof Error ? err.message : "internal server error";
       return applyCors(
         NextResponse.json({ error: "internal_error", message }, { status: 500 }),
       );

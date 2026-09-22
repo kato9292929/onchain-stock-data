@@ -11,14 +11,14 @@ import {
 } from "@/lib/external-catalysts";
 import { checkRateLimit, clientIp } from "@/lib/rate-limit";
 import { upstashConfigured, putCatalyst } from "@/lib/catalyst-upstash";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
  * POST /api/alpha/catalyst/submit — Phase A external catalyst intake.
- * Paid x402 endpoint (Base + Solana USDC); internal callers bypass with
+ * Paid x402 endpoint (Solana USDC); internal callers bypass with
  * `X-Internal-Key`. Non-2xx results (rate-limit 429 / validation 400) cancel
  * x402 settlement, so a rejected submission is not charged; a created record
  * (201) settles. Per-IP daily rate limit still applies. Duplicate (ticker +
@@ -111,7 +111,7 @@ const handler = async (req: NextRequest): Promise<NextResponse> => {
   }
 };
 
-export const POST = withPaywall(handler, {
+export const POST = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
   description: "Submit an external catalyst for Claude verdict scoring.",
   resourcePath: "/api/alpha/catalyst/submit",

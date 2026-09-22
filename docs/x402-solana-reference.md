@@ -155,6 +155,8 @@ CORS: `Access-Control-Expose-Headers` に `PAYMENT-REQUIRED, PAYMENT-RESPONSE`�
 
 **OSD の discovery は現状、本体402と同型ではない。** discovery の Solana leg は **単一の v2形 leg**（CAIP-2 / `amount` のみ、`feePayer` なし、descriptor `version:2`）。これは **directory crawler（x402scan/Pay.sh）向けメタデータ**で、**AA が settle に使うのは本体402（エンドポイントを叩いて返る402）であって discovery ではない**。
 
+**掲載範囲（2026-09 更新）**: 記述子は有料リソースを `endpoints` に（`/api/alpha/...` 7 本＝$0.01 ＋ `/api/catalyst/:ticker`・`/api/edinet/:code` ＝ `PER_CALL_PRICE`。**本番はすべて Solana 単 leg** — Base leg は廃止、`docs/facilitator-design.md` §4）、無料を `free_endpoints`、MCP を `mcp`、Base Sepolia のデモを `testnet_endpoints` に分けて持つ。テストネットを `endpoints` に入れないのは、課金対象を走査する crawler が Sepolia の leg を本番として拾わないようにするため。`scripts/__tests__/discovery-descriptor.test.mjs` が実ルートとの整合を検証する。
+
 したがって:
 - **pay→200 に効くのは §1 の本体402。JIN は本体402を最優先で一致させる。**
 - discovery は「壊れてはいないが、本体402と厳密一致していない」状態。JIN側で discovery を作るなら、混乱を避けるため本体402の2 leg（v1+v2）に揃えるのが望ましい（OSD側も将来揃える改善余地として記録）。

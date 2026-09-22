@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
  * GET /api/alpha/catalyst/:catalyst_id/score — verdict lookup for an external
  * submission. Returns `pending` until the daily evaluator judges it. Unknown id
  * → 404 (a 404 cancels x402 settlement, so an unknown-id lookup is not charged).
- * Paid x402 endpoint (Base + Solana USDC); internal callers bypass with
+ * Paid x402 endpoint (Solana USDC); internal callers bypass with
  * `X-Internal-Key`.
  */
 const handler = async (req: NextRequest): Promise<NextResponse> => {
@@ -37,7 +37,7 @@ const handler = async (req: NextRequest): Promise<NextResponse> => {
   });
 };
 
-export const GET = withPaywall(handler, {
+export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
   description: "Lookup the Claude verdict for a submitted external catalyst.",
   resourcePath: "/api/alpha/catalyst/:catalyst_id/score",
