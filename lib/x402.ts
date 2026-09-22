@@ -212,18 +212,27 @@ export function buildRouteConfig(
   resourcePath: string,
 ): RouteConfig {
   const resource = resourceUrl(resourcePath);
+  // ORDER IS LOAD-BEARING. @x402/core's default client selector is
+  // `(x402Version, accepts) => accepts[0]` (client/index.mjs:31), so any buyer
+  // that does not pass its own selector pays on whichever leg we list first —
+  // it never "picks the chain it can settle". This config used to put Base
+  // first, which is how AA ended up signing Base payments it could not settle
+  // once CDP was quota-blocked (the failure looked like an opaque 402 with an
+  // empty body, after the signature). Solana leads: it is the rail we actually
+  // sell on. If Base is ever restored as a real option, keep the most reliable
+  // leg first and revisit this comment.
   const accepts: PaymentOption[] = [
     {
       scheme: "exact",
-      network: BASE_NETWORK,
-      payTo: PAY_TO_BASE,
+      network: SOLANA_NETWORK,
+      payTo: PAY_TO_SOLANA,
       price,
       extra: { resource },
     },
     {
       scheme: "exact",
-      network: SOLANA_NETWORK,
-      payTo: PAY_TO_SOLANA,
+      network: BASE_NETWORK,
+      payTo: PAY_TO_BASE,
       price,
       extra: { resource },
     },

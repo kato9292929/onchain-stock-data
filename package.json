@@ -15,7 +15,8 @@
     "x402:autopilot": "node scripts/x402-autopilot.mjs",
     "seed:physical-ai": "node scripts/seed-physical-ai-catalysts.mjs",
     "mcp:inspect": "node scripts/mcp-inspect.mjs",
-    "test": "node --import tsx --test scripts/__tests__/*.test.mjs"
+    "test": "node --import tsx --test scripts/__tests__/*.test.mjs",
+    "research:ir-fair": "node --import tsx scripts/research-ir-fair.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

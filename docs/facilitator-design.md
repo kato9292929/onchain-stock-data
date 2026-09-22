@@ -65,6 +65,14 @@ SDK の挙動を読んだ結果、**facilitator 1 つの停止が、健全なチ
    > **訂正 (2026-09-22)**: 当初この理由を「AA は EVM の署名手段を持っていない」と書きましたが、**これは誤りです**。検証したのは上記の同梱スクリプトだけで、それを外部の買い手 AA に一般化していました。AA 本体は別リポジトリにあり、買い手側セッションの報告によれば **`SIGNER_BACKEND=circle` + `CIRCLE_EVM_WALLET_ID` による EVM 署名手段を持ち、Base 残高（約 14.18 USDC）もあり、現状 Base で支払可能**とのことです（当方はそのリポジトリを見ておらず未検証）。
    >
    > したがって **Base leg は「誰も使えない leg」ではありませんでした**。この決定は下の 2・3 に依拠します。1 は「同梱 buyer は Solana 専用」という限定的な事実に留めてください。
+
+   > **追補 (2026-09-22) — Base leg は「使われない」どころか「必ず選ばれて必ず落ちる」leg でした。**
+   >
+   > `@x402/core` のクライアント既定セレクタは `(x402Version, accepts) => accepts[0]`（`node_modules/@x402/core/dist/esm/client/index.mjs:31`）で、**買い手は「自分が決済できるチェーン」を選びません。売り手が先頭に並べた leg をそのまま払います。** そして `buildRouteConfig` は **Base を先頭**に置いていました。
+   >
+   > 買い手側セッションの報告によれば、AA は独自セレクタを渡していないため **dual-leg の osd では常に Base を選択**しており、CDP がブロックされた状態で「署名 → settle 失敗 → 中身が空の 402」という形で落ちていました（ログ上は `[CALLER:solana]` と出ていたため切り分けが遅れた、とのこと）。当方で検証できるのは上記のセレクタ実装と leg 順序までで、AA 側のログは未確認です。
+   >
+   > つまり Solana 一本化は単なる簡素化ではなく、**実際に壊れていた経路の修正**でした。あわせて `buildRouteConfig` の leg 順を **Solana 先頭**に変更し、`scripts/__tests__/solana-paywall.test.mjs` で `accepts[0]` が Solana であることを固定しています（Base を戻す日に同じ罠を踏まないため）。
 2. **払えない leg の提示は、提示しないより悪い。** §2 の劣化対応がカバーするのは `getSupported()` が読めない**初期化時**の到達不能だけです。**settle 時**の失敗は別経路で、`handleSettlement` は `!result.success` のとき facilitator のエラーをそのまま返します（`@x402/next/dist/esm/index.mjs:203-211`）。つまり CDP が無料枠超過や支払い方法未登録でブロックされていると、**買い手が署名した後に決済が落ちます**。
 3. **CDP 依存そのものが消える。** 無料枠の崖も、CDP 障害の影響半径も、売り面からはなくなります。per-call（売上の主軸）は元から Solana 単 leg だったので、面が揃いました。
 
@@ -75,6 +83,8 @@ SDK の挙動を読んだ結果、**facilitator 1 つの停止が、健全なチ
 - **買い手側に移行コストが出ます。** 上の訂正のとおり AA は Base で払える買い手なので、この変更は AA に「Solana で払え」を強制します。買い手側セッションの報告では **Base に 14.18 USDC、Solana に 6.02 USDC**。Base 残高は遊休化し、全トラフィックが Solana に寄るぶん消費が速くなります。**売り手の都合で買い手の資金を座礁させる変更**である点は明記しておきます（回収するか、Base leg を戻すかは別途判断）。
 
 ### 戻し方
+
+**戻す前に必ず読むこと**: 上の追補のとおり、多くの買い手は `accepts[0]` を無条件で選びます。Base を戻すなら **Base を先頭に置かない**（現在 `buildRouteConfig` は Solana 先頭で、テストが固定しています）。CDP の枠・支払い方法が確実に有効であることを確認してからにしてください。先頭に置いた leg が settle できないと、買い手は署名を済ませた後に落ちます。
 
 `buildRouteConfig`（dual-leg ビルダ）・`BASE_NETWORK`・`PAY_TO_BASE`・CDP の facilitator 配線はすべて残してあります。戻すのは **7 ルートの `withSolanaOnlyPaywall` → `withPaywall`** と、記述子に Base leg を足すだけです。`scripts/__tests__/paywall.test.mjs` と `discovery-descriptor.test.mjs` が「Base を広告していないこと」を assert しているので、**戻すときはテストも意図的に書き換える**必要があります（事故で復活しない）。
 
