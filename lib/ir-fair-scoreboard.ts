@@ -17,7 +17,14 @@ import type { EvaluationStatus } from "./data";
  * Wiring active rows into the evaluate cron is a later, separate step.
  */
 
-export type IrFairStage = "draft" | "active";
+/**
+ * "review" sits between the two: researched by scripts/research-ir-fair.mjs
+ * but not yet read by a human. It behaves exactly like "draft" everywhere —
+ * free, unscored, not a paid resource — because every check keys on
+ * `stage === "active"`. Promotion to "active" is a deliberate human step, and
+ * it is also what puts the company behind the paywall.
+ */
+export type IrFairStage = "draft" | "review" | "active";
 
 export interface IrFairSector {
   id: string;

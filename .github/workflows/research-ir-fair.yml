@@ -1,0 +1,80 @@
+name: Research IR-Fair catalysts (manual)
+
+# COST ACTION — Claude calls plus billed web search ($10 per 1,000 searches).
+# There is NO `schedule:` and there must not be one: this runs when a human
+# dispatches it, with a plan they chose, and the run prints what it spent.
+#
+# Output lands at `stage: "review"`, never `active`. A reviewed company is
+# still free and still unscored; promoting it to `active` is a separate human
+# edit, and it is that edit — not this workflow — that makes the company a
+# paid x402 resource.
+#
+# Start with `dry_run: true` to see which companies a plan selects without
+# making a single API call.
+
+on:
+  workflow_dispatch:
+    inputs:
+      plan:
+        description: "sector:count pairs, e.g. infrastructure:7,domestic-defensive:6"
+        required: true
+        default: "infrastructure:7,domestic-defensive:6"
+      dry_run:
+        description: "List the selection and spend nothing"
+        type: boolean
+        default: true
+
+concurrency:
+  group: ir-fair-research
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Research
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Ceiling independent of the plan, so a typo in the input cannot
+          # bill the whole 184-company roster.
+          RESEARCH_MAX_COMPANIES: ${{ vars.RESEARCH_MAX_COMPANIES || '20' }}
+        run: |
+          npm run research:ir-fair -- \
+            --plan '${{ inputs.plan }}' \
+            ${{ inputs.dry_run && '--dry-run' || '' }} \
+            | tee research.log
+
+      - name: Usage summary
+        if: always()
+        run: |
+          {
+            echo '## IR-Fair research'
+            echo '```'
+            sed -n '/\[research\] usage/,$p' research.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit reviewed rows
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if git diff --quiet -- data/ir-fair-2026-catalysts.json; then
+            echo "no changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ir-fair-2026-catalysts.json
+          git commit -m "chore(ir-fair): research ${{ inputs.plan }} → stage review"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
