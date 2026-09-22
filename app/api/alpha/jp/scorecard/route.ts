@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getJpPortfolioEvaluations, type PortfolioEvaluation } from "@/lib/data";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
  * Scorecard for the Claude JP Portfolio: catalyst hit-rate and the most recent
  * catalyst evaluations. Mirror of the US scorecard minus the benchmark index
  * (JP tracks catalyst verdicts only, not an index). Paid x402 endpoint
- * (Base + Solana USDC); internal callers bypass with `X-Internal-Key`.
+ * (Solana USDC); internal callers bypass with `X-Internal-Key`.
  */
 /** Sort key: judged evaluations first (newest evaluated_at), then by week. */
 function recencyKey(e: PortfolioEvaluation): number {
@@ -48,7 +48,7 @@ const handler = async (): Promise<NextResponse> => {
   return NextResponse.json({ as_of, hit_rate, recent_evaluations });
 };
 
-export const GET = withPaywall(handler, {
+export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
   description: "Claude JP Portfolio scorecard - catalyst hit-rate (no benchmark index).",
   resourcePath: "/api/alpha/jp/scorecard",

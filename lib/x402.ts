@@ -239,6 +239,12 @@ export function buildRouteConfig(
  * by the handful of endpoints (/api/ipo, /api/holders, /api/liquidity) that
  * should be settled on Solana only, so AA cannot pick the Base accept. All
  * other paid endpoints keep the dual-leg `buildRouteConfig`.
+ *
+ * NOTE (2026-09): every paid mainnet route now uses this Solana-only builder —
+ * AA, the only buyer, holds no EVM signer, and advertising a Base leg backed
+ * by a quota-blocked facilitator fails AFTER the buyer signs. See
+ * docs/facilitator-design.md §4. `buildRouteConfig` is kept for the day Base
+ * comes back.
  */
 export function buildSolanaOnlyRouteConfig(
   price: Price,

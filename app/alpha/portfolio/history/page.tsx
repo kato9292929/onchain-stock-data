@@ -1,10 +1,7 @@
 import Link from "next/link";
-import { getPortfolioHistory, getPerformanceHistory } from "@/lib/data";
+import { getPortfolioHistory } from "@/lib/data";
 import type { Portfolio, PortfolioChange } from "@/lib/data";
 import { DataBanner } from "../../../components/data-banner";
-import { PerformanceChart } from "../components/performance-chart";
-
-const fmtPct = (n: number) => (n > 0 ? "+" : "") + n.toFixed(2) + "%";
 
 const CHANGE_STYLE: Record<PortfolioChange["action"], { dot: string; label: string }> = {
   add: { dot: "bg-emerald-500", label: "新規" },
@@ -40,24 +37,28 @@ function ChangeTimeline({ changes }: { changes?: PortfolioChange[] }) {
   );
 }
 
+/**
+ * Past weekly selections and what changed between them.
+ *
+ * Deliberately shows no P&L or benchmark comparison: the product records which
+ * catalysts Claude called and whether they landed, not what a portfolio would
+ * have returned. The SPY/QQQ series behind the old chart is frozen and is no
+ * longer generated (see update-performance.yml).
+ */
 export default async function PortfolioHistoryPage() {
-  const [data, perf] = await Promise.all([
-    getPortfolioHistory(),
-    getPerformanceHistory().catch(() => null),
-  ]);
+  const data = await getPortfolioHistory();
 
   const all: Portfolio[] = [
     ...(data.current ? [data.current] : []),
     ...data.history,
   ];
-  const latest = perf?.records[perf.records.length - 1];
 
   return (
     <div className="space-y-6">
       <header className="space-y-2">
         <h1 className="text-2xl font-bold text-slate-900">Claude Portfolio — History</h1>
         <p className="text-sm text-slate-500">
-          過去の週次ポートフォリオと、SPY / NASDAQ (QQQ) 比較。{" "}
+          過去の週次ポートフォリオと、週ごとの銘柄入替。{" "}
           <Link href="/alpha/portfolio" className="text-sky-600">
             current
           </Link>
@@ -65,43 +66,6 @@ export default async function PortfolioHistoryPage() {
       </header>
 
       <DataBanner source={data.source} note={data.note} updatedAt={data.updated_at} />
-
-      {perf && perf.records.length > 0 && (
-        <div className="terminal-card p-4">
-          <p className="text-xs text-slate-400 mb-3">
-            Claude Portfolio vs SPY / QQQ (rebased 100 @ {perf.base_date})
-          </p>
-          <PerformanceChart records={perf.records} />
-        </div>
-      )}
-
-      {latest && (
-        <div className="terminal-card p-4">
-          <p className="text-xs text-slate-400 mb-2">
-            performance (rebased 100 @ {perf?.base_date}) · as of {latest.date}
-          </p>
-          <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-slate-700">
-            <span>
-              Claude Portfolio:{" "}
-              <span className={latest.portfolio_return_pct >= 0 ? "text-emerald-600" : "text-rose-600"}>
-                {fmtPct(latest.portfolio_return_pct)}
-              </span>
-            </span>
-            <span>
-              SPY:{" "}
-              <span className={latest.spy_return_pct >= 0 ? "text-emerald-600" : "text-rose-600"}>
-                {fmtPct(latest.spy_return_pct)}
-              </span>
-            </span>
-            <span>
-              QQQ:{" "}
-              <span className={latest.qqq_return_pct >= 0 ? "text-emerald-600" : "text-rose-600"}>
-                {fmtPct(latest.qqq_return_pct)}
-              </span>
-            </span>
-          </div>
-        </div>
-      )}
 
       {all.length === 0 ? (
         <p className="text-sm text-slate-400">履歴がありません。</p>

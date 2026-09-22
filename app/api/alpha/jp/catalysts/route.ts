@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
  * This endpoint is kept for back-compat and returns whatever JP entries remain
  * in the external-catalysts store; new JP coverage flows through the portfolio.
  *
- * Paid x402 endpoint (Base + Solana USDC); internal callers bypass with
+ * Paid x402 endpoint (Solana USDC); internal callers bypass with
  * `X-Internal-Key`.
  *
  * NOTE: each catalyst's `target_date` is an ESTIMATE from past reporting
@@ -47,7 +47,7 @@ const handler = async (): Promise<NextResponse> => {
   });
 };
 
-export const GET = withPaywall(handler, {
+export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
   description: "Claude JP dated catalysts (legacy back-compat surface).",
   resourcePath: "/api/alpha/jp/catalysts",

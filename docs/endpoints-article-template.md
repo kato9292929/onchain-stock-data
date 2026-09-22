@@ -34,7 +34,7 @@ Onchain Stock Data（OSD）の各エンドポイントを、note / ブログ / X
 
 | API | 料金 | 決済レーン |
 |---|---|---|
-| `GET /api/alpha/portfolio/current` | **$0.01** | Base USDC + Solana USDC（dual-leg） |
+| `GET /api/alpha/portfolio/current` | **$0.01** | **Solana USDC のみ**・`exact` |
 | `GET /api/alpha/portfolio/scorecard` | **$0.01** | 同上 |
 | `GET /api/alpha/jp/portfolio/current` | **$0.01** | 同上 |
 | `GET /api/alpha/jp/scorecard` | **$0.01** | 同上 |
@@ -46,6 +46,7 @@ Onchain Stock Data（OSD）の各エンドポイントを、note / ブログ / X
 | `GET /api/testnet/signal` | **$0.05** | **Base Sepolia USDC**（テストネットのデモ） |
 
 - **$0.01 の Claude Portfolio 系 JSON API は有料**です。「`/api/alpha/...` は無料公開」と書かないこと（HTML ページのほうが無料）。
+- **本番の有料決済は全レーン Solana USDC のみ**です（2026-09 に Base leg を廃止。経緯は `docs/facilitator-design.md` §4）。「Base でも払える」と書かないこと。Base が出てくるのは下記テストネットだけです。
 - `0.001 USDC` の per-call 価格は `lib/x402.ts` の **`PER_CALL_PRICE` に一元化**されています。記事に数値を書くときはこの定数を見る。
 - `/api/testnet/signal` は **テストネット**（Base Sepolia）。本番の実決済ではないので、記事で「本番で支払える」と書かない。
 - `/api/cron/*` は内部専用（`CRON_SECRET`）。有料エンドポイントは `X-Internal-Key` で課金スキップ可。
@@ -86,7 +87,7 @@ curl -s https://osd.x402jp.com/.well-known/x402.json | jq '{
 
 ### 決済のしくみ（人間向けにやさしく）
 > エージェントが有料エンドポイントを叩くと、サーバは「これだけ払って」という **402（支払い要求）** を返します。
-> 支払いは **USDC**。**Solana**（PayAI facilitator がガス代を肩代わりするので、払う側は SOL 不要）と **Base**（Ethereum L2）の両対応で、エンドポイントによってどちらを受けるかが決まっています。
+> 支払いは **Solana 上の USDC**。PayAI facilitator がガス代を肩代わりするので、**払う側は SOL を持っていなくて構いません**（USDC だけで足ります）。
 > 対応クライアント（`x402-fetch` など）が自動で少額を送金し、着金が確認されると本来の JSON が返ります。オンチェーンなので支払いは solscan 等で追えます。
 
 ### 免責（末尾に付ける）
@@ -101,7 +102,7 @@ curl -s https://osd.x402jp.com/.well-known/x402.json | jq '{
 > **どんなデータ**: 【何が返るか。人間の言葉で。例: 「その銘柄の直近カタリストと、達成/未達の判定条件」】
 >
 > **見る（無料・ブラウザ）**: `https://osd.x402jp.com/【catalysts】`
-> **叩く（エージェント）**: `【GET】 /api/【catalyst/7203】` — 料金 **【0.001 USDC】**（【Solana のみ / Base + Solana / 無料】）
+> **叩く（エージェント）**: `【GET】 /api/【catalyst/7203】` — 料金 **【0.001 USDC】**（【Solana のみ / 無料】）
 >
 > **返ってくる主なフィールド**:
 > - `【ticker】` — 【説明】

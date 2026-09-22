@@ -6,7 +6,7 @@ osd は x402 の**売り手**（resource server）なので、どの facilitator
 
 | ネットワーク | facilitator | 認証 | 使っているルート |
 |---|---|---|---|
-| Base mainnet (`eip155:8453`) | CDP (`@coinbase/x402`) | `CDP_API_KEY_ID`/`SECRET` → `FACILITATOR_URL` → 匿名 CDP | `/api/alpha/...` の Base leg |
+| Base mainnet (`eip155:8453`) | CDP (`@coinbase/x402`) | `CDP_API_KEY_ID`/`SECRET` → `FACILITATOR_URL` → 匿名 CDP | **なし**（§4 で提示をやめた。配線のみ残置） |
 | Solana mainnet | PayAI (`@payai/facilitator`) | 無料 tier はキー不要 | `/api/alpha/...` の Solana leg、`/api/catalyst/:ticker`・`/api/edinet/:code`（**Solana 単 leg**） |
 | Base Sepolia (`eip155:84532`) | `https://x402.org/facilitator` | 不要 | `/api/testnet/signal`（デモ専用・別インスタンス） |
 
@@ -20,6 +20,8 @@ SDK の挙動を読んだ結果、**facilitator 1 つの停止が、健全なチ
 - しかし `buildPaymentRequirements()` は、supported kinds が読めなかったネットワークに対して **throw** します（同 `:560-564`）。そして accepts を回すループはこれを catch しません（同 `:604-621`）。
 
 結果として、**CDP が落ちる／キーが失効する／枠を使い切ると、dual-leg の `/api/alpha/...` は未署名リクエストごとに 500** になります。Solana 側が PayAI で正常に決済できていてもです。Solana 単 leg の per-call（`/api/catalyst/:ticker`・`/api/edinet/:code`）だけが生き残ります。
+
+（§4 で Base leg の提示をやめたため、**この巻き添えパターンは現在は発生しません**。劣化ロジックは残しています — PayAI 単独になった今、facilitator 全滅時に 500 ではなく 503 を返す経路として効きます。また Base を戻した瞬間に巻き添えが復活するのを防ぎます。）
 
 **対処（実装済み・`lib/x402-route.ts`）**: facilitator 起因の失敗を検出したら、`verifiableAccepts()` で**今まさに verify 可能な leg だけ**に絞って 402 を組み直します。
 
@@ -45,12 +47,33 @@ SDK の挙動を読んだ結果、**facilitator 1 つの停止が、健全なチ
 ### 再評価すべき条件
 
 - osd が **Arc / Polygon PoS** に販売面を広げるとき（CDP でカバーされない先が出る）。
-- **Base の冗長化**を本気でやるとき。上記 §2 の劣化対応で「Base が死んでも Solana で売り続ける」ところまでは担保しましたが、**Base leg 自体の二重化**（CDP が死んだら別 facilitator で Base を検証する）は未対応です。SDK は配列の先頭優先でネットワークごとに 1 client を選ぶため、同一ネットワークのフェイルオーバーは自前で書く必要があります。
+- **Base を売り面に戻すとき**（§4）。その場合、**Base leg 自体の二重化**（CDP が死んだら別 facilitator で Base を検証する）は依然として未対応です。SDK は配列の先頭優先でネットワークごとに 1 client を選ぶため、同一ネットワークのフェイルオーバーは自前で書く必要があります。
 - Circle が Solana に対応したとき。この場合は per-call も選択肢に入るので、結論が変わります。
 
 ### 検証の限界（断定していない点）
 
 このサンドボックスからは `docs.x402.org`・`circle.com`・`cryptobriefing.com` いずれも egress プロキシにブロックされており、**一次ページを直接読めていません**。上記の事実は Web 検索経由の要約を突き合わせたもので、**本番の facilitator URL は未確認**です（テストネットは `https://gateway-api-testnet.circle.com` とされる）。実装に進む場合は、Circle の公式ドキュメントを直接確認してから着手してください。
+
+## 4. 決定 (2026-09): 本番の有料面は Solana 一本
+
+`/api/alpha/...` 7 本の Base leg を外し、**本番で課金するエンドポイントはすべて Solana USDC の単 leg** に統一しました（`withPaywall` → `withSolanaOnlyPaywall`、記述子の `dualLegs` → `solanaOnlyLeg`）。
+
+### 理由
+
+1. **実際の買い手が Base を叩けない。** AA の週次 buyer（`scripts/x402-weekly-buyer.mjs`）は `@solana/kit` と `AA_SOLANA_SECRET_KEY` だけで署名しており、**EVM の署名手段を持っていません**。Base leg は提示しても使われない leg でした。
+2. **払えない leg の提示は、提示しないより悪い。** §2 の劣化対応がカバーするのは `getSupported()` が読めない**初期化時**の到達不能だけです。**settle 時**の失敗は別経路で、`handleSettlement` は `!result.success` のとき facilitator のエラーをそのまま返します（`@x402/next/dist/esm/index.mjs:203-211`）。つまり CDP が無料枠超過や支払い方法未登録でブロックされていると、**買い手が署名した後に決済が落ちます**。
+3. **CDP 依存そのものが消える。** 無料枠の崖も、CDP 障害の影響半径も、売り面からはなくなります。per-call（売上の主軸）は元から Solana 単 leg だったので、面が揃いました。
+
+### 引き受けたリスク
+
+- **PayAI が有料面 100% の単一障害点**になりました。PayAI 停止時は全有料エンドポイントが 503（`payment_unavailable` + `Retry-After`）になります。以前は alpha 7 本だけ 2-of-2 の冗長性がありましたが、主力の per-call は元からこの状態でした。
+- **Base しか持たない買い手は払えません。** x402 エコシステムは Base 中心なので、ディレクトリ経由の到達性は落ちる可能性があります。`proof/` が空で実決済のログが無いため、**失った需要の量は測れていません**。
+
+### 戻し方
+
+`buildRouteConfig`（dual-leg ビルダ）・`BASE_NETWORK`・`PAY_TO_BASE`・CDP の facilitator 配線はすべて残してあります。戻すのは **7 ルートの `withSolanaOnlyPaywall` → `withPaywall`** と、記述子に Base leg を足すだけです。`scripts/__tests__/paywall.test.mjs` と `discovery-descriptor.test.mjs` が「Base を広告していないこと」を assert しているので、**戻すときはテストも意図的に書き換える**必要があります（事故で復活しない）。
+
+テストネットの `/api/testnet/signal` は Base Sepolia のままです。CDP とは無関係な `x402.org/facilitator` を使う別インスタンスで、本番の決済経路に影響しません。
 
 Sources:
 - [Circle's x402 Facilitator Service goes live on Arc, supports Base and Polygon PoS](https://cryptobriefing.com/circle-x402-facilitator-service-arc-launch/)

@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import {
   ASSET_BASE_SEPOLIA_USDC,
-  ASSET_BASE_USDC,
   ASSET_SOLANA_USDC,
-  BASE_NETWORK,
   BASE_SEPOLIA_NETWORK,
-  PAY_TO_BASE,
   PAY_TO_BASE_SEPOLIA,
   PAY_TO_SOLANA,
   PER_CALL_PRICE,
@@ -36,10 +33,15 @@ interface AcceptLeg {
 }
 
 /**
- * Solana-only accept leg, priced in atomic USDC base units rather than a USD
- * amount. Used by the per-call endpoints, whose price is `PER_CALL_PRICE` —
- * the same constant the routes charge with, so the descriptor cannot drift
- * away from what /api/catalyst/:ticker and /api/edinet/:code actually ask for.
+ * The one accept leg every paid mainnet resource offers: USDC-SPL on Solana,
+ * settled `exact` through PayAI. `baseUnits` is atomic USDC, taken from the
+ * same source the route charges with (`PER_CALL_PRICE` for the per-call
+ * endpoints, `usdToBaseUnits` for the $0.01 surface), so the descriptor cannot
+ * drift away from what the live 402 asks for.
+ *
+ * Base (`eip155:8453`) is deliberately not advertised — see
+ * docs/facilitator-design.md. `buildRouteConfig` in lib/x402.ts still builds a
+ * dual leg, so restoring Base is a one-line change per route plus a leg here.
  */
 function solanaOnlyLeg(resourcePath: string, baseUnits: string): AcceptLeg[] {
   return [
@@ -54,28 +56,8 @@ function solanaOnlyLeg(resourcePath: string, baseUnits: string): AcceptLeg[] {
   ];
 }
 
-function dualLegs(resourcePath: string, usd: number): AcceptLeg[] {
-  const resource = resourceUrl(resourcePath);
-  const amount = usdToBaseUnits(usd);
-  return [
-    {
-      scheme: "exact",
-      network: BASE_NETWORK,
-      amount,
-      asset: ASSET_BASE_USDC,
-      payTo: PAY_TO_BASE,
-      resource,
-    },
-    {
-      scheme: "exact",
-      network: SOLANA_NETWORK,
-      amount,
-      asset: ASSET_SOLANA_USDC,
-      payTo: PAY_TO_SOLANA,
-      resource,
-    },
-  ];
-}
+/** The $0.01 surface, in atomic USDC. */
+const ALPHA_PRICE_UNITS = usdToBaseUnits(0.01);
 
 export function OPTIONS(): NextResponse {
   return corsPreflight();
@@ -86,7 +68,7 @@ export function GET(): NextResponse {
     version: 2,
     name: "Onchain Stock Data",
     description:
-      "Claude-run equity research for AI agents: weekly US/JP portfolios (holdings + verifiable catalysts) and dated-catalyst scoring. Paid resources settle per call in USDC — $0.01 on Base or Solana for the /api/alpha/* surface, 0.001 USDC on Solana for the per-company /api/catalyst/{ticker} and /api/edinet/{code} lookups. A free, unsigned surface (the MCP server and three JSON endpoints) is listed under `free_endpoints` / `mcp`.",
+      "Claude-run equity research for AI agents: weekly US/JP portfolios (holdings + verifiable catalysts) and dated-catalyst scoring. Every paid resource settles per call in USDC on Solana (exact, gas sponsored by the facilitator) — $0.01 for the /api/alpha/* surface, 0.001 USDC for the per-company /api/catalyst/{ticker} and /api/edinet/{code} lookups. A free, unsigned surface (the MCP server and three JSON endpoints) is listed under `free_endpoints` / `mcp`.",
     operator: "x402 Inc.",
     region: "APAC",
     base_url: PUBLIC_BASE_URL,
@@ -96,48 +78,48 @@ export function GET(): NextResponse {
         method: "GET",
         description:
           "Claude US Portfolio - current weekly 10-name selection (ticker, weight, thesis).",
-        accepts: dualLegs("/api/alpha/portfolio/current", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/portfolio/current", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/alpha/portfolio/scorecard",
         method: "GET",
         description:
           "Claude US Portfolio scorecard - catalyst hit-rate + SPY/QQQ cumulative returns.",
-        accepts: dualLegs("/api/alpha/portfolio/scorecard", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/portfolio/scorecard", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/alpha/jp/portfolio/current",
         method: "GET",
         description:
           "Claude JP Portfolio - current weekly 10-name Japan-equity selection.",
-        accepts: dualLegs("/api/alpha/jp/portfolio/current", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/jp/portfolio/current", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/alpha/jp/scorecard",
         method: "GET",
         description:
           "Claude JP Portfolio scorecard - catalyst hit-rate (no benchmark index).",
-        accepts: dualLegs("/api/alpha/jp/scorecard", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/jp/scorecard", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/alpha/jp/catalysts",
         method: "GET",
         description: "Claude JP dated catalysts.",
-        accepts: dualLegs("/api/alpha/jp/catalysts", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/jp/catalysts", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/alpha/catalyst/submit",
         method: "POST",
         description:
           "Submit an external catalyst for Claude verdict scoring. Body: { ticker, catalyst_description, target_date, submitter_contact? }.",
-        accepts: dualLegs("/api/alpha/catalyst/submit", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/catalyst/submit", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/alpha/catalyst/:catalyst_id/score",
         method: "GET",
         description:
           "Lookup the Claude verdict for a submitted external catalyst (pending|hit|partial|miss|na).",
-        accepts: dualLegs("/api/alpha/catalyst/:catalyst_id/score", 0.01),
+        accepts: solanaOnlyLeg("/api/alpha/catalyst/:catalyst_id/score", ALPHA_PRICE_UNITS),
       },
       {
         path: "/api/catalyst/:ticker",

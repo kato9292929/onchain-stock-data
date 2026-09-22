@@ -4,7 +4,7 @@ import {
   getPortfolioEvaluations,
   type PortfolioEvaluation,
 } from "@/lib/data";
-import { corsPreflight, withPaywall } from "@/lib/x402-route";
+import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 /**
  * Scorecard for the Claude US Portfolio: catalyst hit-rate, cumulative returns
  * vs SPY/QQQ, and the most recent catalyst evaluations. Paid x402 endpoint
- * (Base + Solana USDC); internal callers bypass with `X-Internal-Key`.
+ * (Solana USDC); internal callers bypass with `X-Internal-Key`.
  *
  * `portfolio_index` is now live — chained daily from holding closes and rebased
  * to 100 at `base_date`. `cumulative_returns.portfolio_pct` is `null` only at
@@ -93,7 +93,7 @@ const handler = async (): Promise<NextResponse> => {
 
 void JUDGED;
 
-export const GET = withPaywall(handler, {
+export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
   description: "Claude US Portfolio scorecard - catalyst hit-rate + SPY/QQQ cumulative returns.",
   resourcePath: "/api/alpha/portfolio/scorecard",

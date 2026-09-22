@@ -9,7 +9,7 @@ timestamp and recorded source data.
 
 Claude が選ぶ米株・日本株ポートフォリオと、日付つきカタリストの採点記録を配信する API + Web ページ。
 
-人はブラウザで **HTML ページを無料**で読み、AI エージェントは **MCP（無料・読み取り専用）** か **[x402](https://x402.org) の有料 JSON エンドポイント**で同じ研究データを取れます。有料は 3 レーン: Claude Portfolio / Catalyst 系 `/api/alpha/...` が **$0.01**（Base + Solana dual-leg）、per-call の `/api/catalyst/{ticker}`・`/api/edinet/{code}` が **0.001 USDC**（Solana のみ・`lib/x402.ts` の `PER_CALL_PRICE`）、`/api/testnet/signal` が **$0.05**（Base Sepolia・テストネットのデモ）。**`/api/alpha/...` は無料ではありません**（無料なのは HTML ページと MCP、および下記の無料 JSON 3 本）。
+人はブラウザで **HTML ページを無料**で読み、AI エージェントは **MCP（無料・読み取り専用）** か **[x402](https://x402.org) の有料 JSON エンドポイント**で同じ研究データを取れます。**本番の有料決済はすべて Solana USDC の `exact`**（facilitator が gas を肩代わり）で、価格は 2 段階: Claude Portfolio / Catalyst 系 `/api/alpha/...` が **$0.01**、per-call の `/api/catalyst/{ticker}`・`/api/edinet/{code}` が **0.001 USDC**（`lib/x402.ts` の `PER_CALL_PRICE`）。別枠で `/api/testnet/signal` が **$0.05**（Base Sepolia・テストネットのデモ）。**`/api/alpha/...` は無料ではありません**（無料なのは HTML ページと MCP、および下記の無料 JSON 3 本）。
 
 - Live site (canonical): https://osd.x402jp.com — x402 の `resource` URL が名乗るホスト (`X402_PUBLIC_BASE_URL`)
 - Vercel デプロイ別名: https://osd-coral.vercel.app
@@ -23,7 +23,7 @@ Claude が選ぶ米株・日本株ポートフォリオと、日付つきカタ�
 |------|------|------|
 | `/portfolio` | Claude が毎週選ぶ米株 10 銘柄。Allocation・thesis・1か月カタリスト | 無料 (HTML) |
 | `/portfolio/jp` | Claude が毎週選ぶ日本株 10 銘柄。Allocation・catalyst hit-rate・thesis | 無料 (HTML) |
-| `/alpha/portfolio/history` | portfolio 履歴 + SPY/QQQ 比較チャート（**日次更新は停止中・データは凍結**） | 無料 (HTML) |
+| `/alpha/portfolio/history` | 過去の週次 portfolio と、週ごとの銘柄入替タイムライン | 無料 (HTML) |
 | `/alpha/portfolio/[ticker]` | 銘柄詳細 (Claude full thesis・entry/current price) | 無料 (HTML) |
 | `/catalysts` · `/catalysts/[sector]` | Physical AI シリーズの日付つきカタリストと採点記録 | 無料 (HTML) |
 | `/api/mcp` | MCP サーバ (`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`) | 無料・署名不要 |
@@ -66,7 +66,7 @@ osd の公開済みリサーチを **MCP ツール**として開放していま�
 **課金・決済レーンの区分:**
 
 - **無料 (署名不要)** — `/api/mcp` の 4 ツールと、`/api/alpha/catalysts/physical-ai`・`/api/catalyst`・`/api/edinet` の 3 本。各 **HTML ページ**も無料。
-- **有料 $0.01 (Base USDC + Solana USDC の dual-leg)** — Claude Portfolio / Catalyst 系の JSON API (`/api/alpha/...`)。402 に両チェーンの leg を提示し、caller が払ったチェーンを検証。
+- **有料 $0.01 (Solana USDC のみ・`exact`)** — Claude Portfolio / Catalyst 系の JSON API (`/api/alpha/...`)。**Base leg は提示しません**（理由は [docs/facilitator-design.md](docs/facilitator-design.md)）。
 - **有料 0.001 USDC (Solana USDC のみ・`exact`)** — per-call の `/api/catalyst/{ticker}`・`/api/edinet/{code}`。価格は `lib/x402.ts` の `PER_CALL_PRICE` に一元化（ルート/descriptor はこの定数を参照し、値を直書きしない）。
 - **有料 $0.05 (Base Sepolia USDC・テストネット)** — `/api/testnet/signal`。MCP の `signal_get` の有料双子で、**本番の実決済ではありません**。
 - **内部専用** — `/api/cron/*`（`CRON_SECRET`）。有料エンドポイントは `X-Internal-Key` で課金スキップ可。
@@ -79,7 +79,7 @@ GET  /api/edinet                        # EDINET 有料エンドポイントの�
      /api/mcp                           # MCP (Streamable HTTP): portfolio_get / catalysts_list
                                         #                        scoreboard_get / signal_get
 
-# ── 有料 $0.01: Base + Solana dual-leg ──
+# ── 有料 $0.01: Solana USDC のみ ──
 GET  /api/alpha/portfolio/current       # 現在の Claude US Portfolio (10 銘柄・JSON)
 GET  /api/alpha/portfolio/scorecard     # US catalyst hit-rate + SPY/QQQ 累積比較
 GET  /api/alpha/jp/portfolio/current    # 現在の Claude JP Portfolio (日本株・JSON)
@@ -106,7 +106,7 @@ POST /api/cron/update-performance       # 同上
 
 ### Discovery (`/.well-known/x402.json`)
 
-directory crawler (x402scan / Pay.sh) 向けの機械可読な記述子。**有料リソースは `endpoints`**（`/api/alpha/...` 7 本＝$0.01 dual-leg ＋ per-call 2 本＝`PER_CALL_PRICE`・Solana のみ）、**無料は `free_endpoints`**、**MCP は `mcp`**、**テストネットのデモは `testnet_endpoints`** に分けて載せます。無料 / テストネットを `endpoints` に混ぜないのは、課金対象を走査するクローラが「支払えない項目」や「Sepolia の項目を本番」と誤解しないようにするためです。
+directory crawler (x402scan / Pay.sh) 向けの機械可読な記述子。**有料リソースは `endpoints`**（`/api/alpha/...` 7 本＝$0.01 ＋ per-call 2 本＝`PER_CALL_PRICE`。いずれも Solana 単 leg）、**無料は `free_endpoints`**、**MCP は `mcp`**、**テストネットのデモは `testnet_endpoints`** に分けて載せます。無料 / テストネットを `endpoints` に混ぜないのは、課金対象を走査するクローラが「支払えない項目」や「Sepolia の項目を本番」と誤解しないようにするためです。
 
 価格は `lib/x402.ts` の定数を参照しており、記述子側で直書きしません。`scripts/__tests__/discovery-descriptor.test.mjs` が、**記述子の全パスが実在するルートファイルに解決できること**・per-call が `PER_CALL_PRICE` の Solana 1 leg であること・削除済みエンドポイントを広告していないことを検証します（記述子がまたコードからズレたらテストが落ちます）。
 
@@ -171,7 +171,7 @@ content-type: application/json
 ```
 
 - `/api/catalyst/:ticker`・`/api/edinet/:code` は **Solana USDC のみ**（上記の 1 leg・`amount` は `PER_CALL_PRICE.base_units` = `"1000"`）。起動時に `assertSolanaExactUsdc` が network / mint / 金額を検証し、ドリフトしていれば **fail closed**（500）になります。
-- `/api/alpha/...` の dual-leg endpoint は、これに **Base (`eip155:8453`) USDC の leg** が加わった 2 leg を返します（`amount` は `"10000"` = $0.01）。
+- `/api/alpha/...` も**同じ Solana 単 leg**で、`amount` が `"10000"`（= $0.01）になるだけです。**本番で Base (`eip155:8453`) leg を返すエンドポイントはありません。**
 - 金額は atomic 文字列（USDC 6 桁。`"1000"` = 0.001 USDC、`"10000"` = $0.01）。`amount` が v2 の金額フィールド。
 - `extra.feePayer` は Solana のスポンサー送金用に PayAI facilitator が `/supported` 経由でリクエスト毎に注入します（ローテートするため固定値ではない）。
 - **ハンドラが 4xx を返すと決済はキャンセル**されます（`@x402/next` の `handleSettlement` が `status >= 400` で `cancel()`）。存在しない ticker / catalyst_id の空振りには課金されません。
@@ -193,7 +193,7 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 | データ | 中身 | 由来 |
 |--------|------|------|
 | Claude Portfolio (US / JP) | 週次の 10 銘柄選定・thesis・入替履歴 | `lib/jobs.ts` が Claude を呼び、`data/portfolio-history.json`・`data/jp-portfolio-history.json` に commit |
-| Performance（**更新停止中**） | SPY/QQQ vs portfolio index の日次系列 | `data/performance-history.json`。`update-performance` workflow は **schedule 無効化済み**（本製品は予測記録を出すのが目的で、リターン追跡はしない）。`/alpha/portfolio/history` は凍結済みデータを表示します。 |
+| Performance（**更新停止中・非表示**） | SPY/QQQ vs portfolio index の日次系列 | `data/performance-history.json`（2026-09-01 で停止）。`update-performance` workflow は **schedule 無効化済み**（本製品は予測記録を出すのが目的で、リターン追跡はしない）。**どのページからも表示していません**。唯一 `/api/alpha/portfolio/scorecard` の `cumulative_returns` が凍結値を返します。 |
 | Catalyst 採点 (Physical AI シリーズ) | 日付つきカタリストと hit/partial/miss/na 判定 | `data/external-catalysts.json`（`evaluate-catalysts` workflow が Claude + web search で判定し commit） |
 | IR Fair カタリスト | 企業別カタリスト + 開示済み財務 (JPY 百万) | `data/ir-fair-2026-catalysts.json` |
 | EDINET | 直近の提出書類メタ + 会計期間 | EDINET API v2 (`documents.json` type=2 + 書類取得 type=5 CSV)・週次キャッシュ |
@@ -228,11 +228,11 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 
 ## Claude Portfolio (`/portfolio`)
 
-毎週月曜朝 6 時 (JST) に Claude が選ぶ米株・日本株の各 10 銘柄。**HTML ページはブラウザ無料公開**、**JSON API (`/api/alpha/...`) はエージェント向けに x402 有料 ($0.01・Base + Solana)** (旧 claudestock.vercel.app を osd に統合)。
+毎週月曜朝 6 時 (JST) に Claude が選ぶ米株・日本株の各 10 銘柄。**HTML ページはブラウザ無料公開**、**JSON API (`/api/alpha/...`) はエージェント向けに x402 有料 ($0.01・Solana USDC)** (旧 claudestock.vercel.app を osd に統合)。
 
 - `/portfolio` — 米国株: Allocation Breakdown ＋ 10 銘柄/thesis ＋ 各銘柄の検証可能な 1 か月カタリスト。**ファンドではなく選定記録**なので、P&L / ベンチマーク追跡は載せません。
 - `/portfolio/jp` — 日本株: Allocation Breakdown ＋ catalyst hit-rate ＋ 10 銘柄/thesis (ベンチ指数なし)
-- `/alpha/portfolio/history` — 過去の portfolio 履歴 + SPY/QQQ 比較チャート（recharts）。**日次の performance 更新は停止済みで、チャートは凍結データ**です。
+- `/alpha/portfolio/history` — 過去の週次 portfolio と、週ごとの銘柄入替タイムライン。**P&L / ベンチマーク比較は載せません**（本製品が公開するのは予測の記録であってリターンではない）。
 - `/alpha/portfolio/[ticker]` — 銘柄詳細 (Claude full thesis・entry/current price)
 - `GET /api/alpha/portfolio/current` — 同じ選定を JSON で (x402 有料 $0.01・agent / 外部 tool 用)
 
@@ -261,7 +261,7 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 
 ## External Catalyst Scoring (Phase A)
 
-AI エージェントや開発者が **catalyst（株価材料）を投げ込み、後日 Claude が hit/partial/miss/na を判定**する x402 有料 endpoint です（投稿・判定参照とも **$0.01**・Base + Solana dual-leg）。内部 Claude Portfolio の catalyst 採点パイプライン (`evaluate-catalysts`) を外部開放したもので、[AlternaData for agents](docs/alternadata-for-agents.md) 構想の Phase A にあたります。
+AI エージェントや開発者が **catalyst（株価材料）を投げ込み、後日 Claude が hit/partial/miss/na を判定**する x402 有料 endpoint です（投稿・判定参照とも **$0.01**・Solana USDC）。内部 Claude Portfolio の catalyst 採点パイプライン (`evaluate-catalysts`) を外部開放したもので、[AlternaData for agents](docs/alternadata-for-agents.md) 構想の Phase A にあたります。
 
 ### 投稿 — `POST /api/alpha/catalyst/submit`
 
@@ -310,9 +310,9 @@ curl https://osd.x402jp.com/api/alpha/catalyst/ext_xxxxxxxx/score
 
 ### Solana payments（供給側 / Solana で叩かれる側）
 
-osd の有料 endpoint は Base に加えて **Solana USDC でも支払いを受け付けます**。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。Solana の検証/settle は**公式 `@payai/facilitator` パッケージ**（`https://facilitator.payai.network`）に委ねます。
+osd の**本番の有料 endpoint は Solana USDC のみ**で支払いを受け付けます。x402 SDK は SVM の verify/settle scheme（`@x402/svm`）を同梱しており、`lib/x402.ts` で登録済みです。Solana の検証/settle は**公式 `@payai/facilitator` パッケージ**（`https://facilitator.payai.network`）に委ねます。
 
-- **構成**：`x402ResourceServer` に **CDP（Base）を先頭、PayAI（Solana）を 2 つ目**にした facilitator client 配列を渡します。SDK が `initialize()` 時に各 `getSupported()` を読み、`solana:*` の verify を PayAI、`eip155:8453` を CDP へ自動ルーティング（先頭優先なので Base は CDP から動きません）。402 challenge の Solana leg は payTo=`SOLANA_RECEIVE_ADDRESS`、mint=Solana USDC、金額=価格。
+- **構成**：`x402ResourceServer` に **CDP（Base）を先頭、PayAI（Solana）を 2 つ目**にした facilitator client 配列を渡します。SDK が `initialize()` 時に各 `getSupported()` を読み、ネットワークごとに担当 facilitator を決めます。**現在どのルートも Base leg を提示しない**ため、実際に使われるのは PayAI だけです（CDP の配線は将来 Base を戻す場合に備えて残置）。402 challenge の Solana leg は payTo=`SOLANA_RECEIVE_ADDRESS`、mint=Solana USDC、金額=価格。
 - **PayAI 認証**：無料 tier はキー不要。本番拡張時のみ `PAYAI_API_KEY_ID` / `PAYAI_API_KEY_SECRET`（JWT auth）を設定します。
 - **フォールバック**：PayAI client の構築に失敗した場合は配列が `[CDP]` のみに degrade し、**Base のみ実検証＝従来と完全に同一**（リグレッションなし）。Base の検証経路（CDP facilitator）は一切変更していません。
 

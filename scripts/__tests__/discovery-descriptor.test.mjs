@@ -87,18 +87,24 @@ test("per-call endpoints advertise PER_CALL_PRICE, Solana-only", () => {
   }
 });
 
-test("the /api/alpha surface advertises $0.01 on both chains", () => {
+test("the /api/alpha surface advertises $0.01 on Solana", () => {
   const alpha = body.endpoints.filter((e) => e.path.startsWith("/api/alpha/"));
   assert.ok(alpha.length >= 7, "the alpha surface should still be advertised");
   for (const e of alpha) {
-    assert.equal(e.accepts.length, 2, `${e.path} must offer Base + Solana`);
-    assert.deepEqual(
-      e.accepts.map((a) => a.network).sort(),
-      [BASE_NETWORK, SOLANA_NETWORK].sort(),
-    );
+    assert.equal(e.accepts.length, 1, `${e.path} must offer exactly one leg`);
+    assert.equal(e.accepts[0].network, SOLANA_NETWORK);
+    // $0.01 in atomic USDC (6 decimals).
+    assert.equal(e.accepts[0].amount, "10000", `${e.path} must charge $0.01`);
+  }
+});
+
+test("no mainnet Base leg is advertised", () => {
+  // osd settles every paid mainnet resource on Solana; the buyer side (AA)
+  // holds no EVM signer at all. Re-adding a Base leg is a deliberate decision
+  // (docs/facilitator-design.md), not something that should slip back in.
+  for (const e of body.endpoints) {
     for (const leg of e.accepts) {
-      // $0.01 in atomic USDC (6 decimals).
-      assert.equal(leg.amount, "10000", `${e.path} must charge $0.01`);
+      assert.notEqual(leg.network, BASE_NETWORK, `${e.path} advertises Base again`);
     }
   }
 });
