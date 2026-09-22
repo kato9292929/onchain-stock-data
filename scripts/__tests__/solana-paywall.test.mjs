@@ -45,6 +45,22 @@ test("buildRouteConfig advertises both Base and Solana exact legs", () => {
   assert.equal(base.payTo, PAY_TO_BASE);
 });
 
+test("the dual-leg builder lists Solana FIRST", () => {
+  // @x402/core's default client selector is `(version, accepts) => accepts[0]`
+  // (node_modules/@x402/core/dist/esm/client/index.mjs:31). A buyer that does
+  // not supply its own selector therefore pays on whatever leg we list first —
+  // it does not choose the chain it can actually settle on. With Base first,
+  // AA signed Base payments that failed at settlement once CDP was blocked.
+  // Nothing ships this builder today (every paid route is Solana-only), but if
+  // Base is restored this ordering is what keeps default buyers working.
+  const cfg = buildRouteConfig("$0.01", "test", "/api/alpha/portfolio/current");
+  assert.equal(
+    cfg.accepts[0].network,
+    SOLANA_NETWORK,
+    "accepts[0] is what a default-selector buyer pays on — it must be Solana",
+  );
+});
+
 test("Solana network id is mainnet solana CAIP", () => {
   assert.match(SOLANA_NETWORK, /^solana:/);
 });
