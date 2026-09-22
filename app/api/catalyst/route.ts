@@ -24,7 +24,7 @@ async function handler() {
 
   return NextResponse.json({
     source: "onchain-stock-data · catalyst index",
-    note: "Free preview. Per-company catalyst + financials is a paid x402 call at /api/catalyst/{ticker}.",
+    note: "Free preview. Per-company catalyst + financials is a paid x402 call at /api/catalyst/{ticker} — but ONLY for companies with researched:true. A company still awaiting research returns 200 free there too (researched:false, no catalyst), so paying for one is impossible.",
     paid_resource: `${PUBLIC_BASE_URL}/api/catalyst/{ticker}`,
     count: companies.length,
     researched: companies.filter((c) => c.researched).length,

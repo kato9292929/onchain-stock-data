@@ -125,7 +125,7 @@ export function GET(): NextResponse {
         path: "/api/catalyst/:ticker",
         method: "GET",
         description:
-          "Per-company catalyst (due date, success/fail condition, status) plus the latest disclosed financials. Settled per call in USDC on Solana; an unknown ticker returns 404 and is not charged.",
+          "Per-company catalyst (due date, success/fail condition, source) plus the latest disclosed financials where the research recorded them. Only researched companies are charged: one still awaiting research returns 200 free with researched:false, and an unknown ticker returns 404 — neither reaches the paywall. Settled per call in USDC on Solana.",
         accepts: solanaOnlyLeg("/api/catalyst/:ticker", PER_CALL_PRICE.base_units),
       },
       {
