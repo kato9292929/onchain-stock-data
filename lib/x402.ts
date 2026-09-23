@@ -3,9 +3,17 @@ import {
   x402ResourceServer,
 } from "@x402/core/server";
 import type {
+  FacilitatorClient,
   FacilitatorConfig,
   RouteConfig,
 } from "@x402/core/server";
+import type {
+  PaymentPayload,
+  PaymentRequirements,
+  SettleResponse,
+  SupportedResponse,
+  VerifyResponse,
+} from "@x402/core/types";
 import type { PaymentOption } from "@x402/core/http";
 import type { Network, Price } from "@x402/core/types";
 import { registerExactEvmScheme } from "@x402/evm/exact/server";
@@ -92,8 +100,10 @@ const cdpFacilitatorClient = new HTTPFacilitatorClient(buildFacilitatorConfig())
  * PAYAI_API_KEY_ID / PAYAI_API_KEY_SECRET are set (free tier works without).
  * It is passed to the same HTTPFacilitatorClient the CDP path uses.
  *
- * Wrapped in try/catch so that, if the package is missing or config build
- * throws, we degrade to CDP-only (Base) and never break the existing path.
+ * Wrapped in try/catch so a missing package or a failed config build does not
+ * take the whole app down — but it is NOT a silent degrade to CDP: the scoping
+ * below gives CDP no claim on Solana, so the paid routes fail loudly instead of
+ * being settled by a facilitator that was never meant to serve them.
  */
 function buildPayAIFacilitatorClient(): HTTPFacilitatorClient | null {
   try {
@@ -103,8 +113,14 @@ function buildPayAIFacilitatorClient(): HTTPFacilitatorClient | null {
     );
     return new HTTPFacilitatorClient(config);
   } catch (err) {
-    console.warn(
-      `[x402] PayAI facilitator unavailable — Solana verification disabled, Base unaffected: ${err}`,
+    // error, not warn: every paid mainnet route settles on Solana, so losing
+    // this client means the paid surface cannot be served. It used to read
+    // "Base unaffected", which was true when routes were dual-leg and is not
+    // any more. Kept non-fatal so the free/HTML surface still boots, but the
+    // paid routes will answer 503 payment_unavailable rather than pretend.
+    console.error(
+      `[x402] PayAI facilitator unavailable — Solana cannot be verified or settled, ` +
+        `so every paid route will return 503 payment_unavailable: ${err}`,
     );
     return null;
   }
@@ -115,19 +131,85 @@ const payaiFacilitatorClient = buildPayAIFacilitatorClient();
 /** True when the PayAI (Solana) facilitator client was constructed. */
 export const isPayAISolanaEnabled = payaiFacilitatorClient !== null;
 
+/** A network id belongs to the EVM family (CAIP-2 `eip155:*`, or the v1 alias). */
+function isEvmNetwork(network: string): boolean {
+  return network === "base" || network.startsWith("eip155:");
+}
+
+/** A network id belongs to the Solana family (CAIP-2 `solana:*`, or the v1 alias). */
+function isSolanaNetwork(network: string): boolean {
+  return network === "solana" || network.startsWith("solana:");
+}
+
 /**
- * Facilitator client array. CDP first so Base (eip155:8453) keeps routing to
- * CDP exactly as before; PayAI is appended for solana:*. The SDK's
- * x402ResourceServer.initialize() calls getSupported() on each and builds a
- * version→network→scheme→client map (earlier clients win on conflicts), so
- * each network is verified/settled by its own facilitator automatically.
+ * Restrict a facilitator to the networks we actually want it to serve.
  *
- * If PayAI couldn't be built, the array is just [CDP] — byte-identical to the
- * previous single-facilitator behaviour (Base-only real verification).
+ * `x402ResourceServer.initialize()` asks every client what it supports and
+ * keeps the FIRST client that claims a given (version, network, scheme) —
+ * `if (!responseNetworkMap.has(kind.scheme))` in @x402/core 2.13.0. That makes
+ * the ARRAY ORDER decide who settles each chain, based on whatever each
+ * facilitator happens to advertise.
+ *
+ * That is too implicit to rely on. CDP advertises Solana as well as EVM, so
+ * listing it first silently hands it `solana:*` too — and a CDP account past
+ * its free tier then fails settlement AFTER the buyer has signed, which
+ * surfaces to the buyer as an opaque 402 with an empty body. The previous
+ * comment here asserted "CDP verifies Base only"; that was an assumption about
+ * getSupported(), never a check.
+ *
+ * So we state the split in code instead of inferring it from order: CDP serves
+ * EVM, PayAI serves Solana, whatever either one claims.
  */
-const facilitatorClients = payaiFacilitatorClient
-  ? [cdpFacilitatorClient, payaiFacilitatorClient]
-  : [cdpFacilitatorClient];
+function scopeToNetworks(
+  inner: FacilitatorClient,
+  label: string,
+  allow: (network: string) => boolean,
+): FacilitatorClient {
+  return {
+    async getSupported(): Promise<SupportedResponse> {
+      const supported = await inner.getSupported();
+      const kinds = supported.kinds.filter((kind) => allow(String(kind.network)));
+      const dropped = supported.kinds.length - kinds.length;
+      if (dropped > 0) {
+        console.info(
+          `[x402] ${label} facilitator scoped: ignoring ${dropped} advertised kind(s) outside its assigned networks`,
+        );
+      }
+      return { ...supported, kinds };
+    },
+    verify(
+      paymentPayload: PaymentPayload,
+      paymentRequirements: PaymentRequirements,
+    ): Promise<VerifyResponse> {
+      return inner.verify(paymentPayload, paymentRequirements);
+    },
+    settle(
+      paymentPayload: PaymentPayload,
+      paymentRequirements: PaymentRequirements,
+    ): Promise<SettleResponse> {
+      return inner.settle(paymentPayload, paymentRequirements);
+    },
+  };
+}
+
+/**
+ * Facilitator clients, each scoped to its own chain family. Order no longer
+ * carries meaning: the scopes do not overlap, so neither client can take the
+ * other's networks regardless of what it advertises.
+ *
+ * If PayAI could not be built, Solana has NO facilitator rather than silently
+ * falling through to CDP. That is deliberate: every paid mainnet route is
+ * Solana-only, so a missing PayAI client means those routes cannot be served
+ * at all. The SDK then reports the network as unsupported, which the route
+ * wrapper turns into an explicit 503 `payment_unavailable` + Retry-After —
+ * a buyer can act on that, unlike an empty 402 after it has already signed.
+ */
+const facilitatorClients: FacilitatorClient[] = [
+  scopeToNetworks(cdpFacilitatorClient, "CDP", isEvmNetwork),
+  ...(payaiFacilitatorClient
+    ? [scopeToNetworks(payaiFacilitatorClient, "PayAI", isSolanaNetwork)]
+    : []),
+];
 
 export const x402Server = new x402ResourceServer(facilitatorClients);
 registerExactEvmScheme(x402Server);
