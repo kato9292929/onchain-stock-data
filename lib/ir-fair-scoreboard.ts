@@ -50,6 +50,22 @@ export interface IrFairCatalyst {
   fiscal_period?: string | null;
   disclosed_at?: string | null;
   due_date: string | null;
+  /**
+   * False only when the deadline was read off a disclosed calendar entry.
+   * True means it was inferred from the company's past timing — and because a
+   * row is scored a MISS when nothing is disclosed by `due_date`, an inferred
+   * date set even a day early manufactures a miss. 6787 already did this once:
+   * the date said 08-05, the 短信 landed 08-06. Promotion to `active` should
+   * confirm the date against TDnet when this is true.
+   */
+  date_estimated?: boolean;
+  /** How the condition was produced — `"distilled"` = written from analysis
+   *  rather than a fresh primary-source research pass. */
+  condition_source?: string;
+  researched_at?: string;
+  /** Thematic sector slug from `lib/catalyst-sectors.ts`. A different axis from
+   *  `sector` (TSE 33業種), which is what the board groups by. */
+  sector_slug?: string;
   success_condition: string | null;
   fail_condition: string | null;
   source: string | null;
