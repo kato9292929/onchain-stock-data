@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-09-21T00:21:19.708Z",
+  "updated_at": "2026-10-05T01:14:48.068Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -745,10 +745,10 @@
       "ticker": "6323",
       "catalyst_target_date": "2026-09-11",
       "success_condition": "9月上旬の本決算でウェハ搬送装置受注残が過去最高更新、来期ガイダンス+15%超なら評価上げ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "na",
+      "evaluated_at": "2026-10-05T00:29:44.901Z",
+      "evidence_url": "https://www.rorze.com/ir/calender/",
+      "reasoning": "ローツェ(6323)の決算期は2月期であり、本決算(通期決算)は例年4月上旬に発表される。同社IRカレンダーでも2026年2月期の本決算発表・決算説明会は2026年4月9日に設定されており、直近の開示は2026年7月9日発表の2027年2月期第1四半期決算短信、次回開示予定は2026年10月8日(中間決算)とされている。したがって success_condition が前提とする『9月上旬の本決算』という開示イベント自体がこの銘柄には存在せず、2026-09-11時点で受注残の過去最高更新や来期(2027年2月期通期)ガイダンス+15%超を判定できる一次情報(決算短信・適時開示)は確認できない。判定材料が出ていないため na とする。",
       "condition_source": "thesis"
     },
     {
@@ -921,10 +921,10 @@
       "ticker": "8035",
       "catalyst_target_date": "2026-09-11",
       "success_condition": "9/9-11開催予定のSEMICON Taiwan 2026で先端ロジック向け装置受注の強さが示されれば再評価材料となる。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "hit",
+      "evaluated_at": "2026-10-05T00:34:42.126Z",
+      "evidence_url": "https://www.nikkei.com/article/DGXZQOGM032FU0T00C26A9000000/",
+      "reasoning": "success_conditionはSEMICON Taiwan 2026を9/9-11開催としているが、実際の会期はTEL公式サイト等で確認した通り2026年9月2日〜4日であり、日付の前提に誤りがある。ただし実際の開催期間中（9/2）、TEL最大の先端ロジック顧客であるTSMCの侯永清副共同COOが、2026年に必要な半導体製造装置の調達量が2025年末時点の見通しから9割（約1.9倍）増加したと公式に発言（日経・Bloomberg報道）。これは先端ロジック向け装置需要・受注の強さを示す極めて明確なシグナルであり、success_conditionが意図する『再評価材料』としての実質的条件は満たされたと判断する。TEL自身の受注高を示す決算短信（2Q FY2027、4-9月期）は2026年10月末発表予定でまだ開示されておらず、本判定はTSMCの公式発言という間接証拠に基づく。日程の記述誤りを考慮し、厳密な事実関係としては留意が必要だが、材料の方向性・強度としてはhitと評価する。",
       "condition_source": "thesis"
     },
     {
@@ -932,10 +932,10 @@
       "ticker": "4062",
       "catalyst_target_date": "2026-09-15",
       "success_condition": "9月中の投資家向け説明会・進捗開示でAIサーバー向けFC-BGA稼働率が前四半期比で上昇していれば買い材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "partial",
+      "evaluated_at": "2026-10-05T00:39:41.515Z",
+      "evidence_url": "https://chemicaldaily.com/archives/854540",
+      "reasoning": "イビデンの公式IRカレンダーには9月中の正式な投資家向け説明会の予定はなく（直近は8月4日の第1四半期決算発表、次回は10月下旬以降の第2四半期決算発表）、9月中にFC-BGA稼働率の前四半期比数値を明示した投資家向け説明会・進捗開示は確認できなかった。もっとも、8月4日発表の2027年3月期第1四半期決算では、大野事業場の生産安定化と生成AIサーバー向け受注の堅調さを背景に電子事業の売上高が前年同期比37.7%増、営業利益が52.4%増となり、需要が供給能力を上回る状況が続いていると説明された。さらに2026年9月15日（ターゲット日当日）付の化学工業日報インタビューで河島浩二社長がAI需要増加を背景に先端基板への投資継続方針を語るなど、稼働率上昇を示唆する方向性のニュースフローは継続して確認された。ただし、success_conditionが求める『9月中の投資家向け説明会・進捗開示での前四半期比の稼働率上昇』という具体的・定量的な開示は見つからず、完全な達成（hit）とは言えないため、方向性は合致するが基準未達の『partial』と判定した。",
       "condition_source": "thesis"
     },
     {
@@ -943,10 +943,10 @@
       "ticker": "3110",
       "catalyst_target_date": "2026-09-20",
       "success_condition": "9月中にガラスクロス（AIサーバー基板向け）の価格改定・増産投資が正式発表されれば上振れ材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "miss",
+      "evaluated_at": "2026-10-05T00:41:48.623Z",
+      "evidence_url": "https://www.trendforce.com/news/2026/08/06/news-nittobo-raises-fy2027-net-profit-forecast-by-jpy-3b-no-further-t-glass-price-hikes-planned/",
+      "reasoning": "2026年8月5日の決算発表（2027年3月期ガイダンス上方修正）において、日東紡はTガラスの追加値上げは予定していないと明言しており、success_conditionが求める価格改定は否定されている。増産投資（4ヵ年設備投資計画の拡大）についても既に8月の開示で示されたものであり、9月中の『新規・正式発表』という条件には合致しない。9月17日前後の報道は主要顧客側の増産に関するもので、日東紡自身による新たな価格改定・増産投資の正式発表ではなかった。従って9月中に本件condition（価格改定・増産投資の正式発表）が成立した証跡は確認できず、miss判定とする。",
       "condition_source": "thesis"
     },
     {
@@ -954,10 +954,10 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-09-10",
       "success_condition": "9/10前後に開示される月次受注速報でAI・パワー半導体向け精密加工装置受注が前月比増加していれば継続買い材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "na",
+      "evaluated_at": "2026-10-05T00:45:42.759Z",
+      "evidence_url": "https://www.disco.co.jp/jp/ir/calendar/",
+      "reasoning": "銘柄6146はディスコ(DISCO Corporation)。success_conditionは『9/10前後に開示される月次受注速報』の前月比増加を前提としているが、ディスコの実際の開示慣行は『個別売上高および出荷額速報』を四半期ごと(年4回)に開示するものであり、月次開示ではない。会社IRカレンダー(disco.co.jp/jp/ir/calendar/)によれば、2026年度の速報開示は7月6日(第1四半期)と10月6日(第2四半期)であり、その間の9月10日前後には該当する速報・適時開示は存在しない。次回決算発表も2026年10月下旬予定であり、TDnet・日経・会社IRのいずれにも9/10前後の受注/売上速報に関する開示は確認できなかった。したがって、catalyst_target_date時点でsuccess_conditionの達成可否を判定する材料が存在せず、'na'と判定する。",
       "condition_source": "thesis"
     },
     {
@@ -965,10 +965,10 @@
       "ticker": "6787",
       "catalyst_target_date": "2026-09-18",
       "success_condition": "9月の四半期進捗でAIサーバー向け高多層基板の受注残高が拡大していることが示されれば評価材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "na",
+      "evaluated_at": "2026-10-05T00:55:24.825Z",
+      "evidence_url": "https://finance.yahoo.co.jp/quote/6787.T/financials",
+      "reasoning": "メイコー(6787)は3月期決算であり、9月には四半期決算発表スケジュールが存在しない(Q1は8月発表、Q2/中間は11月発表)。catalyst_target_date(2026-09-18)直前の最新開示は2026年8月6日発表の第1四半期決算短信で、売上高は前年同期比38.0%増の732億円と過去最高を更新したが、増収要因は車載向け新規顧客獲得と衛星通信向け増加であり、AIサーバー向け高多層基板の受注残高拡大を示す具体的記述は確認できなかった。利益面も原材料高騰等で伸びが限定的だった。2026年9月28日の適時開示は株式分割・配当修正に関するものでAIサーバー受注とは無関係。モルガン・スタンレーMUFG証券によるAIサーバー関連の業績拡大加速予想(格上げ)は2026年9月30日付であり、target_dateより後かつ一次情報(決算短信・適時開示)ではなくアナリスト予想コメントに過ぎない。したがって9月18日時点でsuccess_conditionを裏付ける一次情報の開示は確認できず、判定材料が不足しているため'na'とした。",
       "condition_source": "thesis"
     },
     {
@@ -976,10 +976,10 @@
       "ticker": "6323",
       "catalyst_target_date": "2026-09-17",
       "success_condition": "9月の半導体製造装置向け搬送装置の受注動向で前四半期比増加が示唆されれば買い材料。",
-      "status": "pending",
-      "evaluated_at": null,
+      "status": "na",
+      "evaluated_at": "2026-10-05T01:03:23.526Z",
       "evidence_url": null,
-      "reasoning": null,
+      "reasoning": "ローツェ(6323)の決算発表予定日は2026/10/08であり、catalyst_target_date(2026-09-17)の時点では2026年8月期(第2四半期)の決算短信はまだ公表されていない。TDnet適時開示・決算短信・会社IR資料・日経などの報道を幅広く検索したが、2026年9月時点における同社の半導体製造装置向け搬送装置の受注動向(前四半期比増加の示唆)を直接裏付ける一次情報は確認できなかった。業界全体としてはSEMI予測や日本製半導体製造装置販売額(SEAJ、8月まで8カ月連続で前年実績上回り)など好調な統計はあるが、ローツェ固有の受注動向を示す開示・報道は見つからず、success_conditionの達成可否を判定する材料が不足しているためnaと判定する。",
       "condition_source": "thesis"
     },
     {
@@ -987,10 +987,10 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-09-19",
       "success_condition": "TSMC・Samsungの9月設備投資計画発表でEUVマスク検査装置向け需要拡大が確認されれば反応材料。",
-      "status": "pending",
-      "evaluated_at": null,
+      "status": "na",
+      "evaluated_at": "2026-10-05T01:04:13.881Z",
       "evidence_url": null,
-      "reasoning": null,
+      "reasoning": "web検索では2026-09-19前後のTSMC・Samsungの9月設備投資計画発表、およびそれに連動するレーザーテック(6920)のEUVマスク検査装置向け需要拡大を裏付ける決算短信・適時開示(TDnet)・EDINET提出書類・会社IR資料・日経等の報道が一切確認できなかった。確認できたのはLasertecの一般的な事業概要(マスク検査市場シェア約49%、TSMC・Samsungが主要顧客)のみであり、対象日付時点でのTSMC・Samsungの具体的な9月設備投資計画発表や需要拡大を示す一次情報は見つからず、success_conditionの達成可否を判定する材料が存在しないため、naと判定した。",
       "condition_source": "thesis"
     },
     {
@@ -998,10 +998,10 @@
       "ticker": "2802",
       "catalyst_target_date": "2026-09-22",
       "success_condition": "9月中にABF材料の増産投資・AIサーバー向け供給拡大が正式発表されれば電子材料事業の評価が高まる。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "miss",
+      "evaluated_at": "2026-10-05T01:11:59.039Z",
+      "evidence_url": "https://news.ajinomoto.co.jp/?genre=corporate",
+      "reasoning": "2026年9月中にABF材料の増産投資・AIサーバー向け供給拡大を正式発表した事実は確認できなかった。関連する主要な好材料（岐阜新工場用地取得=2026年5月7日、電子材料事業説明会=2026年6月30日、Q1決算でのファンクショナルマテリアルズ急伸・通期上方修正=2026年8月6日、AFT吸収合併基本方針=2026年8月6日）はいずれも9月より前に既に発表済みであり、9月中の会社ニュースルーム一覧（内部監査会長賞受賞、スポーツ選手パートナー契約、日焼け止め新商品など）にもABF増産・AIサーバー供給拡大に関する新規の正式発表は見当たらない。また同時期（2026年8月）には中国本土向けABF供給を30%削減したとの業界筋報道もあり、これは増産ではなく供給制限の方向であった上、会社の正式TDnet開示ではなく業界情報源によるものだった。success_conditionが特定する『9月中の正式発表』という条件は満たされていないため、miss と判定する。",
       "condition_source": "thesis"
     },
     {
@@ -1009,10 +1009,10 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-09-24",
       "success_condition": "9月の展示会・IR発表でデータセンター向け電源機器（パワー半導体）の大型受注が公表されれば材料となる。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
+      "status": "miss",
+      "evaluated_at": "2026-10-05T01:14:48.062Z",
+      "evidence_url": "https://www.automation-news.jp/2026/09/108381/",
+      "reasoning": "2026年9月前後の富士電機(6504)関連ニュース・適時開示を確認したが、データセンター向け電源機器（パワー半導体）の『大型受注』を公表する発表は見当たらなかった。同社の9月のプレスリリースは監視制御コントローラ『XCS-5000』や『MICREX-VieW One』などの製品発売告知が中心で、受注公表ではない。9月24日前後にTDnetで見つかった『大口受注（予定）』開示はデータセクション(3905)という別銘柄のものであり、富士電機とは無関係だった。また関連展示会『Data Centre World Asia 2026』はシンガポールで9/29-30開催予定でcatalyst_target_date時点では未開催。Q1 FY2026決算（8月発表）でデータセンター需要牽引の増益は確認できるが、これは一般的な需要動向の言及であり、9月の展示会・IR発表での具体的な大型受注公表という success_condition は満たしていないと判断し、miss とした。",
       "condition_source": "thesis"
     },
     {
@@ -1234,6 +1234,116 @@
       "evidence_url": null,
       "reasoning": null,
       "condition_source": "thesis"
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5頃の2Q決算でHBM向けテスタ受注が前年同期比30%超増なら需要加速を確認でき再評価",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "8035",
+      "catalyst_target_date": "2026-10-29",
+      "success_condition": "10/29頃の2Q決算で先端ロジック・メモリ向け装置受注高が前四半期比増加を維持すれば強気材料",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30頃の2Q決算でAIサーバー向けパッケージ基板売上高が前年同期比20%超増なら上振れ確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-10-28",
+      "success_condition": "10/28頃の2Q決算でSiC・先端パッケージ向け精密加工装置受注残高が増加基調を示せば継続評価",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "6920",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30頃の1Q（6月期）決算でEUVマスク検査装置受注が前四半期比増加なら需要底打ちを確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "2802",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5頃の2Q決算でABF絶縁材料事業の売上高が前年同期比2桁増を示せばAI基板需要恩恵を確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "3110",
+      "catalyst_target_date": "2026-11-06",
+      "success_condition": "11/6頃の2Q決算でガラスクロス事業の営業利益率が前四半期比改善を示せばサーバー向け需要拡大を確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "6787",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5頃の2Q決算でAIサーバー向け高多層基板売上が前年同期比増収なら成長加速を確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "6504",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5頃の2Q決算でパワー半導体・データセンター電源関連の受注高が前年同期比増なら再評価材料",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-05",
+      "ticker": "6723",
+      "catalyst_target_date": "2026-11-06",
+      "success_condition": "11/6頃の3Q決算でAI・車載向けロジック半導体売上が前四半期比回復を示せば底打ち確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
     }
   ]
 }
