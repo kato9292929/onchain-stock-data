@@ -1433,10 +1433,12 @@
     "target_date": "2026-09-25",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "miss",
+    "judgement_date": "2026-10-05",
+    "evidence_urls": [
+      "https://s25.q4cdn.com/621799436/files/doc_financials/2026/q4/Q4-FY26-Prepared-Remarks.pdf"
+    ],
+    "reasoning": "Micronの2026年9月30日公表FY2026 Q4決算(会計年度末2026年9月3日)で、Automotive and Embedded Business Unit(AEBU)売上高は前四半期の46.3億ドルから68.2億ドルへ四半期比47%増加し過去最高を記録した。thesisが想定したHBM・データセンター向け配分優先による車載・組込みの横ばい・減少は発生せず、success_conditionが『外れ方向』と位置付けていた『46.3億ドルを上回る』展開がそのまま実現したため、catalystの方向性は逆(miss)と判定する。",
     "catalyst_type": "earnings",
     "date_confidence": "estimated",
     "country": "US",
@@ -1457,10 +1459,12 @@
     "target_date": "2026-09-25",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "hit",
+    "judgement_date": "2026-10-05",
+    "evidence_urls": [
+      "https://www.cnbc.com/2026/09/30/micron-mu-q4-earnings-report-2026.html"
+    ],
+    "reasoning": "Micronは2026年6月24日のQ3決算発表時にFQ4-26売上ガイダンスを『$50.0 billion ± $1.0 billion』（レンジ$49B〜$51B）と提示した。2026年9月30日発表の実際のQ4結果では売上$54.23billion（前年同期比+379.3%、LSEGコンセンサス$51.069Bも上回る）となり、ガイダンスレンジ上限$51Bを約$3.2B明確に上回った。AI向けHBMメモリ需要急増が背景で、success_condition（レンジ上限超え）を達成したためhit判定とした。",
     "catalyst_type": "earnings",
     "date_confidence": "estimated",
     "country": "US",
