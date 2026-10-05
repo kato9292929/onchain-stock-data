@@ -1,4 +1,11 @@
 import type { EvaluationStatus, ExternalCatalyst } from "./data";
+import {
+  JUDGED,
+  type ScoreCounts,
+  hitRateOf,
+  judgedCount,
+  tally,
+} from "./hit-rate";
 
 /**
  * Shared scoreboard logic for the editorial "Physical AI" series dated
@@ -19,26 +26,27 @@ export const ARTICLE_TITLES: Record<number, string> = {
   6: "US · Private AI models & infra",
 };
 
-export const JUDGED: EvaluationStatus[] = ["hit", "partial", "miss", "na"];
+export { JUDGED };
 
 export interface HitRate {
-  counts: Record<"hit" | "partial" | "miss" | "na" | "pending", number>;
+  counts: ScoreCounts;
   /** hit + partial + miss + na */
   judged: number;
   /** total number of conditions in the group */
   total: number;
-  /** (hit + partial×0.5) / (hit + partial + miss); null when nothing scored. */
+  /** See `hitRateOf` — one formula for every board on the site. */
   rate: number | null;
 }
 
-/** Track record for a list of catalysts. Partial = half hit; na is excluded. */
+/** Track record for a list of catalysts. */
 export function hitRate(list: ExternalCatalyst[]): HitRate {
-  const counts = { hit: 0, partial: 0, miss: 0, na: 0, pending: 0 };
-  for (const c of list) counts[c.status] += 1;
-  const judged = counts.hit + counts.partial + counts.miss + counts.na;
-  const scored = counts.hit + counts.partial + counts.miss;
-  const rate = scored > 0 ? (counts.hit + counts.partial * 0.5) / scored : null;
-  return { counts, judged, total: list.length, rate };
+  const counts = tally(list.map((c) => c.status));
+  return {
+    counts,
+    judged: judgedCount(counts),
+    total: list.length,
+    rate: hitRateOf(counts),
+  };
 }
 
 /** Split the folded "condition【外れ方向】fail" description into its two halves. */
