@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { EvaluationStatus } from "./data";
+import { type ScoreCounts, hitRateOf, tally } from "./hit-rate";
 
 /**
  * IR Fair 2026 sector scoreboard.
@@ -84,8 +85,8 @@ export interface IrFairSectorBoard extends IrFairSector {
   total: number;
   active: number;
   draft: number;
-  counts: Record<"hit" | "partial" | "miss" | "na" | "pending", number>;
-  /** (hit + partial×0.5) / (hit + partial + miss) over ACTIVE rows; null if none scored. */
+  counts: ScoreCounts;
+  /** See `hitRateOf`, computed over ACTIVE rows only; null if none judged. */
   hit_rate: number | null;
 }
 
@@ -115,11 +116,8 @@ export function buildIrFairBoard(file: IrFairFile, asOf: string): IrFairBoard {
         a.ticker.localeCompare(b.ticker),
       );
       const active = companies.filter((c) => c.stage === "active");
-      const counts = { hit: 0, partial: 0, miss: 0, na: 0, pending: 0 };
-      for (const c of active) counts[c.status] += 1;
-      const scored = counts.hit + counts.partial + counts.miss;
-      const hit_rate =
-        scored > 0 ? (counts.hit + counts.partial * 0.5) / scored : null;
+      const counts = tally(active.map((c) => c.status));
+      const hit_rate = hitRateOf(counts);
       return {
         ...s,
         companies,

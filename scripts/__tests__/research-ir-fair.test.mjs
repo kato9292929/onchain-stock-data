@@ -98,3 +98,13 @@ test("cost is computed from the published rates", () => {
   assert.equal(Number(cost.toFixed(6)), Number(expected.toFixed(6)));
   assert.equal(RATES.per_search, 0.01, "$10 per 1,000 searches");
 });
+
+test("billing and auth failures stop the run, transient ones do not", () => {
+  // 2026-09-23: "credit balance is too low" arrived on the last company. On an
+  // earlier one, every company after it would have paid a request to rediscover it.
+  const { isFatalRunError } = mod;
+  assert.ok(isFatalRunError(new Error("400 Your credit balance is too low to access the Anthropic API")));
+  assert.ok(isFatalRunError(Object.assign(new Error("nope"), { status: 401 })));
+  assert.ok(!isFatalRunError(new Error("Request timed out.")), "one slow company is not the whole run");
+  assert.ok(!isFatalRunError(new Error("no JSON object in response")));
+});

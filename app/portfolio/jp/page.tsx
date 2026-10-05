@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getJpPortfolioHistory, getJpPortfolioEvaluations } from "@/lib/data";
 import type { EvaluationStatus } from "@/lib/data";
+import { hitRateOf, judgedCount } from "@/lib/hit-rate";
 import { PortfolioSection } from "../../components/portfolio-section";
 import { AllocationBreakdown } from "../../components/allocation-breakdown";
 import { PortfolioToggle } from "../../components/portfolio-toggle";
@@ -22,8 +23,9 @@ const STATUS_STYLE: Record<EvaluationStatus, { label: string; cls: string }> = {
 };
 
 function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
-  const judged = counts.hit + counts.partial + counts.miss + counts.na;
-  const rate = judged > 0 ? ((counts.hit / judged) * 100).toFixed(0) : "—";
+  const judged = judgedCount(counts);
+  const fraction = hitRateOf(counts);
+  const rate = fraction === null ? "—" : (fraction * 100).toFixed(0);
   return (
     <div className="terminal-card p-4">
       <div className="flex items-baseline justify-between mb-2">
@@ -34,7 +36,9 @@ function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
         <span className="text-lg font-bold text-emerald-600 tabular-nums">
           {rate}
           {rate !== "—" && "%"}{" "}
-          <span className="text-xs font-normal text-slate-400">hit</span>
+          <span className="text-xs font-normal text-slate-400">
+            hit + ½ partial
+          </span>
         </span>
         {(Object.keys(STATUS_STYLE) as EvaluationStatus[]).map((s) => (
           <span key={s} className="text-slate-400">
@@ -44,7 +48,10 @@ function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
         ))}
       </div>
       <p className="mt-2 text-xs text-slate-400">
-        Scored by web search of earnings / disclosures 7 days after each deadline.
+        Scored by web search of earnings / disclosures 7 days after each
+        deadline. (hit + partial&times;0.5) &divide; (hit + partial + miss + na)
+        &mdash; <code>na</code> stays in the denominator, because a condition we
+        could not write well enough to judge did not earn a hit.
       </p>
     </div>
   );

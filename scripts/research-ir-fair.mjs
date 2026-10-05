@@ -52,6 +52,33 @@ export const RATES = {
 /** Hard ceiling regardless of --plan, so a typo cannot bill the whole roster. */
 const MAX_COMPANIES = Number(process.env.RESEARCH_MAX_COMPANIES ?? 20);
 
+/**
+ * Cap on server-side web searches per company.
+ *
+ * The 2026-09-23 run left this unset and averaged 24 searches per company
+ * against an estimate of 3. Searches bill twice over: $0.01 each, and every
+ * search round re-reads the results accumulated so far, so 21 searches on
+ * 1807 pulled 903k cache-read tokens through a single request. Capping the
+ * searches caps both, and it keeps a request short enough to finish inside
+ * REQUEST_TIMEOUT_MS.
+ */
+const MAX_SEARCHES = Number(process.env.RESEARCH_MAX_SEARCHES ?? 8);
+
+/**
+ * One request's budget, and no retry behind it.
+ *
+ * The 2026-09-23 run used a 5-minute timeout with the SDK default of 2
+ * retries. A company whose search loop needed longer than 5 minutes was cut
+ * off and restarted from scratch, three times — the 15m01s failures in that
+ * log are exactly 300s x 3. Every abandoned attempt had already run its
+ * searches server-side, so it billed, and it returned no usage to count:
+ * 24 of that run's ~30 attempts were paid for and thrown away.
+ *
+ * So wait well past how long the work takes (counted responses came back in
+ * 3m49s-4m51s), and never pay for the same company twice without saying so.
+ */
+const REQUEST_TIMEOUT_MS = Number(process.env.RESEARCH_TIMEOUT_MS ?? 20 * 60_000);
+
 // ── prompt ────────────────────────────────────────────────────────────────
 
 /**
@@ -213,6 +240,20 @@ export function costOf(u) {
   );
 }
 
+/**
+ * Errors where carrying on can only reproduce the same failure, once per
+ * remaining company. The 2026-09-23 run hit "credit balance is too low" on
+ * company 13 of 13; had it landed on company 3, the other ten would each have
+ * spent a request to learn the same thing.
+ */
+export function isFatalRunError(e) {
+  const status = e?.status ?? e?.response?.status;
+  if (status === 401 || status === 403) return true;
+  return /credit balance is too low|billing|quota|rate limit/i.test(
+    String(e?.message ?? ""),
+  );
+}
+
 // ── one company ───────────────────────────────────────────────────────────
 
 async function researchOne(client, company, section, usageTotal) {
@@ -225,7 +266,9 @@ async function researchOne(client, company, section, usageTotal) {
       cache_control: { type: "ephemeral" },
     },
   ];
-  const tools = [{ type: "web_search_20260209", name: "web_search" }];
+  const tools = [
+    { type: "web_search_20260209", name: "web_search", max_uses: MAX_SEARCHES },
+  ];
   const messages = [{ role: "user", content: userPromptFor(company, section) }];
   const textParts = [];
 
@@ -317,11 +360,29 @@ async function main() {
     process.exit(1);
   }
   const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  const client = new Anthropic({ apiKey, timeout: 300_000 });
+  // maxRetries 0 on purpose: a retry here re-runs the entire search loop and
+  // bills it again, invisibly — the usage report can only see the attempt that
+  // came back. One attempt, a generous timeout, and failures that show up in
+  // the report instead of hiding in the invoice.
+  const client = new Anthropic({
+    apiKey,
+    timeout: REQUEST_TIMEOUT_MS,
+    maxRetries: 0,
+  });
 
   const usageTotal = emptyUsage();
   const perCompany = [];
+  const failures = [];
   let updated = 0;
+  let aborted = null;
+
+  // Written after every company rather than once at the end. A run is hours
+  // long and costs real money; a crash, a cancel or a runner going away in the
+  // last minute must not take the companies already paid for with it.
+  const checkpoint = async () => {
+    file.updated_at = new Date().toISOString();
+    await writeFile(IR_FAIR_FILE, `${JSON.stringify(file, null, 2)}\n`, "utf8");
+  };
 
   for (const { company, section } of selected) {
     const before = { ...usageTotal };
@@ -349,11 +410,20 @@ async function main() {
         notes: result.notes ?? null,
       };
       updated += 1;
+      await checkpoint();
       console.log(
         `  ✓ ${company.ticker} ${company.company_name} → review (due ${row.due_date ?? "?"})`,
       );
+      // Echo the whole result. On 2026-09-23 the file this run wrote went to
+      // the runner's disk, the push was rejected, and the runner was reclaimed
+      // — the log had recorded only ticker and due date, so hours of paid
+      // research were unrecoverable. The log is the artifact that survives
+      // everything, so the content goes in it too.
+      console.log(`  ⟨${company.ticker}⟩ ${JSON.stringify(result)}`);
     } catch (e) {
+      failures.push({ ticker: company.ticker, message: e.message });
       console.error(`::warning::${company.ticker}: ${e.message}`);
+      if (isFatalRunError(e)) aborted = e.message;
     }
     perCompany.push({
       ticker: company.ticker,
@@ -363,11 +433,15 @@ async function main() {
       output: usageTotal.output_tokens - before.output_tokens,
       cache_read: usageTotal.cache_read_input_tokens - before.cache_read_input_tokens,
     });
+    if (aborted) {
+      console.error(
+        `::error::aborting the run after ${company.ticker} — ${aborted}`,
+      );
+      break;
+    }
   }
 
   if (updated > 0) {
-    file.updated_at = new Date().toISOString();
-    await writeFile(IR_FAIR_FILE, `${JSON.stringify(file, null, 2)}\n`, "utf8");
     console.log(`[research] wrote ${IR_FAIR_FILE} (${updated} → stage "review")`);
   }
 
@@ -385,11 +459,33 @@ async function main() {
       ` · input ${usageTotal.input_tokens} (cache read ${usageTotal.cache_read_input_tokens},` +
       ` write ${usageTotal.cache_creation_input_tokens}) · output ${usageTotal.output_tokens}`,
   );
+  // Per *researched* company, not per selected company. Dividing by the whole
+  // selection treats a company that failed as one that was free, and the
+  // 2026-09-23 report did exactly that: it published $0.3216/company when only
+  // 6 of 13 had produced anything, so the true figure was $0.70.
+  const perResearched = updated > 0 ? total / updated : 0;
   console.log(
-    `  cost $${total.toFixed(4)} total · $${(total / selected.length).toFixed(4)} per company` +
-      ` · extrapolated to 184 drafts ≈ $${((total / selected.length) * 184).toFixed(2)}`,
+    `  cost $${total.toFixed(4)} total · ${updated}/${selected.length} researched` +
+      ` · $${perResearched.toFixed(4)} per researched company` +
+      ` · extrapolated to 184 drafts ≈ $${(perResearched * 184).toFixed(2)}`,
   );
-  console.log(`\n[research] JSON ${JSON.stringify({ perCompany, usageTotal, cost_usd: Number(total.toFixed(4)) })}`);
+
+  if (failures.length > 0) {
+    console.log(`\n[research] ${failures.length} failed`);
+    for (const f of failures) console.log(`  ✗ ${f.ticker}: ${f.message}`);
+    // Said out loud because the number above cannot include it: a request that
+    // times out or errors mid-search has already run those searches on the
+    // server and already billed them, and reports no usage back.
+    console.log(
+      "\n  NOTE: the cost above counts only responses that came back. A failed" +
+        " request still ran and still billed, so the invoice is higher than" +
+        " this line whenever there are failures. Reconcile against the Console.",
+    );
+  }
+
+  console.log(
+    `\n[research] JSON ${JSON.stringify({ perCompany, failures, aborted, usageTotal, cost_usd: Number(total.toFixed(4)) })}`,
+  );
 }
 
 // Only when invoked directly. This file is a cost action — importing it (a
