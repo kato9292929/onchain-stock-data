@@ -147,3 +147,43 @@ test("the two copies of the cutoff have not drifted apart", () => {
       "about which week US registration starts from",
   );
 });
+
+test("both scorecards describe as_of the same way, and point at coverage", () => {
+  // The two endpoints shipped the same field name with different meanings: US
+  // returned its newest verdict (frozen at 2026-07-08), JP returned today. A
+  // buyer comparing the two had no way to know. Both now mean "when this was
+  // computed", and both say so in the 402 a buyer reads BEFORE paying — the
+  // same mismatch between description and reality that /api/edinet had.
+  const routes = [
+    "app/api/alpha/portfolio/scorecard/route.ts",
+    "app/api/alpha/jp/scorecard/route.ts",
+  ];
+  for (const r of routes) {
+    const src = readFileSync(r, "utf8");
+    assert.match(
+      src,
+      /const as_of = new Date\(\)\.toISOString\(\)\.slice\(0, 10\)/,
+      `${r}: as_of must be the compute time, not the newest verdict`,
+    );
+    assert.match(src, /last_verdict_at/, `${r}: must expose last_verdict_at`);
+    assert.match(
+      src,
+      /NOT a freshness signal/,
+      `${r}: the 402 a buyer reads before paying must say so`,
+    );
+    assert.match(
+      src,
+      /coverage\.unregistered/,
+      `${r}: the 402 must name the field that shows a severed link`,
+    );
+  }
+
+  // The discovery descriptor is what an agent reads to decide whether to call
+  // at all, so it cannot say something softer than the 402 does.
+  const descriptor = readFileSync("app/.well-known/x402.json/route.ts", "utf8");
+  assert.equal(
+    (descriptor.match(/NOT a freshness signal/g) ?? []).length,
+    2,
+    "both scorecard entries in the descriptor must carry the same caveat",
+  );
+});
