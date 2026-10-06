@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import {
   getPortfolioEvaluations,
+  getPortfolioHistory,
   type PortfolioEvaluation,
 } from "@/lib/data";
+import {
+  US_AUTOREGISTER_FROM,
+  evaluationCoverage,
+} from "@/lib/evaluation-coverage";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
@@ -75,9 +80,30 @@ const handler = async (): Promise<NextResponse> => {
     recent_evaluations.find((e) => e.evaluated_at)?.evaluated_at?.slice(0, 10) ??
     new Date().toISOString().slice(0, 10);
 
+  // `as_of` above is the newest judgement on record, so when registration
+  // stops it freezes — this endpoint answered `as_of: 2026-07-08` with
+  // `pending: 0` for three months, and both fields looked healthy. Coverage is
+  // the field that distinguishes "nothing is waiting" from "nothing exists".
+  const history = await getPortfolioHistory().catch(() => null);
+  const cov = history
+    ? evaluationCoverage(history, evaluations, {
+        cutoff: US_AUTOREGISTER_FROM,
+        asOf: new Date().toISOString().slice(0, 10),
+      })
+    : null;
+  const coverage = cov
+    ? {
+        registered_from: US_AUTOREGISTER_FROM,
+        weeks_checked: cov.weeks.length,
+        unregistered: cov.unregistered,
+        gap_weeks: cov.gaps.map((g) => g.week_of),
+      }
+    : null;
+
   return NextResponse.json({
     as_of,
     hit_rate,
+    coverage,
     recent_evaluations,
   });
 };

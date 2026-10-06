@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { getJpPortfolioEvaluations, type PortfolioEvaluation } from "@/lib/data";
+import {
+  getJpPortfolioEvaluations,
+  getJpPortfolioHistory,
+  type PortfolioEvaluation,
+} from "@/lib/data";
+import { evaluationCoverage } from "@/lib/evaluation-coverage";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
@@ -48,7 +53,23 @@ const handler = async (): Promise<NextResponse> => {
 
   const as_of = new Date().toISOString().slice(0, 10);
 
-  return NextResponse.json({ as_of, hit_rate, recent_evaluations });
+  // `pending: 0` alone is ambiguous: it means "nothing is waiting", which is
+  // also what a severed selection→scoring link looks like. The US scorecard
+  // read `pending: 0` for three months while registering nothing. So the
+  // answer carries whether every selected week actually reached the scorer.
+  const history = await getJpPortfolioHistory().catch(() => null);
+  const cov = history
+    ? evaluationCoverage(history, evaluations, { asOf: as_of })
+    : null;
+  const coverage = cov
+    ? {
+        weeks_checked: cov.weeks.length,
+        unregistered: cov.unregistered,
+        gap_weeks: cov.gaps.map((g) => g.week_of),
+      }
+    : null;
+
+  return NextResponse.json({ as_of, hit_rate, coverage, recent_evaluations });
 };
 
 export const GET = withSolanaOnlyPaywall(handler, {
