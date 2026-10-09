@@ -115,26 +115,59 @@ function isFacilitatorUnavailable(err: unknown): boolean {
 /**
  * Turn a settlement failure back into what it actually is: our problem.
  *
- * `@x402/next` ends its settlement path with
+ * On 2026-10-08 five paid routes answered `HTTP 402 {}` all day, because our
+ * PayAI free-tier allowance had run out mid-settle
+ * (`errorReason: "free_tier_exhausted"`). To the buyer that reads as "pay me",
+ * so a well-behaved agent re-presents a payment, gets 402 again, and gives up
+ * having been told nothing true. The seller ran out of facilitator credit; the
+ * buyer's request was fine and their money was never at risk. 402 is the wrong
+ * thing to say.
  *
- *     console.error("Settlement failed:", error);
- *     return new NextResponse(JSON.stringify({}), { status: 402, … });
+ * This is not a stray catch-all in the SDK — it is the designed shape of a
+ * failed settlement. `@x402/core` routes every settle failure through a
+ * dedicated builder, which offers US a hook to replace the body while fixing
+ * the status:
  *
- * — a 402 carrying no `PAYMENT-REQUIRED` header. On 2026-10-08 that is exactly
- * what five paid routes returned all day, because our PayAI free-tier
- * allowance had run out mid-settle (`errorReason: "free_tier_exhausted"`).
+ *     // @x402/core/dist/esm/chunk-4CEZVZ3P.mjs:451
+ *     async buildSettlementFailureResponse(failure, transportContext) {
+ *       const customBody = routeConfig?.config.settlementFailedResponseBody
+ *         ? await routeConfig.config.settlementFailedResponseBody(…) : void 0;
+ *       return {
+ *         status: 402,                                  // hardcoded
+ *         headers: { "Content-Type": contentType, ...settlementHeaders },
+ *         body: customBody ? customBody.body : {},      // our `{}`
+ *       };
+ *     }
  *
- * To the buyer that reads as "pay me", so a well-behaved agent re-presents a
- * payment, gets 402 again, and gives up having been told nothing true. The
- * seller ran out of facilitator credit; the buyer's request was fine and their
- * money was never at risk. 402 is the wrong thing to say.
+ * `@x402/next` returns that verbatim (`index.js:201-207`), so the response we
+ * emitted carried a `PAYMENT-RESPONSE` receipt and no `PAYMENT-REQUIRED`.
+ * `settlementFailedResponseBody` could carry the receipt into the body, but it
+ * cannot touch the status — which is the part that lies — so the rewrite has to
+ * happen out here.
  *
- * A genuine v2 challenge ALWAYS carries `PAYMENT-REQUIRED` — that is what the
- * buyer pays against, and every unpaid route on this host was verified to send
- * it. So a 402 without that header cannot be paid by anyone and is never a
- * challenge; it is a failure on our side wearing a 402's clothes. 503 +
- * `Retry-After` says so, and matches what this file already returns when no
- * facilitator is reachable at all.
+ * (`@x402/next` also ends its settlement try/catch with a bare
+ * `status: 402` and no headers at all, but that branch is near-unreachable:
+ * `processSettlement` converts every throw into a failure response except
+ * `FacilitatorResponseError`, which becomes a 502. The test below covers it
+ * anyway, since the header check catches both shapes.)
+ *
+ * Why keying on `PAYMENT-REQUIRED` is safe: in @x402/core 2.13.0 every other
+ * 402 is built by `createHTTPResponse`, which always attaches the challenge
+ * header — unpaid requests, "No matching payment requirements" (`:226`), and a
+ * failed verify, which re-challenges rather than going silent (`:241-248`).
+ * A settle failure is the only 402 on this host without that header, so a 402
+ * lacking it cannot be paid by anyone and is never a challenge; it is a failure
+ * on our side wearing a 402's clothes. 503 + `Retry-After` says so, and matches
+ * what this file already returns when no facilitator is reachable at all.
+ *
+ * ONE ASSUMPTION, PINNED TO @x402/core 2.13.0: the challenge builder is
+ * documented "v1 puts in body, v2 puts in header" (`:619`) while the
+ * implementation sets the header unconditionally. If that branch ever returns,
+ * a legitimate x402 v1 challenge would arrive header-less and this function
+ * would bury it as a 503 — and v1 buyers are real (PayAI's /supported still
+ * advertises `x402Version: 1` kinds). package.json pins @x402/core and
+ * @x402/next to exactly 2.13.0; re-read `createHTTPPaymentRequiredResponse`
+ * before bumping either.
  */
 export function asPaymentUnavailable(
   res: NextResponse,
