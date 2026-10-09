@@ -33,15 +33,19 @@ const GRACE_DAYS = 7;
  * The US flow was never self-bootstrapping the way JP is: rows came from a
  * one-shot backfill (scripts/backfill-catalyst-targets.mjs), so once those were
  * judged in July 2026 nothing new was ever registered and the US scorecard
- * froze at two weeks of history. Registering every past week at once would put
- * ~55 already-due catalysts into the queue in one go — the backlog burst the
- * cost rules in AGENTS.md exist to prevent — so the default cutoff is the week
- * this was fixed. Catalysts registered from here are ~1 month out, which means
- * they come due gradually and cost nothing extra today.
+ * froze — reporting `pending: 0`, which reads as "nothing waiting" rather than
+ * "nothing exists". It stayed that way for three months.
  *
- * Weeks before 2026-06-29 have no `target_date` on their holdings at all and
- * are skipped regardless. To judge the older backlog, lower this deliberately
- * (and measure one run first — that is a paid decision, not a default).
+ * The 90 holdings from the weeks in between (2026-06-29 … 2026-09-14) are now
+ * permanently out of scope, and the 49 before 2026-06-15 never had a
+ * `target_date` to be judged against. See the constant's own docs for why.
+ *
+ * `lib/evaluation-coverage.ts` carries the same constant for the scorecard
+ * endpoint and the coverage check. It is duplicated rather than imported
+ * because this script runs under plain `node` (see package.json) and cannot
+ * load a `.ts` module — importing one breaks the weekly cron. The copies are
+ * pinned to each other by a test in evaluation-coverage.test.mjs, so they
+ * cannot drift silently.
  */
 const US_AUTOREGISTER_FROM = process.env.US_AUTOREGISTER_FROM ?? "2026-09-21";
 const VALID_STATUS = new Set(["hit", "partial", "miss", "na"]);

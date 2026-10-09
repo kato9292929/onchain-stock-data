@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { getJpPortfolioEvaluations, type PortfolioEvaluation } from "@/lib/data";
+import {
+  getJpPortfolioEvaluations,
+  getJpPortfolioHistory,
+  type PortfolioEvaluation,
+} from "@/lib/data";
+import { evaluationCoverage } from "@/lib/evaluation-coverage";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
@@ -46,14 +51,45 @@ const handler = async (): Promise<NextResponse> => {
       reasoning: e.reasoning,
     }));
 
+  // Same three fields as the US scorecard, with the same meanings: `as_of` is
+  // when this answer was computed, `last_verdict_at` is how fresh the
+  // judgements are, `coverage` is whether anything is being registered at all.
+  // JP has always returned today here while US returned its newest verdict —
+  // one field name, two meanings across two endpoints of the same product.
   const as_of = new Date().toISOString().slice(0, 10);
+  const last_verdict_at =
+    recent_evaluations.find((e) => e.evaluated_at)?.evaluated_at?.slice(0, 10) ??
+    null;
 
-  return NextResponse.json({ as_of, hit_rate, recent_evaluations });
+  // `pending: 0` alone is ambiguous: it means "nothing is waiting", which is
+  // also what a severed selection→scoring link looks like. The US scorecard
+  // read `pending: 0` for three months while registering nothing. So the
+  // answer carries whether every selected week actually reached the scorer.
+  const history = await getJpPortfolioHistory().catch(() => null);
+  const cov = history
+    ? evaluationCoverage(history, evaluations, { asOf: as_of })
+    : null;
+  const coverage = cov
+    ? {
+        weeks_checked: cov.weeks.length,
+        unregistered: cov.unregistered,
+        gap_weeks: cov.gaps.map((g) => g.week_of),
+      }
+    : null;
+
+  return NextResponse.json({
+    as_of,
+    last_verdict_at,
+    hit_rate,
+    coverage,
+    recent_evaluations,
+  });
 };
 
 export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
-  description: "Claude JP Portfolio scorecard - catalyst hit-rate (no benchmark index).",
+  description:
+    "Claude JP Portfolio scorecard - catalyst hit-rate and `coverage` (whether every selected week reached the scorer). No benchmark index. `as_of` is when the answer was computed, NOT a freshness signal - read `last_verdict_at` and `coverage.unregistered` for that.",
   resourcePath: "/api/alpha/jp/scorecard",
 });
 

@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import {
   getPortfolioEvaluations,
+  getPortfolioHistory,
   type PortfolioEvaluation,
 } from "@/lib/data";
+import {
+  US_AUTOREGISTER_FROM,
+  evaluationCoverage,
+} from "@/lib/evaluation-coverage";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
 
 export const runtime = "nodejs";
@@ -69,15 +74,45 @@ const handler = async (): Promise<NextResponse> => {
       reasoning: e.reasoning,
     }));
 
-  // Newest judgement on record, else today — the scorecard is only as fresh as
-  // its last evaluation.
-  const as_of =
+  // `as_of` is when this answer was computed, and nothing else. It used to be
+  // the newest verdict's date, which meant it froze at 2026-07-08 while
+  // registration was broken — and the JP scorecard, with the same field name,
+  // has always returned today. One name, two meanings, and the US one looked
+  // like a healthy timestamp right up until you compared the two.
+  //
+  // So the two questions are now two fields: `as_of` says when we answered,
+  // `last_verdict_at` says how fresh the underlying judgements are, and
+  // `coverage` says whether anything is even being registered to judge.
+  const as_of = new Date().toISOString().slice(0, 10);
+  const last_verdict_at =
     recent_evaluations.find((e) => e.evaluated_at)?.evaluated_at?.slice(0, 10) ??
-    new Date().toISOString().slice(0, 10);
+    null;
+
+  // `as_of` above is the newest judgement on record, so when registration
+  // stops it freezes — this endpoint answered `as_of: 2026-07-08` with
+  // `pending: 0` for three months, and both fields looked healthy. Coverage is
+  // the field that distinguishes "nothing is waiting" from "nothing exists".
+  const history = await getPortfolioHistory().catch(() => null);
+  const cov = history
+    ? evaluationCoverage(history, evaluations, {
+        cutoff: US_AUTOREGISTER_FROM,
+        asOf: new Date().toISOString().slice(0, 10),
+      })
+    : null;
+  const coverage = cov
+    ? {
+        registered_from: US_AUTOREGISTER_FROM,
+        weeks_checked: cov.weeks.length,
+        unregistered: cov.unregistered,
+        gap_weeks: cov.gaps.map((g) => g.week_of),
+      }
+    : null;
 
   return NextResponse.json({
     as_of,
+    last_verdict_at,
     hit_rate,
+    coverage,
     recent_evaluations,
   });
 };
@@ -86,7 +121,8 @@ void JUDGED;
 
 export const GET = withSolanaOnlyPaywall(handler, {
   price: "$0.01",
-  description: "Claude US Portfolio scorecard - catalyst hit-rate and recent verdicts (no returns / benchmark data).",
+  description:
+    "Claude US Portfolio scorecard - catalyst hit-rate, recent verdicts, and `coverage` (whether every selected week reached the scorer). No returns / benchmark data. `as_of` is when the answer was computed, NOT a freshness signal - read `last_verdict_at` and `coverage.unregistered` for that.",
   resourcePath: "/api/alpha/portfolio/scorecard",
 });
 

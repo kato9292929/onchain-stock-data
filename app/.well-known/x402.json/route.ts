@@ -84,7 +84,7 @@ export function GET(): NextResponse {
         path: "/api/alpha/portfolio/scorecard",
         method: "GET",
         description:
-          "Claude US Portfolio scorecard - catalyst hit-rate and the most recent verdicts. No returns or benchmark data.",
+          "Claude US Portfolio scorecard - catalyst hit-rate, recent verdicts, and `coverage` (whether every selected week reached the scorer). No returns / benchmark data. `as_of` is when the answer was computed, NOT a freshness signal - read `last_verdict_at` and `coverage.unregistered` for that.",
         accepts: solanaOnlyLeg("/api/alpha/portfolio/scorecard", ALPHA_PRICE_UNITS),
       },
       {
@@ -98,7 +98,7 @@ export function GET(): NextResponse {
         path: "/api/alpha/jp/scorecard",
         method: "GET",
         description:
-          "Claude JP Portfolio scorecard - catalyst hit-rate (no benchmark index).",
+          "Claude JP Portfolio scorecard - catalyst hit-rate and `coverage` (whether every selected week reached the scorer). No benchmark index. `as_of` is when the answer was computed, NOT a freshness signal - read `last_verdict_at` and `coverage.unregistered` for that.",
         accepts: solanaOnlyLeg("/api/alpha/jp/scorecard", ALPHA_PRICE_UNITS),
       },
       {

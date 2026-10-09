@@ -100,7 +100,13 @@ export default async function CatalystSectorPage({
       irFile ?? { source: "", note: "", updated_at: "", sectors: [], catalysts: [] },
     ).get(slug) ?? [];
   const active = roster.filter((c) => c.stage === "active");
-  const draft = roster.filter((c) => c.stage !== "active");
+  // Three buckets, not two. `review` rows carry a dated condition and a fail
+  // direction but have not been checked by a human, so they belong neither with
+  // the researched rows (which are scoreable and billable) nor with the bare
+  // roster — showing them as "condition pending" claimed there was no condition
+  // when there was one.
+  const review = roster.filter((c) => c.stage === "review");
+  const draft = roster.filter((c) => c.stage !== "active" && c.stage !== "review");
 
   return (
     <div className="space-y-6">
@@ -192,6 +198,50 @@ export default async function CatalystSectorPage({
           </div>
         )}
       </section>
+
+      {/* Under review — condition written, awaiting a human check. Free and
+          unscored: only `active` is billable, so nothing here is sold. */}
+      {review.length > 0 && (
+        <section className="space-y-2">
+          <div className="border-b border-slate-200 pb-2">
+            <div className="flex items-baseline justify-between">
+              <h2 className="text-sm font-bold text-slate-700">Under review</h2>
+              <span className="text-xs text-slate-400">{review.length} companies</span>
+            </div>
+            <p className="mt-1 text-[11px] text-slate-400">
+              判定条件と期日は書かれていますが、人の確認前です。確認後に Researched
+              へ昇格します。無料・未採点。
+            </p>
+          </div>
+          <div className="divide-y divide-slate-100 overflow-hidden rounded border border-slate-200">
+            {review.map((c) => (
+              <div key={c.catalyst_id} className="bg-white px-3 py-2">
+                <div className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="font-display text-sm tabular-nums text-slate-800">
+                    {c.ticker}
+                  </span>
+                  <span className="truncate text-sm text-slate-700">{c.company_name}</span>
+                  {c.due_date && (
+                    <span className="text-[11px] tabular-nums text-slate-500">
+                      期日 {c.due_date}
+                      {/* An inferred deadline set even a day early turns silence
+                          into a false miss, so it is marked rather than implied. */}
+                      {c.date_estimated && (
+                        <span className="ml-1 text-amber-600">（推定）</span>
+                      )}
+                    </span>
+                  )}
+                </div>
+                {c.success_condition && (
+                  <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                    {c.success_condition}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Roster (IR Fair 2026 exhibitors, not yet researched) */}
       <section className="space-y-2">
