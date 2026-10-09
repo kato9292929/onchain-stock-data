@@ -107,6 +107,22 @@ const cdpFacilitatorClient = new HTTPFacilitatorClient(buildFacilitatorConfig())
  */
 function buildPayAIFacilitatorClient(): HTTPFacilitatorClient | null {
   try {
+    // No key means the shared free lane, where the allowance is pooled by host
+    // and client IP — so it is spent by every other merchant on the same pool,
+    // not just by us, and nothing warns before it runs out. On 2026-10-08 it
+    // ran out mid-settle after ~80 settlements and took every paid route down
+    // for a day. Pay As You Go is $0.001 per settlement against revenue of
+    // $0.01–0.02 per call, so there is no reason to be on the free lane in
+    // production. Said once at boot, because the alternative is finding out
+    // from a buyer's log.
+    if (!process.env.PAYAI_API_KEY_ID || !process.env.PAYAI_API_KEY_SECRET) {
+      console.warn(
+        "[x402] PAYAI_API_KEY_ID / PAYAI_API_KEY_SECRET are not set — Solana " +
+          "settlement is running on PayAI's shared free tier, whose allowance " +
+          "is pooled per host/IP and gives no warning before it is exhausted. " +
+          "Paid routes will answer 503 payment_unavailable when it runs out.",
+      );
+    }
     const config = createPayAIFacilitatorConfig(
       process.env.PAYAI_API_KEY_ID,
       process.env.PAYAI_API_KEY_SECRET,
