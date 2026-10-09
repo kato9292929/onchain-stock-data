@@ -112,6 +112,94 @@ function isFacilitatorUnavailable(err: unknown): boolean {
   );
 }
 
+/**
+ * Turn a settlement failure back into what it actually is: our problem.
+ *
+ * On 2026-10-08 five paid routes answered `HTTP 402 {}` all day, because our
+ * PayAI free-tier allowance had run out mid-settle
+ * (`errorReason: "free_tier_exhausted"`). To the buyer that reads as "pay me",
+ * so a well-behaved agent re-presents a payment, gets 402 again, and gives up
+ * having been told nothing true. The seller ran out of facilitator credit; the
+ * buyer's request was fine and their money was never at risk. 402 is the wrong
+ * thing to say.
+ *
+ * This is not a stray catch-all in the SDK — it is the designed shape of a
+ * failed settlement. `@x402/core` routes every settle failure through a
+ * dedicated builder, which offers US a hook to replace the body while fixing
+ * the status:
+ *
+ *     // @x402/core/dist/esm/chunk-4CEZVZ3P.mjs:451
+ *     async buildSettlementFailureResponse(failure, transportContext) {
+ *       const customBody = routeConfig?.config.settlementFailedResponseBody
+ *         ? await routeConfig.config.settlementFailedResponseBody(…) : void 0;
+ *       return {
+ *         status: 402,                                  // hardcoded
+ *         headers: { "Content-Type": contentType, ...settlementHeaders },
+ *         body: customBody ? customBody.body : {},      // our `{}`
+ *       };
+ *     }
+ *
+ * `@x402/next` returns that verbatim (`index.js:201-207`), so the response we
+ * emitted carried a `PAYMENT-RESPONSE` receipt and no `PAYMENT-REQUIRED`.
+ * `settlementFailedResponseBody` could carry the receipt into the body, but it
+ * cannot touch the status — which is the part that lies — so the rewrite has to
+ * happen out here.
+ *
+ * (`@x402/next` also ends its settlement try/catch with a bare
+ * `status: 402` and no headers at all, but that branch is near-unreachable:
+ * `processSettlement` converts every throw into a failure response except
+ * `FacilitatorResponseError`, which becomes a 502. The test below covers it
+ * anyway, since the header check catches both shapes.)
+ *
+ * Why keying on `PAYMENT-REQUIRED` is safe: in @x402/core 2.13.0 every other
+ * 402 is built by `createHTTPResponse`, which always attaches the challenge
+ * header — unpaid requests, "No matching payment requirements" (`:226`), and a
+ * failed verify, which re-challenges rather than going silent (`:241-248`).
+ * A settle failure is the only 402 on this host without that header, so a 402
+ * lacking it cannot be paid by anyone and is never a challenge; it is a failure
+ * on our side wearing a 402's clothes. 503 + `Retry-After` says so, and matches
+ * what this file already returns when no facilitator is reachable at all.
+ *
+ * ONE ASSUMPTION, PINNED TO @x402/core 2.13.0: the challenge builder is
+ * documented "v1 puts in body, v2 puts in header" (`:619`) while the
+ * implementation sets the header unconditionally. If that branch ever returns,
+ * a legitimate x402 v1 challenge would arrive header-less and this function
+ * would bury it as a 503 — and v1 buyers are real (PayAI's /supported still
+ * advertises `x402Version: 1` kinds). package.json pins @x402/core and
+ * @x402/next to exactly 2.13.0; re-read `createHTTPPaymentRequiredResponse`
+ * before bumping either.
+ */
+export function asPaymentUnavailable(
+  res: NextResponse,
+  routeConfig: RouteConfig,
+): NextResponse {
+  if (res.status !== 402 || res.headers.has("PAYMENT-REQUIRED")) return res;
+
+  // The facilitator's own words, when it left any. The settle receipt is where
+  // `free_tier_exhausted` and its top-up URL live, and a seller who cannot see
+  // this is reduced to guessing at a silent outage — which is what happened.
+  const receipt = res.headers.get("PAYMENT-RESPONSE");
+  console.error(
+    `[x402] settlement failed on ${routeConfig.resource ?? "route"} — answering ` +
+      `503 payment_unavailable instead of an unpayable 402. ` +
+      `Facilitator receipt: ${receipt ?? "(none)"}`,
+  );
+
+  return NextResponse.json(
+    {
+      error: "payment_unavailable",
+      message:
+        "Your payment was presented correctly, but this seller could not settle it. " +
+        "Nothing was charged. This is a seller-side condition, not a problem with " +
+        "your request — retry shortly.",
+      // Passed through verbatim so the buyer's log shows the real cause rather
+      // than a bare 402. It is the facilitator's string, not ours.
+      facilitator_receipt: receipt ?? null,
+    },
+    { status: 503, headers: { "Retry-After": "60" } },
+  );
+}
+
 export function withX402AndInternal(
   handler: Handler,
   routeConfig: RouteConfig,
@@ -138,7 +226,7 @@ export function withX402AndInternal(
     try {
       const res = isInternalAuthed(req)
         ? await handler(req)
-        : await wrapped(req);
+        : asPaymentUnavailable(await wrapped(req), routeConfig);
       return applyCors(res);
     } catch (err) {
       const message =
