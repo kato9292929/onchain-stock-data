@@ -322,10 +322,12 @@
     "target_date": "2026-10-05",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "miss",
+    "judgement_date": "2026-10-12",
+    "evidence_urls": [
+      "https://finance.biggo.jp/news/jpx_tdnet_140120261009548685"
+    ],
+    "reasoning": "2027年2月期第2四半期(中間期、2026年3-8月)決算短信(2026年10月9日開示)によると、連結営業利益は前年同期比5.5%減の220億58百万円となり、通期営業利益ガイダンスも従来の600億円から575億円へ下方修正された。また第1四半期時点でロボット事業セグメントの営業利益は前年同期比82.3%減という大幅減益であり、中間期を通じてロボット事業の増益転換は確認されなかった。success_conditionが定義する『外れ方向』の両条件(ロボット事業の減益継続、通期ガイダンス下方修正)が共に該当するため、miss判定とする。",
     "catalyst_type": "earnings",
     "date_confidence": "estimated",
     "country": "JP",

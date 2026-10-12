@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-10-05T01:14:48.068Z",
+  "updated_at": "2026-10-12T01:01:18.227Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -1339,6 +1339,116 @@
       "ticker": "6723",
       "catalyst_target_date": "2026-11-06",
       "success_condition": "11/6頃の3Q決算でAI・車載向けロジック半導体売上が前四半期比回復を示せば底打ち確認",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "8035",
+      "catalyst_target_date": "2026-10-29",
+      "success_condition": "10/29の2Q決算でAI・先端ロジック向け装置受注残高が前期比2桁増となり通期計画が上方修正されれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5の2Q決算でHBM向けメモリテスタ受注が前年同期比30%超増となり通期予想が上方修正されれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-10-29",
+      "success_condition": "10/29の2Q決算でSiC・先端パッケージ関連装置の受注比率が拡大し売上高ガイダンスが上振れれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-11-04",
+      "success_condition": "11/4の2Q決算でABF基板のデータセンター向け出荷が前年同期比20%超増となれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "3436",
+      "catalyst_target_date": "2026-11-06",
+      "success_condition": "11/6の3Q決算で300mmウェハ稼働率が80%超に回復し価格改定効果が利益率に表れれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "6967",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30の2Q決算でAI半導体パッケージ基板売上が前年同期比15%超増となれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "6504",
+      "catalyst_target_date": "2026-11-06",
+      "success_condition": "11/6の2Q決算でデータセンター向け電源・パワー半導体事業の受注が前年同期比2桁増となれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "4004",
+      "catalyst_target_date": "2026-11-07",
+      "success_condition": "11/7の3Q決算で半導体材料セグメント（先端パッケージ材料）の営業利益率が前四半期比で改善すれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "6981",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30の2Q決算でAIサーバ・データセンター向けMLCC出荷が前年同期比2桁増となれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-12",
+      "ticker": "6594",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5の2Q決算でデータセンター液冷・冷却関連モーター事業の受注残高が拡大していれば当たり。",
       "condition_source": "thesis",
       "status": "pending",
       "evaluated_at": null,
