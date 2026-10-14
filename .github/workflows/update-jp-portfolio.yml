@@ -34,7 +34,14 @@ jobs:
       - run: npm ci
 
       - name: Generate weekly JP portfolio
-        run: npm run update:jp-portfolio
+        run: |
+          # Refresh the JPX listing master first, so the delisting screen runs
+          # against today's roster rather than whatever was last committed.
+          # Non-fatal: a JPX outage must not cost us the week's selection — the
+          # job then screens against the committed snapshot and says so.
+          node scripts/refresh-jp-listed.mjs || \
+            echo "::warning::JPX listing refresh failed — screening against the committed snapshot"
+          npm run update:jp-portfolio
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
@@ -42,7 +49,9 @@ jobs:
         run: |
           git config user.name "osd-portfolio-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/jp-portfolio-history.json
+          # jp-listed.json too: the refresh runs every week, so without this the
+          # committed snapshot never moves and the staleness warning fires forever.
+          git add data/jp-portfolio-history.json data/jp-listed.json
           if git diff --staged --quiet; then
             echo "No JP portfolio changes to commit."
           else
