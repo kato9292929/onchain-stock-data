@@ -25,6 +25,60 @@ const EXTERNAL_FILE = path.join(ROOT, "data", "external-catalysts.json");
 const JP_HISTORY_FILE = path.join(ROOT, "data", "jp-portfolio-history.json");
 const JP_EVAL_FILE = path.join(ROOT, "data", "jp-portfolio-evaluations.json");
 const MODEL = "claude-sonnet-5";
+
+/**
+ * Cap on server-side web searches per catalyst.
+ *
+ * There was none. The research script had none either and averaged 24 searches
+ * a company against an estimate of 3 — searches bill at $0.01 and drag their
+ * results through every later round as cache reads, so an uncapped loop is how
+ * a job overruns 8x without anyone noticing. Verifying one dated condition
+ * against a known disclosure needs far fewer searches than open-ended research.
+ */
+const MAX_SEARCHES = Number(process.env.EVALUATE_MAX_SEARCHES ?? 8);
+
+/**
+ * Published rates, 2026-10-15 (platform.claude.com/docs/en/about-claude/pricing).
+ * Used only to price the usage a run actually reports — if they drift, the
+ * token counts stay correct and only the dollar line is stale.
+ */
+const RATES = {
+  input_per_mtok: 2.0,
+  output_per_mtok: 10.0,
+  cache_write_per_mtok: 2.5,
+  cache_read_per_mtok: 0.2,
+  per_search: 0.01,
+};
+
+/** Every run's usage, so the next estimate has a measured basis. */
+const usageTotal = {
+  input_tokens: 0,
+  output_tokens: 0,
+  cache_creation_input_tokens: 0,
+  cache_read_input_tokens: 0,
+  web_search_requests: 0,
+  requests: 0,
+};
+
+function addUsage(u) {
+  if (!u) return;
+  usageTotal.input_tokens += u.input_tokens ?? 0;
+  usageTotal.output_tokens += u.output_tokens ?? 0;
+  usageTotal.cache_creation_input_tokens += u.cache_creation_input_tokens ?? 0;
+  usageTotal.cache_read_input_tokens += u.cache_read_input_tokens ?? 0;
+  usageTotal.web_search_requests += u.server_tool_use?.web_search_requests ?? 0;
+  usageTotal.requests += 1;
+}
+
+function costOf(u) {
+  return (
+    (u.input_tokens / 1e6) * RATES.input_per_mtok +
+    (u.output_tokens / 1e6) * RATES.output_per_mtok +
+    (u.cache_creation_input_tokens / 1e6) * RATES.cache_write_per_mtok +
+    (u.cache_read_input_tokens / 1e6) * RATES.cache_read_per_mtok +
+    u.web_search_requests * RATES.per_search
+  );
+}
 const GRACE_DAYS = 7;
 
 /**
@@ -235,7 +289,11 @@ async function evaluateOne(
   const sources = isJp
     ? "決算短信・適時開示・会社IR・日経など"
     : "実際のニュース・株価・SEC ファイリング";
-  const webSearch = { type: "web_search_20260209", name: "web_search" };
+  const webSearch = {
+    type: "web_search_20260209",
+    name: "web_search",
+    max_uses: MAX_SEARCHES,
+  };
   const { success, failDirection } = splitCondition(condition);
   // The ONLY date in this prompt used to be the selection week, which the model
   // read as today: 3110 was judged on 2026-08-13 and still concluded
@@ -265,6 +323,7 @@ ${targetDate} 前後の${sources}を web 検索で確認し、**success_conditio
   // Server-side web search runs a tool loop that can pause with `pause_turn`.
   let guard = 0;
   while (true) {
+    addUsage(resp.usage);
     collectSearchUrls(resp.content, searchUrls);
     for (const b of resp.content) {
       if (b.type === "text") textParts.push(b.text);
@@ -672,6 +731,25 @@ async function main() {
     jpCreated === 0
   ) {
     console.log("[evaluate] no entries updated");
+  }
+
+  // Say what the run spent. Until now nothing here measured it, so every
+  // estimate of "what would re-judging N catalysts cost" was a guess.
+  if (usageTotal.requests > 0) {
+    const judged = internalUpdated + externalUpdated + jpJudged;
+    const total = costOf(usageTotal);
+    console.log(
+      `\n[evaluate] usage: requests ${usageTotal.requests} · searches ${usageTotal.web_search_requests}` +
+        ` · input ${usageTotal.input_tokens} (cache read ${usageTotal.cache_read_input_tokens},` +
+        ` write ${usageTotal.cache_creation_input_tokens}) · output ${usageTotal.output_tokens}`,
+    );
+    console.log(
+      `[evaluate] cost $${total.toFixed(4)} total` +
+        (judged > 0
+          ? ` · ${judged} judged · $${(total / judged).toFixed(4)} per catalyst`
+          : ""),
+    );
+    console.log(`[evaluate] JSON ${JSON.stringify({ usageTotal, cost_usd: Number(total.toFixed(4)), judged })}`);
   }
 }
 

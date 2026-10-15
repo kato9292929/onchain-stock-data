@@ -100,7 +100,9 @@
       "evaluated_at": "2026-08-07T01:12:12.680Z",
       "evidence_url": "https://www.jpx.co.jp/news/1023/20250520-11.html",
       "reasoning": "新光電気工業(6967)はJICによるTOBを経て2025年6月6日に上場廃止となり非公開化された。したがって catalyst_target_date である2026年7月31日前後には、上場企業としての1Q決算短信や適時開示（TDnet）が制度上開示されず、フリップチップ基板売上の前年同期比+15%超という success_condition を検証できる一次情報が公開情報として存在しない。web検索でも該当四半期のセグメント別売上開示は確認できず、判定材料不足のため 'na' と判定する。",
-      "condition_source": "thesis"
+      "condition_source": "thesis",
+      "na_reason": "delisted",
+      "delisted": true
     },
     {
       "week_of": "2026-06-22",
@@ -1406,10 +1408,20 @@
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10/30の2Q決算でAI半導体パッケージ基板売上が前年同期比15%超増となれば当たり。",
       "condition_source": "thesis",
-      "status": "pending",
+      "status": "na",
       "evaluated_at": null,
       "evidence_url": null,
-      "reasoning": null
+      "reasoning": "6967 新光電気工業は 2025-06-06 に上場廃止（JICによるTOB・非公開化）。選定時の上場照合が入る前に選ばれた最後の週。lib/listing-status.ts の照合を遡及適用した。",
+      "verdict_history": [
+        {
+          "status": "pending",
+          "judgement_date": null,
+          "changed_at": "2026-10-15",
+          "change_reason": "選定から遡及除外されたため判定不能。6967 新光電気工業は 2025-06-06 に上場廃止（JICによるTOB・非公開化）。選定時の上場照合が入る前に選ばれた最後の週。lib/listing-status.ts の照合を遡及適用した。"
+        }
+      ],
+      "na_reason": "delisted",
+      "delisted": true
     },
     {
       "week_of": "2026-10-12",

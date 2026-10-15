@@ -1,7 +1,7 @@
 {
   "source": "nikkei-tse-ir-fair-2026",
   "note": "IR Fair 2026 exhibitors grouped by TSE 33-sector. Draft roster only — due_date/success_condition/fail_condition/source must be verified from primary sources before an entry is promoted to stage:active. draft rows are display-only and are NEVER scored (no LLM touches this file on ingest).",
-  "updated_at": "2026-10-15T08:16:26.976103Z",
+  "updated_at": "2026-10-15T11:49:53.264097Z",
   "sectors": [
     {
       "id": "情報・通信業",
@@ -457,7 +457,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "電気・ガス業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-10-29",
       "success_condition": "締切までに2027年3月期の通期業績予想を公表する、またはNTT東日本・日本政策投資銀行と進める東北・新潟地域のデータセンター誘致について立地決定・契約・供給計画のいずれかを具体名または数値つきで公表する。",
       "fail_condition": "通期予想が未定のまま据え置かれ、誘致の進展も開示されない（沈黙＝ミス）。",
@@ -468,7 +468,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-7299",
@@ -1138,7 +1139,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "電気・ガス業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-10-27",
       "success_condition": "Q2決算で業務用等のガス販売量が前年同期比プラスに転じ、通期経常利益250億円を据え置き以上。",
       "fail_condition": "原料費調整制度の期ずれ差損が拡大、または販売量の減少継続で通期下方修正。",
@@ -1149,7 +1150,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-8418",
@@ -1342,7 +1344,7 @@
       "market": "JP",
       "tse_market": "スタンダード",
       "sector": "空運業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-13",
       "success_condition": "2026年9月期通期決算で下方修正後の売上高420億円を達成し、かつ2027年9月期予想として増収（420億円超）を公表する。",
       "fail_condition": "予算執行の遅れが続いて420億円も未達、または翌期予想が減収・未定。",
@@ -1353,7 +1355,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "space-geospatial",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-1964",
@@ -1438,7 +1441,7 @@
       "market": "JP",
       "tse_market": "スタンダード",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-06",
       "success_condition": "Q2決算で土木事業の受注高が前年同期比増となり、通期経常利益80億円を据え置き以上。あわせてUNICONホールディングス（407A）との資本業務提携について、取得比率または連結への影響を数値で開示する。",
       "fail_condition": "採算重視の選別受注で受注高が前年割れ、または通期下方修正。提携の具体的な数値が示されないまま（沈黙＝ミス）。",
@@ -1449,7 +1452,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "infrastructure",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-3242",
@@ -1670,7 +1674,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "ガラス・土石製品",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-06",
       "success_condition": "Q2決算で上方修正後の通期計画（売上455億円・純利益34億円）を据え置き以上とし、かつ大阪IR関連を除くコンクリート二次製品・基礎工事の受注高が前年同期比増。",
       "fail_condition": "大阪IR案件の進捗一巡で下期が息切れし、上方修正後の計画を下方修正。",
@@ -1681,7 +1685,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "infrastructure",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-7282",
@@ -1974,7 +1979,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-06",
       "success_condition": "Q2決算で建設事業（建築・土木）の受注高が前年同期比増となり、通期営業利益90億円を据え置き以上。",
       "fail_condition": "施工初期段階の比率上昇が想定を超えて通期を下方修正し、受注高も前年割れ。",
@@ -1985,7 +1990,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "infrastructure",
       "tse_market_at_fetch": "グロース",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-1968",
@@ -1994,7 +2000,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-05",
       "success_condition": "Q2決算で建設・補修両部門がそろって増収を継続し、受注残高1,809億円を維持以上、通期営業利益174億円を据え置き以上。",
       "fail_condition": "原子力案件の工程後ろ倒しで受注残が縮小、または通期下方修正。",
@@ -2005,7 +2011,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "スタンダード",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-1946",
@@ -2014,7 +2021,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-10-29",
       "success_condition": "Q2決算で受取和解金30億円を除いたベースで設備工事業が増収増益となり、通期営業利益240億円を据え置き以上。",
       "fail_condition": "和解金を除くと減益、または通期下方修正。",
@@ -2025,7 +2032,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-6289",
@@ -2114,7 +2122,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-06",
       "success_condition": "Q2決算で通期営業利益55億円を上方修正する。または累計営業利益が前年同期比で増益を継続し、通期進捗率が前年同期の水準を上回る。",
       "fail_condition": "下期の工事採算悪化でQ1の原価改善が剥落し、累計営業利益が前年同期比で減益に転じる。",
@@ -2125,7 +2133,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "infrastructure",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-2003",
@@ -2235,7 +2244,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-10",
       "success_condition": "11/10のQ2決算で環境システム事業（産業空調）の受注工事高が前年同期比増となり、繰越工事高3,573億円（前年同期比31.5%増）の水準を維持以上、かつ通期の増収増益予想を据え置き以上。",
       "fail_condition": "塗装システムの受注急減が環境システムへ波及し、受注・繰越がともに減少。",
@@ -2246,7 +2255,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-3360",
@@ -2557,7 +2567,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-06",
       "success_condition": "Q2累計で営業利益が会社計画45億円を上回り、受注高が前年同期比増を継続、かつ通期営業利益130億円を据え置き以上。",
       "fail_condition": "プラント定期修理工事の端境期が想定を超え、Q2累計営業利益が45億円に届かず、受注高も前年割れ。",
@@ -2568,7 +2578,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "infrastructure",
       "tse_market_at_fetch": "スタンダード",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-5332",
@@ -2641,7 +2652,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "情報・通信業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-05",
       "success_condition": "Q2決算で宇宙事業が安全保障領域の拡大により増収増益を継続し、累計経常利益の通期進捗率が5年平均26.4%を上回る水準を維持、通期営業利益390億円を据え置き以上。",
       "fail_condition": "防衛省案件の検収ずれで宇宙事業が減速、通期下方修正。",
@@ -2652,7 +2663,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "space-geospatial",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-3853",
@@ -2942,7 +2954,7 @@
       "market": "JP",
       "tse_market": "プライム",
       "sector": "建設業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-06",
       "success_condition": "Q1（7-9月）決算で売上総利益率が前年同期の水準を維持し、受注残高が前年同期を上回り、通期営業利益210億円を据え置き以上。",
       "fail_condition": "高速道路会社・自治体の発注量減少で受注残が縮小し、粗利率の維持でも補えず通期下方修正。",
@@ -2953,7 +2965,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "infrastructure",
       "tse_market_at_fetch": "スタンダード",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-9716",
@@ -3332,7 +3345,7 @@
       "market": "JP",
       "tse_market": "グロース",
       "sector": "サービス業",
-      "stage": "review",
+      "stage": "active",
       "due_date": "2026-11-13",
       "success_condition": "Q2決算で通期プロジェクト収益90億円の見通しを据え置き以上とし、SBIR補助金または宇宙戦略基金の受領・採択の進捗を金額または時期つきで開示、あわせて新ミッション2.5の打ち上げ時期を具体的に公表する。",
       "fail_condition": "プロジェクト収益を下方修正、補助金受領が翌期へずれる、または時期が示されないまま（沈黙＝ミス）。",
@@ -3343,7 +3356,8 @@
       "researched_at": "2026-09-26",
       "sector_slug": "space-geospatial",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "activated_at": "2026-10-15"
     },
     {
       "catalyst_id": "irf-3687",
