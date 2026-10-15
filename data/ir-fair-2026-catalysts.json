@@ -1,7 +1,7 @@
 {
   "source": "nikkei-tse-ir-fair-2026",
   "note": "IR Fair 2026 exhibitors grouped by TSE 33-sector. Draft roster only — due_date/success_condition/fail_condition/source must be verified from primary sources before an entry is promoted to stage:active. draft rows are display-only and are NEVER scored (no LLM touches this file on ingest).",
-  "updated_at": "2026-10-05T17:41:26.541228Z",
+  "updated_at": "2026-10-15T08:16:26.976103Z",
   "sectors": [
     {
       "id": "情報・通信業",
@@ -178,7 +178,7 @@
       "ticker": "7212",
       "company_name": "エフテック",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "輸送用機器",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -189,56 +189,64 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3434",
       "ticker": "3434",
       "company_name": "アルファ",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "金属製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5204",
       "ticker": "5204",
       "company_name": "石塚硝子",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "ガラス・土石製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8089",
       "ticker": "8089",
       "company_name": "ナイス",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7279",
       "ticker": "7279",
       "company_name": "ハイレックスコーポレーション",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "輸送用機器",
       "stage": "review",
       "due_date": "2026-12-11",
@@ -249,7 +257,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8931",
@@ -263,14 +273,16 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7231",
       "ticker": "7231",
       "company_name": "トピー工業",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "輸送用機器",
       "stage": "review",
       "due_date": "2026-11-04",
@@ -281,14 +293,16 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8542",
       "ticker": "8542",
       "company_name": "トマト銀行",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "銀行業",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -299,7 +313,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7871",
@@ -313,35 +329,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6316",
       "ticker": "6316",
       "company_name": "丸山製作所",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "機械",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1807",
       "ticker": "1807",
       "company_name": "佐藤渡辺",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "建設業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3320",
@@ -355,7 +377,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6310",
@@ -369,7 +393,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6339",
@@ -388,7 +414,9 @@
       "success_condition": "次回四半期で表面処理・鋳造事業が増収を維持し、増益基調の通期ガイダンスを維持以上",
       "fail_condition": "設備投資鈍化で主力の表面処理・鋳造が減速、通期計画を下方修正",
       "source": "https://www.sinto.co.jp/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5902",
@@ -402,21 +430,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7280",
       "ticker": "7280",
       "company_name": "ミツバ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "電気機器",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9506",
@@ -434,7 +466,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "datacenter-power"
+      "sector_slug": "datacenter-power",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7299",
@@ -452,7 +486,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3945",
@@ -466,26 +502,78 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6382",
       "ticker": "6382",
       "company_name": "トリニティ工業",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "機械",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4249",
       "ticker": "4249",
       "company_name": "森六",
+      "market": "JP",
+      "tse_market": "プライム",
+      "sector": "化学",
+      "stage": "draft",
+      "due_date": null,
+      "success_condition": null,
+      "fail_condition": null,
+      "source": null,
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
+    },
+    {
+      "catalyst_id": "irf-5142",
+      "ticker": "5142",
+      "company_name": "アキレス",
+      "market": "JP",
+      "tse_market": "プライム",
+      "sector": "化学",
+      "stage": "draft",
+      "due_date": null,
+      "success_condition": null,
+      "fail_condition": null,
+      "source": null,
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
+    },
+    {
+      "catalyst_id": "irf-8076",
+      "ticker": "8076",
+      "company_name": "カノークス",
+      "market": "JP",
+      "tse_market": "スタンダード",
+      "sector": "卸売業",
+      "stage": "draft",
+      "due_date": null,
+      "success_condition": null,
+      "fail_condition": null,
+      "source": null,
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
+    },
+    {
+      "catalyst_id": "irf-4247",
+      "ticker": "4247",
+      "company_name": "ポバール興業",
       "market": "JP",
       "tse_market": "スタンダード",
       "sector": "化学",
@@ -494,49 +582,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
-    },
-    {
-      "catalyst_id": "irf-5142",
-      "ticker": "5142",
-      "company_name": "アキレス",
-      "market": "JP",
-      "tse_market": "グロース",
-      "sector": "化学",
-      "stage": "draft",
-      "due_date": null,
-      "success_condition": null,
-      "fail_condition": null,
-      "source": null,
-      "status": "pending"
-    },
-    {
-      "catalyst_id": "irf-8076",
-      "ticker": "8076",
-      "company_name": "カノークス",
-      "market": "JP",
-      "tse_market": "プライム",
-      "sector": "卸売業",
-      "stage": "draft",
-      "due_date": null,
-      "success_condition": null,
-      "fail_condition": null,
-      "source": null,
-      "status": "pending"
-    },
-    {
-      "catalyst_id": "irf-4247",
-      "ticker": "4247",
-      "company_name": "ポバール興業",
-      "market": "JP",
-      "tse_market": "プライム",
-      "sector": "化学",
-      "stage": "draft",
-      "due_date": null,
-      "success_condition": null,
-      "fail_condition": null,
-      "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6962",
@@ -555,7 +603,9 @@
       "success_condition": "次回四半期で水晶デバイスが車載・通信向けで増収し、過去最高売上を目指す通期計画を維持以上",
       "fail_condition": "民生・通信の需要低迷で減収、通期計画を未達",
       "source": "https://www.kds.jp/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4116",
@@ -569,7 +619,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9982",
@@ -583,35 +635,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2009",
       "ticker": "2009",
       "company_name": "鳥越製粉",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "食料品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6445",
       "ticker": "6445",
       "company_name": "ジャノメ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "機械",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7914",
@@ -625,7 +683,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3388",
@@ -639,7 +699,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2819",
@@ -653,21 +715,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9248",
       "ticker": "9248",
       "company_name": "人・夢・技術グループ",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7245",
@@ -685,7 +751,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2915",
@@ -699,21 +767,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6430",
       "ticker": "6430",
       "company_name": "ダイコク電機",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "機械",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7371",
@@ -727,7 +799,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6472",
@@ -741,7 +815,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5632",
@@ -755,54 +831,46 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5957",
       "ticker": "5957",
       "company_name": "日東精工",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "金属製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7369",
       "ticker": "7369",
       "company_name": "メイホーホールディングス",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "グロース",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4078",
       "ticker": "4078",
       "company_name": "堺化学工業",
-      "market": "JP",
-      "tse_market": "グロース",
-      "sector": "化学",
-      "stage": "draft",
-      "due_date": null,
-      "success_condition": null,
-      "fail_condition": null,
-      "source": null,
-      "status": "pending"
-    },
-    {
-      "catalyst_id": "irf-4093",
-      "ticker": "4093",
-      "company_name": "東邦アセチレン",
       "market": "JP",
       "tse_market": "プライム",
       "sector": "化学",
@@ -811,7 +879,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
+    },
+    {
+      "catalyst_id": "irf-4093",
+      "ticker": "4093",
+      "company_name": "東邦アセチレン",
+      "market": "JP",
+      "tse_market": "スタンダード",
+      "sector": "化学",
+      "stage": "draft",
+      "due_date": null,
+      "success_condition": null,
+      "fail_condition": null,
+      "source": null,
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5356",
@@ -825,7 +911,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1333",
@@ -839,21 +927,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2004",
       "ticker": "2004",
       "company_name": "昭和産業",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "食料品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5563",
@@ -867,7 +959,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3447",
@@ -881,14 +975,16 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3116",
       "ticker": "3116",
       "company_name": "トヨタ紡織",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "輸送用機器",
       "stage": "review",
       "due_date": "2026-10-30",
@@ -899,21 +995,25 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4635",
       "ticker": "4635",
       "company_name": "東京インキ",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "化学",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3423",
@@ -927,21 +1027,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7129",
       "ticker": "7129",
       "company_name": "ミアヘルサホールディングス",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "小売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2001",
@@ -955,28 +1059,32 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5011",
       "ticker": "5011",
       "company_name": "ニチレキグループ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "石油・石炭製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4886",
       "ticker": "4886",
       "company_name": "あすか製薬ホールディングス",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "医薬品",
       "stage": "review",
       "due_date": "2026-11-05",
@@ -987,35 +1095,41 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "healthcare"
+      "sector_slug": "healthcare",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2060",
       "ticker": "2060",
       "company_name": "フィード・ワン",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "食料品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7723",
       "ticker": "7723",
       "company_name": "愛知時計電機",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "精密機器",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9533",
@@ -1033,14 +1147,16 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "datacenter-power"
+      "sector_slug": "datacenter-power",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8418",
       "ticker": "8418",
       "company_name": "山口フィナンシャルグループ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "銀行業",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -1051,7 +1167,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9902",
@@ -1065,21 +1183,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9729",
       "ticker": "9729",
       "company_name": "トーカイ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1938",
@@ -1093,7 +1215,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7213",
@@ -1111,21 +1235,25 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5471",
       "ticker": "5471",
       "company_name": "大同特殊鋼",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "鉄鋼",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7989",
@@ -1139,7 +1267,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9044",
@@ -1153,56 +1283,64 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7917",
       "ticker": "7917",
       "company_name": "ZACROS",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "化学",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7128",
       "ticker": "7128",
       "company_name": "ユニソルホールディングス",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4951",
       "ticker": "4951",
       "company_name": "エステー",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "化学",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9233",
       "ticker": "9233",
       "company_name": "アジア航測",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "空運業",
       "stage": "review",
       "due_date": "2026-11-13",
@@ -1213,7 +1351,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "space-geospatial"
+      "sector_slug": "space-geospatial",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1964",
@@ -1231,7 +1371,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1848",
@@ -1249,7 +1391,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8101",
@@ -1263,7 +1407,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8593",
@@ -1281,14 +1427,16 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1822",
       "ticker": "1822",
       "company_name": "大豊建設",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "建設業",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -1299,7 +1447,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3242",
@@ -1313,35 +1463,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7981",
       "ticker": "7981",
       "company_name": "タカラスタンダード",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "その他製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7466",
       "ticker": "7466",
       "company_name": "SPK",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6741",
@@ -1355,7 +1511,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6566",
@@ -1369,21 +1527,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8014",
       "ticker": "8014",
       "company_name": "蝶理",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1379",
@@ -1397,7 +1559,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1997",
@@ -1411,35 +1575,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7087",
       "ticker": "7087",
       "company_name": "ウイルテック",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5301",
       "ticker": "5301",
       "company_name": "東海カーボン",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "ガラス・土石製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6282",
@@ -1453,7 +1623,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4719",
@@ -1467,7 +1639,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4887",
@@ -1485,7 +1659,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "healthcare"
+      "sector_slug": "healthcare",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5262",
@@ -1503,7 +1679,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7282",
@@ -1521,35 +1699,41 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "mobility"
+      "sector_slug": "mobility",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9142",
       "ticker": "9142",
       "company_name": "九州旅客鉄道",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "陸運業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7438",
       "ticker": "7438",
       "company_name": "コンドーテック",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8616",
@@ -1567,35 +1751,41 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5602",
       "ticker": "5602",
       "company_name": "栗本鐵工所",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "鉄鋼",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2120",
       "ticker": "2120",
       "company_name": "LIFULL",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9165",
@@ -1609,14 +1799,16 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8303",
       "ticker": "8303",
       "company_name": "SBI新生銀行",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "銀行業",
       "stage": "review",
       "due_date": "2026-11-13",
@@ -1627,21 +1819,25 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5741",
       "ticker": "5741",
       "company_name": "UACJ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "非鉄金属",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7893",
@@ -1655,21 +1851,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6998",
       "ticker": "6998",
       "company_name": "日本タングステン",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "電気機器",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6332",
@@ -1683,35 +1883,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3176",
       "ticker": "3176",
       "company_name": "三洋貿易",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3302",
       "ticker": "3302",
       "company_name": "帝国繊維",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "繊維製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4172",
@@ -1725,7 +1931,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4125",
@@ -1739,7 +1947,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4651",
@@ -1753,14 +1963,16 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1870",
       "ticker": "1870",
       "company_name": "矢作建設工業",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "建設業",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -1771,14 +1983,16 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1968",
       "ticker": "1968",
       "company_name": "太平電業",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "建設業",
       "stage": "review",
       "due_date": "2026-11-05",
@@ -1789,7 +2003,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "datacenter-power"
+      "sector_slug": "datacenter-power",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1946",
@@ -1807,7 +2023,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "datacenter-power"
+      "sector_slug": "datacenter-power",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6289",
@@ -1821,21 +2039,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9020",
       "ticker": "9020",
       "company_name": "東日本旅客鉄道",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "陸運業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9621",
@@ -1849,7 +2071,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4370",
@@ -1863,21 +2087,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4979",
       "ticker": "4979",
       "company_name": "OATアグリオ",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "スタンダード",
       "sector": "化学",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1929",
@@ -1895,21 +2123,25 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2003",
       "ticker": "2003",
       "company_name": "日東富士製粉",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "食料品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6258",
@@ -1928,7 +2160,9 @@
       "success_condition": "次回四半期で半導体関連（ウェーハ搬送）が生成AI需要を背景に増収継続し、通期ガイダンスを維持以上",
       "fail_condition": "半導体設備需要の一服＋EV設備の減少が重なり減収、通期下方修正",
       "source": "https://www.hirata.co.jp/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6363",
@@ -1942,7 +2176,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9672",
@@ -1956,35 +2192,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6309",
       "ticker": "6309",
       "company_name": "巴工業",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "機械",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7984",
       "ticker": "7984",
       "company_name": "コクヨ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "その他製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1979",
@@ -2002,21 +2244,25 @@
       "date_estimated": false,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "datacenter-power"
+      "sector_slug": "datacenter-power",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3360",
       "ticker": "3360",
       "company_name": "シップヘルスケアホールディングス",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6645",
@@ -2035,7 +2281,9 @@
       "success_condition": "次回四半期でFA制御機器が需要回復して増収に転じ、通期ガイダンスを維持以上",
       "fail_condition": "FA需要の回復力を欠き制御機器が減収、通期下方修正",
       "source": "https://www.omron.com/jp/ja/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4544",
@@ -2049,7 +2297,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9687",
@@ -2063,12 +2313,30 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4391",
       "ticker": "4391",
       "company_name": "ロジザード",
+      "market": "JP",
+      "tse_market": "グロース",
+      "sector": "情報・通信業",
+      "stage": "draft",
+      "due_date": null,
+      "success_condition": null,
+      "fail_condition": null,
+      "source": null,
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
+    },
+    {
+      "catalyst_id": "irf-3962",
+      "ticker": "3962",
+      "company_name": "チェンジホールディングス",
       "market": "JP",
       "tse_market": "プライム",
       "sector": "情報・通信業",
@@ -2077,21 +2345,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
-    },
-    {
-      "catalyst_id": "irf-3962",
-      "ticker": "3962",
-      "company_name": "チェンジホールディングス",
-      "market": "JP",
-      "tse_market": "スタンダード",
-      "sector": "情報・通信業",
-      "stage": "draft",
-      "due_date": null,
-      "success_condition": null,
-      "fail_condition": null,
-      "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3825",
@@ -2105,7 +2361,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6331",
@@ -2119,7 +2377,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4421",
@@ -2133,21 +2393,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7637",
       "ticker": "7637",
       "company_name": "白銅",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4613",
@@ -2161,21 +2425,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7921",
       "ticker": "7921",
       "company_name": "TAKARA & COMPANY",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "その他製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8308",
@@ -2193,7 +2461,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2929",
@@ -2207,21 +2477,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4220",
       "ticker": "4220",
       "company_name": "リケンテクノス",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "化学",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6268",
@@ -2240,7 +2514,9 @@
       "success_condition": "次回四半期でロボット向け精密減速機が需要回復を続けて増収増益となり、上方修正した通期ガイダンス（売上3,440億／営業326億）を維持以上",
       "fail_condition": "ロボット設備投資が鈍化して精密減速機が減速、通期計画を未達／下方修正",
       "source": "https://www.nabtesco.com/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3107",
@@ -2254,7 +2530,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5333",
@@ -2268,14 +2546,16 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6379",
       "ticker": "6379",
       "company_name": "レイズネクスト",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "建設業",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -2286,7 +2566,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5332",
@@ -2300,21 +2582,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9735",
       "ticker": "9735",
       "company_name": "セコム",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6013",
@@ -2328,21 +2614,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6070",
       "ticker": "6070",
       "company_name": "キャリアリンク",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9412",
@@ -2360,26 +2650,14 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "space-geospatial"
+      "sector_slug": "space-geospatial",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3853",
       "ticker": "3853",
       "company_name": "アステリア",
-      "market": "JP",
-      "tse_market": "スタンダード",
-      "sector": "情報・通信業",
-      "stage": "draft",
-      "due_date": null,
-      "success_condition": null,
-      "fail_condition": null,
-      "source": null,
-      "status": "pending"
-    },
-    {
-      "catalyst_id": "irf-3744",
-      "ticker": "3744",
-      "company_name": "サイオス",
       "market": "JP",
       "tse_market": "プライム",
       "sector": "情報・通信業",
@@ -2388,21 +2666,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
-      "catalyst_id": "irf-4439",
-      "ticker": "4439",
-      "company_name": "東名",
+      "catalyst_id": "irf-3744",
+      "ticker": "3744",
+      "company_name": "サイオス",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "スタンダード",
       "sector": "情報・通信業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
+    },
+    {
+      "catalyst_id": "irf-4439",
+      "ticker": "4439",
+      "company_name": "東名",
+      "market": "JP",
+      "tse_market": "スタンダード",
+      "sector": "情報・通信業",
+      "stage": "draft",
+      "due_date": null,
+      "success_condition": null,
+      "fail_condition": null,
+      "source": null,
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6040",
@@ -2416,7 +2714,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9616",
@@ -2430,7 +2730,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9340",
@@ -2444,7 +2746,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4527",
@@ -2462,21 +2766,25 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "healthcare"
+      "sector_slug": "healthcare",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4691",
       "ticker": "4691",
       "company_name": "ワシントンホテル",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2760",
@@ -2495,7 +2803,9 @@
       "success_condition": "次回四半期でCN（AIサーバ／DC）事業が増収を牽引し、半導体流通も回復して通期の増収ガイダンス（2027/3期 売上2,250億計画）を維持以上",
       "fail_condition": "半導体流通の低迷が続き当該事業が減収、または通期計画を下方修正",
       "source": "https://www.teldevice.co.jp/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2986",
@@ -2509,7 +2819,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6745",
@@ -2523,21 +2835,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6862",
       "ticker": "6862",
       "company_name": "ミナトホールディングス",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "電気機器",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3920",
@@ -2551,21 +2867,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3489",
       "ticker": "3489",
       "company_name": "フェイスネットワーク",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "スタンダード",
       "sector": "不動産業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4264",
@@ -2579,7 +2899,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6278",
@@ -2593,28 +2915,32 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-8111",
       "ticker": "8111",
       "company_name": "ゴールドウイン",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "繊維製品",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-1414",
       "ticker": "1414",
       "company_name": "ショーボンドホールディングス",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "建設業",
       "stage": "review",
       "due_date": "2026-11-06",
@@ -2625,7 +2951,9 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "infrastructure"
+      "sector_slug": "infrastructure",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9716",
@@ -2639,35 +2967,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4641",
       "ticker": "4641",
       "company_name": "アルプス技研",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7120",
       "ticker": "7120",
       "company_name": "SHINKO",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "スタンダード",
       "sector": "卸売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3433",
@@ -2681,7 +3015,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7826",
@@ -2700,49 +3036,57 @@
       "success_condition": "次回四半期でデータセンター・半導体向け貴金属製品が増収継続し、通期の増収増益ガイダンス（2027/6期 売上1,010億／営業265億）を維持以上",
       "fail_condition": "貴金属価格の反落やDC需要一服で減収・減益、通期計画を未達",
       "source": "https://www.furuyametals.co.jp/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4783",
       "ticker": "4783",
       "company_name": "NCD",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "スタンダード",
       "sector": "情報・通信業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3186",
       "ticker": "3186",
       "company_name": "ネクステージ",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "小売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6564",
       "ticker": "6564",
       "company_name": "ミダックホールディングス",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "サービス業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5384",
@@ -2761,21 +3105,25 @@
       "success_condition": "次回四半期で先端半導体向けCMP・研磨材がAI需要で増収継続し、通期見通し（2027/3期 売上748億／営業145億）を維持以上",
       "fail_condition": "半導体材料需要が一服して減収・減益、通期計画を下方修正",
       "source": "https://www.fujimiinc.co.jp/ir/",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4495",
       "ticker": "4495",
       "company_name": "アイキューブドシステムズ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "グロース",
       "sector": "情報・通信業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7199",
@@ -2793,35 +3141,41 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "financials"
+      "sector_slug": "financials",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3475",
       "ticker": "3475",
       "company_name": "グッドコムアセット",
       "market": "JP",
-      "tse_market": "グロース",
+      "tse_market": "プライム",
       "sector": "不動産業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4971",
       "ticker": "4971",
       "company_name": "メック",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "化学",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4576",
@@ -2839,7 +3193,9 @@
       "date_estimated": false,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "healthcare"
+      "sector_slug": "healthcare",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4375",
@@ -2853,21 +3209,25 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-7611",
       "ticker": "7611",
       "company_name": "ハイデイ日高",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "小売業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9434",
@@ -2881,7 +3241,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3964",
@@ -2895,35 +3257,41 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6981",
       "ticker": "6981",
       "company_name": "村田製作所",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "電気機器",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4482",
       "ticker": "4482",
       "company_name": "ウィルズ",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "グロース",
       "sector": "情報・通信業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6597",
@@ -2937,28 +3305,32 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4412",
       "ticker": "4412",
       "company_name": "サイエンスアーツ",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "グロース",
       "sector": "情報・通信業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-9348",
       "ticker": "9348",
       "company_name": "ispace",
       "market": "JP",
-      "tse_market": "プライム",
+      "tse_market": "グロース",
       "sector": "サービス業",
       "stage": "review",
       "due_date": "2026-11-13",
@@ -2969,21 +3341,25 @@
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "space-geospatial"
+      "sector_slug": "space-geospatial",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3687",
       "ticker": "3687",
       "company_name": "フィックスターズ",
       "market": "JP",
-      "tse_market": "スタンダード",
+      "tse_market": "プライム",
       "sector": "情報・通信業",
       "stage": "draft",
       "due_date": null,
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "スタンダード",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-5038",
@@ -2997,7 +3373,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4890",
@@ -3015,7 +3393,9 @@
       "date_estimated": false,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "healthcare"
+      "sector_slug": "healthcare",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4896",
@@ -3033,7 +3413,9 @@
       "date_estimated": false,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
-      "sector_slug": "healthcare"
+      "sector_slug": "healthcare",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4258",
@@ -3047,7 +3429,9 @@
       "success_condition": null,
       "fail_condition": null,
       "source": null,
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "グロース",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-6504",
@@ -3066,7 +3450,9 @@
       "success_condition": "次回四半期決算でパワー半導体/エネルギー（DC電源）が前年同期比で増収継続し、通期ガイダンス据え置き以上",
       "fail_condition": "DC・パワエレ需要一服で当該部門が減収、または通期下方修正",
       "source": "https://www.fujielectric.co.jp/ir/library/detail/index06.html",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4062",
@@ -3085,7 +3471,9 @@
       "success_condition": "次回決算で電子（ICパッケージ基板）が生成AI需要で増収継続し、通期上方修正の売上5,500億/営業益1,270億の線を維持以上",
       "fail_condition": "AIサーバー基板の受注一服で電子部門が減収、または通期予想の下方修正",
       "source": "https://finance.biggo.jp/news/jpx_tdnet_140120260731504718",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-4004",
@@ -3104,7 +3492,9 @@
       "success_condition": "次回決算で半導体・電子材料セグメントが増収継続し、通期コア営業利益ガイダンス据え置き以上",
       "fail_condition": "後工程材料需要の反落でセグメント減収、または通期下方修正",
       "source": "https://www.resonac.com/jp/ir/library/results.html",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-2802",
@@ -3123,7 +3513,9 @@
       "success_condition": "次回決算で電子材料（ABF等）が増収継続し、上方修正した通期事業利益を据え置き以上",
       "fail_condition": "AI向けABF需要一服で電子材料が減収、または通期下方修正",
       "source": "https://minkabu.jp/stock/2802/settlement",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     },
     {
       "catalyst_id": "irf-3110",
@@ -3142,7 +3534,9 @@
       "success_condition": "次回決算で電子材料（特殊ガラスクロス）が前年同期比で増収継続し、通期ガイダンス据え置き以上",
       "fail_condition": "AI基板向けガラスクロス需要一服で電子材料が減収、または通期下方修正",
       "source": "https://kabutan.jp/stock/finance?code=3110",
-      "status": "pending"
+      "status": "pending",
+      "tse_market_at_fetch": "プライム",
+      "tse_market_as_of": "2026-09-30"
     }
   ]
 }

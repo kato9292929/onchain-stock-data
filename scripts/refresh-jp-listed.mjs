@@ -13,7 +13,7 @@
  *
  *   node scripts/refresh-jp-listed.mjs
  */
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import zlib from "node:zlib";
@@ -141,6 +141,51 @@ async function main() {
     "utf8",
   );
   console.log(`[jp-listed] wrote ${OUT} — ${count} companies, as_of ${asOf}`);
+
+  // Re-check the IR Fair roster against the master we just pulled. Its
+  // tse_market column had never been reconciled against a primary source —
+  // when first checked on 2026-10-15, 91 of 197 rows disagreed — so a silent
+  // drift back is worth catching the next time JPX republishes.
+  await reconcileRoster(listed, asOf);
+}
+
+const SEGMENTS = ["プライム", "スタンダード", "グロース"];
+const segmentOf = (s) => SEGMENTS.find((k) => String(s ?? "").includes(k)) ?? "";
+
+async function reconcileRoster(listed, asOf) {
+  const file = path.join(ROOT, "data", "ir-fair-2026-catalysts.json");
+  let roster;
+  try {
+    roster = JSON.parse(await readFile(file, "utf8"));
+  } catch (e) {
+    console.warn(`[jp-listed] roster not reconciled: ${e.message}`);
+    return;
+  }
+  const drift = [];
+  const gone = [];
+  for (const c of roster.catalysts ?? []) {
+    const m = listed[c.ticker];
+    if (!m) {
+      gone.push(`${c.ticker} ${c.company_name}`);
+      continue;
+    }
+    const want = segmentOf(m.segment);
+    if (segmentOf(c.tse_market) !== want) {
+      drift.push(`${c.ticker} ${c.company_name}: ${c.tse_market} -> ${want}`);
+    }
+  }
+  if (gone.length > 0) {
+    console.warn(
+      `::warning::[jp-listed] ${gone.length} roster companies are no longer listed: ${gone.join(", ")}`,
+    );
+  }
+  if (drift.length > 0) {
+    console.warn(
+      `::warning::[jp-listed] ${drift.length} roster segments disagree with JPX (as_of ${asOf}):\n  ${drift.join("\n  ")}`,
+    );
+  } else {
+    console.log(`[jp-listed] roster segments match JPX (as_of ${asOf})`);
+  }
 }
 
 main().catch((e) => {

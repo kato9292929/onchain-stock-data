@@ -1097,7 +1097,7 @@
     "target_date": "2026-07-30",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "miss",
+    "status": "hit",
     "judgement_date": "2026-08-07",
     "evidence_urls": [
       "https://telecomlead.com/semiconductor/qualcomm-q3-2026-revenue-hits-9-9-bn-as-automotive-jumps-61-iot-reaches-1-83-bn-and-ai-diversification-accelerates-126984"
@@ -1110,7 +1110,17 @@
     "series_article": 4,
     "catalyst_role": "main",
     "parent_catalyst_id": null,
-    "company_name": "Qualcomm"
+    "company_name": "Qualcomm",
+    "verdict_history": [
+      {
+        "status": "miss",
+        "judgement_date": "2026-08-07",
+        "changed_at": "2026-10-15",
+        "change_reason": "採点が success_condition ではなく【外れ方向】節を判定していた（評価プロンプトの不具合。scripts/evaluate-catalysts.mjs で修正済み）。成立条件は『QCT自動車が約+50%成長を達成する』。reasoning の引用値は +61% で「ガイダンスを大きく上回った」。採点が【外れ方向】節（自動車の伸び鈍化）を判定していた。",
+        "audit": "2-2b 監査。web 検索は行わず、既存 reasoning が引用する実績値のみで判定。"
+      }
+    ],
+    "verdict_revised_at": "2026-10-15"
   },
   {
     "catalyst_id": "ext_e5d99360",
@@ -1123,7 +1133,7 @@
     "target_date": "2026-07-30",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "miss",
+    "status": "hit",
     "judgement_date": "2026-08-07",
     "evidence_urls": [
       "https://www.cnbc.com/2026/07/29/qualcomm-qcom-earnings-report-q3-2026-.html"
@@ -1136,7 +1146,17 @@
     "series_article": 4,
     "catalyst_role": "sub",
     "parent_catalyst_id": "ext_49e53128",
-    "company_name": "Qualcomm"
+    "company_name": "Qualcomm",
+    "verdict_history": [
+      {
+        "status": "miss",
+        "judgement_date": "2026-08-07",
+        "changed_at": "2026-10-15",
+        "change_reason": "採点が success_condition ではなく【外れ方向】節を判定していた（評価プロンプトの不具合。scripts/evaluate-catalysts.mjs で修正済み）。成立条件は『Q4ガイダンスの前四半期比増収として裏づけられるか』。引用値は Q4 $5.2B > Q3 $5.1B で「裏づけられた」。reasoning が外れ方向節を success_condition と明記している。",
+        "audit": "2-2b 監査。web 検索は行わず、既存 reasoning が引用する実績値のみで判定。"
+      }
+    ],
+    "verdict_revised_at": "2026-10-15"
   },
   {
     "catalyst_id": "ext_2abb2f65",
@@ -1279,7 +1299,7 @@
     "target_date": "2026-08-05",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "miss",
+    "status": "hit",
     "judgement_date": "2026-08-13",
     "evidence_urls": [
       "https://www.businesswire.com/news/home/20260806343526/en/Ouster-Announces-Results-for-Second-Quarter-2026"
@@ -1292,7 +1312,17 @@
     "series_article": 4,
     "catalyst_role": "main",
     "parent_catalyst_id": null,
-    "company_name": "Ouster"
+    "company_name": "Ouster",
+    "verdict_history": [
+      {
+        "status": "miss",
+        "judgement_date": "2026-08-13",
+        "changed_at": "2026-10-15",
+        "change_reason": "採点が success_condition ではなく【外れ方向】節を判定していた（評価プロンプトの不具合。scripts/evaluate-catalysts.mjs で修正済み）。成立条件は『売上がガイダンス中央値5,100万ドル超 かつ 粗利率が43%を下回らない』。引用値は売上54.6M・粗利率49%で両条件とも充足。",
+        "audit": "2-2b 監査。web 検索は行わず、既存 reasoning が引用する実績値のみで判定。"
+      }
+    ],
+    "verdict_revised_at": "2026-10-15"
   },
   {
     "catalyst_id": "ext_dfd9ab4e",
@@ -1409,7 +1439,7 @@
     "target_date": "2026-08-27",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "miss",
+    "status": "hit",
     "judgement_date": "2026-09-20",
     "evidence_urls": [
       "https://www.marketbeat.com/instant-alerts/ambarella-q4-earnings-call-highlights-2026-02-26/?.tsrc=rss"
@@ -1422,7 +1452,17 @@
     "series_article": 4,
     "catalyst_role": "sub",
     "parent_catalyst_id": "ext_b363c03d",
-    "company_name": "Ambarella"
+    "company_name": "Ambarella",
+    "verdict_history": [
+      {
+        "status": "miss",
+        "judgement_date": "2026-09-20",
+        "changed_at": "2026-10-15",
+        "change_reason": "採点が success_condition ではなく【外れ方向】節を判定していた（評価プロンプトの不具合。scripts/evaluate-catalysts.mjs で修正済み）。成立条件は『design win が2026年内に売上として言及されるか』。reasoning は言及の事実を複数列挙しながら、外れ方向節を success_condition として判定していた。",
+        "audit": "2-2b 監査。web 検索は行わず、既存 reasoning が引用する実績値のみで判定。"
+      }
+    ],
+    "verdict_revised_at": "2026-10-15"
   },
   {
     "catalyst_id": "ext_a30d322e",
@@ -1435,7 +1475,7 @@
     "target_date": "2026-09-25",
     "submitted_at": "2026-07-17T08:11:50.133Z",
     "submitter_contact": null,
-    "status": "miss",
+    "status": "hit",
     "judgement_date": "2026-10-05",
     "evidence_urls": [
       "https://s25.q4cdn.com/621799436/files/doc_financials/2026/q4/Q4-FY26-Prepared-Remarks.pdf"
@@ -1448,7 +1488,17 @@
     "series_article": 4,
     "catalyst_role": "main",
     "parent_catalyst_id": null,
-    "company_name": "Micron"
+    "company_name": "Micron",
+    "verdict_history": [
+      {
+        "status": "miss",
+        "judgement_date": "2026-10-05",
+        "changed_at": "2026-10-15",
+        "change_reason": "採点が success_condition ではなく【外れ方向】節を判定していた（評価プロンプトの不具合。scripts/evaluate-catalysts.mjs で修正済み）。成立条件は『Automotive and Embedded が前四半期の46.3億ドルを上回る』。引用値は68.2億ドル(+47%)で充足。reasoning が「success_conditionが『外れ方向』と位置付けていた」と逆転を明記している。",
+        "audit": "2-2b 監査。web 検索は行わず、既存 reasoning が引用する実績値のみで判定。"
+      }
+    ],
+    "verdict_revised_at": "2026-10-15"
   },
   {
     "catalyst_id": "ext_c3403d06",

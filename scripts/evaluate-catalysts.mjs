@@ -16,6 +16,7 @@
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
@@ -187,14 +188,40 @@ function extractJson(text) {
 }
 
 /**
+ * Split "成立条件【外れ方向】外れるシナリオ" into its two halves.
+ *
+ * The external catalysts fold both into one `catalyst_description`, and it used
+ * to be handed to the model whole, under the label `success_condition:`. So the
+ * model was told that the fail scenario WAS the success condition, and it
+ * sometimes judged that instead — ext_e5d99360 says so in as many words:
+ * 「submitterの【外れ方向】success_condition（Q4ガイダンスがQoQ増収を示さない）は
+ * 満たされておらず、miss判定」. QCOM's automotive grew +61% against a ~+50%
+ * condition and was recorded a miss.
+ *
+ * Duplicated from `splitDescription` in lib/physical-ai-scoreboard.ts because
+ * this script runs under plain `node` and cannot import a .ts module; the two
+ * are pinned to each other by a test.
+ */
+export function splitCondition(description) {
+  const text = String(description ?? "");
+  const marker = "【外れ方向】";
+  const i = text.indexOf(marker);
+  if (i < 0) return { success: text.trim(), failDirection: null };
+  return {
+    success: text.slice(0, i).trim(),
+    failDirection: text.slice(i + marker.length).trim() || null,
+  };
+}
+
+/**
  * Judge one catalyst. `entry` is normalised to:
- *   { ticker, targetDate, condition, context }
+ *   { ticker, targetDate, condition, context, asOf }
  * so internal portfolio evaluations and external submissions share the exact
  * same Claude + web-search logic and anti-hallucination URL filtering.
  */
 async function evaluateOne(
   client,
-  { ticker, targetDate, condition, context, market = "US" },
+  { ticker, targetDate, condition, context, market = "US", asOf },
 ) {
   const isJp = market === "JP";
   const system = isJp ? SYSTEM_PROMPT_JP : SYSTEM_PROMPT;
@@ -209,11 +236,19 @@ async function evaluateOne(
     ? "決算短信・適時開示・会社IR・日経など"
     : "実際のニュース・株価・SEC ファイリング";
   const webSearch = { type: "web_search_20260209", name: "web_search" };
-  const userPrompt = `銘柄: ${ticker}
-catalyst_target_date: ${targetDate}
-${context ? `${context}\n` : ""}success_condition: ${condition}
-
-${targetDate} 前後の${sources}を web 検索で確認し、success_condition の達成可否を判定してください。最後に指定の JSON を出力してください。`;
+  const { success, failDirection } = splitCondition(condition);
+  // The ONLY date in this prompt used to be the selection week, which the model
+  // read as today: 3110 was judged on 2026-08-13 and still concluded
+  // 「現在の週は2026-06-29であり、対象日付（8/5）まで約5週間先」 for a 短信 that had
+  // been out for eight days. Seven `na` rows came from that. State today first,
+  // and say plainly that the target date is in the past.
+  const today = asOf ?? todayIso();
+  const userPrompt = `本日（判定実施日）: ${today}
+銘柄: ${ticker}
+catalyst_target_date: ${targetDate}（本日より過去。すでに到来済みの日付として扱うこと）
+${context ? `${context}\n` : ""}success_condition: ${success}
+${failDirection ? `fail_direction（参考。成立しなかった場合に観測される事象。**これは判定対象ではない**）: ${failDirection}\n` : ""}
+${targetDate} 前後の${sources}を web 検索で確認し、**success_condition** の達成可否のみを判定してください。fail_direction は背景情報であり、その成否を判定してはいけません。最後に指定の JSON を出力してください。`;
 
   const messages = [{ role: "user", content: userPrompt }];
   const searchUrls = new Set();
@@ -510,7 +545,10 @@ async function main() {
         ticker: entry.ticker,
         targetDate: entry.catalyst_target_date,
         condition: entry.success_condition,
-        context: `週: ${entry.week_of}\nthesis: ${thesis || "(thesis 不明)"}`,
+        // Labelled as the week the pick was MADE, not as "now" — the bare
+        // `週:` reads as today and produced seven premature `na` verdicts.
+        context: `この銘柄が選定された週（過去）: ${entry.week_of}\nthesis: ${thesis || "(thesis 不明)"}`,
+        asOf: todayIso(),
       });
       entry.status = verdict.status;
       entry.evidence_url = verdict.evidence_url;
@@ -546,6 +584,7 @@ async function main() {
         condition: entry.catalyst_description,
         context: `外部提出 catalyst（submitter による）${eventRule}`,
         market: entry.market === "JP" ? "JP" : "US",
+        asOf: todayIso(),
       });
       entry.status = verdict.status;
       // External schema uses evidence_urls[] (plural); keep the verified one.
@@ -581,8 +620,9 @@ async function main() {
         ticker: entry.ticker,
         targetDate: entry.catalyst_target_date,
         condition: entry.success_condition,
-        context: `週: ${entry.week_of}`,
+        context: `この銘柄が選定された週（過去）: ${entry.week_of}`,
         market: "JP",
+        asOf: todayIso(),
       });
       entry.status = verdict.status;
       entry.evidence_url = verdict.evidence_url;
@@ -635,8 +675,17 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(`::error::evaluate-catalysts failed: ${e.message}`);
-  console.error(e);
-  process.exit(1);
-});
+// Only when invoked directly. This script bills Claude plus web search, so
+// importing it — from a test, a tool — must never start a run. (Mirrors
+// scripts/research-ir-fair.mjs, which learned this the expensive way.)
+const invokedDirectly =
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (invokedDirectly) {
+  main().catch((e) => {
+    console.error(`::error::evaluate-catalysts failed: ${e.message}`);
+    console.error(e);
+    process.exit(1);
+  });
+}

@@ -252,7 +252,7 @@ export default async function CatalystSectorPage({
           </div>
           <p className="mt-1 text-[11px] text-slate-400">
             一次資料で裏取り後、決算値＋判定条件を付けて Researched に昇格します。以下は
-            その前段の名簿（社名・コード。市場区分は取得時点のスナップショットで未検証）。
+            その前段の名簿（社名・コード）。市場区分は JPX 上場銘柄一覧（as_of 2026-09-30）と照合済み。
           </p>
         </div>
         <div className="divide-y divide-slate-100 overflow-hidden rounded border border-slate-200">
