@@ -45,12 +45,14 @@ test("the surviving book still sums to 100", () => {
   assert.equal(Math.round(sum * 10) / 10, 100);
 });
 
-test("its orphaned pending row became na, keeping the old value", () => {
+test("its orphaned pending row became excluded, keeping the old value", () => {
   const ev = read("data/jp-portfolio-evaluations.json").evaluations;
   const row = ev.find((e) => e.ticker === "6967" && e.week_of === "2026-10-12");
-  assert.equal(row.status, "na");
+  // excluded, not na: the deadline (2026-10-30) had not arrived when the pick
+  // was withdrawn, so no evaluator ever failed to judge it.
+  assert.equal(row.status, "excluded");
   assert.equal(row.verdict_history[0].status, "pending", "the prior value is kept");
-  assert.equal(row.na_reason, "delisted");
+  assert.equal(row.exclusion_reason, "delisted");
 });
 
 test("the screen itself never rewrites a verdict — it only drops picks", () => {

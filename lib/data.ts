@@ -199,7 +199,21 @@ export type EvaluationStatus =
   | "hit"
   | "partial"
   | "miss"
-  | "na";
+  /** The deadline arrived and the condition could not be judged. */
+  | "na"
+  /**
+   * The condition left the scoring population BEFORE its deadline, because the
+   * pick itself was withdrawn — so far, only by the delisting screen.
+   *
+   * Kept apart from `na` because the two say different things. `na` is a
+   * condition we failed to make judgeable; `excluded` is a condition that was
+   * never going to be judged at all. 6967's 2026-06-22 row is `na` (its
+   * 2026-07-31 deadline passed with nothing to read); its 2026-10-12 row is
+   * `excluded` (removed on 2026-10-15, before its 2026-10-30 deadline).
+   * Folding the second into `na` would have put a row in the denominator that
+   * no evaluator ever looked at.
+   */
+  | "excluded";
 
 export interface PortfolioEvaluation {
   week_of: string;

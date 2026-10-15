@@ -20,7 +20,16 @@ const STATUS_STYLE: Record<EvaluationStatus, { label: string; cls: string }> = {
   miss: { label: "miss", cls: "text-rose-600" },
   na: { label: "na", cls: "text-slate-400" },
   pending: { label: "pending", cls: "text-slate-500" },
+  excluded: { label: "excluded", cls: "text-slate-400" },
 };
+
+/**
+ * `excluded` is shown apart from the verdicts, not beside them: it is not a
+ * result, it is a condition that left the population before anyone judged it
+ * (so far, picks withdrawn by the delisting screen). Listing it next to
+ * hit/partial/miss/na would read as a fifth kind of outcome.
+ */
+const VERDICTS: EvaluationStatus[] = ["hit", "partial", "miss", "na", "pending"];
 
 function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
   const judged = judgedCount(counts);
@@ -40,13 +49,20 @@ function HitRate({ counts }: { counts: Record<EvaluationStatus, number> }) {
             hit + ½ partial
           </span>
         </span>
-        {(Object.keys(STATUS_STYLE) as EvaluationStatus[]).map((s) => (
+        {VERDICTS.map((s) => (
           <span key={s} className="text-slate-400">
             {STATUS_STYLE[s].label}:{" "}
             <span className={`tabular-nums ${STATUS_STYLE[s].cls}`}>{counts[s]}</span>
           </span>
         ))}
       </div>
+      {counts.excluded > 0 && (
+        <p className="mt-2 text-xs text-slate-400">
+          <span className="tabular-nums text-slate-500">{counts.excluded}</span>{" "}
+          excluded — 選定から除外された条件（上場廃止など）。期日の到来前に判定対象から
+          外れたため、的中率の分母には入りません。
+        </p>
+      )}
       <p className="mt-2 text-xs text-slate-400">
         Scored by web search of earnings / disclosures 7 days after each
         deadline. (hit + partial&times;0.5) &divide; (hit + partial + miss + na)
@@ -65,6 +81,7 @@ export default async function JpPortfolioPage() {
 
   const counts: Record<EvaluationStatus, number> = {
     pending: 0,
+    excluded: 0,
     hit: 0,
     partial: 0,
     miss: 0,

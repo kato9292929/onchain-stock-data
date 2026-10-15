@@ -1408,7 +1408,7 @@
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10/30の2Q決算でAI半導体パッケージ基板売上が前年同期比15%超増となれば当たり。",
       "condition_source": "thesis",
-      "status": "na",
+      "status": "excluded",
       "evaluated_at": null,
       "evidence_url": null,
       "reasoning": "6967 新光電気工業は 2025-06-06 に上場廃止（JICによるTOB・非公開化）。選定時の上場照合が入る前に選ばれた最後の週。lib/listing-status.ts の照合を遡及適用した。",
@@ -1417,11 +1417,11 @@
           "status": "pending",
           "judgement_date": null,
           "changed_at": "2026-10-15",
-          "change_reason": "選定から遡及除外されたため判定不能。6967 新光電気工業は 2025-06-06 に上場廃止（JICによるTOB・非公開化）。選定時の上場照合が入る前に選ばれた最後の週。lib/listing-status.ts の照合を遡及適用した。"
+          "change_reason": "選定から遡及除外されたため、期日(2026-10-30)の到来前に判定対象から外れた。採点できなかった条件(na)ではなく、判定対象から外れた条件(excluded)として記録する。6967 新光電気工業は 2025-06-06 に上場廃止（JICによるTOB・非公開化）。選定時の上場照合が入る前に選ばれた最後の週。lib/listing-status.ts の照合を遡及適用した。"
         }
       ],
-      "na_reason": "delisted",
-      "delisted": true
+      "delisted": true,
+      "exclusion_reason": "delisted"
     },
     {
       "week_of": "2026-10-12",
