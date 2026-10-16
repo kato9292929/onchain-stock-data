@@ -174,6 +174,21 @@ export interface Portfolio {
   rationale: string;
   holdings: PortfolioHolding[];
   changes?: PortfolioChange[];
+  /**
+   * Whether this week's selection prompt carried the external context block.
+   *
+   * It was computed on every run and thrown away — only the function's return
+   * value held it, never the persisted entry — so there is no way to tell,
+   * for any week already on record, whether the model saw external data or
+   * reasoned entirely from its own weights. JP never has any: its prompt takes
+   * no external context at all.
+   *
+   * Absent on entries written before 2026-10-16; absent is not false.
+   */
+  used_external_data?: boolean;
+  /** Host of AA_EXTERNAL_DATA_URL only — never the URL or its contents. */
+  external_source?: string | null;
+  external_fetched_at?: string | null;
 }
 
 export interface PortfolioHistoryFile {
@@ -313,6 +328,21 @@ export interface JpPortfolio {
   rationale: string;
   holdings: JpPortfolioHolding[];
   changes?: PortfolioChange[];
+  /**
+   * Whether this week's selection prompt carried the external context block.
+   *
+   * It was computed on every run and thrown away — only the function's return
+   * value held it, never the persisted entry — so there is no way to tell,
+   * for any week already on record, whether the model saw external data or
+   * reasoned entirely from its own weights. JP never has any: its prompt takes
+   * no external context at all.
+   *
+   * Absent on entries written before 2026-10-16; absent is not false.
+   */
+  used_external_data?: boolean;
+  /** Host of AA_EXTERNAL_DATA_URL only — never the URL or its contents. */
+  external_source?: string | null;
+  external_fetched_at?: string | null;
 }
 
 export interface JpPortfolioHistoryFile {

@@ -61,6 +61,16 @@ export interface PortfolioUpdateResult {
   used_external_data?: boolean;
 }
 
+/** Host only — a configured endpoint is not something to write into a data file. */
+function hostOf(url: string | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).host;
+  } catch {
+    return null;
+  }
+}
+
 export async function runPortfolioUpdate(
   opts: { horizon?: string } = {},
 ): Promise<PortfolioUpdateResult> {
@@ -82,6 +92,10 @@ export async function runPortfolioUpdate(
 
   // Best-effort external alt-data from AA (10s timeout, degrades to "").
   const externalData = await fetchExternalData();
+  // Only the host, never the URL or the payload: the record has to say whether
+  // the model saw outside data, not reproduce it or leak a configured endpoint.
+  const externalSource = hostOf(process.env.AA_EXTERNAL_DATA_URL);
+  const externalFetchedAt = externalData ? new Date().toISOString() : null;
   // Curated external signals (bearish/structural/no-date included). Only judgeable
   // + verified ones are ever scored elsewhere; here they all feed as context.
   const signals = await getSignals();
@@ -100,6 +114,9 @@ export async function runPortfolioUpdate(
 
   const portfolio: Portfolio = {
     ...selected.portfolio,
+    used_external_data: externalContext.length > 0,
+    external_source: externalSource,
+    external_fetched_at: externalFetchedAt,
     changes: diffHoldings(prev.current, selected.portfolio),
   };
   const next = appendPortfolio(prev, portfolio);
@@ -235,6 +252,11 @@ export async function runJpPortfolioUpdate(
 
   const portfolio: JpPortfolio = {
     ...selected.portfolio,
+    // Structurally false: selectJpPortfolio takes no externalContext argument,
+    // so the JP prompt cannot carry external data however it is configured.
+    used_external_data: false,
+    external_source: null,
+    external_fetched_at: null,
     holdings: screened.kept,
     changes: diffJpHoldings(prev.current, {
       ...selected.portfolio,
