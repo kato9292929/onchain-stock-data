@@ -69,20 +69,26 @@ test("scorableSignals: filters to the hit-rate-eligible subset", () => {
   assert.deepEqual(scorableSignals(signals).map((s) => s.id), ["a"]);
 });
 
-test("formatSignalsForPrompt: groups by direction, tags unverified/参考, empty→''", () => {
+test("formatSignalsForPrompt: groups by direction, drops unverified, empty→''", () => {
   assert.equal(formatSignalsForPrompt(null), "");
   assert.equal(formatSignalsForPrompt({ signals: [] }), "");
   const out = formatSignalsForPrompt({
     signals: [
       { ...base, id: "a", direction: "bullish", claim: "up", observable: "o", threshold: "t", verified: true },
       { ...base, id: "b", direction: "bearish", claim: "down", verified: false },
+      { ...base, id: "c", direction: "bearish", claim: "ctx", verified: true },
     ],
   });
   assert.match(out, /強気/);
   assert.match(out, /弱気/);
   assert.match(out, /採点対象ではない/);
-  // bearish context + unverified → both tags present
-  assert.match(out, /down.*未検証・参考/);
+  // Unverified rows used to go in carrying a 「未検証」 tag and an instruction to
+  // discount them; the model published them as flat assertions anyway, so they
+  // are now withheld entirely rather than labelled.
+  assert.doesNotMatch(out, /down/, "an unverified claim must not appear at all");
+  assert.doesNotMatch(out, /\[未検証/);
+  // verified + non-judgeable still goes in, tagged 参考
+  assert.match(out, /ctx.*参考/);
   // bullish judgeable + verified → no tag
   assert.ok(/up(?!.*\[)/.test(out.split("\n").find((l) => l.includes("up"))));
 });

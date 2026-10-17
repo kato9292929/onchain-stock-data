@@ -39,7 +39,12 @@ import {
   fetchExternalData,
   formatExternalDataForPrompt,
 } from "@/lib/external-data";
-import { getSignals, formatSignalsForPrompt } from "@/lib/signals";
+import {
+  getSignals,
+  formatSignalsForPrompt,
+  selectableSignals,
+  VERIFIED_ONLY_FROM,
+} from "@/lib/signals";
 
 /**
  * Portfolio / performance update jobs (ported from Claude-Stock-Portfolio-Watch's
@@ -99,6 +104,15 @@ export async function runPortfolioUpdate(
   // Curated external signals (bearish/structural/no-date included). Only judgeable
   // + verified ones are ever scored elsewhere; here they all feed as context.
   const signals = await getSignals();
+  // Say which rows were withheld, so a run's inputs can be reconstructed from
+  // its log rather than inferred from the signals file as it stands later.
+  const { droppedIds } = selectableSignals(signals);
+  if (droppedIds.length > 0) {
+    console.log(
+      `[portfolio] withheld ${droppedIds.length} unverified signal(s) from the ` +
+        `selection prompt (since ${VERIFIED_ONLY_FROM}): ${droppedIds.join(", ")}`,
+    );
+  }
   const externalContext =
     formatExternalDataForPrompt(externalData) + formatSignalsForPrompt(signals);
 

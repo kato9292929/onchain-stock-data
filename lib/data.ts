@@ -155,6 +155,9 @@ export interface PortfolioHolding {
   thesis: string;
   /** Catalyst judgement date (YYYY-MM-DD); optional for back-compat. */
   target_date?: string;
+  /** See JpPortfolioHolding.target_date_source — same meaning, same history. */
+  target_date_source?: "model" | "verified";
+  target_date_confirmed?: string | null;
   entry_price_usd?: number;
   current_price_usd?: number;
 }
@@ -318,6 +321,30 @@ export interface JpPortfolioHolding {
   thesis: string;
   /** Next-earnings date estimate the catalyst is judged against (YYYY-MM-DD). */
   target_date: string;
+  /**
+   * Where `target_date` came from.
+   *
+   *   "model"     the selection model's own output, unchecked
+   *   "verified"  reconciled against a date the company published
+   *
+   * Everything on record before 2026-10-17 is "model" in fact but carries no
+   * field, because the distinction was never written down: the date goes from
+   * the model's JSON through `normalizeDate` — a format check, nothing more —
+   * straight into the file, and the prompt explicitly permits a guess when no
+   * schedule has been announced. The article's 留保 claims both 「会社が公表した
+   * 決算日」 and 「前年実績からの推定」; neither the code nor the data could tell
+   * which applied to any given row.
+   *
+   * Absent means unrecorded, not "model".
+   */
+  target_date_source?: "model" | "verified";
+  /**
+   * The company's published date, when it was checked and differs.
+   *
+   * `target_date` is never rewritten — a condition is fixed when it is
+   * published — so a disagreement is recorded alongside it instead.
+   */
+  target_date_confirmed?: string | null;
 }
 
 export interface JpPortfolio {

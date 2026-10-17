@@ -65,3 +65,37 @@ test("existing entries are left unfilled — absent is not false", () => {
     );
   }
 });
+
+test("every new pick records where its target_date came from", () => {
+  // The date goes from the model's JSON through normalizeDate — a format check,
+  // nothing more — straight into the file, and the prompt explicitly allows a
+  // guess when no schedule is published. Nothing recorded which had happened.
+  for (const f of ["lib/jp-portfolio.ts", "lib/portfolio.ts"]) {
+    const src = readFileSync(f, "utf8");
+    assert.match(
+      src,
+      /target_date_source: "model"/,
+      `${f}: an unchecked date must say so`,
+    );
+  }
+});
+
+test("normalizeDate is still only a format check — nothing silently fixes dates", () => {
+  // If this ever starts reconciling, target_date_source must stop saying "model".
+  const src = readFileSync("lib/jp-portfolio.ts", "utf8");
+  const fn = src.slice(src.indexOf("function normalizeDate"));
+  assert.match(fn.slice(0, 220), /test\(s\) \? s\.slice\(0, 10\) : ""/);
+});
+
+test("prior holdings are not back-filled", () => {
+  // Those rows are "model" in fact, but nobody recorded it; writing it in now
+  // would assert something the record never established.
+  const h = JSON.parse(readFileSync("data/jp-portfolio-history.json", "utf8"));
+  const all = [...(h.current ? [h.current] : []), ...(h.history ?? [])];
+  const old = all.filter((p) => p.week_of < "2026-10-17");
+  assert.ok(old.length > 0);
+  assert.ok(
+    old.every((p) => p.holdings.every((x) => x.target_date_source === undefined)),
+    "a prior holding was back-filled",
+  );
+});
