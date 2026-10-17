@@ -87,15 +87,49 @@ test("normalizeDate is still only a format check — nothing silently fixes date
   assert.match(fn.slice(0, 220), /test\(s\) \? s\.slice\(0, 10\) : ""/);
 });
 
-test("prior holdings are not back-filled", () => {
-  // Those rows are "model" in fact, but nobody recorded it; writing it in now
-  // would assert something the record never established.
+test("prior holdings are never back-filled as \"model\"", () => {
+  // Those rows are "model" in fact, but nobody recorded it at the time, so
+  // writing it in now would assert something the record never established.
+  //
+  // "verified" is a different matter: it is a new fact, created by going and
+  // reading what the company published. Four of the 2026-10-12 picks carry it
+  // for that reason, each with the IR page it was read from.
   const h = JSON.parse(readFileSync("data/jp-portfolio-history.json", "utf8"));
   const all = [...(h.current ? [h.current] : []), ...(h.history ?? [])];
   const old = all.filter((p) => p.week_of < "2026-10-17");
   assert.ok(old.length > 0);
+
+  const holdings = old.flatMap((p) => p.holdings);
   assert.ok(
-    old.every((p) => p.holdings.every((x) => x.target_date_source === undefined)),
-    "a prior holding was back-filled",
+    holdings.every((x) => x.target_date_source !== "model"),
+    "a prior holding was back-filled with an unrecorded claim",
+  );
+  for (const x of holdings.filter((h) => h.target_date_source === "verified")) {
+    assert.ok(
+      x.target_date_confirmed_source,
+      `${x.ticker}: "verified" without the page it was read from`,
+    );
+    assert.ok(x.target_date_checked_at, `${x.ticker}: no check date`);
+  }
+});
+
+test("a reconciliation never moves the deadline it checked", () => {
+  // All four reconciled picks disagreed with the company. None was rewritten:
+  // the condition is fixed when published, and the scorer waits for the later
+  // of the two dates instead.
+  const h = JSON.parse(readFileSync("data/jp-portfolio-history.json", "utf8"));
+  const week = h.current;
+  assert.equal(week.week_of, "2026-10-12");
+  const checked = week.holdings.filter((x) => x.target_date_source === "verified");
+  assert.equal(checked.length, 4);
+  assert.deepEqual(
+    checked.map((x) => [x.ticker, x.target_date, x.target_date_confirmed]),
+    [
+      ["8035", "2026-10-29", "2026-10-30"],
+      ["6857", "2026-11-05", "2026-10-28"],
+      ["6146", "2026-10-29", "2026-10-22"],
+      ["6504", "2026-11-06", "2026-10-29"],
+    ],
+    "all four disagreed, and all four kept their published deadline",
   );
 });

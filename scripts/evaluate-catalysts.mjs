@@ -374,6 +374,9 @@ async function main() {
   // Build a (week_of, ticker) → thesis lookup from portfolio history, and
   // auto-register pending rows for recent weeks (see US_AUTOREGISTER_FROM).
   const thesisByKey = new Map();
+  // (week_of, ticker) → the date the company actually published, where a
+  // reconciliation found one that differs from the condition's own deadline.
+  const confirmedByKey = new Map();
   let internalCreated = 0;
   try {
     const history = JSON.parse(await readFile(HISTORY_FILE, "utf8"));
@@ -386,6 +389,9 @@ async function main() {
       for (const h of p.holdings) {
         const key = `${p.week_of}::${String(h.ticker ?? "").toUpperCase()}`;
         if (!thesisByKey.has(key)) thesisByKey.set(key, String(h.thesis ?? ""));
+        if (h.target_date_confirmed && !confirmedByKey.has(key)) {
+          confirmedByKey.set(key, String(h.target_date_confirmed));
+        }
       }
     }
 
@@ -402,6 +408,12 @@ async function main() {
       if (p.week_of < US_AUTOREGISTER_FROM) continue;
       for (const h of p.holdings) {
         const ticker = String(h.ticker ?? "").toUpperCase();
+        if (h.target_date_confirmed) {
+          const k = `${p.week_of}::${ticker}`;
+          if (!confirmedByKey.has(k)) {
+            confirmedByKey.set(k, String(h.target_date_confirmed));
+          }
+        }
         if (!ticker || !h.target_date) continue;
         const key = `${p.week_of}::${ticker}`;
         if (usSeen.has(key)) continue;
@@ -515,20 +527,43 @@ async function main() {
   }
 
   const today = todayIso();
+
+  /**
+   * When judging may start.
+   *
+   * The deadline on a condition is the model's own date, unchecked — 8035's
+   * 2026-10-12 row said 10-29 while the company's IR page said 10-30, and
+   * 6857's said 11-05 against a published 10-28. The seven-day grace absorbs a
+   * small error, but a condition dated eight or more days EARLY would be judged
+   * before the disclosure exists and scored a miss for silence that never
+   * happened. Where a reconciliation recorded what the company actually
+   * published, wait for the later of the two.
+   *
+   * `target_date` itself is never moved: a condition is fixed when published.
+   */
+  const judgeableFrom = (targetDate, key) => {
+    const confirmed = key ? confirmedByKey.get(key) : undefined;
+    const basis =
+      confirmed && confirmed > targetDate ? confirmed : targetDate;
+    return addDays(basis, GRACE_DAYS);
+  };
+  const keyOf = (e) => `${e.week_of}::${String(e.ticker ?? "").toUpperCase()}`;
+
   const dueInternal = evaluations.filter(
     (e) =>
       e.status === "pending" &&
-      addDays(e.catalyst_target_date, GRACE_DAYS) <= today,
+      judgeableFrom(e.catalyst_target_date, keyOf(e)) <= today,
   );
   const dueExternal = externals.filter(
     (e) =>
+      // External submissions have no portfolio week to reconcile against.
       e.status === "pending" && addDays(e.target_date, GRACE_DAYS) <= today,
   );
   const dueJp = jpEvaluations.filter(
     (e) =>
       e.status === "pending" &&
       e.catalyst_target_date &&
-      addDays(e.catalyst_target_date, GRACE_DAYS) <= today,
+      judgeableFrom(e.catalyst_target_date, keyOf(e)) <= today,
   );
 
   console.log(

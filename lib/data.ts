@@ -342,9 +342,14 @@ export interface JpPortfolioHolding {
    * The company's published date, when it was checked and differs.
    *
    * `target_date` is never rewritten — a condition is fixed when it is
-   * published — so a disagreement is recorded alongside it instead.
+   * published — so a disagreement is recorded alongside it instead. The
+   * scorer waits for the later of the two before judging, so a deadline set
+   * too early cannot score a miss for a silence that never happened.
    */
   target_date_confirmed?: string | null;
+  /** The IR page the confirmed date was read off, so it can be re-checked. */
+  target_date_confirmed_source?: string;
+  target_date_checked_at?: string;
 }
 
 export interface JpPortfolio {
