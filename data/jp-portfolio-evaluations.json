@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-10-12T01:01:18.227Z",
+  "updated_at": "2026-10-18T23:55:27.972Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -1449,6 +1449,116 @@
       "ticker": "6594",
       "catalyst_target_date": "2026-11-05",
       "success_condition": "11/5の2Q決算でデータセンター液冷・冷却関連モーター事業の受注残高が拡大していれば当たり。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "8035",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30発表の26年3月期Q2決算で先端ロジック・メモリ向け装置売上が前年同期比+20%超なら上振れ確認。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "6857",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11月上旬の決算でHBM向けテスタ受注が前四半期比増となり通期上方修正が出れば継続保有の根拠強化。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "6146",
+      "catalyst_target_date": "2026-10-22",
+      "success_condition": "10/22発表の26年3月期Q2決算でSAWデバイス・精密加工装置の受注残高が前年比2桁増であれば評価継続。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "6525",
+      "catalyst_target_date": "2026-11-06",
+      "success_condition": "11月上旬の決算でALD/バッチ式装置の受注が中国向け回復とAI先端ロジック向けで前年同期比+15%超なら見直し買い材料。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "4063",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30発表の決算でシリコンウェハ・フォトレジスト部門の利益率が前四半期比改善すれば底打ち確認で評価。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "3436",
+      "catalyst_target_date": "2026-10-30",
+      "success_condition": "10/30発表の決算で300mmウェハ価格が前四半期比横ばい〜上昇に転じれば在庫調整完了シグナルとして評価。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "4062",
+      "catalyst_target_date": "2026-10-31",
+      "success_condition": "10/31発表のQ2決算でABF基板（AI・高性能サーバ向け）売上が前年同期比+25%超なら需要加速を確認。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "6967",
+      "catalyst_target_date": "2026-10-31",
+      "success_condition": "10/31発表の決算でパッケージ基板の稼働率上昇とAIサーバ向け出荷増が確認できれば上方修正期待で評価。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "6504",
+      "catalyst_target_date": "2026-11-05",
+      "success_condition": "11/5頃発表の決算でデータセンター向け電源・パワー半導体の受注が前年同期比2桁増なら評価継続。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-10-19",
+      "ticker": "6594",
+      "catalyst_target_date": "2026-10-21",
+      "success_condition": "10/21発表のQ2決算でデータセンター向け冷却ファン・精密モーター売上が前年同期比+15%超なら強気材料。",
       "condition_source": "thesis",
       "status": "pending",
       "evaluated_at": null,
