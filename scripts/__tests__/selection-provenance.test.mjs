@@ -122,7 +122,12 @@ test("a reconciliation never moves the deadline it checked", () => {
     (p) => p.week_of === "2026-10-12",
   );
   assert.ok(week, "2026-10-12 must still be on record");
-  const checked = week.holdings.filter((x) => x.target_date_source === "verified");
+  // The first reconciliation (2026-10-17) checked these four; the chat
+  // date_checks of 2026-10-28 later added others in the same week.
+  const FIRST = ["8035", "6857", "6146", "6504"];
+  const checked = week.holdings.filter(
+    (x) => x.target_date_source === "verified" && FIRST.includes(x.ticker),
+  );
   assert.equal(checked.length, 4);
   assert.deepEqual(
     checked.map((x) => [x.ticker, x.target_date, x.target_date_confirmed]),
@@ -134,4 +139,30 @@ test("a reconciliation never moves the deadline it checked", () => {
     ],
     "all four disagreed, and all four kept their published deadline",
   );
+});
+
+test("the 2026-10-28 date checks moved no deadline and pushed three judging dates later", async () => {
+  const { judgeableFrom } = await import("../lib/chat-ops.mjs");
+  const read = (f) => JSON.parse(readFileSync(f, "utf8"));
+  const weeks = (h) => [...(h.current ? [h.current] : []), ...(h.history ?? [])];
+  const find = (h, w, t) => weeks(h).find((p) => p.week_of === w).holdings.find((x) => x.ticker === t);
+  const jp = read("data/jp-portfolio-history.json");
+  const us = read("data/portfolio-history.json");
+  // Holdings whose model deadline came BEFORE the company's date: without the
+  // check they would have been judged before the disclosure existed.
+  const cases = [
+    [find(jp, "2026-09-14", "2802"), "2026-11-05", "2026-11-09", "2026-11-16"],
+    [find(jp, "2026-08-31", "2802"), "2026-11-06", "2026-11-09", "2026-11-16"],
+    [find(jp, "2026-09-14", "6787"), "2026-10-30", "2026-11-06", "2026-11-13"],
+    [find(us, "2026-09-21", "ANET"), "2026-10-30", "2026-11-03", "2026-11-10"],
+  ];
+  for (const [h, target, confirmed, from] of cases) {
+    assert.equal(h.target_date, target, `${h.ticker} deadline must not move`);
+    assert.equal(h.target_date_confirmed, confirmed, h.ticker);
+    assert.equal(h.target_date_source, "verified", h.ticker);
+    assert.match(h.target_date_confirmed_source, /^https:\/\//, h.ticker);
+    assert.equal(judgeableFrom(h.target_date, h.target_date_confirmed), from, h.ticker);
+  }
+  // A check that agrees with the deadline records no confirmed date.
+  assert.equal(find(us, "2026-10-19", "V").target_date_confirmed, null);
 });
