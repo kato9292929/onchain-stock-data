@@ -5,10 +5,16 @@ name: Update Claude Portfolio (weekly)
 # back to the repo — each commit triggers a Vercel redeploy that serves the
 # fresh data. (Replaces the former vercel.json cron, which never persisted.)
 
+# PAUSED 2026-10-28 — selection and judging moved to chat operation
+# (ops/chat-schema.md: scripts/export-for-chat.mjs → chat → scripts/import-from-chat.mjs).
+# Actions no longer call the Anthropic API on a schedule. workflow_dispatch is
+# kept for a deliberate manual run; re-enabling the schedule is a cost action
+# and needs the AGENTS.md checklist (spend cap, caching, backlog guard, one
+# measured manual run, explicit owner approval).
+#  schedule:
+#    # 21:00 UTC Sunday == 06:00 JST Monday
+#    - cron: "0 21 * * 0"
 on:
-  schedule:
-    # 21:00 UTC Sunday == 06:00 JST Monday
-    - cron: "0 21 * * 0"
   workflow_dispatch: {}
 
 permissions:

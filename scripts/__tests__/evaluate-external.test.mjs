@@ -36,6 +36,10 @@ test("evaluate-catalysts picks up due external catalysts (stubbed Claude)", asyn
     path.join(REPO, "scripts", "evaluate-catalysts.mjs"),
     path.join(dir, "scripts", "evaluate-catalysts.mjs"),
   );
+  // …and the helpers it imports.
+  await cp(path.join(REPO, "scripts", "lib"), path.join(dir, "scripts", "lib"), {
+    recursive: true,
+  });
 
   // Minimal internal evaluations file (nothing due).
   await writeFile(

@@ -39,6 +39,10 @@ async function makeRepo(files) {
     path.join(REPO, "scripts", "evaluate-catalysts.mjs"),
     path.join(dir, "scripts", "evaluate-catalysts.mjs"),
   );
+  // …and the helpers it imports.
+  await cp(path.join(REPO, "scripts", "lib"), path.join(dir, "scripts", "lib"), {
+    recursive: true,
+  });
   for (const [name, value] of Object.entries(files)) {
     await writeFile(path.join(dir, "data", name), JSON.stringify(value));
   }
