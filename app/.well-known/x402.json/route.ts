@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import {
+  DATE_SOURCE_MEANING,
+  PAID_DESCRIPTION as SOLANA_STOCKS_PAID_DESCRIPTION,
+} from "@/lib/solana-stocks";
+import {
   ASSET_BASE_SEPOLIA_USDC,
   ASSET_SOLANA_USDC,
   BASE_SEPOLIA_NETWORK,
@@ -68,7 +72,7 @@ export function GET(): NextResponse {
     version: 2,
     name: "Onchain Stock Data",
     description:
-      "Claude-run equity research for AI agents: weekly US/JP portfolios (holdings + verifiable catalysts) and dated-catalyst scoring. Every paid resource settles per call in USDC on Solana (exact, gas sponsored by the facilitator) — $0.01 for the /api/alpha/* surface, 0.001 USDC for the per-company /api/catalyst/{ticker} and /api/edinet/{code} lookups. A free, unsigned surface (the MCP server and three JSON endpoints) is listed under `free_endpoints` / `mcp`.",
+      "Claude-run equity research for AI agents: weekly US/JP portfolios (holdings + verifiable catalysts) and dated-catalyst scoring. Every paid resource settles per call in USDC on Solana (exact, gas sponsored by the facilitator) — $0.01 for the /api/alpha/* surface, 0.001 USDC for the per-company /api/catalyst/{ticker}, /api/edinet/{code} and /api/solana-stocks/{ticker}?view=full lookups. A free, unsigned surface (the MCP server and four JSON endpoints) is listed under `free_endpoints` / `mcp`.",
     operator: "x402 Inc.",
     region: "APAC",
     base_url: PUBLIC_BASE_URL,
@@ -135,6 +139,12 @@ export function GET(): NextResponse {
           "Latest EDINET disclosure metadata (filer, doc id/type, submit datetime) and the accounting period for a TSE ticker. Headline figures are not served (financials_available:false). Settled per call in USDC on Solana.",
         accepts: solanaOnlyLeg("/api/edinet/:code", PER_CALL_PRICE.base_units),
       },
+      {
+        path: "/api/solana-stocks/:ticker?view=full",
+        method: "GET",
+        description: SOLANA_STOCKS_PAID_DESCRIPTION,
+        accepts: solanaOnlyLeg("/api/solana-stocks/:ticker?view=full", PER_CALL_PRICE.base_units),
+      },
     ],
 
     // Unsigned, no payment. Kept out of `endpoints` so a directory crawler
@@ -160,6 +170,14 @@ export function GET(): NextResponse {
         description:
           "Descriptor for /api/edinet/{code}: parameters, price, source attribution and what the paid response contains.",
         url: resourceUrl("/api/edinet"),
+      },
+      {
+        path: "/api/solana-stocks/:ticker",
+        method: "GET",
+        description:
+          "Tokenized stock on Solana (xStocks / Ondo Global Markets): issuer, Solana mint, and the next dated deadline this site holds for the underlying, with `target_date_source`. " +
+          DATE_SOURCE_MEANING,
+        url: resourceUrl("/api/solana-stocks/:ticker"),
       },
     ],
 

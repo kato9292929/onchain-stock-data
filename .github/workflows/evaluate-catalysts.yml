@@ -7,10 +7,16 @@ name: Evaluate Catalysts (weekly)
 # Catalysts are spread across dozens of companies, so a weekly cadence is enough
 # — a per-run cap (EVALUATE_MAX_PER_RUN) drains any backlog over subsequent runs.
 
+# PAUSED 2026-10-28 — selection and judging moved to chat operation
+# (ops/chat-schema.md: scripts/export-for-chat.mjs → chat → scripts/import-from-chat.mjs).
+# Actions no longer call the Anthropic API on a schedule. workflow_dispatch is
+# kept for a deliberate manual run; re-enabling the schedule is a cost action
+# and needs the AGENTS.md checklist (spend cap, caching, backlog guard, one
+# measured manual run, explicit owner approval).
+#  schedule:
+#    # 22:00 UTC Sunday == 07:00 JST Monday (after the weekly portfolio jobs).
+#    - cron: "0 22 * * 0"
 on:
-  schedule:
-    # 22:00 UTC Sunday == 07:00 JST Monday (after the weekly portfolio jobs).
-    - cron: "0 22 * * 0"
   workflow_dispatch: {}
 
 permissions:
@@ -44,7 +50,11 @@ jobs:
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
 
+      # Runs even when the evaluate step failed: a fail-fast exit (auth/billing
+      # error, or nothing judged) still writes whatever WAS judged first, and
+      # those verdicts were paid for. The job stays red either way.
       - name: Commit & push data
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "osd-portfolio-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"

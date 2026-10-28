@@ -88,5 +88,8 @@ test("the split matches lib/physical-ai-scoreboard.ts, which cannot be imported 
   // marker is duplicated. Pin the copies to each other.
   const ts = readFileSync("lib/physical-ai-scoreboard.ts", "utf8");
   assert.match(ts, /const marker = "【外れ方向】"/);
-  assert.match(SRC, /const marker = "【外れ方向】"/);
+  // The scorer's copy now lives in scripts/lib/chat-ops.mjs, shared with the
+  // chat export/import.
+  assert.match(readFileSync("scripts/lib/chat-ops.mjs", "utf8"), /const marker = "【外れ方向】"/);
+  assert.match(SRC, /import \{ splitCondition \} from "\.\/lib\/chat-ops\.mjs"/);
 });

@@ -23,6 +23,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isFatalRunError } from "./lib/run-errors.mjs";
 
 import { SECTORS } from "../lib/catalyst-sectors.ts";
 
@@ -240,19 +241,8 @@ export function costOf(u) {
   );
 }
 
-/**
- * Errors where carrying on can only reproduce the same failure, once per
- * remaining company. The 2026-09-23 run hit "credit balance is too low" on
- * company 13 of 13; had it landed on company 3, the other ten would each have
- * spent a request to learn the same thing.
- */
-export function isFatalRunError(e) {
-  const status = e?.status ?? e?.response?.status;
-  if (status === 401 || status === 403) return true;
-  return /credit balance is too low|billing|quota|rate limit/i.test(
-    String(e?.message ?? ""),
-  );
-}
+// Re-exported: the test suite and older callers import it from here.
+export { isFatalRunError };
 
 // ── one company ───────────────────────────────────────────────────────────
 

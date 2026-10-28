@@ -1,0 +1,47 @@
+name: Refresh Solana stocks (weekly)
+
+# Refreshes data/solana-stocks.json from the issuers' own public lists
+# (xstocks.fi, docs.ondo.finance). NOT a cost action: no API key, no paid data
+# API, no web search, no model call — plain HTTPS GETs of public pages. A source
+# that fails keeps its previous rows (scripts/refresh-solana-stocks.mjs), so a
+# bad week never empties the list. One run per week, one commit at most.
+
+on:
+  schedule:
+    # 20:37 UTC Sunday == 05:37 JST Monday.
+    - cron: "37 20 * * 0"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portfolio-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Refresh token list
+        run: node scripts/refresh-solana-stocks.mjs
+
+      - name: Commit & push data
+        run: |
+          git config user.name "osd-portfolio-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/solana-stocks.json
+          if git diff --staged --quiet; then
+            echo "No change."
+          else
+            git commit -m "chore(solana-stocks): weekly token list refresh"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

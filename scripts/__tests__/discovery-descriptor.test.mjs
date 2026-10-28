@@ -29,7 +29,8 @@ const body = await GET().json();
 
 /** "/api/catalyst/:ticker" → "app/api/catalyst/[ticker]/route.ts" */
 function routeFileFor(apiPath) {
-  const segs = apiPath.split("/").filter(Boolean);
+  // A query selects a view of the same route (…/:ticker?view=full).
+  const segs = apiPath.split("?")[0].split("/").filter(Boolean);
   const mapped = segs.map((s) => (s.startsWith(":") ? `[${s.slice(1)}]` : s));
   return path.join(repoRoot, "app", ...mapped, "route.ts");
 }
@@ -74,9 +75,9 @@ test("the free surface carries no payment legs", () => {
 
 test("per-call endpoints advertise PER_CALL_PRICE, Solana-only", () => {
   const perCall = body.endpoints.filter((e) =>
-    ["/api/catalyst/:ticker", "/api/edinet/:code"].includes(e.path),
+    ["/api/catalyst/:ticker", "/api/edinet/:code", "/api/solana-stocks/:ticker?view=full"].includes(e.path),
   );
-  assert.equal(perCall.length, 2, "both per-call endpoints must be advertised");
+  assert.equal(perCall.length, 3, "every per-call endpoint must be advertised");
   for (const e of perCall) {
     assert.equal(e.accepts.length, 1, `${e.path} must offer exactly one leg`);
     const [leg] = e.accepts;
@@ -125,4 +126,13 @@ test("resource URLs use the canonical public origin", () => {
     }
   }
   assert.equal(body.base_url, PUBLIC_BASE_URL);
+});
+
+test("the Solana-stocks entries say what a verified date means before anyone pays", () => {
+  const paid = body.endpoints.find((e) => e.path === "/api/solana-stocks/:ticker?view=full");
+  const free = body.free_endpoints.find((e) => e.path === "/api/solana-stocks/:ticker");
+  for (const e of [paid, free]) {
+    assert.match(e.description, /'verified' = the date was read off the company's own IR/);
+    assert.match(e.description, /'model' = the date the selection model wrote/);
+  }
 });

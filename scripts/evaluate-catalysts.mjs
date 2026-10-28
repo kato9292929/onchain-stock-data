@@ -17,6 +17,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isFatalRunError } from "./lib/run-errors.mjs";
+// Shared with the chat export/import, so all three split a condition the same way.
+import { splitCondition } from "./lib/chat-ops.mjs";
 
 const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
@@ -252,20 +255,12 @@ function extractJson(text) {
  * 満たされておらず、miss判定」. QCOM's automotive grew +61% against a ~+50%
  * condition and was recorded a miss.
  *
- * Duplicated from `splitDescription` in lib/physical-ai-scoreboard.ts because
- * this script runs under plain `node` and cannot import a .ts module; the two
- * are pinned to each other by a test.
+ * Lives in scripts/lib/chat-ops.mjs (the chat export/import split the same
+ * way) and is re-exported here. It duplicates `splitDescription` in
+ * lib/physical-ai-scoreboard.ts because this script runs under plain `node`
+ * and cannot import a .ts module; the two are pinned to each other by a test.
  */
-export function splitCondition(description) {
-  const text = String(description ?? "");
-  const marker = "【外れ方向】";
-  const i = text.indexOf(marker);
-  if (i < 0) return { success: text.trim(), failDirection: null };
-  return {
-    success: text.slice(0, i).trim(),
-    failDirection: text.slice(i + marker.length).trim() || null,
-  };
-}
+export { splitCondition };
 
 /**
  * Judge one catalyst. `entry` is normalised to:
@@ -357,6 +352,33 @@ ${targetDate} 前後の${sources}を web 検索で確認し、**success_conditio
     typeof parsed?.reasoning === "string" ? parsed.reasoning.trim() : null;
 
   return { status, evidence_url, reasoning };
+}
+
+/**
+ * Whether a run that was asked to judge something actually did.
+ *
+ * On 2026-10-25 every call returned `401 invalid x-api-key`; each failure was
+ * logged as a ::warning::, the run printed "no entries updated", and the job
+ * went green. Nobody looks at a green job. A run that was aborted by an
+ * auth/billing error, or that attempted judgements and landed none, is a
+ * failure and must exit non-zero.
+ *
+ * Pure, so the rule is testable without a client.
+ */
+export function runOutcome({ attempted, judged, aborted }) {
+  if (aborted) {
+    return {
+      ok: false,
+      message: `run aborted after ${judged}/${attempted} judged: ${aborted}`,
+    };
+  }
+  if (attempted > 0 && judged === 0) {
+    return {
+      ok: false,
+      message: `all ${attempted} judgement(s) failed — nothing was judged`,
+    };
+  }
+  return { ok: true, message: null };
 }
 
 async function main() {
@@ -629,10 +651,22 @@ async function main() {
     );
   }
 
+  // Fail-fast bookkeeping. `aborted` is set by the first error that would
+  // repeat for every remaining catalyst (auth, billing); after it, no lane
+  // makes another call.
+  let attempted = 0;
+  let aborted = null;
+  const onFailure = (e, label) => {
+    console.error(`::warning::${label}: ${e.message}`);
+    if (isFatalRunError(e)) aborted = e.message;
+  };
+
   // ── Internal portfolio evaluations ──────────────────────────────────
   let internalUpdated = 0;
   for (const entry of dueInternal) {
     if (!runSet.has(entry)) continue; // deferred by the backlog guard
+    if (aborted) break;
+    attempted += 1;
     const thesis = thesisByKey.get(`${entry.week_of}::${entry.ticker}`) ?? "";
     try {
       const verdict = await evaluateOne(client, {
@@ -654,7 +688,7 @@ async function main() {
           (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
       );
     } catch (e) {
-      console.error(`::warning::${entry.week_of} ${entry.ticker}: ${e.message}`);
+      onFailure(e, `${entry.week_of} ${entry.ticker}`);
     }
   }
 
@@ -663,6 +697,8 @@ async function main() {
   let fileExternalsDirty = false;
   for (const entry of dueExternal) {
     if (!runSet.has(entry)) continue; // deferred by the backlog guard
+    if (aborted) break;
+    attempted += 1;
     try {
       // Event-type catalysts are asymmetric: the success is that a specific
       // disclosure/event HAPPENS by target_date, so ABSENCE by the deadline is
@@ -701,7 +737,7 @@ async function main() {
           (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
       );
     } catch (e) {
-      console.error(`::warning::${entry.catalyst_id} ${entry.ticker}: ${e.message}`);
+      onFailure(e, `${entry.catalyst_id} ${entry.ticker}`);
     }
   }
 
@@ -709,6 +745,8 @@ async function main() {
   let jpJudged = 0;
   for (const entry of dueJp) {
     if (!runSet.has(entry)) continue; // deferred by the backlog guard
+    if (aborted) break;
+    attempted += 1;
     try {
       const verdict = await evaluateOne(client, {
         ticker: entry.ticker,
@@ -728,7 +766,7 @@ async function main() {
           (verdict.evidence_url ? ` (${verdict.evidence_url})` : ""),
       );
     } catch (e) {
-      console.error(`::warning::jp ${entry.week_of} ${entry.ticker}: ${e.message}`);
+      onFailure(e, `jp ${entry.week_of} ${entry.ticker}`);
     }
   }
 
@@ -785,6 +823,18 @@ async function main() {
           : ""),
     );
     console.log(`[evaluate] JSON ${JSON.stringify({ usageTotal, cost_usd: Number(total.toFixed(4)), judged })}`);
+  }
+
+  // Last, so whatever WAS judged is already on disk; the workflow's commit
+  // step runs on `!cancelled()` and keeps it, while the job still goes red.
+  const outcome = runOutcome({
+    attempted,
+    judged: internalUpdated + externalUpdated + jpJudged,
+    aborted,
+  });
+  if (!outcome.ok) {
+    console.error(`::error::${outcome.message}`);
+    process.exitCode = 1;
   }
 }
 
