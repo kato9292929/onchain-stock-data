@@ -91,7 +91,9 @@ test("the live JP record keeps 81 judged after 6967 was excluded", () => {
   ).evaluations;
   const c = tally(ev.map((e) => e.status));
   assert.equal(judgedCount(c), 81, `judged drifted: ${JSON.stringify(c)}`);
-  assert.equal(c.excluded, 1);
+  // 2026-10-12 and 2026-10-19: both picked 6967 before the screen reached
+  // production, both withdrawn before their deadlines.
+  assert.equal(c.excluded, 2);
   const row = ev.find((e) => e.ticker === "6967" && e.week_of === "2026-10-12");
   assert.equal(row.status, "excluded");
   assert.equal(row.exclusion_reason, "delisted");

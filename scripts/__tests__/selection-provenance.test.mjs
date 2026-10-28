@@ -118,8 +118,10 @@ test("a reconciliation never moves the deadline it checked", () => {
   // the condition is fixed when published, and the scorer waits for the later
   // of the two dates instead.
   const h = JSON.parse(readFileSync("data/jp-portfolio-history.json", "utf8"));
-  const week = h.current;
-  assert.equal(week.week_of, "2026-10-12");
+  const week = [...(h.current ? [h.current] : []), ...(h.history ?? [])].find(
+    (p) => p.week_of === "2026-10-12",
+  );
+  assert.ok(week, "2026-10-12 must still be on record");
   const checked = week.holdings.filter((x) => x.target_date_source === "verified");
   assert.equal(checked.length, 4);
   assert.deepEqual(

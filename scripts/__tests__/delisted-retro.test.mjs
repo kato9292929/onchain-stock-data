@@ -27,9 +27,17 @@ test("the already-scored week keeps its verdict", () => {
   assert.equal(row.verdict_history, undefined, "nothing was changed to annotate it");
 });
 
+/** A week wherever it now lives — `current` moves on every Sunday. */
+const week = (w) => {
+  const h = read("data/jp-portfolio-history.json");
+  return [...(h.current ? [h.current] : []), ...(h.history ?? [])].find(
+    (p) => p.week_of === w,
+  );
+};
+
 test("the unscored week was excluded, with the removal written down", () => {
-  const cur = read("data/jp-portfolio-history.json").current;
-  assert.equal(cur.week_of, "2026-10-12");
+  const cur = week("2026-10-12");
+  assert.ok(cur, "2026-10-12 must still be on record");
   assert.ok(!cur.holdings.some((h) => h.ticker === "6967"), "the pick is gone");
   assert.equal(cur.holdings.length, 9);
 
@@ -40,9 +48,26 @@ test("the unscored week was excluded, with the removal written down", () => {
 });
 
 test("the surviving book still sums to 100", () => {
-  const cur = read("data/jp-portfolio-history.json").current;
-  const sum = cur.holdings.reduce((n, h) => n + h.weight, 0);
-  assert.equal(Math.round(sum * 10) / 10, 100);
+  for (const w of ["2026-10-12", "2026-10-19"]) {
+    const sum = week(w).holdings.reduce((n, h) => n + h.weight, 0);
+    assert.equal(Math.round(sum * 10) / 10, 100, w);
+  }
+});
+
+test("2026-10-19 picked 6967 again, and was screened the same way", () => {
+  // Production still ran the old selection code on 2026-10-18 — the screen
+  // lived on an unmerged branch — so 6967 was selected a third time. The same
+  // retroactive treatment applies: removed, renormalised, written down.
+  const w = week("2026-10-19");
+  assert.ok(!w.holdings.some((h) => h.ticker === "6967"));
+  assert.equal(w.holdings.length, 9);
+  assert.equal(w.excluded_holdings[0].ticker, "6967");
+  assert.equal(w.excluded_holdings[0].original_weight, 8);
+
+  const ev = read("data/jp-portfolio-evaluations.json").evaluations;
+  const row = ev.find((e) => e.ticker === "6967" && e.week_of === "2026-10-19");
+  assert.equal(row.status, "excluded");
+  assert.equal(row.verdict_history[0].status, "pending");
 });
 
 test("its orphaned pending row became excluded, keeping the old value", () => {
