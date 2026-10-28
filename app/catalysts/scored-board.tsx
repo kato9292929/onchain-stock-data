@@ -15,6 +15,8 @@ const STATUS_STYLE: Record<EvaluationStatus, { label: string; className: string 
   miss: { label: "MISS", className: "bg-rose-50 text-rose-700 border-rose-200" },
   na: { label: "N/A", className: "bg-slate-100 text-slate-500 border-slate-200" },
   pending: { label: "PENDING", className: "bg-slate-100 text-slate-500 border-slate-200" },
+  // Not a verdict: withdrawn before its deadline (see EvaluationStatus).
+  excluded: { label: "excluded", className: "text-slate-400" },
 };
 
 const TYPE_LABEL: Record<NonNullable<ExternalCatalyst["catalyst_type"]>, string> = {

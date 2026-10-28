@@ -16,6 +16,7 @@
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
@@ -24,6 +25,60 @@ const EXTERNAL_FILE = path.join(ROOT, "data", "external-catalysts.json");
 const JP_HISTORY_FILE = path.join(ROOT, "data", "jp-portfolio-history.json");
 const JP_EVAL_FILE = path.join(ROOT, "data", "jp-portfolio-evaluations.json");
 const MODEL = "claude-sonnet-5";
+
+/**
+ * Cap on server-side web searches per catalyst.
+ *
+ * There was none. The research script had none either and averaged 24 searches
+ * a company against an estimate of 3 — searches bill at $0.01 and drag their
+ * results through every later round as cache reads, so an uncapped loop is how
+ * a job overruns 8x without anyone noticing. Verifying one dated condition
+ * against a known disclosure needs far fewer searches than open-ended research.
+ */
+const MAX_SEARCHES = Number(process.env.EVALUATE_MAX_SEARCHES ?? 8);
+
+/**
+ * Published rates, 2026-10-15 (platform.claude.com/docs/en/about-claude/pricing).
+ * Used only to price the usage a run actually reports — if they drift, the
+ * token counts stay correct and only the dollar line is stale.
+ */
+const RATES = {
+  input_per_mtok: 2.0,
+  output_per_mtok: 10.0,
+  cache_write_per_mtok: 2.5,
+  cache_read_per_mtok: 0.2,
+  per_search: 0.01,
+};
+
+/** Every run's usage, so the next estimate has a measured basis. */
+const usageTotal = {
+  input_tokens: 0,
+  output_tokens: 0,
+  cache_creation_input_tokens: 0,
+  cache_read_input_tokens: 0,
+  web_search_requests: 0,
+  requests: 0,
+};
+
+function addUsage(u) {
+  if (!u) return;
+  usageTotal.input_tokens += u.input_tokens ?? 0;
+  usageTotal.output_tokens += u.output_tokens ?? 0;
+  usageTotal.cache_creation_input_tokens += u.cache_creation_input_tokens ?? 0;
+  usageTotal.cache_read_input_tokens += u.cache_read_input_tokens ?? 0;
+  usageTotal.web_search_requests += u.server_tool_use?.web_search_requests ?? 0;
+  usageTotal.requests += 1;
+}
+
+function costOf(u) {
+  return (
+    (u.input_tokens / 1e6) * RATES.input_per_mtok +
+    (u.output_tokens / 1e6) * RATES.output_per_mtok +
+    (u.cache_creation_input_tokens / 1e6) * RATES.cache_write_per_mtok +
+    (u.cache_read_input_tokens / 1e6) * RATES.cache_read_per_mtok +
+    u.web_search_requests * RATES.per_search
+  );
+}
 const GRACE_DAYS = 7;
 
 /**
@@ -187,14 +242,40 @@ function extractJson(text) {
 }
 
 /**
+ * Split "成立条件【外れ方向】外れるシナリオ" into its two halves.
+ *
+ * The external catalysts fold both into one `catalyst_description`, and it used
+ * to be handed to the model whole, under the label `success_condition:`. So the
+ * model was told that the fail scenario WAS the success condition, and it
+ * sometimes judged that instead — ext_e5d99360 says so in as many words:
+ * 「submitterの【外れ方向】success_condition（Q4ガイダンスがQoQ増収を示さない）は
+ * 満たされておらず、miss判定」. QCOM's automotive grew +61% against a ~+50%
+ * condition and was recorded a miss.
+ *
+ * Duplicated from `splitDescription` in lib/physical-ai-scoreboard.ts because
+ * this script runs under plain `node` and cannot import a .ts module; the two
+ * are pinned to each other by a test.
+ */
+export function splitCondition(description) {
+  const text = String(description ?? "");
+  const marker = "【外れ方向】";
+  const i = text.indexOf(marker);
+  if (i < 0) return { success: text.trim(), failDirection: null };
+  return {
+    success: text.slice(0, i).trim(),
+    failDirection: text.slice(i + marker.length).trim() || null,
+  };
+}
+
+/**
  * Judge one catalyst. `entry` is normalised to:
- *   { ticker, targetDate, condition, context }
+ *   { ticker, targetDate, condition, context, asOf }
  * so internal portfolio evaluations and external submissions share the exact
  * same Claude + web-search logic and anti-hallucination URL filtering.
  */
 async function evaluateOne(
   client,
-  { ticker, targetDate, condition, context, market = "US" },
+  { ticker, targetDate, condition, context, market = "US", asOf },
 ) {
   const isJp = market === "JP";
   const system = isJp ? SYSTEM_PROMPT_JP : SYSTEM_PROMPT;
@@ -208,12 +289,24 @@ async function evaluateOne(
   const sources = isJp
     ? "決算短信・適時開示・会社IR・日経など"
     : "実際のニュース・株価・SEC ファイリング";
-  const webSearch = { type: "web_search_20260209", name: "web_search" };
-  const userPrompt = `銘柄: ${ticker}
-catalyst_target_date: ${targetDate}
-${context ? `${context}\n` : ""}success_condition: ${condition}
-
-${targetDate} 前後の${sources}を web 検索で確認し、success_condition の達成可否を判定してください。最後に指定の JSON を出力してください。`;
+  const webSearch = {
+    type: "web_search_20260209",
+    name: "web_search",
+    max_uses: MAX_SEARCHES,
+  };
+  const { success, failDirection } = splitCondition(condition);
+  // The ONLY date in this prompt used to be the selection week, which the model
+  // read as today: 3110 was judged on 2026-08-13 and still concluded
+  // 「現在の週は2026-06-29であり、対象日付（8/5）まで約5週間先」 for a 短信 that had
+  // been out for eight days. Seven `na` rows came from that. State today first,
+  // and say plainly that the target date is in the past.
+  const today = asOf ?? todayIso();
+  const userPrompt = `本日（判定実施日）: ${today}
+銘柄: ${ticker}
+catalyst_target_date: ${targetDate}（本日より過去。すでに到来済みの日付として扱うこと）
+${context ? `${context}\n` : ""}success_condition: ${success}
+${failDirection ? `fail_direction（参考。成立しなかった場合に観測される事象。**これは判定対象ではない**）: ${failDirection}\n` : ""}
+${targetDate} 前後の${sources}を web 検索で確認し、**success_condition** の達成可否のみを判定してください。fail_direction は背景情報であり、その成否を判定してはいけません。最後に指定の JSON を出力してください。`;
 
   const messages = [{ role: "user", content: userPrompt }];
   const searchUrls = new Set();
@@ -230,6 +323,7 @@ ${targetDate} 前後の${sources}を web 検索で確認し、success_condition 
   // Server-side web search runs a tool loop that can pause with `pause_turn`.
   let guard = 0;
   while (true) {
+    addUsage(resp.usage);
     collectSearchUrls(resp.content, searchUrls);
     for (const b of resp.content) {
       if (b.type === "text") textParts.push(b.text);
@@ -280,6 +374,9 @@ async function main() {
   // Build a (week_of, ticker) → thesis lookup from portfolio history, and
   // auto-register pending rows for recent weeks (see US_AUTOREGISTER_FROM).
   const thesisByKey = new Map();
+  // (week_of, ticker) → the date the company actually published, where a
+  // reconciliation found one that differs from the condition's own deadline.
+  const confirmedByKey = new Map();
   let internalCreated = 0;
   try {
     const history = JSON.parse(await readFile(HISTORY_FILE, "utf8"));
@@ -292,6 +389,9 @@ async function main() {
       for (const h of p.holdings) {
         const key = `${p.week_of}::${String(h.ticker ?? "").toUpperCase()}`;
         if (!thesisByKey.has(key)) thesisByKey.set(key, String(h.thesis ?? ""));
+        if (h.target_date_confirmed && !confirmedByKey.has(key)) {
+          confirmedByKey.set(key, String(h.target_date_confirmed));
+        }
       }
     }
 
@@ -308,6 +408,12 @@ async function main() {
       if (p.week_of < US_AUTOREGISTER_FROM) continue;
       for (const h of p.holdings) {
         const ticker = String(h.ticker ?? "").toUpperCase();
+        if (h.target_date_confirmed) {
+          const k = `${p.week_of}::${ticker}`;
+          if (!confirmedByKey.has(k)) {
+            confirmedByKey.set(k, String(h.target_date_confirmed));
+          }
+        }
         if (!ticker || !h.target_date) continue;
         const key = `${p.week_of}::${ticker}`;
         if (usSeen.has(key)) continue;
@@ -421,20 +527,43 @@ async function main() {
   }
 
   const today = todayIso();
+
+  /**
+   * When judging may start.
+   *
+   * The deadline on a condition is the model's own date, unchecked — 8035's
+   * 2026-10-12 row said 10-29 while the company's IR page said 10-30, and
+   * 6857's said 11-05 against a published 10-28. The seven-day grace absorbs a
+   * small error, but a condition dated eight or more days EARLY would be judged
+   * before the disclosure exists and scored a miss for silence that never
+   * happened. Where a reconciliation recorded what the company actually
+   * published, wait for the later of the two.
+   *
+   * `target_date` itself is never moved: a condition is fixed when published.
+   */
+  const judgeableFrom = (targetDate, key) => {
+    const confirmed = key ? confirmedByKey.get(key) : undefined;
+    const basis =
+      confirmed && confirmed > targetDate ? confirmed : targetDate;
+    return addDays(basis, GRACE_DAYS);
+  };
+  const keyOf = (e) => `${e.week_of}::${String(e.ticker ?? "").toUpperCase()}`;
+
   const dueInternal = evaluations.filter(
     (e) =>
       e.status === "pending" &&
-      addDays(e.catalyst_target_date, GRACE_DAYS) <= today,
+      judgeableFrom(e.catalyst_target_date, keyOf(e)) <= today,
   );
   const dueExternal = externals.filter(
     (e) =>
+      // External submissions have no portfolio week to reconcile against.
       e.status === "pending" && addDays(e.target_date, GRACE_DAYS) <= today,
   );
   const dueJp = jpEvaluations.filter(
     (e) =>
       e.status === "pending" &&
       e.catalyst_target_date &&
-      addDays(e.catalyst_target_date, GRACE_DAYS) <= today,
+      judgeableFrom(e.catalyst_target_date, keyOf(e)) <= today,
   );
 
   console.log(
@@ -510,7 +639,10 @@ async function main() {
         ticker: entry.ticker,
         targetDate: entry.catalyst_target_date,
         condition: entry.success_condition,
-        context: `週: ${entry.week_of}\nthesis: ${thesis || "(thesis 不明)"}`,
+        // Labelled as the week the pick was MADE, not as "now" — the bare
+        // `週:` reads as today and produced seven premature `na` verdicts.
+        context: `この銘柄が選定された週（過去）: ${entry.week_of}\nthesis: ${thesis || "(thesis 不明)"}`,
+        asOf: todayIso(),
       });
       entry.status = verdict.status;
       entry.evidence_url = verdict.evidence_url;
@@ -546,6 +678,7 @@ async function main() {
         condition: entry.catalyst_description,
         context: `外部提出 catalyst（submitter による）${eventRule}`,
         market: entry.market === "JP" ? "JP" : "US",
+        asOf: todayIso(),
       });
       entry.status = verdict.status;
       // External schema uses evidence_urls[] (plural); keep the verified one.
@@ -581,8 +714,9 @@ async function main() {
         ticker: entry.ticker,
         targetDate: entry.catalyst_target_date,
         condition: entry.success_condition,
-        context: `週: ${entry.week_of}`,
+        context: `この銘柄が選定された週（過去）: ${entry.week_of}`,
         market: "JP",
+        asOf: todayIso(),
       });
       entry.status = verdict.status;
       entry.evidence_url = verdict.evidence_url;
@@ -633,10 +767,38 @@ async function main() {
   ) {
     console.log("[evaluate] no entries updated");
   }
+
+  // Say what the run spent. Until now nothing here measured it, so every
+  // estimate of "what would re-judging N catalysts cost" was a guess.
+  if (usageTotal.requests > 0) {
+    const judged = internalUpdated + externalUpdated + jpJudged;
+    const total = costOf(usageTotal);
+    console.log(
+      `\n[evaluate] usage: requests ${usageTotal.requests} · searches ${usageTotal.web_search_requests}` +
+        ` · input ${usageTotal.input_tokens} (cache read ${usageTotal.cache_read_input_tokens},` +
+        ` write ${usageTotal.cache_creation_input_tokens}) · output ${usageTotal.output_tokens}`,
+    );
+    console.log(
+      `[evaluate] cost $${total.toFixed(4)} total` +
+        (judged > 0
+          ? ` · ${judged} judged · $${(total / judged).toFixed(4)} per catalyst`
+          : ""),
+    );
+    console.log(`[evaluate] JSON ${JSON.stringify({ usageTotal, cost_usd: Number(total.toFixed(4)), judged })}`);
+  }
 }
 
-main().catch((e) => {
-  console.error(`::error::evaluate-catalysts failed: ${e.message}`);
-  console.error(e);
-  process.exit(1);
-});
+// Only when invoked directly. This script bills Claude plus web search, so
+// importing it — from a test, a tool — must never start a run. (Mirrors
+// scripts/research-ir-fair.mjs, which learned this the expensive way.)
+const invokedDirectly =
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (invokedDirectly) {
+  main().catch((e) => {
+    console.error(`::error::evaluate-catalysts failed: ${e.message}`);
+    console.error(e);
+    process.exit(1);
+  });
+}

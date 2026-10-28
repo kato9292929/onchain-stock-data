@@ -10,6 +10,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 const { hitRateOf, judgedCount, tally, emptyCounts } = await import("../../lib/hit-rate.ts");
 
@@ -62,6 +63,39 @@ test("the live JP and Physical-AI records agree with the published numbers", asy
 
 test("tally rejects nothing and counts everything", () => {
   const c = tally(["hit", "hit", "partial", "miss", "na", "pending"]);
-  assert.deepEqual(c, { hit: 2, partial: 1, miss: 1, na: 1, pending: 1 });
+  assert.deepEqual(c, { hit: 2, partial: 1, miss: 1, na: 1, pending: 1, excluded: 0 });
   assert.equal(judgedCount(c), 5, "pending excluded");
+});
+
+test("excluded stays out of the denominator, and is still counted", () => {
+  // A pick withdrawn before its deadline was never judged by anyone. Putting
+  // it in the denominator would score us on a prediction we did not make; but
+  // dropping it from the record entirely would hide that it ever existed.
+  const c = counts({ hit: 3, miss: 1, excluded: 6 });
+  assert.equal(judgedCount(c), 4, "excluded is not judged");
+  assert.equal(hitRateOf(c), 0.75, "and does not move the rate");
+  assert.equal(c.excluded, 6, "but the count survives for display");
+});
+
+test("a population of nothing but excluded has no rate at all", () => {
+  assert.equal(hitRateOf(counts({ excluded: 5 })), null);
+  assert.equal(judgedCount(counts({ excluded: 5 })), 0);
+});
+
+test("the live JP record keeps 81 judged after 6967 was excluded", () => {
+  // 6967's 2026-10-12 row went pending -> excluded, not pending -> na. Had it
+  // become na the denominator would have grown to 82 on a row no evaluator
+  // ever looked at.
+  const ev = JSON.parse(
+    readFileSync("data/jp-portfolio-evaluations.json", "utf8"),
+  ).evaluations;
+  const c = tally(ev.map((e) => e.status));
+  assert.equal(judgedCount(c), 81, `judged drifted: ${JSON.stringify(c)}`);
+  // 2026-10-12 and 2026-10-19: both picked 6967 before the screen reached
+  // production, both withdrawn before their deadlines.
+  assert.equal(c.excluded, 2);
+  const row = ev.find((e) => e.ticker === "6967" && e.week_of === "2026-10-12");
+  assert.equal(row.status, "excluded");
+  assert.equal(row.exclusion_reason, "delisted");
+  assert.equal(row.verdict_history[0].status, "pending");
 });

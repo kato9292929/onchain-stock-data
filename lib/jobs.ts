@@ -1,3 +1,11 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+import {
+  excludeDelisted,
+  snapshotAgeDays,
+  type JpListedSnapshot,
+} from "@/lib/listing-status";
 import {
   getPortfolioHistory,
   getPerformanceHistory,
@@ -31,7 +39,12 @@ import {
   fetchExternalData,
   formatExternalDataForPrompt,
 } from "@/lib/external-data";
-import { getSignals, formatSignalsForPrompt } from "@/lib/signals";
+import {
+  getSignals,
+  formatSignalsForPrompt,
+  selectableSignals,
+  VERIFIED_ONLY_FROM,
+} from "@/lib/signals";
 
 /**
  * Portfolio / performance update jobs (ported from Claude-Stock-Portfolio-Watch's
@@ -51,6 +64,16 @@ export interface PortfolioUpdateResult {
   persist_reason?: string;
   error?: string;
   used_external_data?: boolean;
+}
+
+/** Host only — a configured endpoint is not something to write into a data file. */
+function hostOf(url: string | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).host;
+  } catch {
+    return null;
+  }
 }
 
 export async function runPortfolioUpdate(
@@ -74,9 +97,22 @@ export async function runPortfolioUpdate(
 
   // Best-effort external alt-data from AA (10s timeout, degrades to "").
   const externalData = await fetchExternalData();
+  // Only the host, never the URL or the payload: the record has to say whether
+  // the model saw outside data, not reproduce it or leak a configured endpoint.
+  const externalSource = hostOf(process.env.AA_EXTERNAL_DATA_URL);
+  const externalFetchedAt = externalData ? new Date().toISOString() : null;
   // Curated external signals (bearish/structural/no-date included). Only judgeable
   // + verified ones are ever scored elsewhere; here they all feed as context.
   const signals = await getSignals();
+  // Say which rows were withheld, so a run's inputs can be reconstructed from
+  // its log rather than inferred from the signals file as it stands later.
+  const { droppedIds } = selectableSignals(signals);
+  if (droppedIds.length > 0) {
+    console.log(
+      `[portfolio] withheld ${droppedIds.length} unverified signal(s) from the ` +
+        `selection prompt (since ${VERIFIED_ONLY_FROM}): ${droppedIds.join(", ")}`,
+    );
+  }
   const externalContext =
     formatExternalDataForPrompt(externalData) + formatSignalsForPrompt(signals);
 
@@ -92,6 +128,9 @@ export async function runPortfolioUpdate(
 
   const portfolio: Portfolio = {
     ...selected.portfolio,
+    used_external_data: externalContext.length > 0,
+    external_source: externalSource,
+    external_fetched_at: externalFetchedAt,
     changes: diffHoldings(prev.current, selected.portfolio),
   };
   const next = appendPortfolio(prev, portfolio);
@@ -134,6 +173,63 @@ export interface JpPortfolioUpdateResult {
 }
 
 /** Weekly JP portfolio update — mirror of runPortfolioUpdate (osd-internal). */
+/**
+ * Drop any pick that is not in the committed JPX listing snapshot, and say so.
+ *
+ * Fails OPEN: if the snapshot is missing or unreadable, the week is published
+ * unscreened with a loud warning rather than skipped. A missing data file must
+ * not be able to stop the weekly commit — that would trade a rare bad pick for
+ * a guaranteed gap in the record.
+ */
+async function screenJpHoldings<T extends { ticker: string; company_name?: string; weight?: number }>(
+  holdings: readonly T[],
+  weekOf: string,
+): Promise<{ kept: T[] }> {
+  let snapshot: JpListedSnapshot;
+  try {
+    const raw = await readFile(
+      path.join(process.cwd(), "data", "jp-listed.json"),
+      "utf8",
+    );
+    snapshot = JSON.parse(raw) as JpListedSnapshot;
+    if (!snapshot?.listed || Object.keys(snapshot.listed).length === 0) {
+      throw new Error("snapshot has no companies");
+    }
+  } catch (e) {
+    console.warn(
+      `[jp-portfolio] listing snapshot unavailable (${e instanceof Error ? e.message : e}) — ` +
+        `publishing ${weekOf} WITHOUT a delisting screen. ` +
+        `Run scripts/refresh-jp-listed.mjs.`,
+    );
+    return { kept: [...holdings] };
+  }
+
+  const age = snapshotAgeDays(snapshot, weekOf);
+  if (age > 45) {
+    // JPX republishes monthly; past ~45 days a company could have delisted
+    // without the snapshot knowing, so the screen is weaker than it looks.
+    console.warn(
+      `[jp-portfolio] listing snapshot is ${age} days old (as_of ${snapshot.as_of}) — ` +
+        `refresh it with scripts/refresh-jp-listed.mjs`,
+    );
+  }
+
+  const { kept, dropped } = excludeDelisted(holdings, snapshot);
+  for (const d of dropped) {
+    console.warn(
+      `[jp-portfolio] ${weekOf}: excluded ${d.ticker}` +
+        `${d.company_name ? ` ${d.company_name}` : ""} — ${d.reason}`,
+    );
+  }
+  if (dropped.length > 0) {
+    console.warn(
+      `[jp-portfolio] ${weekOf}: ${kept.length} of ${holdings.length} picks kept ` +
+        `after the delisting screen; weights renormalised`,
+    );
+  }
+  return { kept };
+}
+
 export async function runJpPortfolioUpdate(
   opts: { horizon?: string } = {},
 ): Promise<JpPortfolioUpdateResult> {
@@ -160,9 +256,26 @@ export async function runJpPortfolioUpdate(
     return { ok: false, week_of: weekOf, error: selected.error };
   }
 
+  // Screen the picks against the JPX listing master before they are committed.
+  // Nothing upstream of here checked: 6967 新光電気工業 delisted on 2025-06-06,
+  // was still selected on 2026-10-12, and its catalyst scored `na` because a
+  // delisted company publishes no earnings to judge against. The check is
+  // positive (is it listed) rather than negative (is it on the delisted list),
+  // because JPX's delisted page is a rolling window that no longer lists 6967.
+  const screened = await screenJpHoldings(selected.portfolio.holdings, weekOf);
+
   const portfolio: JpPortfolio = {
     ...selected.portfolio,
-    changes: diffJpHoldings(prev.current, selected.portfolio),
+    // Structurally false: selectJpPortfolio takes no externalContext argument,
+    // so the JP prompt cannot carry external data however it is configured.
+    used_external_data: false,
+    external_source: null,
+    external_fetched_at: null,
+    holdings: screened.kept,
+    changes: diffJpHoldings(prev.current, {
+      ...selected.portfolio,
+      holdings: screened.kept,
+    }),
   };
   const next = appendJpPortfolio(prev, portfolio);
   const write = await writeJpPortfolioHistory(next);

@@ -143,6 +143,8 @@ ${PORTFOLIO_SIZE} 銘柄のポートフォリオを選定し、スキーマ通�
       weight: Number(h.weight ?? 0),
       thesis: String(h.thesis ?? ""),
       target_date: normalizeDate(h.target_date),
+      // Same as the JP path: the model's own date, format-checked only.
+      target_date_source: "model" as const,
     })),
   );
   if (holdings.length === 0) {

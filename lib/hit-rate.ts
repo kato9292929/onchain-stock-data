@@ -31,15 +31,20 @@ import type { EvaluationStatus } from "./data";
  */
 
 export type ScoreCounts = Record<
-  "hit" | "partial" | "miss" | "na" | "pending",
+  "hit" | "partial" | "miss" | "na" | "pending" | "excluded",
   number
 >;
 
-/** Everything with a verdict. `pending` has no verdict yet and never counts. */
+/**
+ * Everything with a verdict. `pending` has no verdict yet and never counts,
+ * and neither does `excluded` — a condition withdrawn before its deadline was
+ * never judged by anyone, so putting it in the denominator would score us on a
+ * prediction we never actually made. It is reported separately instead.
+ */
 export const JUDGED: EvaluationStatus[] = ["hit", "partial", "miss", "na"];
 
 export function emptyCounts(): ScoreCounts {
-  return { hit: 0, partial: 0, miss: 0, na: 0, pending: 0 };
+  return { hit: 0, partial: 0, miss: 0, na: 0, pending: 0, excluded: 0 };
 }
 
 export function tally(statuses: Iterable<EvaluationStatus>): ScoreCounts {
@@ -48,7 +53,10 @@ export function tally(statuses: Iterable<EvaluationStatus>): ScoreCounts {
   return counts;
 }
 
-/** hit + partial + miss + na — the denominator, and the "judged N" the UI shows. */
+/**
+ * hit + partial + miss + na — the denominator, and the "judged N" the UI shows.
+ * `excluded` is deliberately absent; see JUDGED above.
+ */
 export function judgedCount(c: ScoreCounts): number {
   return c.hit + c.partial + c.miss + c.na;
 }

@@ -117,15 +117,49 @@ const DIRECTION_LABEL: Record<SignalDirection, string> = {
  * regime tilt. Unverified / non-judgeable signals are labelled so the model
  * discounts them, and none of this is scored.
  */
-export function formatSignalsForPrompt(file: SignalsFile | null): string {
+/**
+ * The day unverified signals stopped reaching the selection prompt.
+ *
+ * Treated like `US_AUTOREGISTER_FROM`: a dated change to what the model is
+ * given, so a week's selection can be read against the inputs it actually had.
+ * Weeks before this date saw unverified signals; weeks after do not.
+ */
+export const VERIFIED_ONLY_FROM = "2026-10-17";
+
+/**
+ * Drop signals that have not been verified.
+ *
+ * The prompt used to carry them with a 「未検証」 tag and an instruction to
+ * discount them. That is not what came out: `sig_nvda_circular_financing`
+ * (verified false, sourced to an X post relaying WSJ, amounts unconfirmed)
+ * reappeared in eight weeks of published `rationale` as a flat assertion —
+ * 「循環取引疑惑を踏まえ」 — with no hedge and no source. A label the model is
+ * free to ignore is not a control, so the row does not go in at all.
+ *
+ * `data/signals.json` is left alone: scoring and other callers read the same
+ * file, and this is a decision about one prompt, not about the record.
+ */
+export function selectableSignals(file: SignalsFile | null): {
+  kept: Signal[];
+  droppedIds: string[];
+} {
   const signals = file?.signals ?? [];
+  const kept = signals.filter((s) => s.verified);
+  return {
+    kept,
+    droppedIds: signals.filter((s) => !s.verified).map((s) => s.id),
+  };
+}
+
+export function formatSignalsForPrompt(file: SignalsFile | null): string {
+  const { kept: signals } = selectableSignals(file);
   if (signals.length === 0) return "";
 
   const lines: string[] = [
     "",
     "## 外部シグナル (選定の文脈・採点対象ではない)",
     "強気=候補/オーバーウェイトの支え、弱気=回避/アンダーウェイト材料、構造=レジーム前提。",
-    "「未検証」「参考」タグの付いたものは確度が低いので割り引いて扱うこと。",
+    "未検証のシグナルは渡していない。「参考」タグは判定不能という意味で、確度が低いので割り引いて扱うこと。",
   ];
 
   for (const dir of ["bullish", "bearish", "structural"] as SignalDirection[]) {
@@ -134,8 +168,8 @@ export function formatSignalsForPrompt(file: SignalsFile | null): string {
     lines.push("", `### ${DIRECTION_LABEL[dir]}`);
     for (const s of group) {
       const j = judgeabilityOf(s);
+      // `verified` is guaranteed true here by selectableSignals.
       const tags: string[] = [];
-      if (!s.verified) tags.push("未検証");
       if (j !== "judgeable") tags.push("参考");
       const tag = tags.length ? ` [${tags.join("・")}]` : "";
       const when = s.target_date ? ` (期日 ${s.target_date})` : "";

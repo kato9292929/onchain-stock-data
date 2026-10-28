@@ -155,6 +155,9 @@ export interface PortfolioHolding {
   thesis: string;
   /** Catalyst judgement date (YYYY-MM-DD); optional for back-compat. */
   target_date?: string;
+  /** See JpPortfolioHolding.target_date_source — same meaning, same history. */
+  target_date_source?: "model" | "verified";
+  target_date_confirmed?: string | null;
   entry_price_usd?: number;
   current_price_usd?: number;
 }
@@ -174,6 +177,21 @@ export interface Portfolio {
   rationale: string;
   holdings: PortfolioHolding[];
   changes?: PortfolioChange[];
+  /**
+   * Whether this week's selection prompt carried the external context block.
+   *
+   * It was computed on every run and thrown away — only the function's return
+   * value held it, never the persisted entry — so there is no way to tell,
+   * for any week already on record, whether the model saw external data or
+   * reasoned entirely from its own weights. JP never has any: its prompt takes
+   * no external context at all.
+   *
+   * Absent on entries written before 2026-10-16; absent is not false.
+   */
+  used_external_data?: boolean;
+  /** Host of AA_EXTERNAL_DATA_URL only — never the URL or its contents. */
+  external_source?: string | null;
+  external_fetched_at?: string | null;
 }
 
 export interface PortfolioHistoryFile {
@@ -199,7 +217,21 @@ export type EvaluationStatus =
   | "hit"
   | "partial"
   | "miss"
-  | "na";
+  /** The deadline arrived and the condition could not be judged. */
+  | "na"
+  /**
+   * The condition left the scoring population BEFORE its deadline, because the
+   * pick itself was withdrawn — so far, only by the delisting screen.
+   *
+   * Kept apart from `na` because the two say different things. `na` is a
+   * condition we failed to make judgeable; `excluded` is a condition that was
+   * never going to be judged at all. 6967's 2026-06-22 row is `na` (its
+   * 2026-07-31 deadline passed with nothing to read); its 2026-10-12 row is
+   * `excluded` (removed on 2026-10-15, before its 2026-10-30 deadline).
+   * Folding the second into `na` would have put a row in the denominator that
+   * no evaluator ever looked at.
+   */
+  | "excluded";
 
 export interface PortfolioEvaluation {
   week_of: string;
@@ -289,6 +321,35 @@ export interface JpPortfolioHolding {
   thesis: string;
   /** Next-earnings date estimate the catalyst is judged against (YYYY-MM-DD). */
   target_date: string;
+  /**
+   * Where `target_date` came from.
+   *
+   *   "model"     the selection model's own output, unchecked
+   *   "verified"  reconciled against a date the company published
+   *
+   * Everything on record before 2026-10-17 is "model" in fact but carries no
+   * field, because the distinction was never written down: the date goes from
+   * the model's JSON through `normalizeDate` — a format check, nothing more —
+   * straight into the file, and the prompt explicitly permits a guess when no
+   * schedule has been announced. The article's 留保 claims both 「会社が公表した
+   * 決算日」 and 「前年実績からの推定」; neither the code nor the data could tell
+   * which applied to any given row.
+   *
+   * Absent means unrecorded, not "model".
+   */
+  target_date_source?: "model" | "verified";
+  /**
+   * The company's published date, when it was checked and differs.
+   *
+   * `target_date` is never rewritten — a condition is fixed when it is
+   * published — so a disagreement is recorded alongside it instead. The
+   * scorer waits for the later of the two before judging, so a deadline set
+   * too early cannot score a miss for a silence that never happened.
+   */
+  target_date_confirmed?: string | null;
+  /** The IR page the confirmed date was read off, so it can be re-checked. */
+  target_date_confirmed_source?: string;
+  target_date_checked_at?: string;
 }
 
 export interface JpPortfolio {
@@ -299,6 +360,21 @@ export interface JpPortfolio {
   rationale: string;
   holdings: JpPortfolioHolding[];
   changes?: PortfolioChange[];
+  /**
+   * Whether this week's selection prompt carried the external context block.
+   *
+   * It was computed on every run and thrown away — only the function's return
+   * value held it, never the persisted entry — so there is no way to tell,
+   * for any week already on record, whether the model saw external data or
+   * reasoned entirely from its own weights. JP never has any: its prompt takes
+   * no external context at all.
+   *
+   * Absent on entries written before 2026-10-16; absent is not false.
+   */
+  used_external_data?: boolean;
+  /** Host of AA_EXTERNAL_DATA_URL only — never the URL or its contents. */
+  external_source?: string | null;
+  external_fetched_at?: string | null;
 }
 
 export interface JpPortfolioHistoryFile {

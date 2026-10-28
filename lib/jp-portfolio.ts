@@ -269,6 +269,10 @@ export function resolveJpHoldings(
       weight: w,
       thesis,
       target_date: normalizeDate(h.target_date),
+      // The model's own date, unchecked: normalizeDate only validates the
+      // format. Recorded so a later reconciliation can tell what it is
+      // replacing, and so the published record stops being silent about it.
+      target_date_source: "model",
     });
   }
 
