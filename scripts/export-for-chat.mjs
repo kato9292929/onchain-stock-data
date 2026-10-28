@@ -140,7 +140,7 @@ function holdingTable(p) {
       `${h.weight}%`,
       h.thesis,
       h.target_date,
-      h.target_date_source ?? "model（記録前）",
+      h.target_date_source ?? "未記録",
     ]),
   );
 }
@@ -176,14 +176,17 @@ export function buildExport(files, { today, since }) {
         r.status === "pending" &&
         r.target_date &&
         !r.target_date_checked_at &&
-        String(r.target_date_source).startsWith("model"),
+        r.target_date_source !== "verified",
     )
     .sort((a, b) => (a.target_date < b.target_date ? -1 : a.target_date > b.target_date ? 1 : a.id < b.id ? -1 : 1));
 
   const signals = (files.signals?.signals ?? []).filter((s) => {
     if (!since) return true;
-    const at = String(s.observed_at ?? s.added_at ?? "").slice(0, 10);
-    return at > since;
+    // New to the record since the last export — by when it was added, not
+    // when it was observed: a claim observed last week but imported today has
+    // still not been seen.
+    const at = String(s.added_at ?? s.observed_at ?? "").slice(0, 10);
+    return at >= since;
   });
 
   const L = [];
@@ -315,7 +318,7 @@ export function buildExport(files, { today, since }) {
   L.push(`## D. 判定日の照合待ち（${events.size}件の開示・${unchecked.length}行）`);
   L.push("");
   L.push(
-    "target_date が選定モデル自身の日付のまま（会社の公表日と未照合）の pending。" +
+    "target_date_source が model か未記録（選定モデル自身の日付のまま、会社の公表日と未照合）の pending。" +
       "会社の公表日が分かったら date_checks として返す（ops/chat-schema.md）。target_date 自体は書き換えない。",
   );
   L.push("");

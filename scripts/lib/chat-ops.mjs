@@ -115,9 +115,9 @@ export function collectRows(files) {
         success_condition: success,
         fail_direction: failDirection,
         target_date: e.catalyst_target_date ?? null,
-        // Every deadline written before provenance was recorded (2026-10-17)
-        // came from the selection model too; say so rather than leave it blank.
-        target_date_source: h.target_date_source ?? "model（記録前）",
+        // Absent means unrecorded (lib/data.ts), not "model" — though every
+        // deadline written before 2026-10-17 did come from the selection model.
+        target_date_source: h.target_date_source ?? "未記録",
         target_date_confirmed: h.target_date_confirmed ?? null,
         target_date_confirmed_source: h.target_date_confirmed_source ?? null,
         target_date_checked_at: h.target_date_checked_at ?? null,
