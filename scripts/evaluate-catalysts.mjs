@@ -18,6 +18,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isFatalRunError } from "./lib/run-errors.mjs";
+// Shared with the chat export/import, so all three split a condition the same way.
+import { splitCondition } from "./lib/chat-ops.mjs";
 
 const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
@@ -253,20 +255,12 @@ function extractJson(text) {
  * 満たされておらず、miss判定」. QCOM's automotive grew +61% against a ~+50%
  * condition and was recorded a miss.
  *
- * Duplicated from `splitDescription` in lib/physical-ai-scoreboard.ts because
- * this script runs under plain `node` and cannot import a .ts module; the two
- * are pinned to each other by a test.
+ * Lives in scripts/lib/chat-ops.mjs (the chat export/import split the same
+ * way) and is re-exported here. It duplicates `splitDescription` in
+ * lib/physical-ai-scoreboard.ts because this script runs under plain `node`
+ * and cannot import a .ts module; the two are pinned to each other by a test.
  */
-export function splitCondition(description) {
-  const text = String(description ?? "");
-  const marker = "【外れ方向】";
-  const i = text.indexOf(marker);
-  if (i < 0) return { success: text.trim(), failDirection: null };
-  return {
-    success: text.slice(0, i).trim(),
-    failDirection: text.slice(i + marker.length).trim() || null,
-  };
-}
+export { splitCondition };
 
 /**
  * Judge one catalyst. `entry` is normalised to:
