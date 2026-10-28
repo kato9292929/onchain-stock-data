@@ -1,0 +1,176 @@
+{
+  "type": "date_checks",
+  "items": [
+    {
+      "ids": [
+        "us:2026-09-21:MSFT",
+        "us:2026-10-05:MSFT",
+        "us:2026-10-12:MSFT",
+        "us:2026-10-19:MSFT"
+      ],
+      "confirmed_date": "2026-10-28",
+      "source_url": "https://news.microsoft.com/source/2026/10/07/microsoft-announces-quarterly-earnings-release-date-69/"
+    },
+    {
+      "ids": [
+        "us:2026-10-19:V"
+      ],
+      "confirmed_date": "2026-10-27",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001403161/000140316126000126/v-20261027.htm"
+    },
+    {
+      "ids": [
+        "us:2026-09-21:CAT",
+        "us:2026-10-05:CAT",
+        "us:2026-10-12:CAT",
+        "us:2026-10-19:CAT"
+      ],
+      "confirmed_date": "2026-10-29",
+      "source_url": "https://www.caterpillar.com/en/news/corporate-press-releases/h/caterpillar-to-announce-3Q-2026-financial-results-on-oct-29.html"
+    },
+    {
+      "ids": [
+        "us:2026-09-21:GOOGL",
+        "us:2026-10-05:GOOGL",
+        "us:2026-10-12:GOOGL",
+        "us:2026-10-19:GOOGL"
+      ],
+      "confirmed_date": "2026-10-28",
+      "source_url": "https://abc.xyz/investor/news/news-details/2026/Alphabet-Announces-Date-of-Third-Quarter-2026-Financial-Results-Conference-Call-2026-8tpGZsLS6v/default.aspx"
+    },
+    {
+      "ids": [
+        "us:2026-09-21:META",
+        "us:2026-10-05:META",
+        "us:2026-10-12:META",
+        "us:2026-10-19:META"
+      ],
+      "confirmed_date": "2026-10-21",
+      "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-to-Announce-Third-Quarter-2026-Results/default.aspx"
+    },
+    {
+      "ids": [
+        "us:2026-09-21:ANET",
+        "us:2026-10-05:ANET",
+        "us:2026-10-12:ANET",
+        "us:2026-10-19:ANET"
+      ],
+      "confirmed_date": "2026-11-03",
+      "source_url": "https://www.arista.com/company/news/press-release/24817-pr-20261006"
+    },
+    {
+      "ids": [
+        "us:2026-10-19:LLY"
+      ],
+      "confirmed_date": "2026-10-29",
+      "source_url": "https://lilly.gcs-web.com/news-releases/news-release-details/lilly-confirms-date-and-conference-call-third-quarter-2026"
+    },
+    {
+      "ids": [
+        "us:2026-09-21:COST"
+      ],
+      "confirmed_date": "2026-12-10",
+      "source_url": "https://investor.costco.com/events-and-presentations/events/event-details/2026/Q1-2027-Earnings-Call/default.aspx"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:4062",
+        "jp:2026-09-14:4062",
+        "jp:2026-09-21:4062",
+        "jp:2026-10-05:4062",
+        "jp:2026-10-12:4062",
+        "jp:2026-10-19:4062"
+      ],
+      "confirmed_date": "2026-10-29",
+      "source_url": "https://www.ibiden.co.jp/ir/calendar/"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:8035",
+        "jp:2026-09-14:8035",
+        "jp:2026-09-21:8035",
+        "jp:2026-10-05:8035",
+        "jp:2026-10-19:8035"
+      ],
+      "confirmed_date": "2026-10-30",
+      "source_url": "https://www.tel.co.jp/ir/calendar/index.html"
+    },
+    {
+      "ids": [
+        "jp:2026-08-10:6504",
+        "jp:2026-08-31:6504",
+        "jp:2026-09-14:6504",
+        "jp:2026-09-21:6504",
+        "jp:2026-10-05:6504",
+        "jp:2026-10-19:6504"
+      ],
+      "confirmed_date": "2026-10-29",
+      "source_url": "https://www.fujielectric.co.jp/ir/other/index12.html"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:6787",
+        "jp:2026-09-14:6787",
+        "jp:2026-09-21:6787",
+        "jp:2026-10-05:6787"
+      ],
+      "confirmed_date": "2026-11-06",
+      "source_url": "https://www.meiko-elec.com/ir/calendar.html"
+    },
+    {
+      "ids": [
+        "jp:2026-10-12:6981"
+      ],
+      "confirmed_date": "2026-10-30",
+      "source_url": "https://corporate.murata.com/en-eu/ir/calendar"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:4063",
+        "jp:2026-10-19:4063"
+      ],
+      "confirmed_date": "2026-10-27",
+      "source_url": "https://www.shinetsu.co.jp/wp-content/uploads/2026/07/20261027_con_E.pdf"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:6857",
+        "jp:2026-09-14:6857",
+        "jp:2026-09-21:6857",
+        "jp:2026-10-05:6857",
+        "jp:2026-10-19:6857"
+      ],
+      "confirmed_date": "2026-10-28",
+      "source_url": "https://www.advantest.com/en/news/?articleId=4269097"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:2802",
+        "jp:2026-09-14:2802",
+        "jp:2026-09-21:2802",
+        "jp:2026-10-05:2802"
+      ],
+      "confirmed_date": "2026-11-09",
+      "source_url": "https://www.ajinomoto.co.jp/company/jp/ir/event/ircalendar.html"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:6723",
+        "jp:2026-09-14:6723",
+        "jp:2026-10-05:6723"
+      ],
+      "confirmed_date": "2026-10-29",
+      "source_url": "https://www.renesas.com/en/about/investor-relations/materials"
+    },
+    {
+      "ids": [
+        "jp:2026-08-31:3110",
+        "jp:2026-09-14:3110",
+        "jp:2026-09-21:3110",
+        "jp:2026-10-05:3110"
+      ],
+      "confirmed_date": "2026-11-05",
+      "source_url": "https://www.nittobo.co.jp/ir/calender.htm"
+    }
+  ]
+}
