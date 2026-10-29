@@ -1,0 +1,29 @@
+{
+  "type": "verdicts",
+  "items": [
+    {
+      "id": "us:2026-10-12:UNH",
+      "status": "partial",
+      "reasoning": "10/13 公表の3Q26決算で、通期の調整後EPS見通しは19.50〜20.00ドル（2Q26時点）から『少なくとも20.50ドル』へ上方修正された（条件の後半は充足）。医療損失率は88.4%（前年同期89.9%）だが、条件の前半の比較対象である市場予想は一次資料に記載がなく、下回ったかを確認できない。確認できた後半のみ充足としてpartial。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000731766/000073176626000255/earningsrelease3q26unh.htm",
+      "evaluated_at": "2026-10-29T05:55:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-21:6146",
+      "status": "na",
+      "reasoning": "条件は『HBM向けTSV関連消耗品売上が前四半期比増加』。10/22公表のFY2026 2Q決算資料では、消耗品全体の出荷が前四半期比+24%で過去最高とされるが、HBM・TSV向けの内訳は開示していない。条件が開示の粒度に合わず判定できない。",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "evaluated_at": "2026-10-29T05:55:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-19:6146",
+      "status": "na",
+      "reasoning": "条件は『SAWデバイス・精密加工装置の受注残高が前年比2桁増』。10/22公表のFY2026 2Q決算資料は出荷額と売上高を開示しているが、受注残高は開示していない。条件が開示の粒度に合わず判定できない。",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "evaluated_at": "2026-10-29T05:55:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    }
+  ]
+}
