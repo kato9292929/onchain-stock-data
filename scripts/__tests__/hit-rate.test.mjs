@@ -82,15 +82,22 @@ test("a population of nothing but excluded has no rate at all", () => {
   assert.equal(judgedCount(counts({ excluded: 5 })), 0);
 });
 
-test("the live JP record keeps 81 judged after 6967 was excluded", () => {
+test("the live JP record keeps 81 API-judged after 6967 was excluded", () => {
   // 6967's 2026-10-12 row went pending -> excluded, not pending -> na. Had it
   // become na the denominator would have grown to 82 on a row no evaluator
-  // ever looked at.
+  // ever looked at. The API evaluator's 81 are frozen since the chat
+  // operation (2026-10-28); verdicts judged in chat carry an `evaluator` and
+  // are counted on top, never in place of them.
   const ev = JSON.parse(
     readFileSync("data/jp-portfolio-evaluations.json", "utf8"),
   ).evaluations;
   const c = tally(ev.map((e) => e.status));
-  assert.equal(judgedCount(c), 81, `judged drifted: ${JSON.stringify(c)}`);
+  const api = tally(ev.filter((e) => !e.evaluator).map((e) => e.status));
+  assert.equal(judgedCount(api), 81, `API-era judged drifted: ${JSON.stringify(api)}`);
+  assert.equal(
+    judgedCount(c),
+    81 + ev.filter((e) => e.evaluator && e.status !== "pending" && e.status !== "excluded").length,
+  );
   // 2026-10-12 and 2026-10-19: both picked 6967 before the screen reached
   // production, both withdrawn before their deadlines.
   assert.equal(c.excluded, 2);
