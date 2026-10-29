@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-10-18T23:55:27.972Z",
+  "updated_at": "2026-10-29T06:09:13.872Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -1077,11 +1077,12 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-10-16",
       "success_condition": "10月中旬の月次/四半期開示でHBM向けTSV関連消耗品売上が前四半期比増加していれば強材料",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-10-29T05:55:00Z",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "reasoning": "条件は『HBM向けTSV関連消耗品売上が前四半期比増加』。10/22公表のFY2026 2Q決算資料では、消耗品全体の出荷が前四半期比+24%で過去最高とされるが、HBM・TSV向けの内訳は開示していない。条件が開示の粒度に合わず判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-21",
@@ -1495,10 +1496,11 @@
       "catalyst_target_date": "2026-10-22",
       "success_condition": "10/22発表の26年3月期Q2決算でSAWデバイス・精密加工装置の受注残高が前年比2桁増であれば評価継続。",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-10-29T05:55:00Z",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "reasoning": "条件は『SAWデバイス・精密加工装置の受注残高が前年比2桁増』。10/22公表のFY2026 2Q決算資料は出荷額と売上高を開示しているが、受注残高は開示していない。条件が開示の粒度に合わず判定できない。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-19",
