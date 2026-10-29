@@ -1,0 +1,45 @@
+{
+  "type": "verdicts",
+  "items": [
+    {
+      "id": "us:2026-09-21:JPM",
+      "status": "hit",
+      "reasoning": "10/13 公表の3Q26決算で、2026年通期のNII見通しは総額 約1,062億ドル（YTD 782億ドル＋4Q 約280億ドル）、Markets除く 約972億ドル（YTD 717億ドル＋4Q 約255億ドル）となり、2Q26時点の総額1,055億ドル・Markets除く965億ドルから引き上げられた。",
+      "evidence_url": "https://www.jpmorganchase.com/content/dam/jpmc/jpmorgan-chase-and-co/investor-relations/documents/quarterly-earnings/2026/3rd-quarter/2b5b9a7e-a968-4985-94ad-5fa949a08d1c.pdf",
+      "evaluated_at": "2026-10-28T10:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-05:JPM",
+      "status": "hit",
+      "reasoning": "10/13 公表の3Q26決算で、2026年通期のNII見通しが総額 約1,062億ドル・Markets除く 約972億ドルとなり、2Q26時点の1,055億ドル・965億ドルから上方修正された。",
+      "evidence_url": "https://www.jpmorganchase.com/content/dam/jpmc/jpmorgan-chase-and-co/investor-relations/documents/quarterly-earnings/2026/3rd-quarter/2b5b9a7e-a968-4985-94ad-5fa949a08d1c.pdf",
+      "evaluated_at": "2026-10-28T10:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-12:JPM",
+      "status": "hit",
+      "reasoning": "10/13 公表の3Q26決算で、NIIは271億ドル（前年同期比+13%、managed basis）、Markets収益は103億ドル（同+15%、うちFixed Income -4%・Equity +49%）。NIIとトレーディング収益の双方が前年比2桁増。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000019617/000162828026065582/a3q26erfexhibit991narrative.htm",
+      "evaluated_at": "2026-10-28T10:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-09-21:UNH",
+      "status": "partial",
+      "reasoning": "10/13 公表の3Q26決算で、通期の調整後EPS見通しは19.50〜20.00ドルから『少なくとも20.50ドル』へ上方修正された（条件の後半は充足）。一方、医療損失率は88.4%で、2Q26の86.7%から悪化しており、条件の前半（前四半期からの改善）は満たさない。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000731766/000073176626000255/earningsrelease3q26unh.htm",
+      "evaluated_at": "2026-10-28T10:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-05:UNH",
+      "status": "miss",
+      "reasoning": "10/13 公表の3Q26決算で、医療損失率は88.4%。条件の基準である85%以下に届かなかった。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000731766/000073176626000255/earningsrelease3q26unh.htm",
+      "evaluated_at": "2026-10-28T10:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    }
+  ]
+}
