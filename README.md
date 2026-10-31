@@ -186,6 +186,14 @@ const fetchWithPay = wrapFetchWithPayment(fetch, wallet);
 const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 ```
 
+### Delivery Receipt
+
+本番の有料ルート（Solana USDC、`withX402AndInternal` 経由のもの。テストネットの `/api/testnet/signal` は除く）は、[Delivery Receipt](https://github.com/kato9292929/delivery-receipt)（`lib/delivery-receipt` に取り込み）に対応する。
+
+- settle が成功した 200 は、本文を送る前に記録し（Upstash、キー `receipt:*`、8 日）、`X-Delivery-Receipt`（Ed25519 の署名付きレシート）を付ける。
+- 元の支払いヘッダ＋`X-Payment-Refetch: {支払いID}` の要求は withX402 を通さず（verify・settle なし）、記録があれば保存した本文を返す。記録がなくチェーン上で決済済みなら作り直して返す。どちらも無ければ 402、7 日を過ぎたら 410。
+- 公開鍵は `GET /.well-known/x402-receipt.json`。
+
 ## Data sources
 
 配信しているのは **自前のリサーチ成果**（Claude の選定・カタリスト採点）と、**一次開示のメタデータ**です。市場データの「配信」（価格・板・出来高の API）は現行スコープ外で、価格はページ表示の補助として参照しているだけです。
@@ -223,6 +231,8 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 | `X402_TESTNET_SIGNAL_PRICE` | opt | `/api/testnet/signal` の価格（既定 `$0.05`）。 |
 | `X402_TESTNET_PAY_TO` / `X402_TESTNET_FACILITATOR_URL` | opt | テストネット (Base Sepolia) の受取先・facilitator。 |
 | `X402_SOLANA_NETWORK` / `SOLANA_USDC_MINT` | opt | devnet プレビュー用の上書き。本番は mainnet 既定のまま。 |
+| `RECEIPT_SIGNING_KEY` | **yes** | Delivery Receipt の Ed25519 署名鍵（32 バイトの seed、base64url）。**無ければサーバが起動しない**（`instrumentation.ts`）。 |
+| `RECEIPT_KEY_ID` | opt | レシートの鍵 ID（既定は公開鍵の SHA-256 の先頭 16 桁）。 |
 
 `.env.example` を参照。Vercel デプロイ時は Project Settings → Environment Variables から投入してください。
 

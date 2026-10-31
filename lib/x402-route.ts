@@ -12,7 +12,10 @@ import {
   solanaUsdcUnits,
   x402Server,
   x402TestnetServer,
+  PUBLIC_BASE_URL,
 } from "./x402";
+import { withDeliveryReceipts } from "./delivery-receipt";
+import { receiptSeller, solanaRequirement } from "./receipts";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
 
@@ -24,10 +27,10 @@ type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
 // covers POST /api/analyst (application/json). `PAYMENT-REQUIRED` and
 // `PAYMENT-RESPONSE` are the v2 challenge / receipt headers, exposed so
 // browser fetch() callers can read them after a 402 or a 200+settlement.
-export const CORS_ALLOW_HEADERS = "X-PAYMENT, Content-Type, X-Internal-Key";
+export const CORS_ALLOW_HEADERS = "X-PAYMENT, PAYMENT-SIGNATURE, Content-Type, X-Internal-Key, X-Payment-Refetch";
 export const CORS_ALLOW_METHODS = "GET, POST, OPTIONS";
 export const CORS_EXPOSE_HEADERS =
-  "PAYMENT-REQUIRED, PAYMENT-RESPONSE, payment-required, payment-response";
+  "PAYMENT-REQUIRED, PAYMENT-RESPONSE, payment-required, payment-response, X-Delivery-Receipt";
 
 const CORS_BASE_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -200,6 +203,10 @@ export function asPaymentUnavailable(
   );
 }
 
+const asNext = (req: Request): NextRequest => (req instanceof NextRequest ? req : new NextRequest(req));
+const toNext = (res: Response): NextResponse =>
+  res instanceof NextResponse ? res : new NextResponse(res.body, { status: res.status, statusText: res.statusText, headers: res.headers });
+
 export function withX402AndInternal(
   handler: Handler,
   routeConfig: RouteConfig,
@@ -221,12 +228,24 @@ export function withX402AndInternal(
       true, // syncFacilitatorOnStart
     );
   const wrapped = buildWrapped(routeConfig);
+  // Delivery Receipt on the mainnet Solana-USDC routes: a settled 200 is recorded before its
+  // body is sent and gets X-Delivery-Receipt; a request with X-Payment-Refetch never reaches
+  // withX402 (no verify/settle). The receipt names the URL actually requested.
+  const requirement = server === x402Server ? solanaRequirement(routeConfig) : null;
+  const paid = (req: NextRequest): Promise<NextResponse> => {
+    if (!requirement) return wrapped(req).then((r) => asPaymentUnavailable(r, routeConfig));
+    const u = new URL(req.url);
+    return withDeliveryReceipts(receiptSeller(), {
+      paywalled: async (r) => asPaymentUnavailable(await wrapped(asNext(r)), routeConfig),
+      handler: async (r) => handler(asNext(r)),
+      resource: `${PUBLIC_BASE_URL}${u.pathname}${u.search}`,
+      requirement,
+    })(req).then(toNext);
+  };
   return async (req: NextRequest) => {
     if (req.method === "OPTIONS") return corsPreflight();
     try {
-      const res = isInternalAuthed(req)
-        ? await handler(req)
-        : asPaymentUnavailable(await wrapped(req), routeConfig);
+      const res = isInternalAuthed(req) ? await handler(req) : await paid(req);
       return applyCors(res);
     } catch (err) {
       const message =
