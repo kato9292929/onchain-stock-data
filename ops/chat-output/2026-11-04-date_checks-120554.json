@@ -1,0 +1,14 @@
+{
+  "type": "date_checks",
+  "items": [
+    {
+      "ids": [
+        "jp:2026-09-14:6920",
+        "jp:2026-09-21:6920",
+        "jp:2026-10-05:6920"
+      ],
+      "confirmed_date": "2026-10-30",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf"
+    }
+  ]
+}
