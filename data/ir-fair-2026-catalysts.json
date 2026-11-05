@@ -1,7 +1,7 @@
 {
   "source": "nikkei-tse-ir-fair-2026",
   "note": "IR Fair 2026 exhibitors grouped by TSE 33-sector. Draft roster only — due_date/success_condition/fail_condition/source must be verified from primary sources before an entry is promoted to stage:active. draft rows are display-only and are NEVER scored (no LLM touches this file on ingest).",
-  "updated_at": "2026-10-15T11:49:53.264097Z",
+  "updated_at": "2026-11-04T12:05:56.749Z",
   "sectors": [
     {
       "id": "情報・通信業",
@@ -1144,14 +1144,19 @@
       "success_condition": "Q2決算で業務用等のガス販売量が前年同期比プラスに転じ、通期経常利益250億円を据え置き以上。",
       "fail_condition": "原料費調整制度の期ずれ差損が拡大、または販売量の減少継続で通期下方修正。",
       "source": "https://www.release.tdnet.info/inbs/140120260724598969.pdf",
-      "status": "pending",
+      "status": "partial",
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
       "tse_market_as_of": "2026-09-30",
-      "activated_at": "2026-10-15"
+      "activated_at": "2026-10-15",
+      "reasoning": "条件は2つ。(1) 業務用等のガス販売量が前年同期比プラスに転じる：10/29公表の2027年3月期第2四半期（中間期）決算短信で、業務用等の販売量は13億3千万㎥・前年同期比2.5%減（お客さま先設備の稼働が前年同期を下回ったため）。不成立。(2) 通期経常利益250億円を据え置き以上：通期予想を修正したが、経常利益は250億円のまま据え置き（『営業利益と経常利益については修正しておりません』）。成立。(2)のみ成立のためpartial。なお決算公表日は10/29（target_date 10/27は推定値）。",
+      "evaluator": "claude-fable-5-1 (chat)",
+      "evaluated_at": "2026-11-04T10:30:00Z",
+      "evidence_url": "https://www.tohogas.co.jp/corporate-n/press/__icsFiles/afieldfile/2026/10/29/press20261029_1.pdf",
+      "judgement_date": "2026-11-04"
     },
     {
       "catalyst_id": "irf-8418",

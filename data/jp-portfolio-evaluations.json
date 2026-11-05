@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-10-29T06:09:13.872Z",
+  "updated_at": "2026-11-04T12:05:56.749Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -857,11 +857,12 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-10-15",
       "success_condition": "10月中旬予定の第2四半期決算でHBM関連の精密加工装置受注が前年同期比+20%超なら好材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-04T10:30:00Z",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "reasoning": "条件は『HBM関連の精密加工装置受注が前年同期比+20%超』。10/22公表のFY2026 2Q決算資料は出荷額（1,486億円、過去最高、前年同期比+54%）と売上高を開示しているが、受注額とHBM向けの内訳は開示していない。条件が開示の粒度に合わず判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-08-31",
@@ -1188,11 +1189,12 @@
       "ticker": "6146",
       "catalyst_target_date": "2026-10-22",
       "success_condition": "10/22のQ2決算で先端パッケージング向け精密加工装置（グラインダ・ダイサ）の受注高が前四半期比増となれば強気材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-04T10:30:00Z",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "reasoning": "条件は『先端パッケージング向け精密加工装置（グラインダ・ダイサ）の受注高が前四半期比増』。10/22公表のFY2026 2Q決算資料は出荷額と売上高を開示しているが、受注高と先端パッケージング向けの内訳は開示していない。条件が開示の粒度に合わず判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-14",
@@ -1277,10 +1279,11 @@
       "catalyst_target_date": "2026-10-28",
       "success_condition": "10/28頃の2Q決算でSiC・先端パッケージ向け精密加工装置受注残高が増加基調を示せば継続評価",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-04T10:30:00Z",
+      "evidence_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20261022.pdf",
+      "reasoning": "条件は『SiC・先端パッケージ向け精密加工装置の受注残高が増加基調』。10/22公表のFY2026 2Q決算資料は出荷額と売上高を開示しているが、受注残高と用途別の内訳は開示していない。条件が開示の粒度に合わず判定できない。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-05",
