@@ -8,6 +8,8 @@ import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { getSignals } from "@/lib/signals";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { PUBLIC_BASE_URL, BASE_SEPOLIA_NETWORK } from "@/lib/x402";
+import { freeBody } from "@/lib/solana-stocks";
+import { loadSolanaStocks } from "@/lib/solana-stocks-load";
 
 /**
  * Remote MCP server for Onchain Stock Data.
@@ -26,8 +28,8 @@ import { PUBLIC_BASE_URL, BASE_SEPOLIA_NETWORK } from "@/lib/x402";
  * Mounted as a single web-standard handler (mcp-handler v2) at /api/mcp.
  *
  * FREE / PAID line (kept in sync with the README):
- *   - FREE, unsigned MCP reads (all 4 tools here): portfolio_get, catalysts_list,
- *     scoreboard_get, signal_get. Every tool is read-only (annotations:
+ *   - FREE, unsigned MCP reads (all 5 tools here): portfolio_get, catalysts_list,
+ *     scoreboard_get, signal_get, solana_stock_get. Every tool is read-only (annotations:
  *     readOnlyHint:true, destructiveHint:false) and serves committed git data —
  *     no model call, so a tool invocation costs nothing to run.
  *   - PAID access lives on the HTTP per-call endpoints, NOT on this MCP surface:
@@ -176,6 +178,31 @@ const handler = createMcpHandler(
             total: a.total,
           })),
         });
+      },
+    );
+
+    // ── read-only: tokenized stocks on Solana (free view) ───────────────
+    server.registerTool(
+      "solana_stock_get",
+      {
+        title: "Get a tokenized stock on Solana",
+        description:
+          "Free view of one tokenized stock on Solana (xStocks / Ondo Global Markets): tokens and mints, the next dated deadline with its date source, how many conditions this site has set, the latest verdict, and the per-call URL of the full record (x402, USDC on Solana).",
+        annotations: {
+          title: "Get a tokenized stock on Solana",
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false,
+        },
+        inputSchema: z.object({
+          ticker: z.string().describe("Underlying ticker, e.g. NVDA"),
+        }),
+      },
+      async ({ ticker }) => {
+        const { file, rec, today } = await loadSolanaStocks();
+        const body = freeBody(ticker, file, rec, today, PUBLIC_BASE_URL);
+        return text(body ?? { error: "ticker not found", ticker: ticker.toUpperCase() });
       },
     );
 

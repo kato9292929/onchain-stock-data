@@ -6,6 +6,7 @@ import { LandingHero } from "./components/landing-hero";
 import { RailMarquee } from "./components/rail-marquee";
 import { SolanaMark } from "./components/solana-mark";
 import { PER_CALL_PRICE } from "@/lib/x402";
+import { issuerShort, loadSummaries } from "@/lib/solana-stocks-load";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +15,13 @@ export const dynamic = "force-dynamic";
  * this week's catalyst-derived selection. No P&L / benchmark tracking.
  */
 export default async function Home() {
-  const [portfolio, catalysts] = await Promise.all([
+  const [portfolio, catalysts, solana] = await Promise.all([
     getPortfolioHistory().catch(() => null),
     readExternalCatalysts().catch(() => []),
+    loadSummaries().catch(() => null),
   ]);
+  // Tickers this site has set a condition on, nearest deadline first.
+  const featured = (solana?.rows ?? []).filter((r) => r.conditions > 0).slice(0, 6);
   const asOf = new Date().toISOString().slice(0, 10);
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
@@ -26,7 +30,68 @@ export default async function Home() {
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-        <LandingHero />
+        <LandingHero solanaCount={solana?.rows.length ?? 0} />
+
+        {/* Tokenized stocks on Solana — first, ahead of the research entries */}
+        {solana && (
+          <section className="mt-16">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                  <SolanaMark className="h-3 w-auto" title={null} /> Tokenized stocks on Solana
+                </div>
+                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">
+                  With earnings conditions
+                </h2>
+                <p className="mt-1 max-w-2xl text-sm text-slate-500">
+                  Every xStocks and Ondo token on Solana, with its mint. Where this site sets a dated earnings
+                  condition, the full verdict history is {PER_CALL_PRICE.usdc} USDC per call.
+                </p>
+              </div>
+              <Link href="/solana-stocks" className="text-sm font-semibold text-[#0a152d] hover:underline">
+                All {solana.rows.length.toLocaleString()} →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((r) => (
+                <Link
+                  key={r.ticker}
+                  href={`/solana-stocks/${encodeURIComponent(r.ticker)}`}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 no-underline shadow-sm transition-all hover:border-slate-300 hover:no-underline!"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-outfit text-lg font-semibold text-[#0a1b33]">{r.ticker}</span>
+                    <span className="text-[11px] text-slate-400">
+                      {[...new Set(r.tokens.map((t) => issuerShort(t.issuer)))].join(" · ")}
+                    </span>
+                  </div>
+                  <div className="truncate text-[12px] text-slate-500">{r.name}</div>
+                  <div className="mt-3 flex items-center justify-between text-[12px]">
+                    <span className="tabular-nums text-slate-600">
+                      {r.next_earnings ? (
+                        <>
+                          Next {r.next_earnings.date}{" "}
+                          <span className={r.next_earnings.target_date_source === "verified" ? "text-emerald-600" : "text-amber-600"}>
+                            {{ verified: "IR-confirmed", model: "estimated", article: "article date" }[r.next_earnings.target_date_source]}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-slate-400">No upcoming deadline</span>
+                      )}
+                    </span>
+                    <span className="text-slate-500">
+                      {r.latest_verdict ? (
+                        <span className="font-semibold uppercase text-[#0a1b33]">{r.latest_verdict.status}</span>
+                      ) : (
+                        <span className="text-slate-400">pending</span>
+                      )}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="mt-10">
           <RailMarquee />
@@ -41,9 +106,14 @@ export default async function Home() {
               </div>
               <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Catalysts</h2>
             </div>
-            <Link href="/catalysts" className="text-sm font-semibold text-[#0a152d] hover:underline">
-              View all sectors →
-            </Link>
+            <span className="flex gap-4">
+              <Link href="/catalysts" className="text-sm font-semibold text-[#0a152d] hover:underline">
+                IR Fair 2026 sectors →
+              </Link>
+              <Link href="/catalysts/physical-ai" className="text-sm font-semibold text-[#0a152d] hover:underline">
+                Physical AI →
+              </Link>
+            </span>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -161,7 +231,7 @@ export default async function Home() {
                   price: `${PER_CALL_PRICE.usdc} USDC`,
                   unit: "per call",
                   what: "Per-company lookups",
-                  detail: "/api/catalyst/{ticker} · /api/edinet/{code}",
+                  detail: "/api/solana-stocks/{ticker}?view=full · /api/catalyst/{ticker} · /api/edinet/{code}",
                 },
                 {
                   price: "$0.01",
@@ -238,6 +308,7 @@ export default async function Home() {
                   ["catalysts_list", "Dated catalysts by target_date; filter by range, ticker or theme."],
                   ["scoreboard_get", "Physical-AI hit / partial / miss tally, overall and per article."],
                   ["signal_get", "Directional signals by ticker / theme (paid x402 testnet twin)."],
+                  ["solana_stock_get", "A tokenized stock on Solana — mints, next deadline, conditions, per-call URL."],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex flex-col gap-0.5">
                     <code className="font-mono text-[13px] font-semibold text-[#0a1b33]">{name}</code>

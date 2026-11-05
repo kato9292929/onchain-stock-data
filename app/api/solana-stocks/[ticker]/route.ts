@@ -5,16 +5,12 @@ import {
   corsPreflight,
 } from "@/lib/x402-route";
 import { PER_CALL_PRICE, PUBLIC_BASE_URL } from "@/lib/x402";
-import { getPortfolioEvaluations, getPortfolioHistory } from "@/lib/data";
-import { readExternalCatalysts } from "@/lib/external-catalysts";
-import { getSignals } from "@/lib/signals";
+import { loadSolanaStocks } from "@/lib/solana-stocks-load";
 import {
   PAID_DESCRIPTION,
   classifySolanaStockAccess,
   freeBody,
   fullBody,
-  getSolanaStocks,
-  type Records,
 } from "@/lib/solana-stocks";
 
 export const runtime = "nodejs";
@@ -39,17 +35,7 @@ function tickerOf(req: NextRequest): string {
   return decodeURIComponent(seg[seg.length - 1] ?? "").toUpperCase();
 }
 
-async function load() {
-  const [file, usHistory, usEvals, externals, signals] = await Promise.all([
-    getSolanaStocks(),
-    getPortfolioHistory().catch(() => null),
-    getPortfolioEvaluations().catch(() => null),
-    readExternalCatalysts().catch(() => []),
-    getSignals().catch(() => null),
-  ]);
-  const rec: Records = { usHistory, usEvals, externals, signals };
-  return { file, rec, today: new Date().toISOString().slice(0, 10) };
-}
+const load = loadSolanaStocks;
 
 const paidGet = withSolanaUsdcMicroPaywall(
   async (req: NextRequest) => {
