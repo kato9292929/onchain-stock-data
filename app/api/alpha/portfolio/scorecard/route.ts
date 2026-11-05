@@ -9,6 +9,7 @@ import {
   evaluationCoverage,
 } from "@/lib/evaluation-coverage";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
+import { weeklyRows } from "@/lib/company-record";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,6 +40,10 @@ const handler = async (): Promise<NextResponse> => {
   const evalsFile = await getPortfolioEvaluations();
 
   const evaluations = evalsFile.evaluations ?? [];
+  const historyFile = await getPortfolioHistory().catch(() => null);
+  const rowOf = new Map(
+    weeklyRows("us", historyFile, evalsFile).map((r) => [`${r.week_of}::${r.ticker}`, r]),
+  );
 
   const hit_rate = {
     hit: 0,
@@ -59,20 +64,25 @@ const handler = async (): Promise<NextResponse> => {
   const recent_evaluations = [...evaluations]
     .sort((a, b) => recencyKey(b) - recencyKey(a))
     .slice(0, 20)
-    .map((e) => ({
-      week_of: e.week_of,
-      ticker: e.ticker,
-      status: e.status,
-      catalyst_target_date: e.catalyst_target_date,
-      // "distilled" = the condition was extracted from the thesis by the
-      // one-shot backfill; "thesis" = the free-text thesis went in verbatim,
-      // as the weekly auto-register does. The two are not equally strict, so
-      // split on this before comparing hit-rates across them.
-      condition_source: e.condition_source ?? null,
-      evaluated_at: e.evaluated_at,
-      evidence_url: e.evidence_url,
-      reasoning: e.reasoning,
-    }));
+    .map((e) => {
+      const r = rowOf.get(`${e.week_of}::${String(e.ticker).toUpperCase()}`);
+      return {
+        id: r?.id ?? null,
+        ticker: String(e.ticker).toUpperCase(),
+        company: r?.company ?? null,
+        week_of: e.week_of,
+        question: r?.question ?? e.success_condition,
+        target_date: r?.target_date ?? e.catalyst_target_date,
+        result: r?.result ?? e.status,
+        judged_at: r?.judged_at ?? null,
+        evidence_url: e.evidence_url,
+        reasoning: e.reasoning,
+        // "distilled" (extracted by the one-shot backfill) vs "thesis" (copied
+        // verbatim): not equally strict, so split on it before comparing.
+        condition_source: e.condition_source ?? null,
+        evaluated_at: e.evaluated_at,
+      };
+    });
 
   // `as_of` is when this answer was computed, and nothing else. It used to be
   // the newest verdict's date, which meant it froze at 2026-07-08 while
@@ -92,7 +102,7 @@ const handler = async (): Promise<NextResponse> => {
   // stops it freezes — this endpoint answered `as_of: 2026-07-08` with
   // `pending: 0` for three months, and both fields looked healthy. Coverage is
   // the field that distinguishes "nothing is waiting" from "nothing exists".
-  const history = await getPortfolioHistory().catch(() => null);
+  const history = historyFile;
   const cov = history
     ? evaluationCoverage(history, evaluations, {
         cutoff: US_AUTOREGISTER_FROM,

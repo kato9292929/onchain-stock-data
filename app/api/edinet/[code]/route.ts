@@ -25,7 +25,7 @@ export const maxDuration = 60;
  * response shape but are NOT currently served: extraction is paused
  * (lib/edinet.ts `FINANCIALS_ENABLED = false`) because the candidate-element
  * approach shipped wrong values live, so they return null alongside
- * `financials_available:false` and `financials_note`. Figures are never
+ * `financials_available:false`. Figures are never
  * fabricated. Keep the paywall `description` below in step with this.
  *
  * Terms compliance: every payload carries `source` = "出典：金融庁 EDINET" and
@@ -52,7 +52,6 @@ async function handler(req: NextRequest): Promise<NextResponse> {
       source: SOURCE_LABEL,
       pipeline: "edinet-financials-v1",
       debug: true,
-      note: "デバッグ用・未加工のXBRL要素ダンプ（当期・連結・JPY を優先表示）",
       code,
       doc: dump.doc,
       count: dump.count,
@@ -83,8 +82,6 @@ async function handler(req: NextRequest): Promise<NextResponse> {
       sales: fin.sales,
       operating_income: fin.operating_income,
       net_income: fin.net_income,
-      // Present while figure extraction is disabled: honest "metadata only" note.
-      financials_note: fin.financials_note,
       // Present only when financials_available is false: the biggest current-年度
       // 連結 JPY rows, so the real element IDs are visible without ?debug.
       debug_unmatched: fin.debug_unmatched,

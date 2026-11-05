@@ -28,10 +28,11 @@ const handler = async (req: NextRequest): Promise<NextResponse> => {
   return NextResponse.json({
     catalyst_id: c.catalyst_id,
     ticker: c.ticker,
-    catalyst_description: c.catalyst_description,
+    question: c.catalyst_description,
     target_date: c.target_date,
-    status: c.status,
-    judgement_date: c.judgement_date,
+    result: c.status,
+    judged_at: c.judgement_date,
+    evidence_url: (c.evidence_urls ?? [])[0] ?? null,
     evidence_urls: c.evidence_urls ?? [],
     reasoning: c.reasoning,
   });

@@ -1,40 +1,53 @@
-import { getPortfolioEvaluations, getPortfolioHistory } from "@/lib/data";
+import {
+  getJpPortfolioEvaluations,
+  getJpPortfolioHistory,
+  getPortfolioEvaluations,
+  getPortfolioHistory,
+} from "@/lib/data";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
+import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { getSignals } from "@/lib/signals";
+import { getEarningsDates, getFinancials, type Records } from "@/lib/company-record";
 import {
   getSolanaStocks,
   summarize,
-  type Records,
   type SolanaStocksFile,
   type TickerSummary,
 } from "@/lib/solana-stocks";
 
 /**
- * One loader for every Solana-stocks surface (pages, API, MCP), so they all
- * read the same files the same way. Static reads of committed data only.
+ * Every committed file a company record is built from. Shared by
+ * /api/solana-stocks, /api/catalyst and the pages, so they all read the same
+ * files the same way. Static reads only; a missing file is null.
  */
+export async function loadRecords(): Promise<Records> {
+  const [usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials] =
+    await Promise.all([
+      getPortfolioHistory().catch(() => null),
+      getPortfolioEvaluations().catch(() => null),
+      getJpPortfolioHistory().catch(() => null),
+      getJpPortfolioEvaluations().catch(() => null),
+      readExternalCatalysts().catch(() => []),
+      getIrFairFile().catch(() => null),
+      getSignals().catch(() => null),
+      getEarningsDates(),
+      getFinancials(),
+    ]);
+  return { usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials };
+}
+
 export async function loadSolanaStocks(): Promise<{
   file: SolanaStocksFile;
   rec: Records;
   today: string;
 }> {
-  const [file, usHistory, usEvals, externals, signals] = await Promise.all([
-    getSolanaStocks(),
-    getPortfolioHistory().catch(() => null),
-    getPortfolioEvaluations().catch(() => null),
-    readExternalCatalysts().catch(() => []),
-    getSignals().catch(() => null),
-  ]);
-  return {
-    file,
-    rec: { usHistory, usEvals, externals, signals },
-    today: new Date().toISOString().slice(0, 10),
-  };
+  const [file, rec] = await Promise.all([getSolanaStocks(), loadRecords()]);
+  return { file, rec, today: new Date().toISOString().slice(0, 10) };
 }
 
 /**
- * Default order: tickers with conditions first, then the nearest upcoming
- * deadline, then alphabetical.
+ * Default order: tickers with conditions first, then the nearest confirmed
+ * earnings date, then alphabetical.
  */
 export function byDefaultOrder(a: TickerSummary, b: TickerSummary): number {
   const ca = a.conditions > 0 ? 0 : 1;

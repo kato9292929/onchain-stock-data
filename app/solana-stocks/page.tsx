@@ -25,9 +25,9 @@ export default async function SolanaStocksPage() {
     ticker: s.ticker,
     name: s.name,
     tokens: s.tokens.map((t) => ({ issuer: issuerShort(t.issuer), symbol: t.symbol, mint: t.solana_mint })),
-    next: s.next_earnings ? { date: s.next_earnings.date, source: s.next_earnings.target_date_source } : null,
+    next: s.next_earnings.status === "confirmed" && s.next_earnings.date ? { date: s.next_earnings.date } : null,
     conditions: s.conditions,
-    verdict: s.latest_verdict ? { status: s.latest_verdict.status, judged_at: s.latest_verdict.judged_at } : null,
+    verdict: s.latest_verdict ? { status: s.latest_verdict.result, judged_at: s.latest_verdict.judged_at } : null,
   }));
   const counts = {
     xStocks: rows.filter((r) => r.tokens.some((t) => t.issuer === "xStocks")).length,
@@ -54,10 +54,12 @@ export default async function SolanaStocksPage() {
           <span className="font-semibold text-slate-700">{PER_CALL_PRICE.usdc} USDC per call</span> over x402.
         </p>
         <p className="text-[12px] text-slate-400">
-          Next earnings = the nearest dated deadline among this site&apos;s conditions —{" "}
-          <span className="text-emerald-600">IR-confirmed</span> when read off the company&apos;s investor page,{" "}
-          <span className="text-amber-600">estimated</span>{" "}otherwise. Token list refreshed weekly from the
-          issuers&apos; own pages (last {data.updatedAt.slice(0, 10)}).
+          Next earnings is shown only where a primary source states it (the company&apos;s own announcement);
+          otherwise it is blank, never estimated. Token list refreshed weekly from the issuers&apos; own pages
+          (last {data.updatedAt.slice(0, 10)}).{" "}
+          <Link href="/docs" className="underline">
+            Field reference
+          </Link>
         </p>
       </header>
 

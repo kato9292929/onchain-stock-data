@@ -7,7 +7,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildExport, loadFiles, mondayOf } from "../export-for-chat.mjs";
 import { planImport, EMPTY_ERAS } from "../import-from-chat.mjs";
-import { CHAT_MODEL, collectRows, judgeableFrom, parseRowId } from "../lib/chat-ops.mjs";
+import {
+  CHAT_MODEL,
+  collectRows,
+  hasNumericThreshold,
+  judgeableFrom,
+  parseRowId,
+  vagueWithoutNumber,
+} from "../lib/chat-ops.mjs";
 import { selectionEra, splitByEra } from "../../lib/operation-era.ts";
 
 const NOW = "2026-10-28T03:00:00.000Z";
@@ -198,12 +205,16 @@ const selection = (extra = {}) => ({
   rationale: "AI 装置の決算週",
   used_external_data: false,
   holdings: [
-    { ticker: "8035", company_name: "東京エレクトロン", weight: 40, thesis: "装置売上+20%", target_date: "2026-10-30", target_date_source: "verified", target_date_source_url: "https://www.tel.co.jp/ir/" },
-    { ticker: "6857", company_name: "アドバンテスト", weight: 40, thesis: "HBM テスタ受注増", target_date: "2026-10-28", target_date_source: "model" },
-    { ticker: "6967", company_name: "新光電気工業", weight: 20, thesis: "基板", target_date: "2026-10-31", target_date_source: "model" },
+    { ticker: "8035", company_name: "東京エレクトロン", weight: 40, thesis: "装置売上+20%", success_conditions: [SC("装置売上 前年同期比", ">=", 20, "%")], target_date: "2026-10-30", target_date_source: "verified", target_date_source_url: "https://www.tel.co.jp/ir/" },
+    { ticker: "6857", company_name: "アドバンテスト", weight: 40, thesis: "HBM テスタ受注増", success_conditions: [SC("テスタ受注高 前年同期比", ">", 0, "%")], target_date: "2026-10-28", target_date_source: "model" },
+    { ticker: "6967", company_name: "新光電気工業", weight: 20, thesis: "基板", success_conditions: [SC("基板売上", ">=", 500, "億円")], target_date: "2026-10-31", target_date_source: "model" },
   ],
   ...extra,
 });
+
+function SC(metric, operator, value, unit, source_doc = "決算短信") {
+  return { metric, operator, threshold: { value, unit }, source_doc };
+}
 
 test("a JP selection passes the listing screen before it is recorded", () => {
   const plan = planImport(selection(), fixture(), ctx());
@@ -237,11 +248,57 @@ test("a selection is refused whole when it breaks a rule", () => {
   const us = {
     ...selection({ market: "US" }),
     holdings: [
-      { ticker: "MSFT", company_name: "Microsoft", weight: 60, thesis: "x", target_date: "2026-10-28", target_date_source: "model" },
-      { ticker: "JPM", company_name: "JPMorgan", weight: 40, thesis: "y", target_date: "2027-01-14", target_date_source: "model" },
+      { ticker: "MSFT", company_name: "Microsoft", weight: 60, thesis: "x", success_conditions: [SC("Azure growth", ">=", 35, "%", "10-Q")], target_date: "2026-10-28", target_date_source: "model" },
+      { ticker: "JPM", company_name: "JPMorgan", weight: 40, thesis: "y", success_conditions: [SC("NII guidance", ">=", 95, "USD bn", "8-K Ex.99.1")], target_date: "2027-01-14", target_date_source: "model" },
     ],
   };
   assert.match(planImport(us, f, ctx()).errors.join(), /exceeds the US cap of 15/);
+});
+
+test("each selected condition needs metric / operator / threshold / source_doc", () => {
+  const f = fixture();
+  const missing = selection();
+  delete missing.holdings[1].success_conditions;
+  assert.match(planImport(missing, f, ctx()).errors.join(), /holdings\[1\]: success_conditions .* is required/);
+
+  const bad = selection();
+  bad.holdings[0].success_conditions = [{ metric: "", operator: "=", threshold: { value: "20", unit: "" }, source_doc: "" }];
+  const errs = planImport(bad, f, ctx()).errors.join("\n");
+  for (const re of [/metric is required/, /operator must be one of/, /threshold.value must be a number/, /threshold.unit is required/, /source_doc is required/]) {
+    assert.match(errs, re);
+  }
+
+  const vagueMetric = selection();
+  vagueMetric.holdings[0].success_conditions[0].metric = "受注の上振れ";
+  assert.match(planImport(vagueMetric, f, ctx()).errors.join(), /metric uses vague wording \(上振れ\)/);
+});
+
+test("vague wording without a numeric threshold is refused; with one it passes", () => {
+  const f = fixture();
+  const vague = selection();
+  vague.holdings[0].thesis = "10/30の決算で受注が堅調なら当たり";
+  assert.match(planImport(vague, f, ctx()).errors.join(), /thesis uses vague wording \(堅調\) with no numeric threshold/);
+
+  const numeric = selection();
+  numeric.holdings[0].thesis = "10/30の決算で受注が堅調、前年同期比 +20% 以上なら当たり";
+  assert.equal(planImport(numeric, f, ctx()).errors, undefined);
+
+  assert.equal(hasNumericThreshold("10/30 の Q2 決算で改善"), false, "dates and quarters are not thresholds");
+  assert.equal(hasNumericThreshold("営業利益率 15%"), true);
+  assert.equal(hasNumericThreshold("売上 $40B"), true);
+  assert.deepEqual(vagueWithoutNumber("ガイダンスが上振れ"), ["上振れ"]);
+  assert.deepEqual(vagueWithoutNumber("売上高 1,000億円以上で上振れ"), []);
+});
+
+test("the structured conditions are stored on the holding and the pending row", () => {
+  const plan = planImport(selection(), fixture(), ctx());
+  const h = plan.writes.jpHistory.current.holdings[0];
+  assert.deepEqual(h.success_conditions, [
+    { metric: "装置売上 前年同期比", operator: ">=", threshold: { value: 20, unit: "%" }, source_doc: "決算短信" },
+  ]);
+  const row = plan.writes.jpEvals.evaluations.find((e) => e.week_of === "2026-10-26" && e.ticker === "8035");
+  assert.deepEqual(row.success_conditions, h.success_conditions);
+  assert.equal(row.status, "pending");
 });
 
 test("the switch-over week is recorded once and never moved", () => {

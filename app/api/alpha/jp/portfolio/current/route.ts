@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getJpPortfolioHistory } from "@/lib/data";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
+import { getEarningsDates, nextEarningsOf } from "@/lib/company-record";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +12,8 @@ export const dynamic = "force-dynamic";
  * portfolio HTML page; internal callers bypass with `X-Internal-Key`.
  */
 const handler = async (): Promise<NextResponse> => {
-  const data = await getJpPortfolioHistory();
+  const [data, earnings] = await Promise.all([getJpPortfolioHistory(), getEarningsDates()]);
+  const today = new Date().toISOString().slice(0, 10);
   const current = data.current
     ? {
         ...data.current,
@@ -21,6 +23,7 @@ const handler = async (): Promise<NextResponse> => {
           weight: h.weight,
           thesis: h.thesis,
           target_date: h.target_date,
+          next_earnings: nextEarningsOf(h.ticker, { earnings }, today),
         })),
       }
     : null;
@@ -28,7 +31,6 @@ const handler = async (): Promise<NextResponse> => {
   return NextResponse.json({
     source: data.source,
     updated_at: data.updated_at,
-    note: data.note,
     current,
   });
 };

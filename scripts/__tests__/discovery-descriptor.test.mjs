@@ -128,11 +128,13 @@ test("resource URLs use the canonical public origin", () => {
   assert.equal(body.base_url, PUBLIC_BASE_URL);
 });
 
-test("the Solana-stocks entries say what a verified date means before anyone pays", () => {
+test("descriptors point at /docs and never advertise a model-estimated date", () => {
   const paid = body.endpoints.find((e) => e.path === "/api/solana-stocks/:ticker?view=full");
   const free = body.free_endpoints.find((e) => e.path === "/api/solana-stocks/:ticker");
-  for (const e of [paid, free]) {
-    assert.match(e.description, /'verified' = the date was read off the company's own IR/);
-    assert.match(e.description, /'model' = the date the selection model wrote/);
+  const catalyst = body.endpoints.find((e) => e.path === "/api/catalyst/:ticker");
+  for (const e of [paid, free, catalyst]) {
+    assert.match(e.description, /\/docs/);
+    assert.doesNotMatch(e.description, /'model'/);
+    assert.match(e.description, /primary source/);
   }
 });

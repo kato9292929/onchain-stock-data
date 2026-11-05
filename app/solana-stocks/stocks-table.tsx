@@ -9,18 +9,13 @@ export interface StockRow {
   ticker: string;
   name: string;
   tokens: Array<{ issuer: string; symbol: string; mint: string }>;
-  next: { date: string; source: "verified" | "model" | "article" } | null;
+  /** Only a date a primary source confirmed; otherwise null. */
+  next: { date: string } | null;
   conditions: number;
   verdict: { status: string; judged_at: string | null } | null;
 }
 
 const PAGE = 100;
-
-const SOURCE_LABEL: Record<string, string> = {
-  verified: "IR-confirmed",
-  model: "estimated",
-  article: "article date",
-};
 
 export const STATUS_STYLE: Record<string, string> = {
   hit: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -154,9 +149,7 @@ export function StocksTable({ rows, today }: { rows: StockRow[]; today: string }
                   {r.next ? (
                     <>
                       <div className="text-slate-800">{r.next.date}</div>
-                      <div className={`text-[11px] ${r.next.source === "verified" ? "text-emerald-600" : "text-amber-600"}`}>
-                        {SOURCE_LABEL[r.next.source]}
-                      </div>
+                      <div className="text-[11px] text-emerald-600">confirmed</div>
                     </>
                   ) : (
                     <span className="text-slate-300">—</span>

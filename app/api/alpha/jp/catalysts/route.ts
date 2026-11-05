@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
+import { externalRow } from "@/lib/company-record";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,22 +27,28 @@ const handler = async (): Promise<NextResponse> => {
   const list = await readExternalCatalysts();
   const jp = list
     .filter((c) => c.market === "JP")
-    .map((c) => ({
-      catalyst_id: c.catalyst_id,
-      ticker: c.ticker,
-      catalyst_description: c.catalyst_description,
-      target_date: c.target_date,
-      status: c.status,
-      evidence_urls: c.evidence_urls ?? [],
-      evaluated_at: c.judgement_date ?? null,
-      agent_id: c.agent_id ?? null,
-      conviction: c.conviction ?? null,
-      source: c.source ?? null,
-    }));
+    .map((c) => {
+      const r = externalRow(c);
+      return {
+        id: r.id,
+        ticker: r.ticker,
+        company: r.company,
+        question: r.question,
+        fail_direction: r.fail_direction,
+        target_date: r.target_date,
+        result: r.result,
+        judged_at: r.judged_at,
+        evidence_url: r.evidence_url,
+        evidence_urls: r.evidence_urls,
+        reasoning: r.reasoning,
+        agent_id: c.agent_id ?? null,
+        conviction: c.conviction ?? null,
+        source: c.source ?? null,
+      };
+    });
 
   return NextResponse.json({
     source: "osd_jp_coverage",
-    note: "Curated Japan-equity (AI data-center chain) dated catalysts. Judged after target_date + grace by the daily evaluator. Not investment advice.",
     count: jp.length,
     catalysts: jp,
   });
