@@ -24,13 +24,14 @@
  *   PRICE_UNITS            per-call USDC base units (default 1000 = 0.001 USDC) — must match the server
  *   WEEKLY_SPEND_CAP_UNITS hard cap in base units (default 500000 = 0.5 USDC)
  *   MAX_TICKERS            cap the roster size (default 0 = all)
- *   ONLY_TICKER            pay a single ticker (the devnet smoke)
+ *   ONLY_TICKER            pay only these tickers, comma-separated (the devnet smoke, a spot check)
  *   DELAY_MS               pause between calls (default 400) to be gentle on RPC/facilitator
  *   DRY_RUN                "1"/"true" → probe 402 only, never sign or spend
  *   PROOF_DIR              where to write the run log (default ./proof)
  */
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { x402Client, x402HTTPClient } from "@x402/core/client";
 import { registerExactSvmScheme } from "@x402/svm/exact/client";
 import {
@@ -49,7 +50,10 @@ const SPEND_NAMESPACE = (process.env.SPEND_NAMESPACE ?? "catalyst").replace(/[^a
 const PRICE_UNITS = Number(process.env.PRICE_UNITS ?? 1000);
 const CAP_UNITS = Number(process.env.WEEKLY_SPEND_CAP_UNITS ?? 500000);
 const MAX_TICKERS = Number(process.env.MAX_TICKERS ?? 0);
-const ONLY_TICKER = (process.env.ONLY_TICKER ?? "").trim().toUpperCase();
+const ONLY_TICKERS = (process.env.ONLY_TICKER ?? "")
+  .split(",")
+  .map((t) => t.trim().toUpperCase())
+  .filter(Boolean);
 const DELAY_MS = Number(process.env.DELAY_MS ?? 400);
 const DRY_RUN = /^(1|true)$/i.test(process.env.DRY_RUN ?? "");
 const PROOF_DIR = process.env.PROOF_DIR ?? path.join(process.cwd(), "proof");
@@ -90,8 +94,51 @@ function solscan(sig, network) {
     : `https://solscan.io/tx/${sig}?cluster=devnet`;
 }
 
+/**
+ * What a paid body contains, as counts only — the body itself is paid content
+ * and is never written to the log or the proof file. Mirrors the data-quality
+ * rules: no model dates, no opaque ids, no explanatory text, every row complete,
+ * every financial value with its document URL.
+ */
+export function bodyChecks(text) {
+  let j;
+  try {
+    j = JSON.parse(text);
+  } catch {
+    return { json: false, bytes: text.length };
+  }
+  const s = JSON.stringify(j);
+  let rows = 0, incomplete = 0, finValues = 0, finWithUrl = 0;
+  const FIN = new Set(["revenue", "operating_income", "ordinary_income", "net_income", "eps_diluted"]);
+  const walk = (o, key) => {
+    if (Array.isArray(o)) return o.forEach((x) => walk(x, key));
+    if (!o || typeof o !== "object") return;
+    if ("result" in o && "id" in o) {
+      rows += 1;
+      if (!["question", "ticker", "target_date", "evidence_url"].every((k) => k in o)) incomplete += 1;
+    }
+    if (FIN.has(key) && "value" in o) {
+      finValues += 1;
+      if (/^https:\/\//.test(o.source_url ?? "")) finWithUrl += 1;
+    }
+    for (const [k, v] of Object.entries(o)) if (k !== "verdict_history") walk(v, k);
+  };
+  walk(j);
+  return {
+    json: true,
+    rows,
+    incomplete_rows: incomplete,
+    model_dates: (s.match(/"model"/g) ?? []).length,
+    opaque_ids: (s.match(/"(us|jp|ext|irf):[^"]*"/g) ?? []).length,
+    note_keys: (s.match(/"(note|[a-z_]*meaning|contains)":/g) ?? []).length,
+    financial_values: finValues,
+    financial_values_with_url: finWithUrl,
+    next_earnings: j.next_earnings?.status ?? null,
+  };
+}
+
 async function main() {
-  const roster0 = ONLY_TICKER ? [ONLY_TICKER] : loadRoster();
+  const roster0 = ONLY_TICKERS.length ? ONLY_TICKERS : loadRoster();
   const roster = MAX_TICKERS > 0 ? roster0.slice(0, MAX_TICKERS) : roster0;
 
   let http = null;
@@ -144,8 +191,10 @@ async function main() {
         ok++;
         const tx = settle.transaction ?? settle.txHash ?? "";
         const link = tx ? solscan(tx, settle.network) : "";
-        results.push({ ticker, ok: true, tx, solscan: link, network: settle.network });
+        const checks = bodyChecks(await r2.text().catch(() => ""));
+        results.push({ ticker, ok: true, tx, solscan: link, network: settle.network, checks });
         console.log(`  ✓ ${ticker} — ${tx} ${link}`);
+        console.log(`    body: ${JSON.stringify(checks)}`);
       } else {
         failed++;
         results.push({ ticker, ok: false, reason: `status ${r2.status}, settle ${JSON.stringify(settle)}` });
@@ -187,7 +236,10 @@ async function main() {
   if (!DRY_RUN && ok === 0) process.exit(1);
 }
 
-main().catch((err) => {
-  console.error("[buyer] fatal:", err?.stack ?? err);
-  process.exit(1);
-});
+const invokedDirectly = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) {
+  main().catch((err) => {
+    console.error("[buyer] fatal:", err?.stack ?? err);
+    process.exit(1);
+  });
+}

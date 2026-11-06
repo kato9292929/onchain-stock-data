@@ -23,7 +23,7 @@ on:
         options: [dry-run, devnet-smoke, mainnet-weekly]
         default: dry-run
       only_ticker:
-        description: "Single ticker (devnet-smoke). Leave blank for the full roster."
+        description: "Only these tickers, comma-separated (devnet-smoke, spot check). Leave blank for the full roster."
         type: string
         default: ""
       max_tickers:
