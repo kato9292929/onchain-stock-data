@@ -68,20 +68,17 @@ export default async function Home() {
                   <div className="truncate text-[12px] text-slate-500">{r.name}</div>
                   <div className="mt-3 flex items-center justify-between text-[12px]">
                     <span className="tabular-nums text-slate-600">
-                      {r.next_earnings ? (
+                      {r.next_earnings.status === "confirmed" && r.next_earnings.date ? (
                         <>
-                          Next {r.next_earnings.date}{" "}
-                          <span className={r.next_earnings.target_date_source === "verified" ? "text-emerald-600" : "text-amber-600"}>
-                            {{ verified: "IR-confirmed", model: "estimated", article: "article date" }[r.next_earnings.target_date_source]}
-                          </span>
+                          Next {r.next_earnings.date} <span className="text-emerald-600">confirmed</span>
                         </>
                       ) : (
-                        <span className="text-slate-400">No upcoming deadline</span>
+                        <span className="text-slate-400">Next earnings not announced</span>
                       )}
                     </span>
                     <span className="text-slate-500">
                       {r.latest_verdict ? (
-                        <span className="font-semibold uppercase text-[#0a1b33]">{r.latest_verdict.status}</span>
+                        <span className="font-semibold uppercase text-[#0a1b33]">{r.latest_verdict.result}</span>
                       ) : (
                         <span className="text-slate-400">pending</span>
                       )}

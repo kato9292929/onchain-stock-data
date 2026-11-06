@@ -81,7 +81,15 @@ npm run import:chat -- a.json  → data/ を更新して 1 コミット         
       "ticker": "8035",
       "company_name": "東京エレクトロン",
       "weight": 16,
-      "thesis": "10/30発表のQ2決算で…なら当たり。",
+      "thesis": "11/6発表のQ2決算で、半導体製造装置の受注高が前年同期比 +15% 以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "半導体製造装置 受注高 前年同期比",
+          "operator": ">=",
+          "threshold": { "value": 15, "unit": "%" },
+          "source_doc": "2027年3月期 第2四半期 決算短信・決算説明資料"
+        }
+      ],
       "target_date": "2026-11-06",
       "target_date_source": "verified",
       "target_date_source_url": "https://www.tel.co.jp/ir/"
@@ -99,13 +107,27 @@ npm run import:chat -- a.json  → data/ を更新して 1 コミット         
 | used_external_data | ○ | true / false。チャットが外部データを見たかどうか |
 | holdings | ○ | 1〜10 行。ticker 重複不可 |
 | holdings[].weight | ○ | 正の数。合計 100（±0.5）。US は 1 銘柄 15 まで |
-| holdings[].thesis | ○ | 判定条件そのもの。期日と数値の基準を含める |
+| holdings[].thesis | ○ | 判定条件そのもの（文章）。期日と数値の基準を含める。曖昧語（下記）を数値の閾値なしで使わない |
+| holdings[].success_conditions | ○ | 1 行以上。thesis を判定できる形に分けたもの（下記）。複数あるときはすべて満たして当たり |
+| success_conditions[].metric | ○ | 何を測るか（例: 「データセンター売上 前年同期比」「営業利益率」）。曖昧語は不可 |
+| success_conditions[].operator | ○ | `>` / `>=` / `<` / `<=` |
+| success_conditions[].threshold | ○ | `{ "value": 数値, "unit": "単位" }`。単位は `%`・`億円`・`USD`・`倍`・`pt` など |
+| success_conditions[].source_doc | ○ | 何の文書で判定するか（決算短信、10-Q、決算説明資料、8-K の Exhibit 99.1 など） |
 | holdings[].target_date | ○ | YYYY-MM-DD、week_of 以降 |
 | holdings[].target_date_source | ○ | `model`（推定）/ `verified`（会社の公表日） |
 | holdings[].target_date_source_url | verified のとき | 公表日を確認した IR ページ |
 
+曖昧語: `好材料` `上振れ` `下振れ` `堅調` `改善` `好調` `順調` `底堅` `底打ち` `回復基調` `増益基調` `拡大基調` `力強い` `良好`
+（scripts/lib/chat-ops.mjs の `VAGUE_WORDS`）。thesis がこれらを含み、数値の閾値（数値＋単位。
+例 `+15%`・`1,000億円`・`$40B`・`二桁`）を含まなければエラー。metric に曖昧語があればそれだけでエラー。
+
 取り込みの規則:
 
+- **条件は判定できる形で受け取る。** success_conditions が欠けている・operator が4種以外・threshold が数値でない・
+  単位や source_doc が空・曖昧語だけで閾値がない、のどれかがあれば、その選定は丸ごと不採用。
+  受け取った success_conditions は保有行と評価行の両方に保存する。的中率の集計方法は変えない（判定は従来どおり hit / partial / miss / na）。
+- **既存の条件は書き換えない。** この基準に合わない記録済みの条件は `npm run audit:conditions` が
+  ops/condition-audit.md に一覧する（区分 A: 曖昧語あり・閾値なし / B: 閾値なし / C: 構造なし）。
 - **JP は上場廃止スクリーンを通す。** data/jp-listed.json（JPX 上場銘柄一覧）にない銘柄は除外し、
   比率を 100 に再正規化し、`excluded_holdings` に記録する。上場一覧がなければ取り込まない。
 - 前週との差分（changes）は既存の選定と同じ関数で計算する。

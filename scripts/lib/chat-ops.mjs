@@ -170,3 +170,86 @@ export function collectRows(files) {
   }
   return rows;
 }
+
+// ── condition wording (import:chat selection, audit) ──────────────────────
+
+/**
+ * Words that say a result was good without saying how good. A condition that
+ * leans on one of these and carries no number cannot be judged the same way
+ * twice, so the importer refuses it.
+ */
+export const VAGUE_WORDS = [
+  "好材料",
+  "上振れ",
+  "下振れ",
+  "堅調",
+  "改善",
+  "好調",
+  "順調",
+  "底堅",
+  "底打ち",
+  "回復基調",
+  "増益基調",
+  "拡大基調",
+  "力強い",
+  "良好",
+];
+
+export const OPERATORS = new Set([">", ">=", "<", "<="]);
+
+/**
+ * True when the text states a numeric threshold: a number with a unit (%, 億円,
+ * ドル, 倍, bp …) or a currency-prefixed amount. Dates, quarters and fiscal
+ * years do not count.
+ */
+export function hasNumericThreshold(text) {
+  const t = String(text ?? "")
+    .replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+    .replace(/\d{4}[年/-]\d{1,2}([月/-]\d{1,2}日?)?/g, " ")
+    .replace(/\d{1,2}[/月]\d{1,2}日?/g, " ")
+    .replace(/(FY|CY)\s?\d{2,4}|\d{4}年\d{1,2}月期|\d+月期|第\s?\d\s?四半期|Q\d|\dQ|\d{2,4}年/g, " ");
+  return (
+    /\d[\d,.]*\s*(%|％|ポイント|pt|bp|億|兆|万|百万|円|ドル|倍|件|台|社|人|kW|MW|GW|million|billion|[BMK]\b)/i.test(t) ||
+    /[$¥€]\s?\d/.test(t) ||
+    /[一二三]桁/.test(t)
+  );
+}
+
+/** The vague words a text uses, when it has no numeric threshold to back them. */
+export function vagueWithoutNumber(text) {
+  const s = String(text ?? "");
+  const hits = VAGUE_WORDS.filter((w) => s.includes(w));
+  return hits.length > 0 && !hasNumericThreshold(s) ? hits : [];
+}
+
+/**
+ * Validate one holding's structured success conditions. Each needs
+ *   metric     what is measured (no vague word)
+ *   operator   > >= < <=
+ *   threshold  { value: number, unit: string }
+ *   source_doc the document it will be judged against (決算短信, 10-Q, …)
+ * Returns error strings, prefixed with `at`.
+ */
+export function validateSuccessConditions(list, at) {
+  const errors = [];
+  if (!Array.isArray(list) || list.length === 0) {
+    return [`${at}: success_conditions (metric / operator / threshold / source_doc) is required`];
+  }
+  for (const [j, c] of list.entries()) {
+    const p = `${at}.success_conditions[${j}]`;
+    const metric = typeof c?.metric === "string" ? c.metric.trim() : "";
+    if (!metric) errors.push(`${p}: metric is required`);
+    const vague = VAGUE_WORDS.filter((w) => metric.includes(w));
+    if (vague.length) errors.push(`${p}: metric uses vague wording (${vague.join("・")}); name the quantity`);
+    if (!OPERATORS.has(c?.operator)) errors.push(`${p}: operator must be one of > >= < <=`);
+    const v = c?.threshold?.value;
+    if (typeof v !== "number" || !Number.isFinite(v)) errors.push(`${p}: threshold.value must be a number`);
+    if (!(typeof c?.threshold?.unit === "string" && c.threshold.unit.trim())) {
+      errors.push(`${p}: threshold.unit is required (%, 億円, USD, 倍 …)`);
+    }
+    if (!(typeof c?.source_doc === "string" && c.source_doc.trim())) {
+      errors.push(`${p}: source_doc is required (the document it is judged against)`);
+    }
+  }
+  return errors;
+}

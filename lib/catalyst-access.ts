@@ -20,8 +20,9 @@ interface HasTicker {
 /**
  * Decide how a ticker is served.
  *
- * - `paid` — a researched IR-Fair company (stage "active"), or a Physical-AI
- *   series catalyst. Both carry a dated condition worth charging for.
+ * - `paid` — a researched IR-Fair company (stage "active"), a Physical-AI
+ *   series catalyst, or a company picked in the US / JP Weekly Selection.
+ *   Each carries a dated condition worth charging for.
  * - `free-draft` — covered by the IR-Fair universe but not researched yet.
  *   Its row is empty apart from name/sector/market, which the free
  *   /api/catalyst index already publishes, so there is nothing to sell.
@@ -34,12 +35,16 @@ export function classifyCatalystAccess(
   ticker: string,
   irFairCatalysts: readonly HasTickerAndStage[],
   physicalAiCatalysts: readonly HasTicker[],
+  weeklyConditions: readonly HasTicker[] = [],
 ): CatalystAccess {
   const wanted = ticker.toUpperCase();
   const row = irFairCatalysts.find((c) => c.ticker.toUpperCase() === wanted);
 
   if (row?.stage === "active") return "paid";
   if (physicalAiCatalysts.some((c) => c.ticker.toUpperCase() === wanted)) {
+    return "paid";
+  }
+  if (weeklyConditions.some((c) => String(c.ticker).toUpperCase() === wanted)) {
     return "paid";
   }
   if (row) return "free-draft";
