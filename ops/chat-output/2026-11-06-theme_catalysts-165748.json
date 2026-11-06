@@ -1,0 +1,54 @@
+{
+  "type": "theme_catalysts",
+  "author": "article",
+  "items": [
+    {
+      "theme": "physical-ai-us",
+      "market": "US",
+      "ticker": "BEDROCK",
+      "company_name": "Bedrock Robotics",
+      "listed": false,
+      "question": "2026年12月31日までに、完全無人の掘削機の初配備が顧客名または現場名を伴って公表される",
+      "fail_direction": "有人監視付きの実証に留まり、無人配備の公表がないまま年を越す",
+      "success_conditions": [
+        {
+          "metric": "fully driverless excavator deployment announced with a customer or site name",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Bedrock Robotics announcement / customer press release"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/naee21cd4b6e4",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-us",
+      "market": "US",
+      "ticker": "BEDROCK",
+      "company_name": "Bedrock Robotics",
+      "listed": false,
+      "question": "シリーズC以降の調達が2026年内に公表され、評価額が17.5億ドルを上回る",
+      "success_conditions": [
+        {
+          "metric": "post-money valuation of a Series C or later round announced in 2026",
+          "operator": ">",
+          "threshold": {
+            "value": 1.75,
+            "unit": "USD bn"
+          },
+          "source_doc": "Bedrock Robotics announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/naee21cd4b6e4",
+      "role": "sub",
+      "parent_index": 0
+    }
+  ]
+}

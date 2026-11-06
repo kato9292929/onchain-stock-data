@@ -7,7 +7,9 @@ import { usePathname } from "next/navigation";
  *  chrome: white logo disc + white pill nav (Home / Portfolio / Catalysts) with
  *  the three-dot active indicator + dark "API" pill. No gold, no dark bar. */
 const NAV = [
-  { href: "/", label: "Home" },
+  // The logo disc is Home too, so the word is dropped on phones to make room.
+  { href: "/", label: "Home", wideOnly: true },
+  { href: "/themes", label: "Themes" },
   { href: "/solana-stocks", label: "Stocks" },
   { href: "/catalysts", label: "Catalysts" },
   { href: "/portfolio", label: "Selection" },
@@ -50,7 +52,7 @@ export function SiteNav() {
 
         {/* White pill nav */}
         <nav
-          className="flex h-12 min-w-0 max-w-[430px] flex-1 items-center justify-between gap-1 rounded-full bg-white px-2"
+          className="flex h-12 min-w-0 max-w-[480px] flex-1 items-center justify-between gap-0.5 rounded-full bg-white px-2 sm:gap-1"
           style={{ boxShadow: SHADOW }}
           aria-label="Primary"
         >
@@ -60,9 +62,9 @@ export function SiteNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-display relative flex-1 whitespace-nowrap px-1.5 py-2 text-center text-sm tracking-[-0.02em] text-[#2e2e2e]! transition-opacity hover:no-underline ${
+                className={`font-display relative flex-1 whitespace-nowrap px-1 py-2 text-center text-[13px] tracking-[-0.02em] text-[#2e2e2e]! transition-opacity hover:no-underline sm:px-1.5 sm:text-sm ${
                   active ? "opacity-100" : "opacity-50 hover:opacity-75"
-                }`}
+                } ${"wideOnly" in item && item.wideOnly ? "hidden sm:block" : ""}`}
               >
                 {item.label}
                 {active && (

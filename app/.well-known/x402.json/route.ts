@@ -8,6 +8,7 @@ import {
   PAY_TO_SOLANA,
   PER_CALL_PRICE,
   PUBLIC_BASE_URL,
+  THEME_CALL_PRICE,
   resourceUrl,
   SOLANA_NETWORK,
 } from "@/lib/x402";
@@ -137,6 +138,13 @@ export function GET(): NextResponse {
         accepts: solanaOnlyLeg("/api/edinet/:code", PER_CALL_PRICE.base_units),
       },
       {
+        path: "/api/themes/:theme?view=full",
+        method: "GET",
+        description:
+          "One theme in one call (neocloud US/JP, physical AI US/JP, weekly selections, IR Fair sectors): every member's catalysts with question, target date and structured conditions with the source document, latest verdict with evidence URL, next earnings from a primary source, Solana token mints. 0.01 USDC. Field reference: /docs.",
+        accepts: solanaOnlyLeg("/api/themes/:theme?view=full", THEME_CALL_PRICE.base_units),
+      },
+      {
         path: "/api/solana-stocks/:ticker?view=full",
         method: "GET",
         description: SOLANA_STOCKS_PAID_DESCRIPTION,
@@ -169,6 +177,19 @@ export function GET(): NextResponse {
         url: resourceUrl("/api/edinet"),
       },
       {
+        path: "/api/themes",
+        method: "GET",
+        description: "Every theme: id, name, member count, members with an event in the next 14 days. Field reference: /docs.",
+        url: resourceUrl("/api/themes"),
+      },
+      {
+        path: "/api/themes/:theme",
+        method: "GET",
+        description:
+          "One theme's members: ticker, company, next earnings (primary source only), next event date, Solana token yes/no. Field reference: /docs.",
+        url: resourceUrl("/api/themes/:theme"),
+      },
+      {
         path: "/api/solana-stocks/:ticker",
         method: "GET",
         description:
@@ -184,7 +205,7 @@ export function GET(): NextResponse {
       auth: "none",
       description:
         "Read-only MCP tools over the same committed research, free and unsigned.",
-      tools: ["portfolio_get", "catalysts_list", "scoreboard_get", "signal_get", "solana_stock_get"],
+      tools: ["portfolio_get", "catalysts_list", "scoreboard_get", "signal_get", "solana_stock_get", "themes_list", "theme_get"],
     },
 
     // Base Sepolia demo. Deliberately NOT in `endpoints`: it settles in

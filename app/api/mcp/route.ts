@@ -10,6 +10,9 @@ import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { PUBLIC_BASE_URL, BASE_SEPOLIA_NETWORK } from "@/lib/x402";
 import { freeBody } from "@/lib/solana-stocks";
 import { externalRow, getEarningsDates, nextEarningsOf } from "@/lib/company-record";
+import { loadRecords } from "@/lib/solana-stocks-load";
+import { getSolanaStocks } from "@/lib/solana-stocks";
+import { findTheme, getThemes, themeFreeBody, themesIndexBody } from "@/lib/themes";
 import { loadSolanaStocks } from "@/lib/solana-stocks-load";
 
 /**
@@ -30,7 +33,7 @@ import { loadSolanaStocks } from "@/lib/solana-stocks-load";
  *
  * FREE / PAID line (kept in sync with the README):
  *   - FREE, unsigned MCP reads (all 5 tools here): portfolio_get, catalysts_list,
- *     scoreboard_get, signal_get, solana_stock_get. Every tool is read-only (annotations:
+ *     scoreboard_get, signal_get, solana_stock_get, themes_list, theme_get. Every tool is read-only (annotations:
  *     readOnlyHint:true, destructiveHint:false) and serves committed git data —
  *     no model call, so a tool invocation costs nothing to run.
  *   - PAID access lives on the HTTP per-call endpoints, NOT on this MCP surface:
@@ -187,6 +190,39 @@ const handler = createMcpHandler(
             total: a.total,
           })),
         });
+      },
+    );
+
+    // ── read-only: themes (free views) ──────────────────────────────────
+    server.registerTool(
+      "themes_list",
+      {
+        title: "List themes",
+        description:
+          "Every theme this site tracks (neocloud US/JP, physical AI US/JP, weekly selections, IR Fair sectors): id, member count, members with an event in the next 14 days. Field reference: /docs.",
+        inputSchema: z.object({}),
+        annotations: { title: "List themes", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      },
+      async () => {
+        const [themes, rec] = await Promise.all([getThemes(), loadRecords()]);
+        if (!themes) return text({ error: "themes unavailable" });
+        return text(themesIndexBody(themes, rec, new Date().toISOString().slice(0, 10)));
+      },
+    );
+    server.registerTool(
+      "theme_get",
+      {
+        title: "Get a theme",
+        description:
+          "Free view of one theme: members with ticker, company, next earnings (primary source only), next event date and whether a Solana token exists, plus the per-call URL of the full theme (0.01 USDC, x402 on Solana).",
+        inputSchema: z.object({ theme: z.string().describe("Theme id, e.g. neocloud-us") }),
+        annotations: { title: "Get a theme", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      },
+      async ({ theme }) => {
+        const [themes, rec, solana] = await Promise.all([getThemes(), loadRecords(), getSolanaStocks().catch(() => null)]);
+        const t = findTheme(themes, theme);
+        if (!t) return text({ error: "theme not found", theme });
+        return text(themeFreeBody(t, rec, solana, new Date().toISOString().slice(0, 10), PUBLIC_BASE_URL));
       },
     );
 

@@ -8,6 +8,7 @@ import {
   type Records,
 } from "@/lib/company-record";
 import { classifyCatalystAccess, type CatalystAccess } from "@/lib/catalyst-access";
+import { themesFor } from "@/lib/themes";
 
 /**
  * Response bodies for /api/catalyst/{ticker}, kept out of the route so they can
@@ -39,6 +40,7 @@ function identity(ticker: string, rec: Records) {
       name: ir?.company_name ?? rows.find((r) => r.company)?.company ?? fin?.company ?? null,
       market: ir?.market ?? (JP_CODE.test(want) ? "JP" : "US"),
       ...(ir ? { tse_market: ir.tse_market ?? null, sector: ir.sector, stage: ir.stage } : {}),
+      themes: themesFor(want, rec.themes, rec),
     },
   };
 }

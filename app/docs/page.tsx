@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PER_CALL_PRICE, PUBLIC_BASE_URL } from "@/lib/x402";
+import { PER_CALL_PRICE, PUBLIC_BASE_URL, THEME_CALL_PRICE } from "@/lib/x402";
 
 export const metadata = { title: "API fields — Onchain Stock Data" };
 
@@ -56,13 +56,29 @@ export default function DocsPage() {
             ["GET /api/solana-stocks/{ticker}", "Free. Tokenized stock on Solana: tokens and mints, next_earnings, condition_count, result_counts, latest_verdict."],
             ["GET /api/solana-stocks/{ticker}?view=full", "Paid when the ticker has a condition. Adds conditions (full rows), financials, signals."],
             ["GET /api/catalyst/{ticker}?view=free", "Free. Any company with a condition (US / JP Weekly, IR Fair, Physical AI): identity, next_earnings, counts, latest_verdict."],
-            ["GET /api/catalyst/{ticker}", "Paid when the company has a condition; a covered company without one gets the free view at no cost. Adds conditions, financials, signals."],
+            ["GET /api/catalyst/{ticker}", "Paid when the company has a condition; a covered company without one gets the free view at no cost. Adds conditions, financials, signals. Both views carry themes (the theme ids the company belongs to)."],
+            ["GET /api/themes", "Free. Every theme: id, title, member_count, events_next_14_days, last_catalyst_added."],
+            ["GET /api/themes/{theme}", "Free. Members: ticker, company, listed, next_earnings, next_event_date, condition_count, solana_token."],
+            [`GET /api/themes/{theme}?view=full`, `Paid, ${THEME_CALL_PRICE.usdc} USDC. Per member: current_catalyst, latest_verdict, conditions (full rows), solana_tokens (issuer, symbol, mint).`],
           ]}
         />
         <p className="text-[12px] text-slate-500">
           Example: <code>{`${PUBLIC_BASE_URL}/api/catalyst/6920?view=free`}</code>. An unknown ticker is 404 before any
           payment is asked for.
         </p>
+      </Section>
+
+      <Section id="themes" title="Themes">
+        <Fields
+          rows={[
+            ["id", "neocloud-us, neocloud-jp, physical-ai-us, physical-ai-jp, weekly-us, weekly-jp, ir-fair-{sector}. Ordered by how much the articles behind them were read."],
+            ["members", "Neocloud and physical AI: the companies the articles covered (unlisted ones carry a slug ticker and listed: false). Weekly: the current week's picks. IR Fair: researched companies in the sector. A company can be in several themes."],
+            ["next_event_date", "The nearer of a confirmed earnings date and the current catalyst's target date, on or after today."],
+            ["current_catalyst", "The nearest pending catalyst on or after today (else the latest pending one), as a full row."],
+            ["success_conditions", "On rows written since 2026-11-05: metric, operator (> >= < <=), threshold {value, unit} and source_doc — the document it is judged against. A disclosure that has to happen is {value: 1, unit: \"event\"}."],
+            ["updates", "New catalysts are added weekly through the chat operation (theme_catalysts) and appear the same day; existing ones are never rewritten."],
+          ]}
+        />
       </Section>
 
       <Section id="next-earnings" title="next_earnings">
@@ -89,9 +105,9 @@ export default function DocsPage() {
         </p>
         <Fields
           rows={[
-            ["id", "Stable, readable row id: us-weekly-{week}-{ticker}, jp-weekly-{week}-{ticker}, physical-ai-{n}, ir-fair-2026-{ticker}."],
+            ["id", "Stable, readable row id: us-weekly-{week}-{ticker}, jp-weekly-{week}-{ticker}, physical-ai-{n}, neocloud-us-{n}, ir-fair-2026-{ticker}."],
             ["ticker / company", "The company the condition is about."],
-            ["population", "US Weekly Selection, JP Weekly Selection, Physical AI series, IR Fair 2026, Submitted catalyst. Hit-rates are reported per population."],
+            ["population", "US Weekly Selection, JP Weekly Selection, Physical AI series, Neocloud US, Neocloud Japan, IR Fair 2026, Submitted catalyst. Hit-rates are reported per population."],
             ["week_of", "Weekly rows: the Monday of the selection week."],
             ["question", "The condition being judged — what has to be disclosed for a hit."],
             ["fail_direction", "What a miss would look like, as written with the condition. Not judged on its own."],

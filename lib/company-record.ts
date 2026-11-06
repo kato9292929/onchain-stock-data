@@ -8,6 +8,7 @@ import type {
 } from "@/lib/data";
 import type { IrFairFile } from "@/lib/ir-fair-scoreboard";
 import type { SignalsFile } from "@/lib/signals";
+import type { ThemesFile } from "@/lib/themes";
 
 /**
  * What this site holds on one company, in the shape every API response uses:
@@ -80,6 +81,7 @@ export interface Records {
   signals: SignalsFile | null;
   earnings?: EarningsDatesFile | null;
   financials?: FinancialsFile | null;
+  themes?: ThemesFile | null;
 }
 
 // ── next earnings ─────────────────────────────────────────────────────────
@@ -125,6 +127,18 @@ export interface ConditionRow {
   result: Result;
   judged_at: string | null;
   evidence_url: string | null;
+  /**
+   * The condition in checkable form (metric / operator / threshold /
+   * source_doc), where it was written that way; null for older rows.
+   */
+  success_conditions: StructuredCondition[] | null;
+}
+
+export interface StructuredCondition {
+  metric: string;
+  operator: ">" | ">=" | "<" | "<=";
+  threshold: { value: number; unit: string };
+  source_doc: string;
 }
 
 /** Paid rows add the reasoning and the full trail. */
@@ -142,6 +156,17 @@ export const POPULATION = {
   submitted: "Submitted catalyst",
   irf: "IR Fair 2026",
 } as const;
+
+/** Population label for a series-authored catalyst. */
+const SERIES_LABEL: Record<string, string> = {
+  "physical-ai": "Physical AI series",
+  "neocloud-us": "Neocloud US",
+  "neocloud-jp": "Neocloud Japan",
+};
+const seriesLabel = (series: string) => SERIES_LABEL[series] ?? `Theme: ${series}`;
+
+const structured = (v: unknown): StructuredCondition[] | null =>
+  Array.isArray(v) && v.length > 0 ? (v as StructuredCondition[]) : null;
 
 const MARKER = "【外れ方向】";
 function split(text: string): { success: string; fail: string | null } {
@@ -209,6 +234,7 @@ export function weeklyRows(
       result: result(e.status),
       judged_at: e.evaluated_at ? String(e.evaluated_at).slice(0, 10) : null,
       evidence_url: e.evidence_url ?? null,
+      success_conditions: structured(x.success_conditions) ?? structured(h.success_conditions),
       evidence_urls: e.evidence_url ? [e.evidence_url] : [],
       reasoning: e.reasoning,
       evaluator: str(x.evaluator),
@@ -227,7 +253,7 @@ export function externalRow(c: ExternalCatalyst): ConditionRowFull {
     id: catalystPublicId(c.catalyst_id, c.series),
     ticker: String(c.ticker).toUpperCase(),
     company: c.company_name ?? null,
-    population: c.series ? POPULATION.ext : POPULATION.submitted,
+    population: c.series ? seriesLabel(c.series) : POPULATION.submitted,
     week_of: null,
     question: success,
     fail_direction: fail,
@@ -236,6 +262,7 @@ export function externalRow(c: ExternalCatalyst): ConditionRowFull {
     result: result(c.status),
     judged_at: c.judgement_date ?? null,
     evidence_url: urls[0] ?? null,
+    success_conditions: structured(x.success_conditions),
     evidence_urls: urls,
     reasoning: c.reasoning,
     evaluator: str(x.evaluator),
@@ -274,6 +301,7 @@ export function conditionsFor(ticker: string, rec: Records): ConditionRowFull[] 
       result: result(c.status),
       judged_at: str(x.judgement_date) ?? (str(x.evaluated_at)?.slice(0, 10) ?? null),
       evidence_url: urls[0] ?? null,
+      success_conditions: structured(x.success_conditions),
       evidence_urls: urls,
       reasoning: str(x.reasoning),
       evaluator: str(x.evaluator),
@@ -299,6 +327,7 @@ export function freeRow(r: ConditionRowFull): ConditionRow {
     result: r.result,
     judged_at: r.judged_at,
     evidence_url: r.evidence_url,
+    success_conditions: r.success_conditions,
   };
 }
 

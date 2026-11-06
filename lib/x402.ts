@@ -275,6 +275,18 @@ export const PER_CALL_PRICE = {
 } as const;
 
 /**
+ * A whole theme in one call (every member's catalysts, latest verdicts and
+ * Solana mints): 0.01 USDC = 10,000 base units on Solana, exact scheme.
+ */
+export const THEME_CALL_PRICE = {
+  base_units: "10000",
+  usdc: 0.01,
+  asset: "USDC",
+  network: "solana",
+  scheme: "exact",
+} as const;
+
+/**
  * Safety valve for the micro-priced Solana endpoints: assert the built route
  * config charges EXACTLY one Solana USDC accept at `units` base units. Throws
  * at module load (route import) if the network, mint, or amount ever drift —
