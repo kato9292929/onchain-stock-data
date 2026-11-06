@@ -26,7 +26,7 @@ Claude が選ぶ米株・日本株ポートフォリオと、日付つきカタ�
 | `/alpha/portfolio/history` | 過去の週次 portfolio と、週ごとの銘柄入替タイムライン | 無料 (HTML) |
 | `/alpha/portfolio/[ticker]` | 銘柄詳細 (Claude full thesis・entry/current price) | 無料 (HTML) |
 | `/catalysts` · `/catalysts/[sector]` | Physical AI シリーズの日付つきカタリストと採点記録 | 無料 (HTML) |
-| `/api/mcp` | MCP サーバ (`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`) | 無料・署名不要 |
+| `/api/mcp` | MCP サーバ (`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`・`solana_stock_get`) | 無料・署名不要 |
 | `/api/alpha/...` | 上記ページの JSON 版 + 外部 catalyst の投稿/判定 | **x402 有料 $0.01** |
 | `/api/catalyst/{ticker}` · `/api/edinet/{code}` | 個別銘柄のカタリスト詳細 / EDINET 開示メタ | **x402 有料 0.001 USDC** |
 
@@ -42,10 +42,11 @@ osd の公開済みリサーチを **MCP ツール**として開放していま�
 | `catalysts_list` | List dated catalysts | 同上 | 期日つきカタリスト（`from`/`to`/`ticker`/`theme`/`limit` で絞り込み） |
 | `scoreboard_get` | Get Physical-AI scoreboard | 同上 | Physical-AI カタリストの hit/partial/miss 集計 |
 | `signal_get` | Get directional signals (x402 paid twin) | 同上 | 方向性シグナル。**有料 x402 版の双子**あり（下記） |
+| `solana_stock_get` | Get a tokenized stock on Solana | 同上 | Solana 上の株式トークン（xStocks・Ondo）の無料ビュー。全履歴は `/api/solana-stocks/{ticker}?view=full`（x402） |
 
 **無料 / 有料の線:**
 
-- **無料（署名不要）** — MCP の 4 ツール（`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`）と無料 descriptor（`/api/catalyst`・`/api/edinet`）。
+- **無料（署名不要）** — MCP の 5 ツール（`portfolio_get`・`catalysts_list`・`scoreboard_get`・`signal_get`・`solana_stock_get`）と無料 descriptor（`/api/catalyst`・`/api/edinet`）。
 - **有料（x402・HTTP 402 ゲート、per-call）** — `/api/catalyst/{ticker}`・`/api/edinet/{code}`。**USDC・Solana mainnet・`exact`・0.001 USDC**（= 1000 base units）で per-call 決済。価格は `lib/x402.ts` の **`PER_CALL_PRICE` に一元化**（ルート/ descriptor はこの定数を参照し、値を直書きしない）。`/api/edinet/{code}` は現状**書類メタ＋会計期間のみ**供給（`financials_available:false`）。
 - **有料（testnet デモ）** — `signal_get` の双子 `/api/testnet/signal` は Base Sepolia USDC で別価格（`X402_TESTNET_SIGNAL_PRICE`、既定 `$0.05`）。MCP ツール側の読み取りは無料、支払いは HTTP エンドポイント側で発生。
 - **サブスク課金は非採用**（アカウント・会員・月額課金の基盤もコードも文言も無い。スコープ外）。

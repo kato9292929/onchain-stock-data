@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
  *  the three-dot active indicator + dark "API" pill. No gold, no dark bar. */
 const NAV = [
   { href: "/", label: "Home" },
+  { href: "/solana-stocks", label: "Stocks" },
   { href: "/catalysts", label: "Catalysts" },
   { href: "/portfolio", label: "Selection" },
 ];

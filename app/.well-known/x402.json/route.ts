@@ -188,7 +188,7 @@ export function GET(): NextResponse {
       auth: "none",
       description:
         "Read-only MCP tools over the same committed research, free and unsigned.",
-      tools: ["portfolio_get", "catalysts_list", "scoreboard_get", "signal_get"],
+      tools: ["portfolio_get", "catalysts_list", "scoreboard_get", "signal_get", "solana_stock_get"],
     },
 
     // Base Sepolia demo. Deliberately NOT in `endpoints`: it settles in

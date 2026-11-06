@@ -14,9 +14,10 @@ import { SolanaMark } from "./solana-mark";
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260505_101331_74f9b798-3f00-4e86-8a01-377aa16ffeaa.mp4";
 
-export function LandingHero() {
+/** `solanaCount` comes from data/solana-stocks.json, so the headline count follows the weekly refresh. */
+export function LandingHero({ solanaCount }: { solanaCount: number }) {
   return (
-    <div className="relative mx-auto flex h-[600px] w-full max-w-[1400px] flex-col overflow-hidden rounded-[48px] border border-slate-200/50 bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.03)]">
+    <div className="relative mx-auto flex min-h-[600px] w-full max-w-[1400px] flex-col overflow-hidden rounded-[48px] border border-slate-200/50 bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.03)]">
       {/* background video */}
       <div className="pointer-events-none absolute inset-0 z-0 select-none overflow-hidden">
         <video
@@ -35,7 +36,7 @@ export function LandingHero() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative z-20 flex flex-1 flex-col items-start px-8 pt-12 md:px-16 md:pt-16"
+        className="relative z-20 flex flex-1 flex-col items-start px-8 pb-28 pt-12 md:px-16 md:pt-16"
       >
         <h1 className="font-outfit text-[42px] font-medium leading-[1.05] tracking-tight text-[#0a1b33] md:text-[56px]">
           Claude-run
@@ -49,9 +50,26 @@ export function LandingHero() {
           with x402.
         </p>
 
+        {/* First view: the tokenized-stock list is the front door. */}
+        <Link
+          href="/solana-stocks"
+          className="font-inter mt-6 inline-flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/90 px-5 py-3 shadow-sm backdrop-blur-sm transition-all hover:border-slate-300 hover:no-underline!"
+        >
+          <SolanaMark className="h-6 w-auto" title={null} />
+          <span className="flex flex-col">
+            <span className="font-outfit text-[26px] font-semibold leading-none tabular-nums text-[#0a1b33]">
+              {solanaCount.toLocaleString()}
+            </span>
+            <span className="mt-1 text-[12px] font-semibold text-slate-500">tokenized stocks on Solana · xStocks &amp; Ondo</span>
+          </span>
+          <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#0a152d] px-4 py-2 text-[12px] font-semibold text-white">
+            Browse <ChevronRight className="h-3.5 w-3.5" />
+          </span>
+        </Link>
+
         <Link
           href="#x402"
-          className="font-inter mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/90 px-4 py-2 text-[12px] font-semibold text-[#0a1b33]! shadow-sm backdrop-blur-sm transition-all hover:border-slate-300 hover:no-underline!"
+          className="font-inter mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/90 px-4 py-2 text-[12px] font-semibold text-[#0a1b33]! shadow-sm backdrop-blur-sm transition-all hover:border-slate-300 hover:no-underline!"
         >
           <SolanaMark className="h-3 w-auto" title={null} />
           Paid in USDC on Solana
@@ -62,7 +80,7 @@ export function LandingHero() {
           <motion.span
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="font-inter mt-4 inline-flex items-center gap-1 rounded-full bg-[#0a152d] px-6 py-3 text-[13px] font-semibold text-white shadow-sm"
+            className="font-inter mt-4 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-6 py-3 text-[13px] font-semibold text-[#0a1b33] shadow-sm"
           >
             View catalysts <ChevronRight className="h-4 w-4" />
           </motion.span>
@@ -81,20 +99,26 @@ export function LandingHero() {
             ✦
           </div>
           <Link
+            href="/solana-stocks"
+            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
+          >
+            Stocks
+          </Link>
+          <Link
             href="/catalysts"
-            className="px-4 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33]"
+            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
           >
             Catalysts
           </Link>
           <Link
             href="/portfolio"
-            className="px-4 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33]"
+            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
           >
             Selection
           </Link>
           <Link
             href="/.well-known/x402.json"
-            className="flex items-center gap-1 rounded-full border border-slate-200/60 bg-white px-5 py-2 text-[12px] font-semibold text-[#0a1b33] shadow-sm transition-all hover:border-slate-300"
+            className="flex items-center gap-1 rounded-full border border-slate-200/60 bg-white px-3 py-2 text-[12px] sm:px-5 font-semibold text-[#0a1b33] shadow-sm transition-all hover:border-slate-300"
           >
             API <ChevronRight className="h-3.5 w-3.5" />
           </Link>
