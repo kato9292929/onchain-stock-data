@@ -15,7 +15,6 @@ import {
   conditionsFor,
   freeBody,
   fullBody,
-  nextEarnings,
 } from "../../lib/solana-stocks.ts";
 
 const XS_PAGE =
@@ -125,35 +124,89 @@ test("who pays: unknown 404s, no condition is free, a covered ticker is paid", (
   assert.equal(classifySolanaStockAccess("MSFT", FILE, REC), "paid");
 });
 
-test("next earnings prefers the company's own date and says where it came from", () => {
-  // The condition says 10-28 (the model's date); the IR page said 10-29.
-  const ne = nextEarnings(conditionsFor("MSFT", REC), "2026-10-28");
-  assert.deepEqual(
-    [ne.date, ne.target_date_source, ne.source_url, ne.condition_id],
-    ["2026-10-29", "verified", "https://www.microsoft.com/en-us/investor", "us:2026-10-19:MSFT"],
-  );
-  // An unchecked date is passed on as the model's, never dressed up as verified.
-  const unchecked = structuredClone(REC);
-  unchecked.usEvals.evaluations.push({ week_of: "2026-10-12", ticker: "MSFT", catalyst_target_date: "2026-10-28", success_condition: "x", status: "pending" });
-  const m = nextEarnings(conditionsFor("MSFT", unchecked), "2026-10-28");
-  assert.deepEqual([m.date, m.target_date_source, m.source_url], ["2026-10-28", "model", null]);
-  assert.equal(nextEarnings(conditionsFor("MSFT", REC), "2026-11-01"), null);
+const EARNINGS = {
+  checked_at: "2026-10-28T00:00:00Z",
+  tickers: {
+    MSFT: { market: "US", date: "2027-01-28", status: "confirmed", source_url: "https://www.microsoft.com/en-us/investor/events", checked_at: "2026-10-28" },
+  },
+};
+const FIN = {
+  updated_at: "2026-10-30T00:00:00Z",
+  companies: {
+    MSFT: {
+      market: "US",
+      company: "MICROSOFT CORP",
+      source: "SEC EDGAR XBRL companyfacts",
+      fetched_at: "2026-10-30T00:00:00Z",
+      latest_quarter: {
+        period_end: "2026-09-30",
+        revenue: { value: 92279000000, unit: "USD", prior_value: 77673000000, yoy_pct: 18.8, form: "10-Q", filed: "2026-10-28", source_url: "https://www.sec.gov/Archives/edgar/data/789019/000119312526436133/0001193125-26-436133-index.htm" },
+      },
+    },
+  },
+};
+const REC2 = { ...REC, earnings: EARNINGS, financials: FIN };
+
+test("next earnings is a primary-source date or null — never the condition's model date", () => {
+  const free = freeBody("MSFT", FILE, REC2, "2026-10-29", "https://osd");
+  assert.deepEqual(free.next_earnings, {
+    date: "2027-01-28",
+    status: "confirmed",
+    source_url: "https://www.microsoft.com/en-us/investor/events",
+    checked_at: "2026-10-28",
+  });
+  // Without a checked source: no date at all, not the 2026-10-28 written with the condition.
+  const none = freeBody("MSFT", FILE, REC, "2026-10-27", "https://osd");
+  assert.deepEqual(none.next_earnings, { date: null, status: "unverified", source_url: null, checked_at: null });
+  // A confirmed date that has passed is no longer "next".
+  assert.equal(freeBody("MSFT", FILE, REC2, "2027-02-01", "https://osd").next_earnings.date, null);
+  const text = JSON.stringify(fullBody("MSFT", FILE, REC2, "2026-10-29", "https://osd"));
+  assert.doesNotMatch(text, /target_date_source"/);
+  assert.doesNotMatch(text, /"model"/);
 });
 
-test("the free view gives mint and deadline; the full view adds history and signals", () => {
-  const free = freeBody("msft", FILE, REC, "2026-10-29", "https://osd");
+test("every row carries question, ticker, target date, result and evidence — no opaque ids", () => {
+  const rows = conditionsFor("MSFT", REC);
+  for (const r of rows) {
+    for (const k of ["id", "question", "ticker", "target_date", "result", "evidence_url"]) assert.ok(k in r, k);
+    assert.doesNotMatch(r.id, /^(us|jp|ext|irf):/);
+  }
+  const checked = rows.find((r) => r.week_of === "2026-10-19");
+  assert.equal(checked.id, "us-weekly-2026-10-19-MSFT");
+  assert.equal(checked.target_date, "2026-10-29", "the company's confirmed date");
+  assert.equal(checked.target_date_source_url, "https://www.microsoft.com/en-us/investor");
+  const ext = conditionsFor("NVDA", {
+    ...REC,
+    externals: [{ catalyst_id: "ext_5a1f088b", ticker: "NVDA", series: "physical-ai", catalyst_description: "Q【外れ方向】F", target_date: "2026-08-27", status: "hit", judgement_date: "2026-09-03", evidence_urls: ["https://n"], reasoning: "r" }],
+  })[0];
+  assert.equal(ext.id, "physical-ai-5a1f088b");
+  assert.equal(ext.question, "Q");
+  assert.equal(ext.fail_direction, "F");
+  assert.equal(ext.evidence_url, "https://n");
+});
+
+test("the free view gives mint, dates and the latest verdict as a full row; the full view adds the rest", () => {
+  const free = freeBody("msft", FILE, REC2, "2026-10-29", "https://osd");
   assert.equal(free.tokens[0].solana_mint, "XsMSFT");
   assert.equal(free.condition_count, 2);
-  assert.equal(free.latest_verdict.status, "hit");
+  assert.deepEqual(free.result_counts, { hit: 1, partial: 0, miss: 0, na: 0, pending: 1, excluded: 0 });
+  assert.equal(free.latest_verdict.result, "hit");
+  assert.equal(free.latest_verdict.question, "Azure +30%");
+  assert.equal(free.latest_verdict.ticker, "MSFT");
+  assert.equal(free.latest_verdict.evidence_url, "https://e");
+  assert.equal(free.latest_verdict.reasoning, undefined, "reasoning is paid");
   assert.equal(free.full.url, "https://osd/api/solana-stocks/MSFT?view=full");
-  assert.match(free.date_source_meaning, /'verified' = the date was read off/);
-  assert.equal(free.conditions, undefined, "no condition text in the free view");
+  assert.equal(free.date_source_meaning, undefined, "no explanatory text in responses");
+  assert.equal(free.conditions, undefined, "no condition rows in the free view");
+  assert.equal(free.financials, undefined, "financials are paid");
 
-  const full = fullBody("MSFT", FILE, REC, "2026-10-29", "https://osd");
+  const full = fullBody("MSFT", FILE, REC2, "2026-10-29", "https://osd");
+  assert.equal(full.full, undefined);
   assert.equal(full.conditions.length, 2);
-  const judged = full.conditions.find((c) => c.status === "hit");
+  const judged = full.conditions.find((c) => c.result === "hit");
   assert.deepEqual(judged.evidence_urls, ["https://e"]);
   assert.deepEqual(judged.verdict_history, [{ status: "miss" }]);
+  assert.match(full.financials.latest_quarter.revenue.source_url, /^https:\/\/www\.sec\.gov\/Archives\//);
   assert.equal(full.signals[0].verified, false);
   assert.equal(freeBody("ZZZ", FILE, REC, "2026-10-29", "https://osd").full, null);
 });

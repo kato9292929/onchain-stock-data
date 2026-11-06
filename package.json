@@ -18,7 +18,10 @@
     "test": "node --import tsx --test scripts/__tests__/*.test.mjs",
     "research:ir-fair": "node --import tsx scripts/research-ir-fair.mjs",
     "export:chat": "node scripts/export-for-chat.mjs",
-    "import:chat": "node --import tsx scripts/import-from-chat.mjs"
+    "import:chat": "node --import tsx scripts/import-from-chat.mjs",
+    "check:earnings-dates": "node scripts/check-earnings-dates.mjs",
+    "fetch:financials": "node scripts/fetch-financials.mjs",
+    "audit:conditions": "node scripts/audit-conditions.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

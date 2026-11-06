@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { conditionsFor, freeBody } from "@/lib/solana-stocks";
+import { freeBody, freeConditions } from "@/lib/solana-stocks";
 import { issuerShort, loadSolanaStocks } from "@/lib/solana-stocks-load";
 import { PER_CALL_PRICE, PUBLIC_BASE_URL } from "@/lib/x402";
 import { CopyMint } from "../../components/copy-mint";
@@ -10,17 +10,17 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * One tokenized stock. Free here: the tokens and mints, the next deadline and
- * where its date came from, the wording of every condition set on the company,
- * and how many have been judged. Per call (x402): each condition's verdict,
- * the evidence URL behind it and its correction history — the record this
- * page explains how to buy.
+ * One tokenized stock. Free here: the tokens and mints, the next earnings date
+ * where a primary source states it, the wording of every condition set on the
+ * company, and how many have been judged. Per call (x402): each condition's
+ * verdict, the evidence URL and reasoning behind it, its correction history,
+ * and the latest disclosed financials — the record this page explains how to
+ * buy.
  */
 
-const SOURCE_LABEL: Record<string, string> = {
-  verified: "IR-confirmed — read off the company's investor page",
-  model: "estimated — the date written with the condition, not checked against the company",
-  article: "article date — set by the editorial series",
+const EARNINGS_LABEL: Record<string, string> = {
+  not_announced: "Not announced by the company yet",
+  unverified: "No primary source checked",
 };
 
 const JUDGED = new Set(["hit", "partial", "miss", "na"]);
@@ -40,10 +40,10 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
   const free = freeBody(ticker, file, rec, today, PUBLIC_BASE_URL);
   if (!free) notFound();
 
-  const conditions = conditionsFor(ticker, rec);
-  const judgedN = conditions.filter((c) => JUDGED.has(c.status)).length;
+  const conditions = freeConditions(ticker, rec);
+  const judgedN = conditions.filter((c) => JUDGED.has(c.result)).length;
   const counts = ["hit", "partial", "miss", "na"]
-    .map((s) => [s, conditions.filter((c) => c.status === s).length] as const)
+    .map((s) => [s, conditions.filter((c) => c.result === s).length] as const)
     .filter(([, n]) => n > 0);
   const ne = free.next_earnings;
   const fullUrl = `${PUBLIC_BASE_URL}/api/solana-stocks/${encodeURIComponent(ticker)}?view=full`;
@@ -94,12 +94,10 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
       <section className="grid gap-4 lg:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Next earnings</h2>
-          {ne ? (
+          {ne.status === "confirmed" && ne.date ? (
             <>
               <div className="mt-2 font-outfit text-2xl font-semibold tabular-nums text-[#0a1b33]">{ne.date}</div>
-              <p className={`mt-1 text-[12px] ${ne.target_date_source === "verified" ? "text-emerald-700" : "text-amber-700"}`}>
-                {SOURCE_LABEL[ne.target_date_source]}
-              </p>
+              <p className="mt-1 text-[12px] text-emerald-700">Confirmed by the company</p>
               {ne.source_url && (
                 <a href={ne.source_url} target="_blank" rel="noreferrer" className="mt-1 block text-[11px] text-sky-700 hover:underline">
                   Source ↗
@@ -107,7 +105,7 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
               )}
             </>
           ) : (
-            <p className="mt-2 text-sm text-slate-400">No upcoming dated condition.</p>
+            <p className="mt-2 text-sm text-slate-400">{EARNINGS_LABEL[ne.status] ?? "—"}</p>
           )}
         </div>
 
@@ -130,16 +128,16 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
                   <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
                     <span>{c.population}</span>
                     {c.week_of && <span>· week of {c.week_of}</span>}
-                    <span className="tabular-nums">· deadline {c.target_date_confirmed ?? c.target_date}</span>
+                    <span className="tabular-nums">· target {c.target_date}</span>
                     <span
                       className={`rounded border px-1.5 py-0.5 font-semibold ${
-                        JUDGED.has(c.status) ? "border-slate-300 text-slate-600" : "border-slate-200 text-slate-400"
+                        JUDGED.has(c.result) ? "border-slate-300 text-slate-600" : "border-slate-200 text-slate-400"
                       }`}
                     >
-                      {JUDGED.has(c.status) ? "judged" : c.status === "excluded" ? "excluded" : "pending"}
+                      {JUDGED.has(c.result) ? "judged" : c.result === "excluded" ? "excluded" : "pending"}
                     </span>
                   </div>
-                  <p className="mt-1 text-[13px] leading-relaxed text-slate-700">{c.success_condition}</p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-slate-700">{c.question}</p>
                 </li>
               ))}
             </ul>
@@ -163,7 +161,7 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
               <li>Every condition with its verdict (hit / partial / miss / na) and the reasoning</li>
               <li>The evidence URL each verdict was judged against — the company&apos;s filing or release</li>
               <li>verdict_history: earlier verdicts and why they were corrected (never overwritten)</li>
-              <li>Date provenance: the deadline, the company&apos;s confirmed date and the IR page it came from</li>
+              <li>Latest disclosed financials (SEC EDGAR / TDnet XBRL), each value with its filing URL and YoY</li>
             </ul>
           ) : (
             <p className="text-[13px] text-slate-300">
@@ -222,8 +220,11 @@ console.log(await res.json());                            // 200 + full record`}
           <p className="text-[12px] text-slate-500">Then call the read-only tool:</p>
           <Code>{`solana_stock_get({ "ticker": "${free.ticker}" })`}</Code>
           <p className="text-[12px] text-slate-500">
-            Returns the free view — tokens and mints, next deadline with its date source, condition count, latest
-            verdict, and the per-call URL above. MCP reads are free; the full record is the HTTP endpoint.
+            Returns the free view — tokens and mints, next earnings (primary source only), condition counts, latest
+            verdict, and the per-call URL above. MCP reads are free; the full record is the HTTP endpoint. Fields:{" "}
+            <Link href="/docs" className="text-sky-700 hover:underline">
+              /docs
+            </Link>
           </p>
           <h3 className="pt-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Free JSON</h3>
           <Code>{`curl "${PUBLIC_BASE_URL}/api/solana-stocks/${encodeURIComponent(free.ticker)}"`}</Code>

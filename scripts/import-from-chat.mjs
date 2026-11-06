@@ -29,6 +29,8 @@ import {
   collectRows,
   judgeableFrom,
   parseRowId,
+  validateSuccessConditions,
+  vagueWithoutNumber,
   weeksOf,
 } from "./lib/chat-ops.mjs";
 import { excludeDelisted } from "../lib/listing-status.ts";
@@ -110,6 +112,11 @@ function importSelection(p, files, ctx) {
       errors.push(`${at}: ${ticker} weight ${h.weight} exceeds the US cap of ${MAX_HOLDING_WEIGHT}`);
     }
     if (!nonEmpty(h?.thesis)) errors.push(`${at}: thesis (the condition) is required`);
+    const vague = vagueWithoutNumber(h?.thesis);
+    if (vague.length) {
+      errors.push(`${at}: thesis uses vague wording (${vague.join("・")}) with no numeric threshold`);
+    }
+    errors.push(...validateSuccessConditions(h?.success_conditions, at));
     if (!ISO_DATE.test(h?.target_date ?? "")) errors.push(`${at}: target_date must be YYYY-MM-DD`);
     else if (h.target_date < p.week_of) errors.push(`${at}: target_date ${h.target_date} is before week_of`);
     if (h?.target_date_source !== "model" && h?.target_date_source !== "verified") {
@@ -125,6 +132,12 @@ function importSelection(p, files, ctx) {
       thesis: String(h?.thesis ?? "").trim(),
       target_date: h?.target_date,
       target_date_source: h?.target_date_source,
+      success_conditions: (Array.isArray(h?.success_conditions) ? h.success_conditions : []).map((c) => ({
+        metric: String(c?.metric ?? "").trim(),
+        operator: c?.operator,
+        threshold: { value: c?.threshold?.value, unit: String(c?.threshold?.unit ?? "").trim() },
+        source_doc: String(c?.source_doc ?? "").trim(),
+      })),
     };
     if (h?.target_date_source === "verified") {
       row.target_date_confirmed_source = h.target_date_source_url;
@@ -188,6 +201,7 @@ function importSelection(p, files, ctx) {
       ticker: h.ticker,
       catalyst_target_date: h.target_date,
       success_condition: h.thesis,
+      success_conditions: h.success_conditions,
       condition_source: "thesis",
       status: "pending",
       evaluated_at: null,

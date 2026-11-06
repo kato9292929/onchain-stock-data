@@ -9,6 +9,7 @@ import { getSignals } from "@/lib/signals";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { PUBLIC_BASE_URL, BASE_SEPOLIA_NETWORK } from "@/lib/x402";
 import { freeBody } from "@/lib/solana-stocks";
+import { externalRow, getEarningsDates, nextEarningsOf } from "@/lib/company-record";
 import { loadSolanaStocks } from "@/lib/solana-stocks-load";
 
 /**
@@ -74,6 +75,8 @@ const handler = createMcpHandler(
           market === "jp"
             ? await getJpPortfolioHistory().catch(() => null)
             : await getPortfolioHistory().catch(() => null);
+        const earnings = await getEarningsDates();
+        const today = new Date().toISOString().slice(0, 10);
         const cur = file?.current ?? null;
         if (!cur) return text({ market, error: "no current portfolio" });
         return text({
@@ -88,7 +91,8 @@ const handler = createMcpHandler(
             company_name: h.company_name,
             weight: h.weight,
             thesis: h.thesis,
-            target_date: h.target_date,
+            target_date: h.target_date ?? null,
+            next_earnings: nextEarningsOf(h.ticker, { earnings }, today),
           })),
         });
       },
@@ -132,17 +136,22 @@ const handler = createMcpHandler(
           .filter((c) => (to ? c.target_date <= to : true))
           .sort((a, b) => (a.target_date < b.target_date ? -1 : 1))
           .slice(0, limit)
-          .map((c) => ({
-            catalyst_id: c.catalyst_id,
-            ticker: c.ticker,
-            company_name: c.company_name,
-            market: c.market ?? "US",
-            catalyst: c.catalyst_description,
-            target_date: c.target_date,
-            status: c.status,
-            series: c.series,
-            series_article: c.series_article,
-          }));
+          .map((c) => {
+            const r = externalRow(c);
+            return {
+              id: r.id,
+              ticker: r.ticker,
+              company: r.company,
+              market: c.market ?? "US",
+              question: r.question,
+              target_date: r.target_date,
+              result: r.result,
+              judged_at: r.judged_at,
+              evidence_url: r.evidence_url,
+              series: c.series ?? null,
+              series_article: c.series_article ?? null,
+            };
+          });
         return text({ count: rows.length, catalysts: rows });
       },
     );
@@ -187,7 +196,7 @@ const handler = createMcpHandler(
       {
         title: "Get a tokenized stock on Solana",
         description:
-          "Free view of one tokenized stock on Solana (xStocks / Ondo Global Markets): tokens and mints, the next dated deadline with its date source, how many conditions this site has set, the latest verdict, and the per-call URL of the full record (x402, USDC on Solana).",
+          "Free view of one tokenized stock on Solana (xStocks / Ondo Global Markets): tokens and mints, the next earnings date (primary source only; status confirmed / not_announced / unverified), condition counts, the latest verdict, and the per-call URL of the full record (x402, USDC on Solana). Field reference: /docs.",
         annotations: {
           title: "Get a tokenized stock on Solana",
           readOnlyHint: true,
@@ -258,7 +267,6 @@ const handler = createMcpHandler(
             status: s.status,
           })),
           payment: {
-            note: "Paid access to this resource is settled per-call via x402 on Base Sepolia (testnet). A vanilla MCP client reads for free here; an x402-capable agent pays at the HTTP endpoint.",
             network: BASE_SEPOLIA_NETWORK,
             resource: `${PUBLIC_BASE_URL}/api/testnet/signal`,
           },

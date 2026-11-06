@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  DATE_SOURCE_MEANING,
-  PAID_DESCRIPTION as SOLANA_STOCKS_PAID_DESCRIPTION,
-} from "@/lib/solana-stocks";
+import { PAID_DESCRIPTION as SOLANA_STOCKS_PAID_DESCRIPTION } from "@/lib/solana-stocks";
 import {
   ASSET_BASE_SEPOLIA_USDC,
   ASSET_SOLANA_USDC,
@@ -129,7 +126,7 @@ export function GET(): NextResponse {
         path: "/api/catalyst/:ticker",
         method: "GET",
         description:
-          "Per-company catalyst (due date, success/fail condition, source) plus the latest disclosed financials where the research recorded them. Only researched companies are charged: one still awaiting research returns 200 free with researched:false, and an unknown ticker returns 404 — neither reaches the paywall. Settled per call in USDC on Solana.",
+          "Per-company record: every condition set on the company (IR Fair, Physical AI, US / JP Weekly) with question, target date, result, evidence URL, reasoning and history; next earnings date from a primary source; latest disclosed financials from SEC EDGAR / TDnet XBRL with document URLs. A company with no condition returns the free view at no cost (?view=free is always free); an unknown ticker returns 404. Field reference: /docs.",
         accepts: solanaOnlyLeg("/api/catalyst/:ticker", PER_CALL_PRICE.base_units),
       },
       {
@@ -175,8 +172,7 @@ export function GET(): NextResponse {
         path: "/api/solana-stocks/:ticker",
         method: "GET",
         description:
-          "Tokenized stock on Solana (xStocks / Ondo Global Markets): issuer, Solana mint, and the next dated deadline this site holds for the underlying, with `target_date_source`. " +
-          DATE_SOURCE_MEANING,
+          "Tokenized stock on Solana (xStocks / Ondo Global Markets): issuer, Solana mint, next earnings date (primary source only), condition counts and the latest verdict. Field reference: /docs.",
         url: resourceUrl("/api/solana-stocks/:ticker"),
       },
     ],

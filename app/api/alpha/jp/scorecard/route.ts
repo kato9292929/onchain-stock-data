@@ -6,6 +6,7 @@ import {
 } from "@/lib/data";
 import { evaluationCoverage } from "@/lib/evaluation-coverage";
 import { corsPreflight, withSolanaOnlyPaywall } from "@/lib/x402-route";
+import { weeklyRows } from "@/lib/company-record";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +26,10 @@ function recencyKey(e: PortfolioEvaluation): number {
 const handler = async (): Promise<NextResponse> => {
   const evalsFile = await getJpPortfolioEvaluations();
   const evaluations = evalsFile.evaluations ?? [];
+  const historyFile = await getJpPortfolioHistory().catch(() => null);
+  const rowOf = new Map(
+    weeklyRows("jp", historyFile, evalsFile).map((r) => [`${r.week_of}::${r.ticker}`, r]),
+  );
 
   const hit_rate = { hit: 0, partial: 0, miss: 0, na: 0, pending: 0, total_judged: 0 };
   for (const e of evaluations) {
@@ -38,18 +43,25 @@ const handler = async (): Promise<NextResponse> => {
   const recent_evaluations = [...evaluations]
     .sort((a, b) => recencyKey(b) - recencyKey(a))
     .slice(0, 20)
-    .map((e) => ({
-      week_of: e.week_of,
-      ticker: e.ticker,
-      status: e.status,
-      catalyst_target_date: e.catalyst_target_date,
-      // Always "thesis" for JP — the auto-register carries the free-text
-      // thesis in as the condition. Surfaced so callers can align JP and US.
-      condition_source: e.condition_source ?? null,
-      evaluated_at: e.evaluated_at,
-      evidence_url: e.evidence_url,
-      reasoning: e.reasoning,
-    }));
+    .map((e) => {
+      const r = rowOf.get(`${e.week_of}::${String(e.ticker).toUpperCase()}`);
+      return {
+        id: r?.id ?? null,
+        ticker: String(e.ticker).toUpperCase(),
+        company: r?.company ?? null,
+        week_of: e.week_of,
+        question: r?.question ?? e.success_condition,
+        target_date: r?.target_date ?? e.catalyst_target_date,
+        result: r?.result ?? e.status,
+        judged_at: r?.judged_at ?? null,
+        evidence_url: e.evidence_url,
+        reasoning: e.reasoning,
+        // "distilled" (extracted by the one-shot backfill) vs "thesis" (copied
+        // verbatim): not equally strict, so split on it before comparing.
+        condition_source: e.condition_source ?? null,
+        evaluated_at: e.evaluated_at,
+      };
+    });
 
   // Same three fields as the US scorecard, with the same meanings: `as_of` is
   // when this answer was computed, `last_verdict_at` is how fresh the
@@ -65,7 +77,7 @@ const handler = async (): Promise<NextResponse> => {
   // also what a severed selection→scoring link looks like. The US scorecard
   // read `pending: 0` for three months while registering nothing. So the
   // answer carries whether every selected week actually reached the scorer.
-  const history = await getJpPortfolioHistory().catch(() => null);
+  const history = historyFile;
   const cov = history
     ? evaluationCoverage(history, evaluations, { asOf: as_of })
     : null;

@@ -18,10 +18,12 @@ export const dynamic = "force-dynamic";
 
 /**
  * GET /api/solana-stocks/{ticker}            FREE — issuer, Solana mint, next
- *                                            deadline with its date source
+ *                                            earnings (primary source), condition
+ *                                            counts, latest verdict
  * GET /api/solana-stocks/{ticker}?view=full  PAID (x402 per-call, 0.001 USDC on
  *                                            Solana) — every condition with
- *                                            verdict, verdict_history, evidence;
+ *                                            result, evidence, reasoning and
+ *                                            history; disclosed financials;
  *                                            recent signals
  *
  * Static reads of committed files — no market data, no model call. A ticker
@@ -70,24 +72,13 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
   if (access === "not-found") {
     return withPublicCors(async () =>
-      NextResponse.json(
-        { error: "ticker not found", ticker, note: "Not issued on Solana by xStocks or Ondo Global Markets as of the last weekly refresh." },
-        { status: 404 },
-      ),
+      NextResponse.json({ error: "ticker not found", ticker }, { status: 404 }),
     )(req);
   }
   if (wantsFull && access === "paid") return paidGet(req);
 
-  return withPublicCors(async () =>
-    NextResponse.json({
-      ...freeBody(ticker, file, rec, today, PUBLIC_BASE_URL),
-      ...(wantsFull
-        ? {
-            note: "This ticker has no condition on record, so there is no full view to sell. No payment was required.",
-          }
-        : {}),
-    }),
-  )(req);
+  // A ticker with no condition has no full view to sell: the free view, unpaid.
+  return withPublicCors(async () => NextResponse.json(freeBody(ticker, file, rec, today, PUBLIC_BASE_URL)))(req);
 };
 
 export const OPTIONS = corsPreflight;
