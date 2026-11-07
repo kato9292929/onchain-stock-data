@@ -57,9 +57,9 @@ export default function DocsPage() {
             ["GET /api/solana-stocks/{ticker}?view=full", "Paid when the ticker has a condition. Adds conditions (full rows), financials, signals."],
             ["GET /api/catalyst/{ticker}?view=free", "Free. Any company with a condition (US / JP Weekly, sector themes, neocloud, Physical AI): identity, next_earnings, counts, latest_verdict."],
             ["GET /api/catalyst/{ticker}", "Paid when the company has a condition; a covered company without one gets the free view at no cost. Adds conditions, financials, signals. Both views carry themes (the theme ids the company belongs to)."],
-            ["GET /api/themes", "Free. Every theme: id, title, member_count, events_next_14_days, last_catalyst_added."],
-            ["GET /api/themes/{theme}", "Free. Members: ticker, company, listed, next_earnings, next_event_date, condition_count, solana_token."],
-            [`GET /api/themes/{theme}?view=full`, `Paid, ${THEME_CALL_PRICE.usdc} USDC. Per member: current_catalyst, latest_verdict, conditions (full rows), solana_tokens (issuer, symbol, mint).`],
+            ["GET /api/themes", "Free. themes (those with active catalysts first) and, apart, selections (weekly): id, kind, title, member_count, active_catalysts, events_next_14_days, latest_article."],
+            ["GET /api/themes/{theme}", "Free. lineage (editions, latest marked) and members: ticker, company, listed, group, source_article, next_earnings, next_event_date, active_catalysts, solana_token."],
+            [`GET /api/themes/{theme}?view=full`, `Paid, ${THEME_CALL_PRICE.usdc} USDC. Per member: current_catalyst, latest_verdict, status_counts, conditions (full rows with status), solana_tokens (issuer, symbol, mint).`],
           ]}
         />
         <p className="text-[12px] text-slate-500">
@@ -71,12 +71,12 @@ export default function DocsPage() {
       <Section id="themes" title="Themes">
         <Fields
           rows={[
-            ["id", "neocloud-us, neocloud-jp, physical-ai-us, physical-ai-jp, weekly-us, weekly-jp, and sector themes such as datacenter-power-jp, space-geospatial-jp, infrastructure-jp, semiconductors-fa-jp, healthcare-jp. Ordered by how much the articles behind them were read."],
-            ["members", "Neocloud and physical AI: the companies the articles covered (unlisted ones carry a slug ticker and listed: false). Weekly: the current week's picks. Sector themes: researched companies in that sector, plus any company a catalyst was added to under the theme. A company can be in several themes."],
+            ["id", "A sector × market: neocloud-us, neocloud-jp, physical-ai-semis-us, physical-ai-robotics-us, physical-ai-models-us, physical-ai-jp, semiconductor-supply-chain-jp, datacenter-power-jp, space-geospatial-jp, infrastructure-resilience-jp, healthcare-jp, edge-ai-field-dx-jp, financials-jp, mobility-auto-parts-jp, food-staples-jp. weekly-us and weekly-jp are the week's selection and are listed apart (selections)."],
+            ["members", "The latest article edition's list (lineage marks it latest), with the article's sub-grouping in group; plus any company a catalyst was later added to under the theme, and Weekly picks in their sector. A company with no active catalyst is still listed. source_article is where the company was picked from (e.g. the IR fair exhibitor map), not a theme."],
             ["next_event_date", "The nearer of a confirmed earnings date and the current catalyst's target date, on or after today."],
-            ["current_catalyst", "The nearest pending catalyst on or after today (else the latest pending one), as a full row."],
+            ["current_catalyst", "The nearest active catalyst, as a full row; null when the company has none."],
             ["success_conditions", "On rows written since 2026-11-05: metric, operator (> >= < <=), threshold {value, unit} and source_doc — the document it is judged against. A disclosure that has to happen is {value: 1, unit: \"event\"}."],
-            ["updates", "New catalysts are added weekly through the chat operation (theme_catalysts) and appear the same day; existing ones are never rewritten."],
+            ["updates", "New catalysts are added weekly through the chat operation (theme_catalysts) and appear the same day; existing ones are never rewritten. A newer edition's condition replaces an older one by status, not by deletion."],
           ]}
         />
       </Section>
@@ -113,6 +113,9 @@ export default function DocsPage() {
             ["fail_direction", "What a miss would look like, as written with the condition. Not judged on its own."],
             ["target_date", "The date the condition is judged on. When the company's own date was checked, that date (target_date_source_url is the IR page); otherwise the date written with the condition. Judging waits until 7 days after it."],
             ["result", "hit / partial / miss / na (the date passed and nothing could be judged) / pending / excluded (left the population before its date, e.g. delisted)."],
+            ["status", "active (target date ahead, current edition) / judged (a verdict was given) / superseded (a newer edition replaced it — superseded_by is the replacement — or dropped the company) / expired (date passed, no verdict yet)."],
+            ["source_article", "The article the condition, or its scoring, was published in."],
+            ["themes", "Theme ids the company belongs to; Weekly rows carry the sector theme of the pick (e.g. semiconductor-supply-chain-jp)."],
             ["judged_at", "When the result was given."],
             ["evidence_url", "The disclosure the result was judged against (first of evidence_urls)."],
             ["reasoning (paid)", "What was observed against the question."],

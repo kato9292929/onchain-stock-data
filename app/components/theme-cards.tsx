@@ -5,6 +5,7 @@ export interface ThemeCard {
   title_ja: string;
   title_en: string;
   member_count: number;
+  active_catalysts: number;
   events_next_14_days: number;
 }
 
@@ -21,7 +22,10 @@ export function ThemeCards({ themes }: { themes: ThemeCard[] }) {
           <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{t.title_en}</div>
           <div className="font-outfit text-lg font-semibold text-[#0a1b33]">{t.title_ja}</div>
           <div className="mt-3 flex items-center justify-between text-[12px] tabular-nums text-slate-600">
-            <span>{t.member_count} companies</span>
+            <span>
+              {t.member_count} companies ·{" "}
+              <span className={t.active_catalysts > 0 ? "" : "text-slate-400"}>{t.active_catalysts} active</span>
+            </span>
             <span className={t.events_next_14_days > 0 ? "font-semibold text-emerald-700" : "text-slate-400"}>
               {t.events_next_14_days} with an event in 14 days
             </span>

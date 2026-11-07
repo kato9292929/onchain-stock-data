@@ -7,11 +7,20 @@
       "title_ja": "米国 ネオクラウド",
       "title_en": "Neocloud · US",
       "market": "US",
-      "members_from": {
-        "kind": "series",
-        "series": "neocloud-us"
-      },
-      "articles": [
+      "kind": "article",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n16b6613242a8",
+          "title": "米国株 ネオクラウド上場銘柄10選：CoreWeave受注残1000億ドルと各社のdated catalyst",
+          "published_at": "2026-07-21",
+          "pageviews": 34
+        },
+        {
+          "url": "https://note.com/x402inc/n/n908355b7fcdf",
+          "title": "ネオクラウド未公開株10選：Nscale時価総額146億ドルと各社のdated catalyst",
+          "published_at": "2026-07-21",
+          "pageviews": null
+        },
         {
           "url": "https://note.com/x402inc/n/n343d12682710",
           "title": "米国 ネオクラウド銘柄18選：Meta Computeの参入と各社のdated catalyst",
@@ -22,13 +31,118 @@
           "url": "https://note.com/x402inc/n/n63fa0862b031",
           "title": "米国 ネオクラウド銘柄18選（2026年10月）：CoreWeave社債利回り15%下での7月条件18件の判定結果",
           "published_at": "2026-10-20",
-          "pageviews": null
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "CRWV",
+          "company": "CoreWeave",
+          "listed": true,
+          "group": "GPUクラウド直販"
         },
         {
-          "url": "https://note.com/x402inc/n/n16b6613242a8",
-          "title": "米国株 ネオクラウド上場銘柄10選：CoreWeave受注残1000億ドルと各社のdated catalyst",
-          "published_at": "2026-07-21",
-          "pageviews": 34
+          "ticker": "NBIS",
+          "company": "Nebius",
+          "listed": true,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "IREN",
+          "company": "IREN",
+          "listed": true,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "HUT",
+          "company": "Hut 8",
+          "listed": true,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "HIVE",
+          "company": "HIVE Digital",
+          "listed": true,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "WYFI",
+          "company": "WhiteFiber",
+          "listed": true,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "LAMBDA",
+          "company": "Lambda",
+          "listed": false,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "CRUSOE",
+          "company": "Crusoe",
+          "listed": false,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "TOGETHER",
+          "company": "Together AI",
+          "listed": false,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "TENSORWAVE",
+          "company": "TensorWave",
+          "listed": false,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "VULTR",
+          "company": "Vultr",
+          "listed": false,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "LIGHTNINGAI",
+          "company": "Lightning AI",
+          "listed": false,
+          "group": "GPUクラウド直販"
+        },
+        {
+          "ticker": "APLD",
+          "company": "Applied Digital",
+          "listed": true,
+          "group": "HPC colocation"
+        },
+        {
+          "ticker": "CIFR",
+          "company": "Cipher Mining",
+          "listed": true,
+          "group": "HPC colocation"
+        },
+        {
+          "ticker": "WULF",
+          "company": "TeraWulf",
+          "listed": true,
+          "group": "HPC colocation"
+        },
+        {
+          "ticker": "CORZ",
+          "company": "Core Scientific",
+          "listed": true,
+          "group": "HPC colocation"
+        },
+        {
+          "ticker": "SFCOMPUTE",
+          "company": "SF Compute",
+          "listed": false,
+          "group": "マーケットプレイス"
+        },
+        {
+          "ticker": "FOUNDRY",
+          "company": "Foundry（Mithril）",
+          "listed": false,
+          "group": "マーケットプレイス"
         }
       ]
     },
@@ -38,11 +152,14 @@
       "title_ja": "日本 ネオクラウド",
       "title_en": "Neocloud · Japan",
       "market": "JP",
-      "members_from": {
-        "kind": "series",
-        "series": "neocloud-jp"
-      },
-      "articles": [
+      "kind": "article",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n5dff14046bd6",
+          "title": "日本株 ネオクラウド銘柄5選：ソフトバンクGPUクラウドと各社のdated catalyst",
+          "published_at": "2026-07-21",
+          "pageviews": 30
+        },
         {
           "url": "https://note.com/x402inc/n/nc08a6b6f95aa",
           "title": "日本 ネオクラウド銘柄5選：日銀の政策金利1.00%と各社のdated catalyst",
@@ -53,210 +170,1216 @@
           "url": "https://note.com/x402inc/n/n7b0a50e89402",
           "title": "日本 ネオクラウド銘柄5選（2026年10月）：日銀の政策金利1.25%下での7月条件5件の判定結果",
           "published_at": "2026-10-20",
-          "pageviews": 70
+          "pageviews": 70,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "3778",
+          "company": "さくらインターネット",
+          "listed": true,
+          "group": "GPUクラウド主軸"
         },
         {
-          "url": "https://note.com/x402inc/n/n5dff14046bd6",
-          "title": "日本株 ネオクラウド銘柄5選：ソフトバンクGPUクラウドと各社のdated catalyst",
-          "published_at": "2026-07-21",
-          "pageviews": 30
+          "ticker": "3905",
+          "company": "データセクション",
+          "listed": true,
+          "group": "GPUクラウド主軸"
+        },
+        {
+          "ticker": "4784",
+          "company": "GMOインターネット",
+          "listed": true,
+          "group": "GPUクラウド主軸"
+        },
+        {
+          "ticker": "9434",
+          "company": "ソフトバンク",
+          "listed": true,
+          "group": "通信起点"
+        },
+        {
+          "ticker": "9433",
+          "company": "KDDI",
+          "listed": true,
+          "group": "通信起点"
         }
       ]
     },
     {
-      "id": "physical-ai-us",
+      "id": "physical-ai-semis-us",
       "rank": 3,
-      "title_ja": "米国 フィジカルAI",
-      "title_en": "Physical AI · US",
+      "title_ja": "米国 フィジカルAI 半導体",
+      "title_en": "Physical AI · Semiconductors · US",
       "market": "US",
-      "members_from": {
-        "kind": "series",
-        "series": "physical-ai",
-        "market": "US"
-      },
-      "articles": [
+      "kind": "article",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n3b49351657e3",
+          "title": "米国株 フィジカルAI上場銘柄10選（半導体）：NVIDIA Edge Computing新設と各社のdated catalyst",
+          "published_at": "2026-07-17",
+          "pageviews": null
+        },
         {
           "url": "https://note.com/x402inc/n/n1738f5fa8629",
           "title": "米国 フィジカルAI銘柄10選（半導体）：NVIDIAのCDS拡大と各社のdated catalyst",
           "published_at": "2026-07-31",
-          "pageviews": 93
+          "pageviews": 93,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "AMBA",
+          "company": "Ambarella",
+          "listed": true,
+          "group": "フィジカルAI専業"
+        },
+        {
+          "ticker": "OUST",
+          "company": "Ouster",
+          "listed": true,
+          "group": "フィジカルAI専業"
+        },
+        {
+          "ticker": "MBLY",
+          "company": "Mobileye",
+          "listed": true,
+          "group": "フィジカルAI専業"
+        },
+        {
+          "ticker": "NVDA",
+          "company": "NVIDIA",
+          "listed": true,
+          "group": "汎用の下層"
+        },
+        {
+          "ticker": "QCOM",
+          "company": "Qualcomm",
+          "listed": true,
+          "group": "汎用の下層"
+        },
+        {
+          "ticker": "TXN",
+          "company": "Texas Instruments",
+          "listed": true,
+          "group": "汎用の下層"
+        },
+        {
+          "ticker": "ADI",
+          "company": "Analog Devices",
+          "listed": true,
+          "group": "汎用の下層"
+        },
+        {
+          "ticker": "ON",
+          "company": "ON Semiconductor",
+          "listed": true,
+          "group": "汎用の下層"
+        },
+        {
+          "ticker": "LSCC",
+          "company": "Lattice Semiconductor",
+          "listed": true,
+          "group": "汎用の下層"
+        },
+        {
+          "ticker": "MU",
+          "company": "Micron",
+          "listed": true,
+          "group": "制約側"
+        }
+      ]
+    },
+    {
+      "id": "physical-ai-robotics-us",
+      "rank": 4,
+      "title_ja": "米国 フィジカルAI ロボティクス",
+      "title_en": "Physical AI · Robotics · US",
+      "market": "US",
+      "kind": "article",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n24fd55673264",
+          "title": "米国株 フィジカルAI上場銘柄10選（ロボティクス）：テスラOptimus量産開始と各社のdated catalyst",
+          "published_at": "2026-07-17",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/nfa8e55f9e9c7",
+          "title": "米国 フィジカルAI未公開株10選（ロボット）：Agility Robotics SPAC上場と各社のdated catalyst",
+          "published_at": "2026-07-17",
+          "pageviews": null
         },
         {
           "url": "https://note.com/x402inc/n/n00d0d1362d4d",
           "title": "米国 フィジカルAI銘柄19選（ロボティクス）：Agility Robotics SPAC上場と各社のdated catalyst",
           "published_at": "2026-07-31",
-          "pageviews": 58
+          "pageviews": 58,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "TSLA",
+          "company": "Tesla",
+          "listed": true,
+          "group": "台数が売上になる層"
+        },
+        {
+          "ticker": "AUR",
+          "company": "Aurora Innovation",
+          "listed": true,
+          "group": "台数が売上になる層"
+        },
+        {
+          "ticker": "SERV",
+          "company": "Serve Robotics",
+          "listed": true,
+          "group": "台数が売上になる層"
+        },
+        {
+          "ticker": "AGILITY",
+          "company": "Agility Robotics",
+          "listed": false,
+          "group": "台数が売上になる層"
+        },
+        {
+          "ticker": "FIGURE",
+          "company": "Figure AI",
+          "listed": false,
+          "group": "台数が売上になる層"
+        },
+        {
+          "ticker": "APPTRONIK",
+          "company": "Apptronik",
+          "listed": false,
+          "group": "台数が売上になる層"
+        },
+        {
+          "ticker": "SYM",
+          "company": "Symbotic",
+          "listed": true,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "TER",
+          "company": "Teradyne",
+          "listed": true,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "ROK",
+          "company": "Rockwell Automation",
+          "listed": true,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "CGNX",
+          "company": "Cognex",
+          "listed": true,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "ZBRA",
+          "company": "Zebra Technologies",
+          "listed": true,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "DEXTERITY",
+          "company": "Dexterity",
+          "listed": false,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "GECKO",
+          "company": "Gecko Robotics",
+          "listed": false,
+          "group": "工程が売上になる層"
+        },
+        {
+          "ticker": "DE",
+          "company": "Deere",
+          "listed": true,
+          "group": "機械需要が先に来る層"
+        },
+        {
+          "ticker": "CAT",
+          "company": "Caterpillar",
+          "listed": true,
+          "group": "機械需要が先に来る層"
+        },
+        {
+          "ticker": "NURO",
+          "company": "Nuro",
+          "listed": false,
+          "group": "機械需要が先に来る層"
+        },
+        {
+          "ticker": "ZIPLINE",
+          "company": "Zipline",
+          "listed": false,
+          "group": "機械需要が先に来る層"
+        },
+        {
+          "ticker": "ANDURIL",
+          "company": "Anduril",
+          "listed": false,
+          "group": "政府が顧客の層"
+        },
+        {
+          "ticker": "SARONIC",
+          "company": "Saronic",
+          "listed": false,
+          "group": "政府が顧客の層"
+        }
+      ]
+    },
+    {
+      "id": "physical-ai-models-us",
+      "rank": 5,
+      "title_ja": "米国 フィジカルAI 基盤モデル",
+      "title_en": "Physical AI · Foundation models · US",
+      "market": "US",
+      "kind": "article",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n88db516f2d17",
+          "title": "フィジカルAI未公開株10選（基盤モデル）：Physical Intelligence評価額110億ドルと各社のdated catalyst",
+          "published_at": "2026-07-17",
+          "pageviews": null
         },
         {
           "url": "https://note.com/x402inc/n/naee21cd4b6e4",
           "title": "米国 フィジカルAI銘柄8選（基盤モデル）：Applied Intuition Danaと各社のdated catalyst",
           "published_at": "2026-07-31",
-          "pageviews": null
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "PI",
+          "company": "Physical Intelligence",
+          "listed": false,
+          "group": "身体を問わないモデル"
         },
         {
-          "url": "https://note.com/x402inc/n/nc9779d59bc9f",
-          "title": "米国フィジカルAI 採点実績アップデート：半導体61%・ロボティクス70%と9/30に出る最初の答え",
-          "published_at": "2026-09-04",
-          "pageviews": null
+          "ticker": "SKILD",
+          "company": "Skild AI",
+          "listed": false,
+          "group": "身体を問わないモデル"
+        },
+        {
+          "ticker": "GENERALIST",
+          "company": "Generalist AI",
+          "listed": false,
+          "group": "身体を問わないモデル"
+        },
+        {
+          "ticker": "FIELDAI",
+          "company": "Field AI",
+          "listed": false,
+          "group": "身体を問わないモデル"
+        },
+        {
+          "ticker": "DYNA",
+          "company": "Dyna Robotics",
+          "listed": false,
+          "group": "身体を問わないモデル"
+        },
+        {
+          "ticker": "WORLDLABS",
+          "company": "World Labs",
+          "listed": false,
+          "group": "世界を作る層"
+        },
+        {
+          "ticker": "APPLIEDINT",
+          "company": "Applied Intuition",
+          "listed": false,
+          "group": "工程と機体を押さえる層"
+        },
+        {
+          "ticker": "BEDROCK",
+          "company": "Bedrock Robotics",
+          "listed": false,
+          "group": "工程と機体を押さえる層"
         }
       ]
     },
     {
       "id": "physical-ai-jp",
-      "rank": 4,
+      "rank": 6,
       "title_ja": "日本 フィジカルAI",
       "title_en": "Physical AI · Japan",
       "market": "JP",
-      "members_from": {
-        "kind": "series",
-        "series": "physical-ai",
-        "market": "JP"
-      },
-      "articles": [
-        {
-          "url": "https://note.com/x402inc/n/n1b8e66c7fa8e",
-          "title": "日本 フィジカルAI銘柄20選：NVIDIAの7,500億ドル取引と各社のdated catalyst",
-          "published_at": "2026-07-31",
-          "pageviews": null
-        },
+      "kind": "article",
+      "lineage": [
         {
           "url": "https://note.com/x402inc/n/n3428a4d5e1fa",
           "title": "日本のフィジカルAI10選：ファナック・安川電機・川崎重工などをdated catalystで読む",
           "published_at": "2026-07-16",
           "pageviews": null
-        }
-      ]
-    },
-    {
-      "id": "weekly-us",
-      "rank": 5,
-      "title_ja": "米国株 Weekly Selection",
-      "title_en": "Weekly Selection · US",
-      "market": "US",
-      "members_from": {
-        "kind": "weekly",
-        "market": "US"
-      },
-      "articles": [
+        },
         {
-          "url": "https://note.com/x402inc/n/n41d476d52658",
-          "title": "米国株 Weekly Selection：AIインフラ14%・NVDA6%の10/14〜11月中旬締切10銘柄のdated catalyst",
-          "published_at": "2026-10-14",
+          "url": "https://note.com/x402inc/n/nbd2391949097",
+          "title": "ティアフォーが7月22日に東証グロースへ上場する：NVIDIA名簿の未上場10社をdated catalystで読む",
+          "published_at": "2026-07-16",
           "pageviews": null
-        }
-      ]
-    },
-    {
-      "id": "weekly-jp",
-      "rank": 6,
-      "title_ja": "日本株 Weekly Selection",
-      "title_en": "Weekly Selection · Japan",
-      "market": "JP",
-      "members_from": {
-        "kind": "weekly",
-        "market": "JP"
-      },
-      "articles": [
+        },
         {
-          "url": "https://note.com/x402inc/n/n818c65b295ae",
-          "title": "日本株 Weekly Selection：東京エレクトロン15%首位の10/29〜11/7締切10銘柄のdated catalyst",
-          "published_at": "2026-10-14",
-          "pageviews": null
-        }
-      ]
-    },
-    {
-      "id": "datacenter-power-jp",
-      "rank": 7,
-      "title_ja": "日本株 データセンター・電力",
-      "title_en": "Data centers · Power · Japan",
-      "market": "JP",
-      "members_from": {
-        "kind": "sector",
-        "slug": "datacenter-power"
-      },
-      "articles": [
-        {
-          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
-          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
-          "published_at": "2026-09-24",
-          "pageviews": null
-        }
-      ]
-    },
-    {
-      "id": "space-geospatial-jp",
-      "rank": 8,
-      "title_ja": "日本株 宇宙・地理空間",
-      "title_en": "Space · Geospatial · Japan",
-      "market": "JP",
-      "members_from": {
-        "kind": "sector",
-        "slug": "space-geospatial"
-      },
-      "articles": [
-        {
-          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
-          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
-          "published_at": "2026-09-24",
-          "pageviews": null
-        }
-      ]
-    },
-    {
-      "id": "infrastructure-jp",
-      "rank": 9,
-      "title_ja": "日本株 インフラ",
-      "title_en": "Infrastructure · Japan",
-      "market": "JP",
-      "members_from": {
-        "kind": "sector",
-        "slug": "infrastructure"
-      },
-      "articles": [
-        {
-          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
-          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
-          "published_at": "2026-09-24",
-          "pageviews": null
-        }
-      ]
-    },
-    {
-      "id": "semiconductors-fa-jp",
-      "rank": 10,
-      "title_ja": "日本株 半導体・FA・装置",
-      "title_en": "Semiconductors · FA · Equipment · Japan",
-      "market": "JP",
-      "members_from": {
-        "kind": "sector",
-        "slug": "semiconductors-fa"
-      },
-      "articles": [
+          "url": "https://note.com/x402inc/n/n1b8e66c7fa8e",
+          "title": "日本 フィジカルAI銘柄20選：NVIDIAの7,500億ドル取引と各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": null,
+          "role": "latest"
+        },
         {
           "url": "https://note.com/x402inc/n/n5468ee860649",
           "title": "日本フィジカルAI 装置・材料層：IRフェア出展10社のdated catalystと採点実績77%",
           "published_at": "2026-09-04",
           "pageviews": null
         }
+      ],
+      "members": [
+        {
+          "ticker": "6954",
+          "company": "ファナック",
+          "listed": true,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "6506",
+          "company": "安川電機",
+          "listed": true,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "7012",
+          "company": "川崎重工",
+          "listed": true,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "6326",
+          "company": "クボタ",
+          "listed": true,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "593A",
+          "company": "ティアフォー",
+          "listed": true,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "MUJIN",
+          "company": "Mujin",
+          "listed": false,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "TELEXIST",
+          "company": "Telexistence",
+          "listed": false,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "TURING",
+          "company": "Turing",
+          "listed": false,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "GROOVEX",
+          "company": "GROOVE X",
+          "listed": false,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "ENACTIC",
+          "company": "Enactic",
+          "listed": false,
+          "group": "機体を持つ層"
+        },
+        {
+          "ticker": "6645",
+          "company": "オムロン",
+          "listed": true,
+          "group": "見る・読む層"
+        },
+        {
+          "ticker": "6758",
+          "company": "ソニーグループ",
+          "listed": true,
+          "group": "見る・読む層"
+        },
+        {
+          "ticker": "STOCKMARK",
+          "company": "Stockmark",
+          "listed": false,
+          "group": "見る・読む層"
+        },
+        {
+          "ticker": "AVATARIN",
+          "company": "avatarin",
+          "listed": false,
+          "group": "見る・読む層"
+        },
+        {
+          "ticker": "6702",
+          "company": "富士通",
+          "listed": true,
+          "group": "基盤と統合の層"
+        },
+        {
+          "ticker": "6501",
+          "company": "日立",
+          "listed": true,
+          "group": "基盤と統合の層"
+        },
+        {
+          "ticker": "6701",
+          "company": "NEC",
+          "listed": true,
+          "group": "基盤と統合の層"
+        },
+        {
+          "ticker": "9434",
+          "company": "ソフトバンク",
+          "listed": true,
+          "group": "基盤と統合の層"
+        },
+        {
+          "ticker": "PFN",
+          "company": "Preferred Networks",
+          "listed": false,
+          "group": "基盤と統合の層"
+        },
+        {
+          "ticker": "SAKANA",
+          "company": "Sakana AI",
+          "listed": false,
+          "group": "基盤と統合の層"
+        },
+        {
+          "ticker": "6268",
+          "company": "ナブテスコ",
+          "listed": true,
+          "group": "FA・部品",
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6258",
+          "company": "平田機工",
+          "listed": true,
+          "group": "FA・部品",
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6278",
+          "company": "ユニオンツール",
+          "listed": true,
+          "group": "FA・部品",
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6331",
+          "company": "三菱化工機",
+          "listed": true,
+          "group": "FA・部品",
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6013",
+          "company": "タクマ",
+          "listed": true,
+          "group": "FA・部品",
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6339",
+          "company": "新東工業",
+          "listed": true,
+          "group": "FA・部品",
+          "source_article": "https://note.com/x402inc/n/n5468ee860649"
+        }
+      ]
+    },
+    {
+      "id": "weekly-us",
+      "rank": 100,
+      "title_ja": "米国株 Weekly Selection",
+      "title_en": "Weekly Selection · US",
+      "market": "US",
+      "kind": "weekly",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n41d476d52658",
+          "title": "米国株 Weekly Selection：AIインフラ14%・NVDA6%の10/14〜11月中旬締切10銘柄のdated catalyst",
+          "published_at": "2026-10-14",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ]
+    },
+    {
+      "id": "weekly-jp",
+      "rank": 101,
+      "title_ja": "日本株 Weekly Selection",
+      "title_en": "Weekly Selection · Japan",
+      "market": "JP",
+      "kind": "weekly",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n818c65b295ae",
+          "title": "日本株 Weekly Selection：東京エレクトロン15%首位の10/29〜11/7締切10銘柄のdated catalyst",
+          "published_at": "2026-10-14",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ]
+    },
+    {
+      "id": "semiconductor-supply-chain-jp",
+      "rank": 7,
+      "title_ja": "日本 半導体・AIサプライチェーン",
+      "title_en": "Semiconductors · AI supply chain · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/nf53a7276d776",
+          "title": "日本のAI-データセンター5選 —— イビデン・味の素・日東紡・レーザーテック・ディスコ",
+          "published_at": "2026-06-26",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n5468ee860649",
+          "title": "日本フィジカルAI 装置・材料層：IRフェア出展10社のdated catalystと採点実績77%",
+          "published_at": "2026-09-04",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "5142",
+          "company": "アキレス",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "7087",
+          "company": "ウイルテック",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "5384",
+          "company": "フジミインコーポレーテッド",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "3433",
+          "company": "トーカロ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "7826",
+          "company": "フルヤ金属",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "5301",
+          "company": "東海カーボン",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1964",
+          "company": "中外炉工業",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "5333",
+          "company": "日本ガイシ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2760",
+          "company": "東京エレクトロン デバイス",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "4062",
+          "company": "イビデン",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/nf53a7276d776"
+        },
+        {
+          "ticker": "2802",
+          "company": "味の素",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/nf53a7276d776"
+        },
+        {
+          "ticker": "3110",
+          "company": "日東紡",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/nf53a7276d776"
+        },
+        {
+          "ticker": "6920",
+          "company": "レーザーテック",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/nf53a7276d776"
+        },
+        {
+          "ticker": "6146",
+          "company": "ディスコ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/nf53a7276d776"
+        },
+        {
+          "ticker": "6962",
+          "company": "大真空",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n5468ee860649"
+        },
+        {
+          "ticker": "6504",
+          "company": "富士電機",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n5468ee860649"
+        },
+        {
+          "ticker": "4004",
+          "company": "レゾナック・ホールディングス",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n5468ee860649"
+        }
+      ],
+      "weekly_sector": "semiconductors-fa"
+    },
+    {
+      "id": "datacenter-power-jp",
+      "rank": 8,
+      "title_ja": "日本 データセンター・電力",
+      "title_en": "Data centers · Power · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
+          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "1979",
+          "company": "大気社",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1968",
+          "company": "太平電業",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1946",
+          "company": "トーエネック",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1938",
+          "company": "日本リーテック",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "9506",
+          "company": "東北電力",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "9533",
+          "company": "東邦瓦斯",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6379",
+          "company": "レイズネクスト",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        }
+      ]
+    },
+    {
+      "id": "space-geospatial-jp",
+      "rank": 9,
+      "title_ja": "日本 宇宙・空間情報",
+      "title_en": "Space · Geospatial · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
+          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "9348",
+          "company": "ispace",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "9412",
+          "company": "スカパーJSAT",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "9233",
+          "company": "アジア航測",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        }
+      ]
+    },
+    {
+      "id": "infrastructure-resilience-jp",
+      "rank": 10,
+      "title_ja": "日本 インフラ・国土強靭化",
+      "title_en": "Infrastructure · Resilience · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
+          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "1414",
+          "company": "ショーボンドHD",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1929",
+          "company": "日特建設",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "9621",
+          "company": "建設技術研究所",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "5262",
+          "company": "日本ヒューム",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "5011",
+          "company": "ニチレキG",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1807",
+          "company": "佐藤渡辺",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1822",
+          "company": "大豊建設",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1997",
+          "company": "暁飯島工業",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "6379",
+          "company": "レイズネクスト",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n70ffdda17ca4"
+        },
+        {
+          "ticker": "1870",
+          "company": "矢作建設工業",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n70ffdda17ca4"
+        }
       ]
     },
     {
       "id": "healthcare-jp",
       "rank": 11,
-      "title_ja": "日本株 ヘルスケア・創薬",
+      "title_ja": "日本 ヘルスケア・創薬",
       "title_en": "Healthcare · Drug discovery · Japan",
       "market": "JP",
-      "members_from": {
-        "kind": "sector",
-        "slug": "healthcare"
-      },
-      "articles": [
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null
+        },
         {
           "url": "https://note.com/x402inc/n/n604e2379834b",
           "title": "日本株 ヘルスケア・創薬：ロート製薬の上方修正450億円とケイファーマのALS第3相、6銘柄のdated catalyst",
           "published_at": "2026-09-24",
-          "pageviews": null
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "4527",
+          "company": "ロート製薬",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n604e2379834b"
+        },
+        {
+          "ticker": "4887",
+          "company": "サワイグループホールディングス",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n604e2379834b"
+        },
+        {
+          "ticker": "4886",
+          "company": "あすか製薬ホールディングス",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n604e2379834b"
+        },
+        {
+          "ticker": "4896",
+          "company": "ケイファーマ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n604e2379834b"
+        },
+        {
+          "ticker": "4890",
+          "company": "坪田ラボ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n604e2379834b"
+        },
+        {
+          "ticker": "4576",
+          "company": "デ・ウエスタン・セラピテクス研究所",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n604e2379834b"
+        },
+        {
+          "ticker": "4544",
+          "company": "H.U.グループ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        }
+      ]
+    },
+    {
+      "id": "edge-ai-field-dx-jp",
+      "rank": 12,
+      "title_ja": "日本 エッジAI・現場DX",
+      "title_en": "Edge AI · Field DX · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "3853",
+          "company": "アステリア",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "4375",
+          "company": "セーフィー",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "4495",
+          "company": "アイキューブドシステムズ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "4412",
+          "company": "サイエンスアーツ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "3962",
+          "company": "チェンジHD",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2120",
+          "company": "LIFULL",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "4258",
+          "company": "網屋",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        }
+      ]
+    },
+    {
+      "id": "financials-jp",
+      "rank": 13,
+      "title_ja": "日本 金融・株主還元",
+      "title_en": "Financials · Shareholder returns · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "8593",
+          "company": "三菱HCキャピタル",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "8308",
+          "company": "りそなHD",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "8303",
+          "company": "SBI新生銀行",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "8418",
+          "company": "山口FG",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "8542",
+          "company": "トマト銀行",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "8616",
+          "company": "東海東京FH",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "7199",
+          "company": "プレミアグループ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        }
+      ]
+    },
+    {
+      "id": "mobility-auto-parts-jp",
+      "rank": 14,
+      "title_ja": "日本 モビリティ・自動車部品",
+      "title_en": "Mobility · Auto parts · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "7212",
+          "company": "エフテック",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "7279",
+          "company": "ハイレックス",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "7231",
+          "company": "トピー工業",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "3116",
+          "company": "トヨタ紡織",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "7282",
+          "company": "豊田合成",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        }
+      ]
+    },
+    {
+      "id": "food-staples-jp",
+      "rank": 15,
+      "title_ja": "日本 食品",
+      "title_en": "Food · Staples · Japan",
+      "market": "JP",
+      "kind": "sector",
+      "lineage": [
+        {
+          "url": "https://note.com/x402inc/n/n0b81556a919b",
+          "title": "日経・東証IRフェア2026 出展企業 テーマ別カタリスト・マップ",
+          "published_at": "2026-08-28",
+          "pageviews": null,
+          "role": "latest"
+        }
+      ],
+      "members": [
+        {
+          "ticker": "2009",
+          "company": "鳥越製粉",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2819",
+          "company": "エバラ食品",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2915",
+          "company": "ケンコーマヨネーズ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2004",
+          "company": "昭和産業",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2001",
+          "company": "ニップン",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2003",
+          "company": "日東富士製粉",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2060",
+          "company": "フィード・ワン",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "2929",
+          "company": "ファーマフーズ",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
+        },
+        {
+          "ticker": "1379",
+          "company": "ホクト",
+          "listed": true,
+          "source_article": "https://note.com/x402inc/n/n0b81556a919b"
         }
       ]
     }

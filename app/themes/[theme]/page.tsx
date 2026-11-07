@@ -34,16 +34,21 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
       <header className="space-y-2">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{theme.title_en}</div>
         <h1 className="font-outfit text-3xl font-semibold text-[#0a1b33] sm:text-4xl">{theme.title_ja}</h1>
-        <ul className="space-y-0.5 text-[12px]">
-          {free.articles.map((a) => (
+        <ol className="space-y-0.5 text-[12px]">
+          {free.lineage.map((a) => (
             <li key={a.url}>
-              <a href={a.url} target="_blank" rel="noreferrer" className="text-sky-700 hover:underline">
+              <span className="tabular-nums text-slate-400">{a.published_at}</span>{" "}
+              <a href={a.url} target="_blank" rel="noreferrer" className={a.latest ? "font-semibold text-sky-700 hover:underline" : "text-slate-500 hover:underline"}>
                 {a.title}
-              </a>{" "}
-              <span className="text-slate-400">{a.published_at}</span>
+              </a>
+              {a.latest && <span className="ml-1 rounded bg-sky-50 px-1 text-[10px] font-semibold text-sky-700">latest</span>}
             </li>
           ))}
-        </ul>
+        </ol>
+        <p className="text-[12px] text-slate-400">
+          {`${free.member_count} companies · ${free.active_catalysts} active catalysts. `}
+          Members follow the latest edition; earlier editions&apos; conditions stay on record with their status.
+        </p>
       </header>
 
       {/* Phones: one card per company */}
@@ -55,6 +60,7 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-semibold text-[#0a1b33]">
                   {m.ticker} <span className="text-[12px] font-normal text-slate-500">{m.company}</span>
+                  {m.group && <span className="ml-1 text-[11px] font-normal text-slate-400">· {m.group}</span>}
                 </span>
                 {m.solana_token && (
                   <Link href={`/solana-stocks/${encodeURIComponent(m.ticker)}`} className="text-[12px] font-semibold text-sky-700">
@@ -103,6 +109,7 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
                       {m.company}
                       {!m.listed && <span className="ml-1 text-slate-400">(unlisted)</span>}
                     </div>
+                    {m.group && <div className="text-[11px] text-slate-400">{m.group}</div>}
                     <div className="text-[11px] text-slate-400">
                       {n} condition{n === 1 ? "" : "s"}
                     </div>
@@ -123,7 +130,7 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
                         <div className="max-w-[28rem] leading-relaxed text-slate-700">{c.question}</div>
                       </>
                     ) : (
-                      <span className="text-slate-300">—</span>
+                      <span className="text-slate-300">no active catalyst</span>
                     )}
                   </td>
                   <td className="px-4 py-3">

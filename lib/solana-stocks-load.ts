@@ -8,7 +8,7 @@ import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { getSignals } from "@/lib/signals";
 import { getEarningsDates, getFinancials, type Records } from "@/lib/company-record";
-import { getThemes } from "@/lib/themes";
+import { getJpListed, getThemes } from "@/lib/theme-members";
 import {
   getSolanaStocks,
   summarize,
@@ -22,7 +22,7 @@ import {
  * files the same way. Static reads only; a missing file is null.
  */
 export async function loadRecords(): Promise<Records> {
-  const [usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes] =
+  const [usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes, jpListed] =
     await Promise.all([
       getPortfolioHistory().catch(() => null),
       getPortfolioEvaluations().catch(() => null),
@@ -34,8 +34,9 @@ export async function loadRecords(): Promise<Records> {
       getEarningsDates(),
       getFinancials(),
       getThemes(),
+      getJpListed(),
     ]);
-  return { usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes };
+  return { usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes, jpListed };
 }
 
 export async function loadSolanaStocks(): Promise<{

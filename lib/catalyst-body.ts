@@ -8,7 +8,7 @@ import {
   type Records,
 } from "@/lib/company-record";
 import { classifyCatalystAccess, type CatalystAccess } from "@/lib/catalyst-access";
-import { themesFor } from "@/lib/themes";
+import { themesFor } from "@/lib/theme-members";
 
 /**
  * Response bodies for /api/catalyst/{ticker}, kept out of the route so they can

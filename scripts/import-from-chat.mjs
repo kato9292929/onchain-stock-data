@@ -518,9 +518,20 @@ function importThemeCatalysts(p, files, ctx) {
     if (!listed && !/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(ticker)) reasons.push(`unlisted ticker must be an uppercase slug`);
     if (!nonEmpty(it?.company_name)) reasons.push("company_name is required");
     if (!nonEmpty(it?.question)) reasons.push("question is required");
-    const vague = vagueWithoutNumber(it?.question);
-    if (vague.length) reasons.push(`question uses vague wording (${vague.join("・")}) with no numeric threshold`);
-    reasons.push(...validateSuccessConditions(it?.success_conditions, at).map((e) => e.replace(`${at}: `, "")));
+    // A past edition's condition is recorded as it was published (history):
+    // it is not a new condition, so the 2026-11-05 wording rules do not apply,
+    // and it must say which condition replaced it, if any.
+    const history = it?.history === true;
+    if (history && p.author !== "article") reasons.push(`history items come from articles (author "article")`);
+    if (!history) {
+      const vague = vagueWithoutNumber(it?.question);
+      if (vague.length) reasons.push(`question uses vague wording (${vague.join("・")}) with no numeric threshold`);
+      reasons.push(...validateSuccessConditions(it?.success_conditions, at).map((e) => e.replace(`${at}: `, "")));
+    }
+    if (it?.superseded_by != null && !known.has(it.superseded_by)) {
+      reasons.push(`superseded_by ${it.superseded_by} is not on record`);
+    }
+    if (it?.supersedes != null && !known.has(it.supersedes)) reasons.push(`supersedes ${it.supersedes} is not on record`);
     if (!ISO_DATE.test(it?.target_date ?? "")) reasons.push("target_date must be YYYY-MM-DD");
     if (!DATE_CONFIDENCE.has(it?.date_confidence)) reasons.push(`date_confidence must be "confirmed" or "estimated"`);
     if (!isUrl(it?.source_url)) reasons.push("source_url (where the catalyst was published) is required");
@@ -545,7 +556,7 @@ function importThemeCatalysts(p, files, ctx) {
       conviction: null,
       agent_id: null,
       catalyst_description: fail ? `${question}【外れ方向】${fail}` : question,
-      success_conditions: it.success_conditions.map((c) => ({
+      success_conditions: (Array.isArray(it.success_conditions) ? it.success_conditions : []).map((c) => ({
         metric: String(c.metric).trim(),
         operator: c.operator,
         threshold: { value: c.threshold.value, unit: String(c.threshold.unit).trim() },
@@ -567,7 +578,17 @@ function importThemeCatalysts(p, files, ctx) {
       company_name: String(it.company_name).trim(),
       ...(listed ? {} : { unlisted: true }),
       author: p.author,
+      ...(history ? { edition: "history" } : {}),
+      ...(it.superseded_by != null ? { superseded_by: it.superseded_by, superseded_at: ctx.today } : {}),
+      ...(nonEmpty(it.superseded_reason) ? { superseded_reason: String(it.superseded_reason).trim() } : {}),
+      ...(nonEmpty(it.article_verdict) ? { article_verdict: String(it.article_verdict).trim() } : {}),
     });
+    // A new edition's condition replaces an older one: the old row keeps its
+    // text and result and gains a pointer to its replacement.
+    if (it.supersedes != null) {
+      const old = list.find((c) => c.catalyst_id === it.supersedes);
+      if (old && !old.superseded_by) Object.assign(old, { superseded_by: id, superseded_at: ctx.today });
+    }
     known.add(id);
     idByIndex.set(i, id);
     applied += 1;

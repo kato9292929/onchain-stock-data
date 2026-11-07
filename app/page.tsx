@@ -43,7 +43,7 @@ export default async function Home() {
                 <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Themes</div>
                 <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Dated catalysts by theme</h2>
                 <p className="mt-1 max-w-2xl text-sm text-slate-500">
-                  Neocloud, physical AI, data centers · power and the other sector themes, and the weekly selections — each company&apos;s dated
+                  Neocloud, physical AI and the sectors of the Japanese market — each company&apos;s dated
                   catalyst, next earnings date and Solana token, updated every week. A whole theme is{" "}
                   {THEME_CALL_PRICE.usdc} USDC per call.
                 </p>
@@ -60,6 +60,8 @@ export default async function Home() {
               </span>
             </div>
             <ThemeCards themes={themeIndex.themes} />
+            <h3 className="mb-3 mt-8 font-outfit text-lg font-semibold text-[#0a1b33]">This week&apos;s selection</h3>
+            <ThemeCards themes={themeIndex.selections} />
           </section>
         )}
 

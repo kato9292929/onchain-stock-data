@@ -1,5 +1,3 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import {
   conditionsFor,
   freeRow,
@@ -7,133 +5,32 @@ import {
   nextEarningsOf,
   type ConditionRowFull,
   type Records,
+  type RowStatus,
 } from "@/lib/company-record";
-import { sectorSlugFor } from "@/lib/catalyst-sectors";
+import { membersOf, type ThemeDef, type ThemesFile } from "@/lib/theme-members";
 import type { SolanaStocksFile } from "@/lib/solana-stocks";
 
+export { getThemes, membersOf, themesFor, type ThemeDef, type ThemesFile } from "@/lib/theme-members";
+
 /**
- * Themes: the stock lists the articles were written around (neocloud, physical
- * AI, the sector themes, the weekly selections), served as data. A theme is a
- * definition in data/themes.json plus a rule for who is in it; the catalysts
- * come from the same records every other endpoint reads, so a catalyst
- * imported today shows up here today.
+ * Theme responses. A theme is a sector × market (or an article series cut the
+ * same way); its member list follows the latest article edition, older
+ * editions' conditions stay on record with a status, and Weekly picks show up
+ * in the sector they belong to. Membership itself is lib/theme-members.ts.
  */
 
-export type MembersFrom =
-  | { kind: "series"; series: string; market?: "US" | "JP" }
-  /** Researched Japanese companies whose sector maps to `slug` (lib/catalyst-sectors.ts). */
-  | { kind: "sector"; slug: string }
-  | { kind: "weekly"; market: "US" | "JP" };
+const membershipOf = (rec: Records) => ({
+  usHistory: rec.usHistory,
+  jpHistory: rec.jpHistory ?? null,
+  externals: rec.externals,
+  jpListed: rec.jpListed ?? null,
+});
 
-export interface ThemeDef {
-  id: string;
-  rank: number;
-  title_ja: string;
-  title_en: string;
-  market: "US" | "JP";
-  members_from: MembersFrom;
-  articles: Array<{ url: string; title: string; published_at: string; pageviews: number | null }>;
-}
+export const members = (theme: ThemeDef, rec: Records) => membersOf(theme, membershipOf(rec));
 
-export interface ThemesFile {
-  updated_at: string;
-  themes: ThemeDef[];
-}
-
-export async function getThemes(): Promise<ThemesFile | null> {
-  try {
-    return JSON.parse(await fs.readFile(path.join(process.cwd(), "data", "themes.json"), "utf8")) as ThemesFile;
-  } catch {
-    return null;
-  }
-}
-
-export interface ThemeMember {
-  ticker: string;
-  company: string | null;
-  listed: boolean;
-}
-
-const JP_CODE = /^\d{3}[0-9A-Z]$/;
-const upper = (t: unknown) => String(t ?? "").trim().toUpperCase();
-
-/** A pick tagged with this theme in any Weekly week, beyond the rule's own members. */
-function taggedWeeklyMembers(id: string, rec: Records): ThemeMember[] {
-  const out: ThemeMember[] = [];
-  for (const h of [rec.usHistory, rec.jpHistory]) {
-    for (const w of [...(h?.current ? [h.current] : []), ...(h?.history ?? [])]) {
-      for (const x of (w as unknown as { holdings: Array<Record<string, unknown>> }).holdings ?? []) {
-        if (Array.isArray(x.themes) && (x.themes as string[]).includes(id)) {
-          out.push({ ticker: upper(x.ticker), company: (x.company_name as string) ?? null, listed: true });
-        }
-      }
-    }
-  }
-  return out;
-}
-
-/** Who is in a theme, deduplicated, in a stable order. */
-export function membersOf(theme: ThemeDef, rec: Records): ThemeMember[] {
-  const list: ThemeMember[] = [];
-  const m = theme.members_from;
-  if (m.kind === "series") {
-    for (const c of rec.externals) {
-      // The series the articles were written in, plus catalysts added to this theme since.
-      if (c.series !== m.series && c.series !== theme.id) continue;
-      const market = c.market ?? (JP_CODE.test(upper(c.ticker)) ? "JP" : "US");
-      if (m.market && market !== m.market) continue;
-      // Unlisted companies carry a slug as their ticker and say so.
-      const listed = market === "JP" ? JP_CODE.test(upper(c.ticker)) : !(c as { unlisted?: boolean }).unlisted;
-      list.push({ ticker: upper(c.ticker), company: c.company_name ?? null, listed });
-    }
-  } else if (m.kind === "sector") {
-    for (const c of rec.irFair?.catalysts ?? []) {
-      if (c.stage === "draft") continue;
-      const slug = (c as { sector_slug?: string }).sector_slug ?? sectorSlugFor(c.sector, c.ticker);
-      if (slug === m.slug) list.push({ ticker: upper(c.ticker), company: c.company_name, listed: true });
-    }
-  } else {
-    const h = m.market === "US" ? rec.usHistory : rec.jpHistory;
-    for (const x of h?.current?.holdings ?? []) {
-      list.push({ ticker: upper(x.ticker), company: x.company_name ?? null, listed: true });
-    }
-  }
-  // Any theme grows past its starting list: a company given a catalyst under
-  // the theme (theme_catalysts) is a member from then on, in any market.
-  if (m.kind !== "series") {
-    for (const c of rec.externals) {
-      if (c.series !== theme.id) continue;
-      const market = c.market ?? (JP_CODE.test(upper(c.ticker)) ? "JP" : "US");
-      const listed = market === "JP" ? JP_CODE.test(upper(c.ticker)) : !(c as { unlisted?: boolean }).unlisted;
-      list.push({ ticker: upper(c.ticker), company: c.company_name ?? null, listed });
-    }
-  }
-  list.push(...taggedWeeklyMembers(theme.id, rec));
-  const seen = new Map<string, ThemeMember>();
-  for (const x of list) {
-    const prev = seen.get(x.ticker);
-    if (!prev) seen.set(x.ticker, x);
-    else if (!prev.company && x.company) seen.set(x.ticker, { ...prev, company: x.company });
-  }
-  return [...seen.values()];
-}
-
-/** Theme ids a ticker belongs to, in rank order. */
-export function themesFor(ticker: string, themes: ThemesFile | null | undefined, rec: Records): string[] {
-  const want = upper(ticker);
-  return [...(themes?.themes ?? [])]
-    .sort((a, b) => a.rank - b.rank)
-    .filter((t) => membersOf(t, rec).some((m) => m.ticker === want))
-    .map((t) => t.id);
-}
-
-const PENDING = "pending";
-
-/** The nearest pending catalyst on or after today, else the latest one. */
-function currentCatalyst(rows: readonly ConditionRowFull[], today: string): ConditionRowFull | null {
-  const pending = rows.filter((r) => r.result === PENDING);
-  const ahead = pending.filter((r) => r.target_date >= today).sort((a, b) => (a.target_date < b.target_date ? -1 : 1));
-  return ahead[0] ?? [...pending].sort((a, b) => (a.target_date < b.target_date ? 1 : -1))[0] ?? null;
+/** The nearest active catalyst. */
+function currentCatalyst(rows: readonly ConditionRowFull[]): ConditionRowFull | null {
+  return [...rows].filter((r) => r.status === "active").sort((a, b) => (a.target_date < b.target_date ? -1 : 1))[0] ?? null;
 }
 
 function solanaMints(ticker: string, solana: SolanaStocksFile | null | undefined) {
@@ -147,50 +44,61 @@ const within = (date: string | null | undefined, today: string, days: number) =>
   return (Date.parse(`${date}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 864e5 <= days;
 };
 
-/** The date that matters next for a member: a confirmed earnings date, else its current catalyst's. */
+/** The date that matters next: a confirmed earnings date, else the current catalyst's. */
 function nextEventDate(ticker: string, rows: readonly ConditionRowFull[], rec: Records, today: string) {
   const ne = nextEarningsOf(ticker, rec, today);
-  const cur = currentCatalyst(rows, today);
-  const dates = [ne.status === "confirmed" ? ne.date : null, cur && cur.target_date >= today ? cur.target_date : null]
-    .filter((d): d is string => Boolean(d))
+  const cur = currentCatalyst(rows);
+  const dates = [ne.status === "confirmed" ? ne.date : null, cur?.target_date ?? null]
+    .filter((d): d is string => Boolean(d) && (d as string) >= today)
     .sort();
   return dates[0] ?? null;
 }
 
-/** GET /api/themes — every theme, rank order. */
+const STATUSES: RowStatus[] = ["active", "judged", "superseded", "expired"];
+
+export function statusCounts(rows: readonly ConditionRowFull[]): Record<RowStatus, number> {
+  const out = { active: 0, judged: 0, superseded: 0, expired: 0 } as Record<RowStatus, number>;
+  for (const r of rows) out[r.status] += 1;
+  return out;
+}
+
+/** Every member's rows, once per theme call. */
+function memberRows(theme: ThemeDef, rec: Records, today: string) {
+  return members(theme, rec).map((m) => ({ m, rows: conditionsFor(m.ticker, rec, today) }));
+}
+
+const latestArticle = (t: ThemeDef) => t.lineage.find((a) => a.role === "latest") ?? t.lineage.at(-1) ?? null;
+
+function lineageOut(t: ThemeDef) {
+  const latest = latestArticle(t);
+  return t.lineage.map((a) => ({ url: a.url, title: a.title, published_at: a.published_at, latest: a === latest }));
+}
+
+/** GET /api/themes — themes (active first, then rank) and, apart, the weekly selections. */
 export function themesIndexBody(themes: ThemesFile, rec: Records, today: string) {
-  return {
-    updated_at: latestUpdate(themes, rec),
-    themes: [...themes.themes]
-      .sort((a, b) => a.rank - b.rank)
-      .map((t) => {
-        const members = membersOf(t, rec);
-        const rows = members.map((m) => conditionsFor(m.ticker, rec));
-        return {
-          id: t.id,
-          title_ja: t.title_ja,
-          title_en: t.title_en,
-          market: t.market,
-          member_count: members.length,
-          events_next_14_days: members.filter((m, i) => within(nextEventDate(m.ticker, rows[i], rec, today), today, 14))
-            .length,
-          last_catalyst_added: lastAdded(rows.flat()),
-        };
-      }),
+  const card = (t: ThemeDef) => {
+    const mr = memberRows(t, rec, today);
+    const rows = mr.flatMap((x) => x.rows);
+    return {
+      id: t.id,
+      kind: t.kind,
+      title_ja: t.title_ja,
+      title_en: t.title_en,
+      market: t.market,
+      member_count: mr.length,
+      active_catalysts: rows.filter((r) => r.status === "active").length,
+      events_next_14_days: mr.filter(({ m, rows: r }) => within(nextEventDate(m.ticker, r, rec, today), today, 14)).length,
+      latest_article: latestArticle(t)?.url ?? null,
+    };
   };
-}
-
-function lastAdded(rows: readonly ConditionRowFull[]): string | null {
-  const d = rows.map((r) => r.week_of ?? r.judged_at ?? null).filter((x): x is string => Boolean(x)).sort();
-  return d.at(-1) ?? null;
-}
-
-function latestUpdate(themes: ThemesFile, rec: Records): string {
-  return [themes.updated_at, rec.usEvals?.updated_at, (rec.jpEvals as { updated_at?: string } | null)?.updated_at]
-    .filter((x): x is string => Boolean(x))
-    .map((x) => x.slice(0, 10))
-    .sort()
-    .at(-1)!;
+  const byRank = [...themes.themes].sort((a, b) => a.rank - b.rank);
+  const cards = byRank.filter((t) => t.kind !== "weekly").map(card);
+  return {
+    updated_at: themes.updated_at,
+    // Themes with something to judge come first; rank (readership) within each half.
+    themes: [...cards.filter((c) => c.active_catalysts > 0), ...cards.filter((c) => c.active_catalysts === 0)],
+    selections: byRank.filter((t) => t.kind === "weekly").map(card),
+  };
 }
 
 export function findTheme(themes: ThemesFile | null | undefined, id: string): ThemeDef | null {
@@ -205,26 +113,28 @@ export function themeFreeBody(
   today: string,
   baseUrl: string,
 ) {
-  const members = membersOf(theme, rec).map((m) => {
-    const rows = conditionsFor(m.ticker, rec);
-    return {
-      ticker: m.ticker,
-      company: m.company,
-      listed: m.listed,
-      next_earnings: nextEarningsOf(m.ticker, rec, today),
-      next_event_date: nextEventDate(m.ticker, rows, rec, today),
-      condition_count: rows.length,
-      solana_token: solanaMints(m.ticker, solana).length > 0,
-    };
-  });
+  const mr = memberRows(theme, rec, today);
+  const list = mr.map(({ m, rows }) => ({
+    ticker: m.ticker,
+    company: m.company,
+    listed: m.listed,
+    group: m.group ?? null,
+    source_article: m.source_article ?? null,
+    next_earnings: nextEarningsOf(m.ticker, rec, today),
+    next_event_date: nextEventDate(m.ticker, rows, rec, today),
+    active_catalysts: rows.filter((r) => r.status === "active").length,
+    solana_token: solanaMints(m.ticker, solana).length > 0,
+  }));
   return {
     id: theme.id,
+    kind: theme.kind,
     title_ja: theme.title_ja,
     title_en: theme.title_en,
     market: theme.market,
-    articles: theme.articles.map(({ url, title, published_at }) => ({ url, title, published_at })),
-    member_count: members.length,
-    members,
+    lineage: lineageOut(theme),
+    member_count: list.length,
+    active_catalysts: list.reduce((n, x) => n + x.active_catalysts, 0),
+    members: list,
     full: {
       url: `${baseUrl}/api/themes/${encodeURIComponent(theme.id)}?view=full`,
       price_usdc: "0.01",
@@ -234,57 +144,84 @@ export function themeFreeBody(
   };
 }
 
-/** GET /api/themes/{theme}?view=full — paid: every member's catalysts, latest verdict, Solana mints. */
+/** GET /api/themes/{theme}?view=full — paid: every member's catalysts by status, latest verdict, mints. */
 export function themeFullBody(
   theme: ThemeDef,
   rec: Records,
   solana: SolanaStocksFile | null | undefined,
   today: string,
 ) {
-  const members = membersOf(theme, rec).map((m) => {
-    const rows = conditionsFor(m.ticker, rec);
-    const cur = currentCatalyst(rows, today);
+  const mr = memberRows(theme, rec, today);
+  const list = mr.map(({ m, rows }) => {
+    const cur = currentCatalyst(rows);
     return {
       ticker: m.ticker,
       company: m.company,
       listed: m.listed,
+      group: m.group ?? null,
+      source_article: m.source_article ?? null,
       next_earnings: nextEarningsOf(m.ticker, rec, today),
       current_catalyst: cur ? freeRow(cur) : null,
       latest_verdict: latestVerdict(rows),
+      status_counts: statusCounts(rows),
       conditions: rows,
       solana_tokens: solanaMints(m.ticker, solana),
     };
   });
   return {
     id: theme.id,
+    kind: theme.kind,
     title_ja: theme.title_ja,
     title_en: theme.title_en,
     market: theme.market,
-    articles: theme.articles.map(({ url, title, published_at }) => ({ url, title, published_at })),
-    member_count: members.length,
-    members,
+    lineage: lineageOut(theme),
+    member_count: list.length,
+    status_counts: statusCounts(mr.flatMap((x) => x.rows)),
+    members: list,
   };
 }
 
 /**
- * For the weekly chat export: per theme, the members with a confirmed earnings
- * date or a pending catalyst date in the next `days` days, with their current
- * catalyst. These are the rows the chat renews with `theme_catalysts`.
+ * For the weekly chat export: per theme, members with a confirmed earnings
+ * date or an active catalyst in the next `days` days.
  */
 export function upcomingByTheme(themes: ThemesFile, rec: Records, today: string, days = 14) {
   return [...themes.themes]
     .sort((a, b) => a.rank - b.rank)
     .map((t) => ({
       theme: t,
-      members: membersOf(t, rec)
-        .map((m) => {
-          const rows = conditionsFor(m.ticker, rec);
-          const date = nextEventDate(m.ticker, rows, rec, today);
-          const cur = currentCatalyst(rows, today);
-          return { ...m, date, current: cur ? freeRow(cur) : null };
+      members: memberRows(t, rec, today)
+        .map(({ m, rows }) => {
+          const cur = currentCatalyst(rows);
+          return { ...m, date: nextEventDate(m.ticker, rows, rec, today), current: cur ? freeRow(cur) : null };
         })
         .filter((m) => within(m.date, today, days))
         .sort((a, b) => ((a.date ?? "") < (b.date ?? "") ? -1 : 1)),
     }))
     .filter((x) => x.members.length > 0);
 }
+
+/**
+ * Listed members whose conditions have all run out (judged, expired or
+ * superseded, none active): their theme needs the next quarter's condition.
+ * Members that never had a condition are new coverage, not renewal, and are
+ * left out.
+ */
+export function needsRenewal(themes: ThemesFile, rec: Records, today: string) {
+  return [...themes.themes]
+    .filter((t) => t.kind !== "weekly")
+    .sort((a, b) => a.rank - b.rank)
+    .map((t) => ({
+      theme: t,
+      members: memberRows(t, rec, today)
+        .filter(({ m, rows }) => m.listed && rows.length > 0 && !rows.some((r) => r.status === "active"))
+        .map(({ m, rows }) => {
+          const byDate = [...rows].sort((a, b) => (a.target_date < b.target_date ? 1 : -1));
+          const last = byDate.find((r) => r.status !== "superseded") ?? byDate[0];
+          return { ...m, counts: statusCounts(rows), last: freeRow(last) };
+        }),
+    }))
+    .filter((x) => x.members.length > 0);
+}
+
+export { STATUSES };

@@ -8,7 +8,7 @@ import type {
 } from "@/lib/data";
 import type { IrFairFile } from "@/lib/ir-fair-scoreboard";
 import type { SignalsFile } from "@/lib/signals";
-import type { ThemesFile } from "@/lib/themes";
+import { themesFor, type JpListedFile, type ThemesFile } from "@/lib/theme-members";
 
 /**
  * What this site holds on one company, in the shape every API response uses:
@@ -82,6 +82,7 @@ export interface Records {
   earnings?: EarningsDatesFile | null;
   financials?: FinancialsFile | null;
   themes?: ThemesFile | null;
+  jpListed?: JpListedFile | null;
 }
 
 // ── next earnings ─────────────────────────────────────────────────────────
@@ -132,7 +133,22 @@ export interface ConditionRow {
    * source_doc), where it was written that way; null for older rows.
    */
   success_conditions: StructuredCondition[] | null;
+  /**
+   * active      the target date is ahead and this is the current edition's condition
+   * judged      a verdict was given (hit / partial / miss / na)
+   * superseded  a newer edition replaced it (superseded_by), or dropped the company
+   * expired     the target date passed and no verdict yet
+   */
+  status: RowStatus;
+  /** The row that replaced this one, when a newer edition did. */
+  superseded_by: string | null;
+  /** The article the condition (or its scoring) was published in, when there is one. */
+  source_article: string | null;
+  /** Theme ids the company belongs to (not the weekly selections). */
+  themes: string[];
 }
+
+export type RowStatus = "active" | "judged" | "superseded" | "expired";
 
 export interface StructuredCondition {
   metric: string;
@@ -143,6 +159,8 @@ export interface StructuredCondition {
 
 /** Paid rows add the reasoning and the full trail. */
 export interface ConditionRowFull extends ConditionRow {
+  /** Internal: the record a row was read from; removed before a row is served. */
+  raw_id?: string;
   evidence_urls: string[];
   reasoning: string | null;
   evaluator: string | null;
@@ -239,6 +257,11 @@ export function weeklyRows(
       reasoning: e.reasoning,
       evaluator: str(x.evaluator),
       verdict_history: Array.isArray(x.verdict_history) ? (x.verdict_history as unknown[]) : [],
+      status: "active",
+      superseded_by: null,
+      source_article: null,
+      themes: [],
+      raw_id: undefined,
     });
   }
   return rows;
@@ -267,11 +290,20 @@ export function externalRow(c: ExternalCatalyst): ConditionRowFull {
     reasoning: c.reasoning,
     evaluator: str(x.evaluator),
     verdict_history: Array.isArray(x.verdict_history) ? (x.verdict_history as unknown[]) : [],
+    status: "active",
+    superseded_by: null,
+    source_article: null,
+    themes: [],
+    raw_id: c.catalyst_id,
   };
 }
 
 /** Every condition this site holds on `ticker`, newest deadline first. */
-export function conditionsFor(ticker: string, rec: Records): ConditionRowFull[] {
+export function conditionsFor(
+  ticker: string,
+  rec: Records,
+  today: string = new Date().toISOString().slice(0, 10),
+): ConditionRowFull[] {
   const want = ticker.toUpperCase();
   const rows: ConditionRowFull[] = [
     ...weeklyRows("us", rec.usHistory, rec.usEvals, want),
@@ -306,11 +338,43 @@ export function conditionsFor(ticker: string, rec: Records): ConditionRowFull[] 
       reasoning: str(x.reasoning),
       evaluator: str(x.evaluator),
       verdict_history: Array.isArray(x.verdict_history) ? (x.verdict_history as unknown[]) : [],
+      status: "active",
+      superseded_by: null,
+      source_article: null,
+      themes: [],
+      raw_id: undefined,
     });
+  }
+
+  // Status, replacement and theme tags, from the raw records.
+  const raw = new Map(rec.externals.map((c) => [c.catalyst_id, c as unknown as Loose]));
+  const themes = themesFor(want, rec.themes, {
+    usHistory: rec.usHistory,
+    jpHistory: rec.jpHistory ?? null,
+    externals: rec.externals,
+    jpListed: rec.jpListed ?? null,
+  });
+  for (const r of rows) {
+    const src = r.raw_id ? raw.get(r.raw_id) : undefined;
+    const by = src ? str(src.superseded_by) : null;
+    const replaced = Boolean(by || src?.superseded_at || src?.superseded_reason);
+    r.superseded_by = by ? catalystPublicId(by, str(raw.get(by)?.series)) : null;
+    r.source_article = src ? str(src.source_article) ?? (str(src.source_url)?.includes("note.com/") ? str(src.source_url) : null) : null;
+    r.status = JUDGED_RESULTS.has(r.result)
+      ? "judged"
+      : replaced
+        ? "superseded"
+        : r.result === "excluded" || r.target_date < today
+          ? "expired"
+          : "active";
+    r.themes = themes;
+    delete r.raw_id;
   }
 
   return rows.sort((a, b) => (a.target_date < b.target_date ? 1 : a.target_date > b.target_date ? -1 : 0));
 }
+
+const JUDGED_RESULTS = new Set<Result>(["hit", "partial", "miss", "na"]);
 
 /** The free subset of a row: no reasoning, no history. */
 export function freeRow(r: ConditionRowFull): ConditionRow {
@@ -328,6 +392,10 @@ export function freeRow(r: ConditionRowFull): ConditionRow {
     judged_at: r.judged_at,
     evidence_url: r.evidence_url,
     success_conditions: r.success_conditions,
+    status: r.status,
+    superseded_by: r.superseded_by,
+    source_article: r.source_article,
+    themes: r.themes,
   };
 }
 

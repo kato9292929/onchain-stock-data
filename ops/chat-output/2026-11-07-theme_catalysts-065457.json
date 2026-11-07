@@ -1,0 +1,54 @@
+{
+  "type": "theme_catalysts",
+  "author": "article",
+  "items": [
+    {
+      "theme": "physical-ai-models-us",
+      "market": "US",
+      "ticker": "APPLIEDINT",
+      "company_name": "Applied Intuition",
+      "listed": false,
+      "question": "2026年12月31日までに、Danaの社外提供（顧客名または提供開始時期の公表）が発表される",
+      "fail_direction": "社内利用の事例紹介に留まり、外部顧客の公表がないまま年を越す。社内20倍という数字は外部検証ができない",
+      "success_conditions": [
+        {
+          "metric": "Dana offered outside the company (customer name or launch date announced)",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Applied Intuition announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/naee21cd4b6e4",
+      "supersedes": "ext_88cd3fd3"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "ENACTIC",
+      "company_name": "Enactic",
+      "listed": false,
+      "question": "2026年12月31日までに、介護施設での実証または導入について施設名・台数を含む公表がある",
+      "success_conditions": [
+        {
+          "metric": "介護施設での実証・導入の公表（施設名と台数を含む）",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Enactic プレスリリース・提携施設の発表"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n1b8e66c7fa8e",
+      "supersedes": "ext_3910ff79",
+      "fail_direction": "GR00Tのファインチューニングが研究開発の言及止まりで、現場の数字が出ないまま推移"
+    }
+  ]
+}

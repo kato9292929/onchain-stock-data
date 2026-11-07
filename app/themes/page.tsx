@@ -22,6 +22,13 @@ export default async function ThemesPage() {
         </p>
       </header>
       <ThemeCards themes={index.themes} />
+      <section className="space-y-3">
+        <h2 className="font-outfit text-xl font-semibold text-[#0a1b33]">This week&apos;s selection</h2>
+        <p className="max-w-2xl text-sm text-slate-500">
+          Not a sector: the picks of the week. Each pick also appears in the sector theme it belongs to.
+        </p>
+        <ThemeCards themes={index.selections} />
+      </section>
     </div>
   );
 }
