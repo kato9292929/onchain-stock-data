@@ -189,7 +189,7 @@ const res = await fetchWithPay("https://osd.x402jp.com/api/catalyst/7203");
 
 ### Delivery Receipt
 
-本番の有料ルート（Solana USDC、`withX402AndInternal` 経由のもの。テストネットの `/api/testnet/signal` は除く）は、[Delivery Receipt](https://github.com/kato9292929/delivery-receipt)（`lib/delivery-receipt` に取り込み）に対応する。
+本番の有料ルート（Solana USDC、`withX402AndInternal` 経由のもの。テストネットの `/api/testnet/signal` は除く）は、[Delivery Receipt](https://github.com/kato9292929/delivery-receipt)（npm の `@x402jp/delivery-receipt-seller`）に対応する。
 
 - settle が成功した 200 は、本文を送る前に記録し（Upstash、キー `receipt:*`、8 日）、`X-Delivery-Receipt`（Ed25519 の署名付きレシート）を付ける。
 - 元の支払いヘッダ＋`X-Payment-Refetch: {支払いID}` の要求は withX402 を通さず（verify・settle なし）、記録があれば保存した本文を返す。記録がなくチェーン上で決済済みなら作り直して返す。どちらも無ければ 402、7 日を過ぎたら 410。
