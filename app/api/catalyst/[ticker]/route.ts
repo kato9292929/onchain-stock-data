@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 /**
  * GET /api/catalyst/{ticker}            PAID (x402 per-call, 0.001 USDC on
  *                                       Solana mainnet, exact-svm) — every
- *                                       condition set on the company (IR Fair,
+ *                                       condition set on the company (sectors,
  *                                       Physical AI, US / JP Weekly) with
  *                                       result, evidence, reasoning and
  *                                       history; next earnings from a primary
@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
  * GET /api/catalyst/{ticker}?view=free  FREE — identity, next earnings,
  *                                       condition counts, latest verdict
  *
- * A covered company with no condition yet (IR Fair draft) has nothing to sell
+ * A covered company with no condition yet (an unresearched draft) has nothing to sell
  * and is answered with the free view, unpaid. An unknown ticker is 404 before
  * any challenge. Static reads of committed files — no market data, no model.
  * The AA weekly buyer (scripts/x402-weekly-buyer.mjs) hits the paid view.

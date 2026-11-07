@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PER_CALL_PRICE, PUBLIC_BASE_URL } from "@/lib/x402";
+import { PER_CALL_PRICE, PUBLIC_BASE_URL, THEME_CALL_PRICE } from "@/lib/x402";
 
 export const metadata = { title: "API fields — Onchain Stock Data" };
 
@@ -55,14 +55,30 @@ export default function DocsPage() {
           rows={[
             ["GET /api/solana-stocks/{ticker}", "Free. Tokenized stock on Solana: tokens and mints, next_earnings, condition_count, result_counts, latest_verdict."],
             ["GET /api/solana-stocks/{ticker}?view=full", "Paid when the ticker has a condition. Adds conditions (full rows), financials, signals."],
-            ["GET /api/catalyst/{ticker}?view=free", "Free. Any company with a condition (US / JP Weekly, IR Fair, Physical AI): identity, next_earnings, counts, latest_verdict."],
-            ["GET /api/catalyst/{ticker}", "Paid when the company has a condition; a covered company without one gets the free view at no cost. Adds conditions, financials, signals."],
+            ["GET /api/catalyst/{ticker}?view=free", "Free. Any company with a condition (US / JP Weekly, sector themes, neocloud, Physical AI): identity, next_earnings, counts, latest_verdict."],
+            ["GET /api/catalyst/{ticker}", "Paid when the company has a condition; a covered company without one gets the free view at no cost. Adds conditions, financials, signals. Both views carry themes (the theme ids the company belongs to)."],
+            ["GET /api/themes", "Free. themes (those with active catalysts first) and, apart, selections (weekly): id, kind, title, member_count, active_catalysts, events_next_14_days, latest_article."],
+            ["GET /api/themes/{theme}", "Free. lineage (editions, latest marked) and members: ticker, company, listed, group, source_article, next_earnings, next_event_date, active_catalysts, solana_token."],
+            [`GET /api/themes/{theme}?view=full`, `Paid, ${THEME_CALL_PRICE.usdc} USDC. Per member: current_catalyst, latest_verdict, status_counts, conditions (full rows with status), solana_tokens (issuer, symbol, mint).`],
           ]}
         />
         <p className="text-[12px] text-slate-500">
           Example: <code>{`${PUBLIC_BASE_URL}/api/catalyst/6920?view=free`}</code>. An unknown ticker is 404 before any
           payment is asked for.
         </p>
+      </Section>
+
+      <Section id="themes" title="Themes">
+        <Fields
+          rows={[
+            ["id", "A sector × market: neocloud-us, neocloud-jp, physical-ai-semis-us, physical-ai-robotics-us, physical-ai-models-us, physical-ai-jp, semiconductor-supply-chain-jp, datacenter-power-jp, space-geospatial-jp, infrastructure-resilience-jp, healthcare-jp, edge-ai-field-dx-jp, financials-jp, mobility-auto-parts-jp, food-staples-jp. weekly-us and weekly-jp are the week's selection and are listed apart (selections)."],
+            ["members", "The latest article edition's list (lineage marks it latest), with the article's sub-grouping in group; plus any company a catalyst was later added to under the theme, and Weekly picks in their sector. A company with no active catalyst is still listed. source_article is where the company was picked from (e.g. the IR fair exhibitor map), not a theme."],
+            ["next_event_date", "The nearer of a confirmed earnings date and the current catalyst's target date, on or after today."],
+            ["current_catalyst", "The nearest active catalyst, as a full row; null when the company has none."],
+            ["success_conditions", "On rows written since 2026-11-05: metric, operator (> >= < <=), threshold {value, unit} and source_doc — the document it is judged against. A disclosure that has to happen is {value: 1, unit: \"event\"}."],
+            ["updates", "New catalysts are added weekly through the chat operation (theme_catalysts) and appear the same day; existing ones are never rewritten. A newer edition's condition replaces an older one by status, not by deletion."],
+          ]}
+        />
       </Section>
 
       <Section id="next-earnings" title="next_earnings">
@@ -89,14 +105,17 @@ export default function DocsPage() {
         </p>
         <Fields
           rows={[
-            ["id", "Stable, readable row id: us-weekly-{week}-{ticker}, jp-weekly-{week}-{ticker}, physical-ai-{n}, ir-fair-2026-{ticker}."],
+            ["id", "Stable, readable row id: us-weekly-{week}-{ticker}, jp-weekly-{week}-{ticker}, physical-ai-{n}, neocloud-us-{n}, jp-sector-{ticker}."],
             ["ticker / company", "The company the condition is about."],
-            ["population", "US Weekly Selection, JP Weekly Selection, Physical AI series, IR Fair 2026, Submitted catalyst. Hit-rates are reported per population."],
+            ["population", "US Weekly Selection, JP Weekly Selection, Physical AI series, Neocloud US, Neocloud Japan, JP Sector Research, Submitted catalyst. Hit-rates are reported per population."],
             ["week_of", "Weekly rows: the Monday of the selection week."],
             ["question", "The condition being judged — what has to be disclosed for a hit."],
             ["fail_direction", "What a miss would look like, as written with the condition. Not judged on its own."],
             ["target_date", "The date the condition is judged on. When the company's own date was checked, that date (target_date_source_url is the IR page); otherwise the date written with the condition. Judging waits until 7 days after it."],
             ["result", "hit / partial / miss / na (the date passed and nothing could be judged) / pending / excluded (left the population before its date, e.g. delisted)."],
+            ["status", "active (target date ahead, current edition) / judged (a verdict was given) / superseded (a newer edition replaced it — superseded_by is the replacement — or dropped the company) / expired (date passed, no verdict yet)."],
+            ["source_article", "The article the condition, or its scoring, was published in."],
+            ["themes", "Theme ids the company belongs to; Weekly rows carry the sector theme of the pick (e.g. semiconductor-supply-chain-jp)."],
             ["judged_at", "When the result was given."],
             ["evidence_url", "The disclosure the result was judged against (first of evidence_urls)."],
             ["reasoning (paid)", "What was observed against the question."],

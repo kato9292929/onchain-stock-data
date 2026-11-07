@@ -1,0 +1,795 @@
+{
+  "type": "theme_catalysts",
+  "author": "article",
+  "items": [
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "CRWV",
+      "company_name": "CoreWeave",
+      "listed": true,
+      "question": "第3四半期売上が34.5〜36億ドルに入り、通期ガイダンス124〜132億ドルを維持",
+      "fail_direction": "第3四半期の未達、または通期ガイダンスの引き下げ",
+      "success_conditions": [
+        {
+          "metric": "Q3 2026 revenue",
+          "operator": ">=",
+          "threshold": {
+            "value": 3.45,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q3 2026 earnings release (8-K Ex.99.1) / 10-Q"
+        },
+        {
+          "metric": "FY2026 revenue guidance, low end",
+          "operator": ">=",
+          "threshold": {
+            "value": 12.4,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q3 2026 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-20",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "NBIS",
+      "company_name": "Nebius",
+      "listed": true,
+      "question": "年末のARRが70億ドル以上",
+      "fail_direction": "ARRガイダンスの引き下げ",
+      "success_conditions": [
+        {
+          "metric": "ARR at year-end 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 7,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q4 2026 shareholder letter / 6-K"
+        }
+      ],
+      "target_date": "2027-02-28",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "NBIS",
+      "company_name": "Nebius",
+      "listed": true,
+      "question": "年末の接続済み電力が0.8GW以上",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "connected power at year-end 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 0.8,
+            "unit": "GW"
+          },
+          "source_doc": "Q4 2026 shareholder letter / 6-K"
+        }
+      ],
+      "target_date": "2027-02-28",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 1
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "IREN",
+      "company_name": "IREN",
+      "listed": true,
+      "question": "2026年12月31日までに Horizon 2〜4 を納入し、稼働ARRを40億ドルに接続",
+      "fail_direction": "Horizon 3〜4 の2027年へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "Horizon 2–4 delivered",
+          "operator": ">=",
+          "threshold": {
+            "value": 3,
+            "unit": "sites"
+          },
+          "source_doc": "company announcement / 10-Q"
+        },
+        {
+          "metric": "operating ARR",
+          "operator": ">=",
+          "threshold": {
+            "value": 4,
+            "unit": "USD bn"
+          },
+          "source_doc": "company announcement / 10-Q"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "APLD",
+      "company_name": "Applied Digital",
+      "listed": true,
+      "question": "2026年12月31日までにノースダコタの稼働容量300MWと、約250MWの拡張リース契約",
+      "fail_direction": "拡張リースの未締結、または2027年稼働キャンパスの後ろ倒し",
+      "success_conditions": [
+        {
+          "metric": "North Dakota operating capacity",
+          "operator": ">=",
+          "threshold": {
+            "value": 300,
+            "unit": "MW"
+          },
+          "source_doc": "FY27 Q2 earnings release / 10-Q"
+        },
+        {
+          "metric": "new expansion lease signed",
+          "operator": ">=",
+          "threshold": {
+            "value": 250,
+            "unit": "MW"
+          },
+          "source_doc": "8-K / press release"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "CIFR",
+      "company_name": "Cipher Mining",
+      "listed": true,
+      "question": "Barber Lake の最初の賃料発生が2026年第4四半期中",
+      "fail_direction": "最初の賃料発生の2027年へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "Barber Lake first rent recognized in Q4 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Q4 2026 earnings release / 10-K"
+        }
+      ],
+      "target_date": "2027-02-28",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "WULF",
+      "company_name": "TeraWulf",
+      "listed": true,
+      "question": "第3四半期決算でCB-4の契約上の引き渡し完了を確認",
+      "fail_direction": "CB-4 の引き渡しの第4四半期以降へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "CB-4 contractual handover completed",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Q3 2026 earnings release / 10-Q"
+        }
+      ],
+      "target_date": "2026-11-06",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "WULF",
+      "company_name": "TeraWulf",
+      "listed": true,
+      "question": "CB-5 の最初のデータホールが2027年1月上旬に通電",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "CB-5 first data hall energized by early January 2027",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "press release / Q4 2026 earnings release"
+        }
+      ],
+      "target_date": "2027-01-10",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 6
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "CORZ",
+      "company_name": "Core Scientific",
+      "listed": true,
+      "question": "AMD 向け容量の最初の引き渡しを2027年上期中に開始",
+      "fail_direction": "最初の引き渡しの2027年下期へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "first capacity handover to AMD started in H1 2027",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "10-Q / press release"
+        }
+      ],
+      "target_date": "2027-06-30",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "HUT",
+      "company_name": "Hut 8",
+      "listed": true,
+      "question": "Beacon Point の通電が2027年第1四半期の計画どおり",
+      "fail_direction": "ERCOT の審査停止による通電の後ろ倒し",
+      "success_conditions": [
+        {
+          "metric": "Beacon Point energized in Q1 2027",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "press release / Q1 2027 10-Q"
+        }
+      ],
+      "target_date": "2027-03-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "HUT",
+      "company_name": "Hut 8",
+      "listed": true,
+      "question": "2026年内に新規テナントを公表",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "new tenant announced in 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "press release / 8-K"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 9
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "HIVE",
+      "company_name": "HIVE Digital",
+      "listed": true,
+      "question": "Bell / Cohere 向け GB200 の稼働開始を2026年内に公表",
+      "fail_direction": "稼働開始の2027年へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "Bell / Cohere GB200 deployment live, announced in 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "press release / 6-K"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "HIVE",
+      "company_name": "HIVE Digital",
+      "listed": true,
+      "question": "2026年第4四半期にGPU ARR 2億ドルの目標に達する",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "GPU cloud ARR in Q4 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 200,
+            "unit": "USD m"
+          },
+          "source_doc": "quarterly results / 6-K"
+        }
+      ],
+      "target_date": "2027-02-28",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 11
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "WYFI",
+      "company_name": "WhiteFiber",
+      "listed": true,
+      "question": "第3四半期決算で NC-1 の40MW全量の課金を確認",
+      "fail_direction": "40MW の課金開始の第4四半期以降へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "NC-1 capacity billing",
+          "operator": ">=",
+          "threshold": {
+            "value": 40,
+            "unit": "MW"
+          },
+          "source_doc": "Q3 2026 earnings release / 10-Q"
+        }
+      ],
+      "target_date": "2026-11-20",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "WYFI",
+      "company_name": "WhiteFiber",
+      "listed": true,
+      "question": "Baseten 向けサービスが11月に開始",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "Baseten service started in November 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "press release / Q4 2026 earnings release"
+        }
+      ],
+      "target_date": "2026-11-30",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 13
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "LAMBDA",
+      "company_name": "Lambda",
+      "listed": false,
+      "question": "40億ドルの上場前調達を2026年内に完了",
+      "fail_direction": "調達の不成立または縮小",
+      "success_conditions": [
+        {
+          "metric": "pre-IPO funding round closed",
+          "operator": ">=",
+          "threshold": {
+            "value": 4,
+            "unit": "USD bn"
+          },
+          "source_doc": "company announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "LAMBDA",
+      "company_name": "Lambda",
+      "listed": false,
+      "question": "公開の S-1 を2026年内に提出",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "public S-1 filed in 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "SEC EDGAR"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 15
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "CRUSOE",
+      "company_name": "Crusoe",
+      "listed": false,
+      "question": "アビリーンの8棟すべての稼働を2026年内に確認",
+      "fail_direction": "第7〜8棟の2027年へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "Abilene buildings operational",
+          "operator": ">=",
+          "threshold": {
+            "value": 8,
+            "unit": "buildings"
+          },
+          "source_doc": "Oracle FY27 Q2 earnings call / Crusoe announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "TOGETHER",
+      "company_name": "Together AI",
+      "listed": false,
+      "question": "HUMAIN との250MW計画の着工時期を2026年内に公表",
+      "fail_direction": "着工時期の未公表",
+      "success_conditions": [
+        {
+          "metric": "construction start date of the 250MW HUMAIN project announced",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "company announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "TOGETHER",
+      "company_name": "Together AI",
+      "listed": false,
+      "question": "IBM Cloud の容量が2027年第1四半期に稼働",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "IBM Cloud capacity live in Q1 2027",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "company announcement / IBM announcement"
+        }
+      ],
+      "target_date": "2027-03-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "sub",
+      "parent_index": 18
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "TENSORWAVE",
+      "company_name": "TensorWave",
+      "listed": false,
+      "question": "Fermi America とのリースが10月31日にクロージング",
+      "fail_direction": "再延期または解約",
+      "success_conditions": [
+        {
+          "metric": "Fermi America lease closed by 2026-10-31",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Fermi America 8-K / press release"
+        }
+      ],
+      "target_date": "2026-10-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "VULTR",
+      "company_name": "Vultr",
+      "listed": false,
+      "question": "10億ドル超の資金調達の完了を2026年内に公表",
+      "fail_direction": "年内の公表なし",
+      "success_conditions": [
+        {
+          "metric": "funding round closed",
+          "operator": ">",
+          "threshold": {
+            "value": 1,
+            "unit": "USD bn"
+          },
+          "source_doc": "company announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "LIGHTNINGAI",
+      "company_name": "Lightning AI",
+      "listed": false,
+      "question": "GB300 の追加容量（MW またはGPU数）を2026年内に公表",
+      "fail_direction": "年内の公表なし",
+      "success_conditions": [
+        {
+          "metric": "additional GB300 capacity (MW or GPUs) announced in 2026",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "company announcement"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "SFCOMPUTE",
+      "company_name": "SF Compute",
+      "listed": false,
+      "question": "第4四半期の契約総額を開示し、第3四半期の2.45億ドルを上回る",
+      "fail_direction": "開示なし、または第3四半期を下回る",
+      "success_conditions": [
+        {
+          "metric": "Q4 2026 contracted volume",
+          "operator": ">",
+          "threshold": {
+            "value": 245,
+            "unit": "USD m"
+          },
+          "source_doc": "company disclosure"
+        }
+      ],
+      "target_date": "2027-01-31",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "3778",
+      "company_name": "さくらインターネット",
+      "listed": true,
+      "question": "上期（4〜9月）の営業利益が修正後の予想22億円以上",
+      "fail_direction": "上期の営業利益が22億円に届かない、または通期予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "上期（2026年4〜9月）営業利益",
+          "operator": ">=",
+          "threshold": {
+            "value": 22,
+            "unit": "億円"
+          },
+          "source_doc": "2027年3月期 第2四半期 決算短信"
+        }
+      ],
+      "target_date": "2026-10-28",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "3905",
+      "company_name": "データセクション",
+      "listed": true,
+      "question": "第2四半期決算で通期予想（売上1,621.9億円・営業利益248.2億円）を据え置く",
+      "fail_direction": "通期予想の下方修正、または大型案件の計上時期の後ろ倒し",
+      "success_conditions": [
+        {
+          "metric": "通期予想 売上高",
+          "operator": ">=",
+          "threshold": {
+            "value": 1621.9,
+            "unit": "億円"
+          },
+          "source_doc": "2027年3月期 第2四半期 決算短信"
+        },
+        {
+          "metric": "通期予想 営業利益",
+          "operator": ">=",
+          "threshold": {
+            "value": 248.2,
+            "unit": "億円"
+          },
+          "source_doc": "2027年3月期 第2四半期 決算短信"
+        }
+      ],
+      "target_date": "2026-11-16",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "3905",
+      "company_name": "データセクション",
+      "listed": true,
+      "question": "第2四半期累計の売上が通期予想の25%以上",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "第2四半期累計売上高 ÷ 通期予想売上高",
+          "operator": ">=",
+          "threshold": {
+            "value": 25,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期 決算短信"
+        }
+      ],
+      "target_date": "2026-11-16",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "sub",
+      "parent_index": 25
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "4784",
+      "company_name": "GMOインターネット",
+      "listed": true,
+      "question": "4月決定の42台が2026年第4四半期に納入され、提供を開始したと開示する",
+      "fail_direction": "42台の納入の2027年へのずれ込み",
+      "success_conditions": [
+        {
+          "metric": "4月決定のGPUサーバーのうち納入・提供開始済み",
+          "operator": ">=",
+          "threshold": {
+            "value": 42,
+            "unit": "台"
+          },
+          "source_doc": "2026年12月期 決算短信・決算説明資料"
+        }
+      ],
+      "target_date": "2027-02-15",
+      "date_confidence": "estimated",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "9434",
+      "company_name": "ソフトバンク",
+      "listed": true,
+      "question": "GPUクラウド（Infrinia AI Cloud OS、GB200 NVL72）の提供開始を10月31日までに発表",
+      "fail_direction": "提供開始の11月以降へのずれ込み、または提供機能の縮小",
+      "success_conditions": [
+        {
+          "metric": "GPUクラウド（Infrinia AI Cloud OS、GB200 NVL72）の提供開始の発表",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "ソフトバンク プレスリリース"
+        }
+      ],
+      "target_date": "2026-10-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "9434",
+      "company_name": "ソフトバンク",
+      "listed": true,
+      "question": "第2四半期決算で1兆円枠の執行額を開示",
+      "fail_direction": null,
+      "success_conditions": [
+        {
+          "metric": "GPU投資1兆円枠の執行額の開示",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "2027年3月期 第2四半期 決算短信・決算説明資料"
+        }
+      ],
+      "target_date": "2026-11-09",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "sub",
+      "parent_index": 28
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "9433",
+      "company_name": "KDDI",
+      "listed": true,
+      "question": "大阪堺データセンター第2期、または首都圏新拠点のGPU投資額を2026年内に公表",
+      "fail_direction": "年内の公表なし",
+      "success_conditions": [
+        {
+          "metric": "大阪堺DC第2期 または 首都圏新拠点のGPU投資額の公表",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "KDDI プレスリリース・決算説明資料"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n7b0a50e89402",
+      "role": "main"
+    }
+  ]
+}

@@ -35,6 +35,8 @@ import {
 } from "./lib/chat-ops.mjs";
 import { excludeDelisted } from "../lib/listing-status.ts";
 import { diffHoldings, MAX_HOLDING_WEIGHT } from "../lib/portfolio.ts";
+import { themesFor } from "../lib/themes.ts";
+import { createHash } from "node:crypto";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const STATUSES = new Set(["hit", "partial", "miss", "na"]);
@@ -55,6 +57,7 @@ export const FILES = {
   signals: "data/signals.json",
   eras: "data/operation-eras.json",
   listed: "data/jp-listed.json",
+  themes: "data/themes.json",
 };
 
 const isUrl = (u) => typeof u === "string" && /^https?:\/\/[^\s]+\.[^\s]+/.test(u);
@@ -117,6 +120,12 @@ function importSelection(p, files, ctx) {
       errors.push(`${at}: thesis uses vague wording (${vague.join("・")}) with no numeric threshold`);
     }
     errors.push(...validateSuccessConditions(h?.success_conditions, at));
+    const themeIds = new Set((files.themes?.themes ?? []).map((t) => t.id));
+    if (h?.themes !== undefined) {
+      if (!Array.isArray(h.themes) || h.themes.some((t) => !themeIds.has(t))) {
+        errors.push(`${at}: themes must be ids from data/themes.json`);
+      }
+    }
     if (!ISO_DATE.test(h?.target_date ?? "")) errors.push(`${at}: target_date must be YYYY-MM-DD`);
     else if (h.target_date < p.week_of) errors.push(`${at}: target_date ${h.target_date} is before week_of`);
     if (h?.target_date_source !== "model" && h?.target_date_source !== "verified") {
@@ -139,6 +148,14 @@ function importSelection(p, files, ctx) {
         source_doc: String(c?.source_doc ?? "").trim(),
       })),
     };
+    // Every pick carries the themes it belongs to: the ones named in the
+    // answer plus the ones its ticker is already a member of.
+    row.themes = [
+      ...new Set([
+        ...(Array.isArray(h?.themes) ? h.themes : []),
+        ...themesFor(ticker, files.themes, recordsOf(files)).filter((t) => !t.startsWith("weekly-")),
+      ]),
+    ];
     if (h?.target_date_source === "verified") {
       row.target_date_confirmed_source = h.target_date_source_url;
       row.target_date_checked_at = ctx.today;
@@ -445,6 +462,149 @@ function importDateChecks(p, files, ctx) {
   return { writes, applied, rejected, notes: [], label: `${applied}行` };
 }
 
+// ── theme_catalysts ───────────────────────────────────────────────────────
+
+/** The records shape lib/ reads, from the importer's files. */
+function recordsOf(files) {
+  return {
+    usHistory: files.usHistory ?? null,
+    usEvals: files.usEvals ?? null,
+    jpHistory: files.jpHistory ?? null,
+    jpEvals: files.jpEvals ?? null,
+    externals: files.externals ?? [],
+    irFair: files.irFair ?? null,
+    signals: null,
+  };
+}
+
+const THEME_AUTHORS = new Set([CHAT_MODEL, "article"]);
+const DATE_CONFIDENCE = new Set(["confirmed", "estimated"]);
+
+/** Same theme, ticker, deadline and wording → the same id, so a resend is a no-op. */
+export function themeCatalystId(theme, ticker, targetDate, question) {
+  const h = createHash("sha256").update(`${theme}|${ticker}|${targetDate}|${question}`).digest("hex");
+  return `ext_${h.slice(0, 8)}`;
+}
+
+/**
+ * New dated catalysts for a theme's members. Stored beside the Physical AI
+ * series in data/external-catalysts.json with `series` = the theme id, so the
+ * chat judges them like every other ext row and /api/themes/{theme} and
+ * /api/catalyst/{ticker} serve them the moment they are written. Each item
+ * must carry the structured success conditions (metric / operator / threshold
+ * / source_doc). Bad items are listed and skipped; the rest are imported.
+ */
+function importThemeCatalysts(p, files, ctx) {
+  if (!THEME_AUTHORS.has(p.author)) {
+    return { errors: [`author must be "${CHAT_MODEL}" or "article"`] };
+  }
+  const items = Array.isArray(p.items) ? p.items : [];
+  if (items.length === 0) return { errors: ["items must be a non-empty array"] };
+  const themeIds = new Set((files.themes?.themes ?? []).map((t) => t.id));
+  const list = structuredClone(files.externals ?? []);
+  const known = new Set(list.map((c) => c.catalyst_id));
+  const rejected = [];
+  const idByIndex = new Map();
+  let applied = 0;
+  for (const [i, it] of items.entries()) {
+    const at = `items[${i}]`;
+    const reasons = [];
+    const market = it?.market;
+    const ticker = String(it?.ticker ?? "").trim().toUpperCase();
+    const listed = it?.listed !== false;
+    if (!themeIds.has(it?.theme)) reasons.push(`theme "${it?.theme}" is not in data/themes.json`);
+    if (market !== "US" && market !== "JP") reasons.push(`market must be "US" or "JP"`);
+    if (listed && !(market === "JP" ? JP_CODE : US_CODE).test(ticker)) reasons.push(`bad ticker "${it?.ticker}"`);
+    if (!listed && !/^[A-Z0-9][A-Z0-9-]{1,23}$/.test(ticker)) reasons.push(`unlisted ticker must be an uppercase slug`);
+    if (!nonEmpty(it?.company_name)) reasons.push("company_name is required");
+    if (!nonEmpty(it?.question)) reasons.push("question is required");
+    // A past edition's condition is recorded as it was published (history):
+    // it is not a new condition, so the 2026-11-05 wording rules do not apply,
+    // and it must say which condition replaced it, if any.
+    const history = it?.history === true;
+    if (history && p.author !== "article") reasons.push(`history items come from articles (author "article")`);
+    if (!history) {
+      const vague = vagueWithoutNumber(it?.question);
+      if (vague.length) reasons.push(`question uses vague wording (${vague.join("・")}) with no numeric threshold`);
+      reasons.push(...validateSuccessConditions(it?.success_conditions, at).map((e) => e.replace(`${at}: `, "")));
+    }
+    if (it?.superseded_by != null && !known.has(it.superseded_by)) {
+      reasons.push(`superseded_by ${it.superseded_by} is not on record`);
+    }
+    if (it?.supersedes != null && !known.has(it.supersedes)) reasons.push(`supersedes ${it.supersedes} is not on record`);
+    if (!ISO_DATE.test(it?.target_date ?? "")) reasons.push("target_date must be YYYY-MM-DD");
+    if (!DATE_CONFIDENCE.has(it?.date_confidence)) reasons.push(`date_confidence must be "confirmed" or "estimated"`);
+    if (!isUrl(it?.source_url)) reasons.push("source_url (where the catalyst was published) is required");
+    const role = it?.role ?? "main";
+    if (role !== "main" && role !== "sub") reasons.push(`role must be "main" or "sub"`);
+    const parent = role === "sub" ? idByIndex.get(it?.parent_index) : null;
+    if (role === "sub" && !parent) reasons.push("a sub needs parent_index pointing at an accepted main item above it");
+    const question = String(it?.question ?? "").trim();
+    const id = themeCatalystId(it?.theme, ticker, it?.target_date, question);
+    if (known.has(id)) reasons.push("already on record");
+    if (reasons.length) {
+      rejected.push({ index: i, id: `${it?.theme}:${ticker}`, reasons });
+      continue;
+    }
+    const fail = nonEmpty(it?.fail_direction) ? String(it.fail_direction).trim() : null;
+    list.push({
+      catalyst_id: id,
+      ticker,
+      market,
+      source: `theme:${it.theme}`,
+      source_url: it.source_url,
+      conviction: null,
+      agent_id: null,
+      catalyst_description: fail ? `${question}【外れ方向】${fail}` : question,
+      success_conditions: (Array.isArray(it.success_conditions) ? it.success_conditions : []).map((c) => ({
+        metric: String(c.metric).trim(),
+        operator: c.operator,
+        threshold: { value: c.threshold.value, unit: String(c.threshold.unit).trim() },
+        source_doc: String(c.source_doc).trim(),
+      })),
+      target_date: it.target_date,
+      submitted_at: ctx.now,
+      submitter_contact: null,
+      status: "pending",
+      judgement_date: null,
+      evidence_urls: [],
+      reasoning: null,
+      catalyst_type: it.catalyst_type === "earnings" ? "earnings" : it.date_confidence === "confirmed" ? "fixed_date" : "event",
+      date_confidence: it.date_confidence,
+      country: market,
+      series: it.theme,
+      catalyst_role: role,
+      parent_catalyst_id: parent,
+      company_name: String(it.company_name).trim(),
+      ...(listed ? {} : { unlisted: true }),
+      author: p.author,
+      ...(history ? { edition: "history" } : {}),
+      ...(it.superseded_by != null ? { superseded_by: it.superseded_by, superseded_at: ctx.today } : {}),
+      ...(nonEmpty(it.superseded_reason) ? { superseded_reason: String(it.superseded_reason).trim() } : {}),
+      ...(nonEmpty(it.article_verdict) ? { article_verdict: String(it.article_verdict).trim() } : {}),
+    });
+    // A new edition's condition replaces an older one: the old row keeps its
+    // text and result and gains a pointer to its replacement.
+    if (it.supersedes != null) {
+      const old = list.find((c) => c.catalyst_id === it.supersedes);
+      if (old && !old.superseded_by) Object.assign(old, { superseded_by: id, superseded_at: ctx.today });
+    }
+    known.add(id);
+    idByIndex.set(i, id);
+    applied += 1;
+  }
+  if (applied === 0) return { errors: rejected.map((r) => `items[${r.index}]: ${r.reasons.join("; ")}`) };
+  const byTheme = {};
+  for (const c of list.slice(list.length - applied)) byTheme[c.series] = (byTheme[c.series] ?? 0) + 1;
+  return {
+    writes: { externals: list },
+    applied,
+    rejected,
+    notes: Object.entries(byTheme).map(([t, n]) => `${t}: ${n}件`),
+    label: Object.entries(byTheme).map(([t, n]) => `${t} ${n}件`).join("・"),
+  };
+}
+
 // ── entry ─────────────────────────────────────────────────────────────────
 
 const HANDLERS = {
@@ -452,6 +612,7 @@ const HANDLERS = {
   verdicts: importVerdicts,
   signals: importSignals,
   date_checks: importDateChecks,
+  theme_catalysts: importThemeCatalysts,
 };
 
 /**

@@ -6,6 +6,8 @@
  *   B  前週の構成          the latest JP / US selection
  *   C  直近の signal       signals added since the previous export
  *   D  判定日の照合待ち    pending rows whose deadline is still the model's own
+ *   E  テーマの更新        per theme, members with an event in the next 14 days
+ *                          and their current catalyst (answered as theme_catalysts)
  *
  * Read-only on data/. No network, no API: this is the half of the loop that
  * replaced the Anthropic calls in Actions, and it must cost nothing to run.
@@ -26,6 +28,7 @@ import {
   CHAT_MODEL,
   GRACE_DAYS,
 } from "./lib/chat-ops.mjs";
+import { needsRenewal, upcomingByTheme } from "../lib/themes.ts";
 
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "ops", "chat-input");
@@ -47,6 +50,9 @@ export async function loadFiles() {
     externals: await readJson("data/external-catalysts.json", []),
     irFair: await readJson("data/ir-fair-2026-catalysts.json", { catalysts: [] }),
     signals: await readJson("data/signals.json", { signals: [] }),
+    themes: await readJson("data/themes.json", null),
+    earnings: await readJson("data/earnings-dates.json", null),
+    jpListed: await readJson("data/jp-listed.json", null),
   };
 }
 
@@ -345,7 +351,115 @@ export function buildExport(files, { today, since }) {
   }
   L.push("");
 
-  return { markdown: L.join("\n"), counts: { due: due.length, signals: signals.length, unchecked: unchecked.length, events: events.size }, due };
+  // ── E
+  const rec = {
+    usHistory: files.usHistory,
+    usEvals: files.usEvals,
+    jpHistory: files.jpHistory,
+    jpEvals: files.jpEvals,
+    externals: files.externals ?? [],
+    irFair: files.irFair,
+    signals: null,
+    earnings: files.earnings,
+    themes: files.themes,
+    jpListed: files.jpListed ?? null,
+  };
+  const upcoming = files.themes ? upcomingByTheme(files.themes, rec, today, 14) : [];
+  const renewal = files.themes ? needsRenewal(files.themes, rec, today) : [];
+  // Conditions an article already scored, without a primary-source URL: the
+  // chat checks them against the disclosure and returns verdicts.
+  const articleVerdicts = (files.externals ?? []).filter((c) => c.article_verdict && c.status === "pending");
+  const themeRows = upcoming.reduce((n, x) => n + x.members.length, 0);
+  L.push(`## E. テーマの更新（${upcoming.length}テーマ・${themeRows}銘柄）`);
+  L.push("");
+  L.push(
+    "各テーマで、今日から14日以内に決算（一次資料で確定した日）か pending のカタリストの期日がある銘柄。" +
+      "次のカタリストを theme_catalysts として返す（ops/chat-schema.md の 5）。" +
+      "metric・operator・threshold・source_doc は必須。既存のカタリストは書き換えず、新しいものを足す。",
+  );
+  L.push("");
+  if (upcoming.length === 0) {
+    L.push("なし。");
+  } else {
+    for (const { theme, members } of upcoming) {
+      L.push(`### ${theme.id}（${theme.title_ja}）`);
+      L.push("");
+      L.push(
+        table(
+          ["ticker", "会社名", "次の日付", "現在のカタリスト", "期日", "問い"],
+          members.map((m) => [
+            m.ticker,
+            m.company ?? "",
+            m.date ?? "",
+            m.current?.id ?? "なし",
+            m.current?.target_date ?? "",
+            m.current?.question ?? "",
+          ]),
+        ),
+      );
+      L.push("");
+    }
+  }
+  L.push("");
+
+  const renewalRows = renewal.reduce((n, x) => n + x.members.length, 0);
+  L.push(`### E-2. 条件の入れ替えが要る上場銘柄（${renewal.length}テーマ・${renewalRows}銘柄）`);
+  L.push("");
+  L.push(
+    "条件はあるが、有効な（active の）条件が1件もない上場銘柄。判定時期が過ぎたか、判定済みか、新しい版で差し替わった。" +
+      "次の四半期の条件を theme_catalysts で返す。判定がまだのものは verdicts も返す（一次資料の URL 必須）。",
+  );
+  L.push("");
+  for (const { theme, members } of renewal) {
+    L.push(`#### ${theme.id}（${theme.title_ja}）`);
+    L.push("");
+    L.push(
+      table(
+        ["ticker", "会社名", "直近の条件", "期日", "状態", "問い"],
+        members.map((m) => [m.ticker, m.company ?? "", m.last.id, m.last.target_date, m.last.status, m.last.question]),
+      ),
+    );
+    L.push("");
+  }
+  L.push(`### E-3. 記事上の判定（${articleVerdicts.length}件）— 一次資料で verdicts を付けて返す`);
+  L.push("");
+  L.push(
+    "10/20 のネオクラウド記事が7月の条件に書いた判定。記事には条件ごとの一次資料の URL がないので、判定として取り込んでいない。" +
+      "id は verdicts の id としてそのまま使う。",
+  );
+  L.push("");
+  if (articleVerdicts.length) {
+    L.push(
+      table(
+        ["id", "ticker", "会社名", "期日", "記事上の判定", "問い"],
+        articleVerdicts.map((c) => [
+          `ext:${c.catalyst_id}`,
+          c.ticker,
+          c.company_name ?? "",
+          c.target_date,
+          c.article_verdict,
+          String(c.catalyst_description).replace(/【外れ方向】.*$/, ""),
+        ]),
+      ),
+    );
+  } else {
+    L.push("なし。");
+  }
+  L.push("");
+
+  return {
+    markdown: L.join("\n"),
+    counts: {
+      due: due.length,
+      signals: signals.length,
+      unchecked: unchecked.length,
+      events: events.size,
+      theme_rows: themeRows,
+      renewal_rows: renewalRows,
+      article_verdicts: articleVerdicts.length,
+    },
+    due,
+  };
 }
 
 /** Monday of the week containing `iso` (UTC date arithmetic; dates only). */

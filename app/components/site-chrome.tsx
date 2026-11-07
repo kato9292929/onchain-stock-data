@@ -20,7 +20,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SiteNav />
-      <main className="flex-1 px-6 py-8 max-w-6xl w-full mx-auto">
+      <main className="flex-1 min-w-0 px-6 py-8 max-w-6xl w-full mx-auto">
         {children}
       </main>
       <SiteFooter />

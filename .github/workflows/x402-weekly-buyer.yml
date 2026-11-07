@@ -23,7 +23,7 @@ on:
         options: [dry-run, devnet-smoke, mainnet-weekly]
         default: dry-run
       only_ticker:
-        description: "Single ticker (devnet-smoke). Leave blank for the full roster."
+        description: "Only these tickers, comma-separated (devnet-smoke, spot check). Leave blank for the full roster."
         type: string
         default: ""
       max_tickers:
@@ -34,6 +34,11 @@ on:
         description: "Endpoint base URL. Blank = production (mainnet). For devnet-smoke, a devnet-serving preview URL."
         type: string
         default: ""
+      endpoint:
+        description: "catalyst = /api/catalyst/{ticker} (0.001) | theme = /api/themes/{id}?view=full (0.01; only_ticker = theme ids)"
+        type: choice
+        options: [catalyst, theme]
+        default: catalyst
 
 permissions:
   contents: write
@@ -62,17 +67,22 @@ jobs:
           AA_SOLANA_SECRET_KEY: ${{ secrets.AA_SOLANA_SECRET_KEY }}
           # Hard spend cap in USDC base units (default 500000 = 0.5 USDC/run).
           WEEKLY_SPEND_CAP_UNITS: ${{ vars.WEEKLY_SPEND_CAP_UNITS || '500000' }}
-          PRICE_UNITS: "1000"
           DELAY_MS: "500"
           INPUT_MODE: ${{ inputs.mode }}
           INPUT_ONLY_TICKER: ${{ inputs.only_ticker }}
           INPUT_MAX_TICKERS: ${{ inputs.max_tickers }}
           INPUT_BASE_URL: ${{ inputs.base_url }}
+          INPUT_ENDPOINT: ${{ inputs.endpoint }}
         run: |
           set -euo pipefail
           export MAX_TICKERS="${INPUT_MAX_TICKERS:-0}"
           [ -n "${INPUT_ONLY_TICKER}" ] && export ONLY_TICKER="${INPUT_ONLY_TICKER}"
           [ -n "${INPUT_BASE_URL}" ] && export OSD_BASE_URL="${INPUT_BASE_URL}"
+          case "${INPUT_ENDPOINT:-catalyst}" in
+            catalyst) export PRICE_UNITS=1000 ;;
+            theme)    export PRICE_UNITS=10000 ENDPOINT_TEMPLATE='/api/themes/{ticker}?view=full' SPEND_NAMESPACE=theme ;;
+            *) echo "unknown endpoint ${INPUT_ENDPOINT}" >&2; exit 1 ;;
+          esac
           case "${INPUT_MODE}" in
             dry-run)        export DRY_RUN=1 ;;
             devnet-smoke)   : "${ONLY_TICKER:?devnet-smoke needs only_ticker}" ;;

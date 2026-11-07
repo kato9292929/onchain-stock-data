@@ -188,6 +188,54 @@ npm run import:chat -- a.json  → data/ を更新して 1 コミット         
   `target_date_source` を `verified`、`target_date_checked_at` を取り込み日にする。
 - 採点は `max(target_date, target_date_confirmed) + 7日` から。
 
+## 5. theme_catalysts（テーマの新しいカタリスト）— 書き出しの E 節への返答
+
+E 節に出たテーマの銘柄に、次のカタリストを足すためのもの。取り込んだその日から
+`/api/themes/{theme}` と `/api/catalyst/{ticker}` に出る。判定は他の行と同じく verdicts で返す（id は `ext:<catalyst_id>`）。
+
+```json
+{
+  "type": "theme_catalysts",
+  "author": "claude-fable-5-1 (chat)",
+  "items": [
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "CRWV",
+      "company_name": "CoreWeave",
+      "listed": true,
+      "question": "第4四半期売上が会社ガイダンスの下限を上回る",
+      "fail_direction": "第4四半期の未達、または通期ガイダンスの引き下げ",
+      "success_conditions": [
+        { "metric": "Q4 2026 revenue", "operator": ">=", "threshold": { "value": 4.1, "unit": "USD bn" }, "source_doc": "Q4 2026 earnings release (8-K Ex.99.1)" }
+      ],
+      "target_date": "2027-02-25",
+      "date_confidence": "estimated",
+      "source_url": "https://investors.coreweave.com/",
+      "role": "main"
+    }
+  ]
+}
+```
+
+| 項目 | 必須 | 規則 |
+| --- | --- | --- |
+| author | ○ | CHAT_MODEL、または記事から取り込むときは `"article"` |
+| theme | ○ | data/themes.json の id |
+| market | ○ | `US` / `JP` |
+| ticker | ○ | 上場は証券コード・ティッカー。未上場は `listed: false` と英大文字のスラッグ（例 `LAMBDA`） |
+| question | ○ | 判定する条件の文章。曖昧語だけで数値の閾値がないものは不可 |
+| success_conditions | ○ | selection と同じ（metric・operator・threshold・source_doc）。公表の有無を問う条件は `{"value": 1, "unit": "event"}` |
+| target_date | ○ | YYYY-MM-DD |
+| date_confidence | ○ | `confirmed`（会社が公表した日・条件の締切日）/ `estimated`（「11月中旬見込み」など幅のある日） |
+| source_url | ○ | カタリストを出した場所（記事・IR ページ） |
+| role / parent_index | − | 補助線は `"role": "sub"` と、同じ返答の中の主条件の位置（0 始まり） |
+
+- 同じテーマ・銘柄・期日・文面のものは「already on record」で不採用（再送しても重ならない）。
+- 不採用の項目は理由つきで表示し、残りは取り込む。
+- selection の各行には `themes`（data/themes.json の id の配列、任意）を付けられる。付けなくても、
+  その銘柄がすでに属するテーマは取り込み時に自動で付く。
+
 ## 切替日（別集団としての集計）
 
 data/operation-eras.json に、取り込みが初回に自動で書く。以後は動かさない。

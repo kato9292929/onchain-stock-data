@@ -5,8 +5,10 @@ import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { LandingHero } from "./components/landing-hero";
 import { RailMarquee } from "./components/rail-marquee";
 import { SolanaMark } from "./components/solana-mark";
-import { PER_CALL_PRICE } from "@/lib/x402";
-import { issuerShort, loadSummaries } from "@/lib/solana-stocks-load";
+import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
+import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
+import { getThemes, themesIndexBody } from "@/lib/themes";
+import { ThemeCards } from "./components/theme-cards";
 
 export const dynamic = "force-dynamic";
 
@@ -15,13 +17,14 @@ export const dynamic = "force-dynamic";
  * this week's catalyst-derived selection. No P&L / benchmark tracking.
  */
 export default async function Home() {
-  const [portfolio, catalysts, solana] = await Promise.all([
+  const [portfolio, catalysts, solana, themes, rec] = await Promise.all([
     getPortfolioHistory().catch(() => null),
     readExternalCatalysts().catch(() => []),
     loadSummaries().catch(() => null),
+    getThemes(),
+    loadRecords().catch(() => null),
   ]);
-  // Tickers this site has set a condition on, nearest deadline first.
-  const featured = (solana?.rows ?? []).filter((r) => r.conditions > 0).slice(0, 6);
+  const themeIndex = themes && rec ? themesIndexBody(themes, rec, new Date().toISOString().slice(0, 10)) : null;
   const asOf = new Date().toISOString().slice(0, 10);
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
@@ -30,63 +33,35 @@ export default async function Home() {
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-        <LandingHero solanaCount={solana?.rows.length ?? 0} />
+        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} />
 
-        {/* Tokenized stocks on Solana — first, ahead of the research entries */}
-        {solana && (
+        {/* Themes — first: the stock lists the most-read articles were written around */}
+        {themeIndex && (
           <section className="mt-16">
             <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
               <div>
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                  <SolanaMark className="h-3 w-auto" title={null} /> Tokenized stocks on Solana
-                </div>
-                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">
-                  With earnings conditions
-                </h2>
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Themes</div>
+                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Dated catalysts by theme</h2>
                 <p className="mt-1 max-w-2xl text-sm text-slate-500">
-                  Every xStocks and Ondo token on Solana, with its mint. Where this site sets a dated earnings
-                  condition, the full verdict history is {PER_CALL_PRICE.usdc} USDC per call.
+                  Neocloud, physical AI and the sectors of the Japanese market — each company&apos;s dated
+                  catalyst, next earnings date and Solana token, updated every week. A whole theme is{" "}
+                  {THEME_CALL_PRICE.usdc} USDC per call.
                 </p>
               </div>
-              <Link href="/solana-stocks" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                All {solana.rows.length.toLocaleString()} →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((r) => (
-                <Link
-                  key={r.ticker}
-                  href={`/solana-stocks/${encodeURIComponent(r.ticker)}`}
-                  className="rounded-2xl border border-slate-200 bg-white p-4 no-underline shadow-sm transition-all hover:border-slate-300 hover:no-underline!"
-                >
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-outfit text-lg font-semibold text-[#0a1b33]">{r.ticker}</span>
-                    <span className="text-[11px] text-slate-400">
-                      {[...new Set(r.tokens.map((t) => issuerShort(t.issuer)))].join(" · ")}
-                    </span>
-                  </div>
-                  <div className="truncate text-[12px] text-slate-500">{r.name}</div>
-                  <div className="mt-3 flex items-center justify-between text-[12px]">
-                    <span className="tabular-nums text-slate-600">
-                      {r.next_earnings.status === "confirmed" && r.next_earnings.date ? (
-                        <>
-                          Next {r.next_earnings.date} <span className="text-emerald-600">confirmed</span>
-                        </>
-                      ) : (
-                        <span className="text-slate-400">Next earnings not announced</span>
-                      )}
-                    </span>
-                    <span className="text-slate-500">
-                      {r.latest_verdict ? (
-                        <span className="font-semibold uppercase text-[#0a1b33]">{r.latest_verdict.result}</span>
-                      ) : (
-                        <span className="text-slate-400">pending</span>
-                      )}
-                    </span>
-                  </div>
+              <span className="flex gap-4">
+                <Link href="/themes" className="text-sm font-semibold text-[#0a152d] hover:underline">
+                  All themes →
                 </Link>
-              ))}
+                {solana && (
+                  <Link href="/solana-stocks" className="inline-flex items-center gap-1 text-sm font-semibold text-[#0a152d] hover:underline">
+                    <SolanaMark className="h-3 w-auto" title={null} /> All {solana.rows.length.toLocaleString()} tokenized stocks →
+                  </Link>
+                )}
+              </span>
             </div>
+            <ThemeCards themes={themeIndex.themes} />
+            <h3 className="mb-3 mt-8 font-outfit text-lg font-semibold text-[#0a1b33]">This week&apos;s selection</h3>
+            <ThemeCards themes={themeIndex.selections} />
           </section>
         )}
 
@@ -105,7 +80,7 @@ export default async function Home() {
             </div>
             <span className="flex gap-4">
               <Link href="/catalysts" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                IR Fair 2026 sectors →
+                Sectors →
               </Link>
               <Link href="/catalysts/physical-ai" className="text-sm font-semibold text-[#0a152d] hover:underline">
                 Physical AI →
@@ -295,7 +270,7 @@ export default async function Home() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             {/* tools */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                 Tools
               </div>
@@ -305,10 +280,12 @@ export default async function Home() {
                   ["catalysts_list", "Dated catalysts by target_date; filter by range, ticker or theme."],
                   ["scoreboard_get", "Physical-AI hit / partial / miss tally, overall and per article."],
                   ["signal_get", "Directional signals by ticker / theme (paid x402 testnet twin)."],
-                  ["solana_stock_get", "A tokenized stock on Solana — mints, next deadline, conditions, per-call URL."],
+                  ["solana_stock_get", "A tokenized stock on Solana — mints, next earnings, conditions, per-call URL."],
+                  ["themes_list", "Every theme (neocloud, physical AI, sector themes, weekly) and its upcoming events."],
+                  ["theme_get", "One theme's members — next earnings, next event, Solana token, per-call URL."],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex flex-col gap-0.5">
-                    <code className="font-mono text-[13px] font-semibold text-[#0a1b33]">{name}</code>
+                    <code className="break-all font-mono text-[13px] font-semibold text-[#0a1b33]">{name}</code>
                     <span className="text-[13px] text-slate-500">{desc}</span>
                   </li>
                 ))}
@@ -316,7 +293,7 @@ export default async function Home() {
             </div>
 
             {/* connect */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                 Connect
               </div>

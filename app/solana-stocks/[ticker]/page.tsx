@@ -27,7 +27,7 @@ const JUDGED = new Set(["hit", "partial", "miss", "na"]);
 
 function Code({ children }: { children: string }) {
   return (
-    <pre className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3 text-[12px] leading-relaxed text-slate-700">
+    <pre className="max-w-full overflow-x-auto whitespace-pre-wrap break-all rounded-xl border border-slate-200 bg-slate-50 p-3 text-[12px] leading-relaxed text-slate-700">
       <code>{children}</code>
     </pre>
   );
