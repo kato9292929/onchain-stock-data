@@ -14,7 +14,7 @@ import {
   x402TestnetServer,
   PUBLIC_BASE_URL,
 } from "./x402";
-import { withDeliveryReceipts } from "./delivery-receipt";
+import { withDeliveryReceipts } from "@x402jp/delivery-receipt-seller";
 import { receiptSeller, solanaRequirement } from "./receipts";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;

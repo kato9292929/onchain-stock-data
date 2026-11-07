@@ -1,4 +1,4 @@
-// Delivery Receipt (kato9292929/delivery-receipt, vendored in lib/delivery-receipt) for the
+// Delivery Receipt (npm @x402jp/delivery-receipt-seller, kato9292929/delivery-receipt) for the
 // paid mainnet routes: a settled 200 gets a signed X-Delivery-Receipt, and a request carrying
 // X-Payment-Refetch is served from the stored body without verify/settle.
 //
@@ -8,7 +8,7 @@
 // (RECEIPT_STORE_DIR, default /tmp/osd-receipts — per instance on Vercel).
 import type { RouteConfig } from "@x402/core/server";
 import type { PaymentOption } from "@x402/core/http";
-import { FileStore, UpstashStore, createReceiptSeller, type PaymentRequirement, type ReceiptSeller } from "./delivery-receipt";
+import { FileStore, UpstashStore, createReceiptSeller, type PaymentRequirement, type ReceiptSeller } from "@x402jp/delivery-receipt-seller";
 import { ASSET_SOLANA_USDC, SOLANA_NETWORK } from "./x402";
 
 function store() {

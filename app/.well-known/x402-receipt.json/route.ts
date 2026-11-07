@@ -1,5 +1,5 @@
-// Delivery Receipt public keys (keys[], refetch_window_s, refetch_header). Spec: lib/delivery-receipt/README.md.
-import { wellKnownResponse } from "@/lib/delivery-receipt";
+// Delivery Receipt public keys (keys[], refetch_window_s, refetch_header). Spec: https://github.com/kato9292929/delivery-receipt (docs/spec.md).
+import { wellKnownResponse } from "@x402jp/delivery-receipt-seller";
 import { receiptSeller } from "@/lib/receipts";
 
 export const runtime = "nodejs";

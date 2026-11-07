@@ -26,7 +26,7 @@ const { NextRequest } = await import("next/server");
 const { withX402AndInternal } = await import("../../lib/x402-route.ts");
 const { buildSolanaOnlyRouteConfig, solanaUsdcUnits, x402Server, SOLANA_NETWORK } = await import("../../lib/x402.ts");
 const { moneyToAtomic, receiptSeller, solanaRequirement } = await import("../../lib/receipts.ts");
-const { verifyReceipt } = await import("../../lib/delivery-receipt/verify.ts");
+const { verifyReceipt } = await import("@x402jp/delivery-receipt-verify");
 
 const TX = "5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW";
 
@@ -97,7 +97,7 @@ test("without RECEIPT_SIGNING_KEY the server does not start", async () => {
   const keep = process.env.RECEIPT_SIGNING_KEY;
   try {
     process.env.RECEIPT_SIGNING_KEY = "";
-    const { createReceiptSeller, FileStore } = await import("../../lib/delivery-receipt/index.ts");
+    const { createReceiptSeller, FileStore } = await import("@x402jp/delivery-receipt-seller");
     assert.throws(() => createReceiptSeller({ store: new FileStore(process.env.RECEIPT_STORE_DIR) }), /RECEIPT_SIGNING_KEY/);
   } finally {
     process.env.RECEIPT_SIGNING_KEY = keep;
