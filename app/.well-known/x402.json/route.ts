@@ -127,7 +127,7 @@ export function GET(): NextResponse {
         path: "/api/catalyst/:ticker",
         method: "GET",
         description:
-          "Per-company record: every condition set on the company (IR Fair, Physical AI, US / JP Weekly) with question, target date, result, evidence URL, reasoning and history; next earnings date from a primary source; latest disclosed financials from SEC EDGAR / TDnet XBRL with document URLs. A company with no condition returns the free view at no cost (?view=free is always free); an unknown ticker returns 404. Field reference: /docs.",
+          "Per-company record: every condition set on the company (sector themes, neocloud, Physical AI, US / JP Weekly) with question, target date, result, evidence URL, reasoning and history; next earnings date from a primary source; latest disclosed financials from SEC EDGAR / TDnet XBRL with document URLs. A company with no condition returns the free view at no cost (?view=free is always free); an unknown ticker returns 404. Field reference: /docs.",
         accepts: solanaOnlyLeg("/api/catalyst/:ticker", PER_CALL_PRICE.base_units),
       },
       {
@@ -141,7 +141,7 @@ export function GET(): NextResponse {
         path: "/api/themes/:theme?view=full",
         method: "GET",
         description:
-          "One theme in one call (neocloud US/JP, physical AI US/JP, weekly selections, IR Fair sectors): every member's catalysts with question, target date and structured conditions with the source document, latest verdict with evidence URL, next earnings from a primary source, Solana token mints. 0.01 USDC. Field reference: /docs.",
+          "One theme in one call (neocloud US/JP, physical AI US/JP, weekly selections, sector themes such as data centers · power): every member's catalysts with question, target date and structured conditions with the source document, latest verdict with evidence URL, next earnings from a primary source, Solana token mints. 0.01 USDC. Field reference: /docs.",
         accepts: solanaOnlyLeg("/api/themes/:theme?view=full", THEME_CALL_PRICE.base_units),
       },
       {

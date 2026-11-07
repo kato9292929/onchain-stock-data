@@ -43,7 +43,7 @@ export default async function Home() {
                 <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Themes</div>
                 <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Dated catalysts by theme</h2>
                 <p className="mt-1 max-w-2xl text-sm text-slate-500">
-                  Neocloud, physical AI, the weekly selections and the IR Fair sectors — each company&apos;s dated
+                  Neocloud, physical AI, data centers · power and the other sector themes, and the weekly selections — each company&apos;s dated
                   catalyst, next earnings date and Solana token, updated every week. A whole theme is{" "}
                   {THEME_CALL_PRICE.usdc} USDC per call.
                 </p>
@@ -78,7 +78,7 @@ export default async function Home() {
             </div>
             <span className="flex gap-4">
               <Link href="/catalysts" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                IR Fair 2026 sectors →
+                Sectors →
               </Link>
               <Link href="/catalysts/physical-ai" className="text-sm font-semibold text-[#0a152d] hover:underline">
                 Physical AI →
@@ -279,7 +279,7 @@ export default async function Home() {
                   ["scoreboard_get", "Physical-AI hit / partial / miss tally, overall and per article."],
                   ["signal_get", "Directional signals by ticker / theme (paid x402 testnet twin)."],
                   ["solana_stock_get", "A tokenized stock on Solana — mints, next earnings, conditions, per-call URL."],
-                  ["themes_list", "Every theme (neocloud, physical AI, weekly, IR Fair sectors) and its upcoming events."],
+                  ["themes_list", "Every theme (neocloud, physical AI, sector themes, weekly) and its upcoming events."],
                   ["theme_get", "One theme's members — next earnings, next event, Solana token, per-call URL."],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex flex-col gap-0.5">

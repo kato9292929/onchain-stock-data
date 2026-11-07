@@ -63,7 +63,7 @@ export function LandingHero({ solanaCount, themeCount }: { solanaCount: number; 
               {themeCount} themes
             </span>
             <span className="mt-1 text-[12px] font-semibold text-slate-500">
-              neocloud · physical AI · weekly picks · IR Fair sectors
+              neocloud · physical AI · data centers · power · weekly picks
             </span>
             <span className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-slate-400">
               <SolanaMark className="h-2.5 w-auto" title={null} /> {solanaCount.toLocaleString()} tokenized stocks on Solana

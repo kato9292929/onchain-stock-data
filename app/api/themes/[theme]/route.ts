@@ -45,7 +45,7 @@ const paidGet = withSolanaUsdcMicroPaywall(
   {
     units: THEME_CALL_PRICE.base_units,
     description:
-      "One theme in one call (neocloud, physical AI, IR Fair sectors, weekly selections): every member's " +
+      "One theme in one call (neocloud, physical AI, data centers · power and other sectors, weekly selections): every member's " +
       "catalysts with question, target date and structured conditions (metric / operator / threshold / source " +
       "document), the latest verdict with its evidence URL, next earnings from a primary source, and the Solana " +
       "token mints. Field reference: /docs.",

@@ -85,7 +85,7 @@ export default async function CatalystsIndexPage() {
       {/* IR Fair 2026 — sector index */}
       <section className="space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 pb-2">
-          <h2 className="text-lg font-bold text-slate-900">IR Fair 2026 · sectors</h2>
+          <h2 className="text-lg font-bold text-slate-900">Japan · sectors</h2>
           <span className="text-xs text-slate-400">{totalExhibitors} exhibitors</span>
         </div>
         <p className="max-w-2xl text-xs text-slate-500">

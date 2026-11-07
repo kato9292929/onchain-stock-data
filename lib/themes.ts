@@ -13,7 +13,7 @@ import type { SolanaStocksFile } from "@/lib/solana-stocks";
 
 /**
  * Themes: the stock lists the articles were written around (neocloud, physical
- * AI, IR Fair sectors, the weekly selections), served as data. A theme is a
+ * AI, the sector themes, the weekly selections), served as data. A theme is a
  * definition in data/themes.json plus a rule for who is in it; the catalysts
  * come from the same records every other endpoint reads, so a catalyst
  * imported today shows up here today.
@@ -21,7 +21,8 @@ import type { SolanaStocksFile } from "@/lib/solana-stocks";
 
 export type MembersFrom =
   | { kind: "series"; series: string; market?: "US" | "JP" }
-  | { kind: "ir-fair-sector"; slug: string }
+  /** Researched Japanese companies whose sector maps to `slug` (lib/catalyst-sectors.ts). */
+  | { kind: "sector"; slug: string }
   | { kind: "weekly"; market: "US" | "JP" };
 
 export interface ThemeDef {
@@ -85,7 +86,7 @@ export function membersOf(theme: ThemeDef, rec: Records): ThemeMember[] {
       const listed = market === "JP" ? JP_CODE.test(upper(c.ticker)) : !(c as { unlisted?: boolean }).unlisted;
       list.push({ ticker: upper(c.ticker), company: c.company_name ?? null, listed });
     }
-  } else if (m.kind === "ir-fair-sector") {
+  } else if (m.kind === "sector") {
     for (const c of rec.irFair?.catalysts ?? []) {
       if (c.stage === "draft") continue;
       const slug = (c as { sector_slug?: string }).sector_slug ?? sectorSlugFor(c.sector, c.ticker);
@@ -95,6 +96,16 @@ export function membersOf(theme: ThemeDef, rec: Records): ThemeMember[] {
     const h = m.market === "US" ? rec.usHistory : rec.jpHistory;
     for (const x of h?.current?.holdings ?? []) {
       list.push({ ticker: upper(x.ticker), company: x.company_name ?? null, listed: true });
+    }
+  }
+  // Any theme grows past its starting list: a company given a catalyst under
+  // the theme (theme_catalysts) is a member from then on, in any market.
+  if (m.kind !== "series") {
+    for (const c of rec.externals) {
+      if (c.series !== theme.id) continue;
+      const market = c.market ?? (JP_CODE.test(upper(c.ticker)) ? "JP" : "US");
+      const listed = market === "JP" ? JP_CODE.test(upper(c.ticker)) : !(c as { unlisted?: boolean }).unlisted;
+      list.push({ ticker: upper(c.ticker), company: c.company_name ?? null, listed });
     }
   }
   list.push(...taggedWeeklyMembers(theme.id, rec));

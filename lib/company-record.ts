@@ -154,7 +154,7 @@ export const POPULATION = {
   jp: "JP Weekly Selection",
   ext: "Physical AI series",
   submitted: "Submitted catalyst",
-  irf: "IR Fair 2026",
+  irf: "JP Sector Research",
 } as const;
 
 /** Population label for a series-authored catalyst. */
@@ -289,7 +289,7 @@ export function conditionsFor(ticker: string, rec: Records): ConditionRowFull[] 
         ? [x.evidence_url as string]
         : [];
     rows.push({
-      id: `ir-fair-2026-${want}`,
+      id: `jp-sector-${want}`,
       ticker: want,
       company: c.company_name ?? null,
       population: POPULATION.irf,

@@ -18,7 +18,7 @@ const THEMES = {
     { id: "neocloud-us", rank: 1, title_ja: "米国 ネオクラウド", title_en: "Neocloud · US", market: "US", members_from: { kind: "series", series: "neocloud-us" }, articles: [{ url: "https://note.com/x402inc/n/a", title: "18選", published_at: "2026-07-31", pageviews: 295 }] },
     { id: "physical-ai-us", rank: 3, title_ja: "米国 フィジカルAI", title_en: "Physical AI · US", market: "US", members_from: { kind: "series", series: "physical-ai", market: "US" }, articles: [] },
     { id: "weekly-us", rank: 5, title_ja: "米国株 Weekly", title_en: "Weekly · US", market: "US", members_from: { kind: "weekly", market: "US" }, articles: [] },
-    { id: "ir-fair-datacenter-power", rank: 7, title_ja: "DC・電力", title_en: "DC · Power", market: "JP", members_from: { kind: "ir-fair-sector", slug: "datacenter-power" }, articles: [] },
+    { id: "datacenter-power-jp", rank: 7, title_ja: "日本株 データセンター・電力", title_en: "Data centers · Power · Japan", market: "JP", members_from: { kind: "sector", slug: "datacenter-power" }, articles: [] },
   ],
 };
 
@@ -44,7 +44,7 @@ const recOf = (externals = []) => ({
 });
 const SOLANA = { tokens: [{ ticker: "NVDA", issuer: "xStocks", symbol: "NVDAx", solana_mint: "Xsc9" }, { ticker: "CRWV", issuer: "xStocks", symbol: "CRWVx", solana_mint: "XsCR" }] };
 
-test("members come from the series, the current weekly book and the IR Fair sector (no drafts)", () => {
+test("members come from the series, the current weekly book and the sector (no drafts)", () => {
   const rec = recOf();
   const t = (id) => findTheme(THEMES, id);
   assert.deepEqual(membersOf(t("neocloud-us"), rec), [
@@ -53,7 +53,7 @@ test("members come from the series, the current weekly book and the IR Fair sect
   ]);
   assert.deepEqual(membersOf(t("physical-ai-us"), rec).map((m) => m.ticker), ["NVDA"]);
   assert.deepEqual(membersOf(t("weekly-us"), rec).map((m) => m.ticker), ["NVDA"]);
-  assert.deepEqual(membersOf(t("ir-fair-datacenter-power"), rec).map((m) => m.ticker), ["9501"]);
+  assert.deepEqual(membersOf(t("datacenter-power-jp"), rec).map((m) => m.ticker), ["9501"]);
   assert.deepEqual(themesFor("nvda", THEMES, rec), ["physical-ai-us", "weekly-us"]);
 });
 
@@ -61,7 +61,7 @@ test("the index counts members and events in the next 14 days", () => {
   const idx = themesIndexBody(THEMES, recOf(), "2026-11-07");
   const neo = idx.themes.find((t) => t.id === "neocloud-us");
   assert.deepEqual([neo.member_count, neo.events_next_14_days], [2, 1], "CRWV reports 11-12; Lambda is 12-31");
-  assert.deepEqual(idx.themes.map((t) => t.id), ["neocloud-us", "physical-ai-us", "weekly-us", "ir-fair-datacenter-power"]);
+  assert.deepEqual(idx.themes.map((t) => t.id), ["neocloud-us", "physical-ai-us", "weekly-us", "datacenter-power-jp"]);
 });
 
 test("free theme view: member list with dates and the Solana flag, no catalysts", () => {
@@ -85,6 +85,14 @@ test("paid theme view: current catalyst, latest verdict, every row, mints", () =
   assert.equal(nvda.conditions.length, 2);
   assert.deepEqual(nvda.solana_tokens, [{ issuer: "xStocks", symbol: "NVDAx", solana_mint: "Xsc9" }]);
   assert.doesNotMatch(JSON.stringify(full), /"(us|jp|ext|irf):|target_date_source"|"model"/);
+});
+
+test("a sector theme takes companies beyond its starting list once a catalyst is added under it", () => {
+  const rec = recOf([ext({ catalyst_id: "ext_dd", ticker: "VRT", market: "US", series: "datacenter-power-jp", company_name: "Vertiv", catalyst_description: "受注残 100億ドル以上", target_date: "2026-12-31" })]);
+  assert.deepEqual(membersOf(findTheme(THEMES, "datacenter-power-jp"), rec).map((m) => m.ticker), ["9501", "VRT"]);
+  // Public ids and labels say what the theme is, not where the list came from.
+  const ids = JSON.stringify(THEMES.themes.map((t) => [t.id, t.title_ja, t.title_en]));
+  assert.doesNotMatch(ids, /ir-fair|IR ?フェア|IR Fair/i);
 });
 
 // ── theme_catalysts ───────────────────────────────────────────────────────
@@ -174,6 +182,7 @@ test("committed themes: every theme resolves, neocloud carries the 10/20 article
     assert.match(c.source_url, /^https:\/\/note\.com\/x402inc\/n\//);
   }
   assert.deepEqual(themes.themes.slice(0, 3).map((t) => t.id), ["neocloud-us", "neocloud-jp", "physical-ai-us"]);
+  assert.doesNotMatch(JSON.stringify(themes.themes.map((t) => [t.id, t.title_ja, t.title_en, t.members_from])), /ir-fair|IR ?フェア|IR Fair/i);
   // The Physical AI scoreboard is unchanged: neocloud rows are a different series.
   assert.equal(externals.filter((c) => c.series === "physical-ai").length, 89);
 });

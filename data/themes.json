@@ -7,11 +7,29 @@
       "title_ja": "米国 ネオクラウド",
       "title_en": "Neocloud · US",
       "market": "US",
-      "members_from": { "kind": "series", "series": "neocloud-us" },
+      "members_from": {
+        "kind": "series",
+        "series": "neocloud-us"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n343d12682710", "title": "米国 ネオクラウド銘柄18選：Meta Computeの参入と各社のdated catalyst", "published_at": "2026-07-31", "pageviews": 295 },
-        { "url": "https://note.com/x402inc/n/n63fa0862b031", "title": "米国 ネオクラウド銘柄18選（2026年10月）：CoreWeave社債利回り15%下での7月条件18件の判定結果", "published_at": "2026-10-20", "pageviews": null },
-        { "url": "https://note.com/x402inc/n/n16b6613242a8", "title": "米国株 ネオクラウド上場銘柄10選：CoreWeave受注残1000億ドルと各社のdated catalyst", "published_at": "2026-07-21", "pageviews": 34 }
+        {
+          "url": "https://note.com/x402inc/n/n343d12682710",
+          "title": "米国 ネオクラウド銘柄18選：Meta Computeの参入と各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": 295
+        },
+        {
+          "url": "https://note.com/x402inc/n/n63fa0862b031",
+          "title": "米国 ネオクラウド銘柄18選（2026年10月）：CoreWeave社債利回り15%下での7月条件18件の判定結果",
+          "published_at": "2026-10-20",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n16b6613242a8",
+          "title": "米国株 ネオクラウド上場銘柄10選：CoreWeave受注残1000億ドルと各社のdated catalyst",
+          "published_at": "2026-07-21",
+          "pageviews": 34
+        }
       ]
     },
     {
@@ -20,11 +38,29 @@
       "title_ja": "日本 ネオクラウド",
       "title_en": "Neocloud · Japan",
       "market": "JP",
-      "members_from": { "kind": "series", "series": "neocloud-jp" },
+      "members_from": {
+        "kind": "series",
+        "series": "neocloud-jp"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/nc08a6b6f95aa", "title": "日本 ネオクラウド銘柄5選：日銀の政策金利1.00%と各社のdated catalyst", "published_at": "2026-07-31", "pageviews": 234 },
-        { "url": "https://note.com/x402inc/n/n7b0a50e89402", "title": "日本 ネオクラウド銘柄5選（2026年10月）：日銀の政策金利1.25%下での7月条件5件の判定結果", "published_at": "2026-10-20", "pageviews": 70 },
-        { "url": "https://note.com/x402inc/n/n5dff14046bd6", "title": "日本株 ネオクラウド銘柄5選：ソフトバンクGPUクラウドと各社のdated catalyst", "published_at": "2026-07-21", "pageviews": 30 }
+        {
+          "url": "https://note.com/x402inc/n/nc08a6b6f95aa",
+          "title": "日本 ネオクラウド銘柄5選：日銀の政策金利1.00%と各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": 234
+        },
+        {
+          "url": "https://note.com/x402inc/n/n7b0a50e89402",
+          "title": "日本 ネオクラウド銘柄5選（2026年10月）：日銀の政策金利1.25%下での7月条件5件の判定結果",
+          "published_at": "2026-10-20",
+          "pageviews": 70
+        },
+        {
+          "url": "https://note.com/x402inc/n/n5dff14046bd6",
+          "title": "日本株 ネオクラウド銘柄5選：ソフトバンクGPUクラウドと各社のdated catalyst",
+          "published_at": "2026-07-21",
+          "pageviews": 30
+        }
       ]
     },
     {
@@ -33,12 +69,36 @@
       "title_ja": "米国 フィジカルAI",
       "title_en": "Physical AI · US",
       "market": "US",
-      "members_from": { "kind": "series", "series": "physical-ai", "market": "US" },
+      "members_from": {
+        "kind": "series",
+        "series": "physical-ai",
+        "market": "US"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n1738f5fa8629", "title": "米国 フィジカルAI銘柄10選（半導体）：NVIDIAのCDS拡大と各社のdated catalyst", "published_at": "2026-07-31", "pageviews": 93 },
-        { "url": "https://note.com/x402inc/n/n00d0d1362d4d", "title": "米国 フィジカルAI銘柄19選（ロボティクス）：Agility Robotics SPAC上場と各社のdated catalyst", "published_at": "2026-07-31", "pageviews": 58 },
-        { "url": "https://note.com/x402inc/n/naee21cd4b6e4", "title": "米国 フィジカルAI銘柄8選（基盤モデル）：Applied Intuition Danaと各社のdated catalyst", "published_at": "2026-07-31", "pageviews": null },
-        { "url": "https://note.com/x402inc/n/nc9779d59bc9f", "title": "米国フィジカルAI 採点実績アップデート：半導体61%・ロボティクス70%と9/30に出る最初の答え", "published_at": "2026-09-04", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n1738f5fa8629",
+          "title": "米国 フィジカルAI銘柄10選（半導体）：NVIDIAのCDS拡大と各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": 93
+        },
+        {
+          "url": "https://note.com/x402inc/n/n00d0d1362d4d",
+          "title": "米国 フィジカルAI銘柄19選（ロボティクス）：Agility Robotics SPAC上場と各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": 58
+        },
+        {
+          "url": "https://note.com/x402inc/n/naee21cd4b6e4",
+          "title": "米国 フィジカルAI銘柄8選（基盤モデル）：Applied Intuition Danaと各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/nc9779d59bc9f",
+          "title": "米国フィジカルAI 採点実績アップデート：半導体61%・ロボティクス70%と9/30に出る最初の答え",
+          "published_at": "2026-09-04",
+          "pageviews": null
+        }
       ]
     },
     {
@@ -47,10 +107,24 @@
       "title_ja": "日本 フィジカルAI",
       "title_en": "Physical AI · Japan",
       "market": "JP",
-      "members_from": { "kind": "series", "series": "physical-ai", "market": "JP" },
+      "members_from": {
+        "kind": "series",
+        "series": "physical-ai",
+        "market": "JP"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n1b8e66c7fa8e", "title": "日本 フィジカルAI銘柄20選：NVIDIAの7,500億ドル取引と各社のdated catalyst", "published_at": "2026-07-31", "pageviews": null },
-        { "url": "https://note.com/x402inc/n/n3428a4d5e1fa", "title": "日本のフィジカルAI10選：ファナック・安川電機・川崎重工などをdated catalystで読む", "published_at": "2026-07-16", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n1b8e66c7fa8e",
+          "title": "日本 フィジカルAI銘柄20選：NVIDIAの7,500億ドル取引と各社のdated catalyst",
+          "published_at": "2026-07-31",
+          "pageviews": null
+        },
+        {
+          "url": "https://note.com/x402inc/n/n3428a4d5e1fa",
+          "title": "日本のフィジカルAI10選：ファナック・安川電機・川崎重工などをdated catalystで読む",
+          "published_at": "2026-07-16",
+          "pageviews": null
+        }
       ]
     },
     {
@@ -59,9 +133,17 @@
       "title_ja": "米国株 Weekly Selection",
       "title_en": "Weekly Selection · US",
       "market": "US",
-      "members_from": { "kind": "weekly", "market": "US" },
+      "members_from": {
+        "kind": "weekly",
+        "market": "US"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n41d476d52658", "title": "米国株 Weekly Selection：AIインフラ14%・NVDA6%の10/14〜11月中旬締切10銘柄のdated catalyst", "published_at": "2026-10-14", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n41d476d52658",
+          "title": "米国株 Weekly Selection：AIインフラ14%・NVDA6%の10/14〜11月中旬締切10銘柄のdated catalyst",
+          "published_at": "2026-10-14",
+          "pageviews": null
+        }
       ]
     },
     {
@@ -70,64 +152,112 @@
       "title_ja": "日本株 Weekly Selection",
       "title_en": "Weekly Selection · Japan",
       "market": "JP",
-      "members_from": { "kind": "weekly", "market": "JP" },
+      "members_from": {
+        "kind": "weekly",
+        "market": "JP"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n818c65b295ae", "title": "日本株 Weekly Selection：東京エレクトロン15%首位の10/29〜11/7締切10銘柄のdated catalyst", "published_at": "2026-10-14", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n818c65b295ae",
+          "title": "日本株 Weekly Selection：東京エレクトロン15%首位の10/29〜11/7締切10銘柄のdated catalyst",
+          "published_at": "2026-10-14",
+          "pageviews": null
+        }
       ]
     },
     {
-      "id": "ir-fair-datacenter-power",
+      "id": "datacenter-power-jp",
       "rank": 7,
-      "title_ja": "日本株 データセンター・電力インフラ",
-      "title_en": "Data centers · Power (Japan)",
+      "title_ja": "日本株 データセンター・電力",
+      "title_en": "Data centers · Power · Japan",
       "market": "JP",
-      "members_from": { "kind": "ir-fair-sector", "slug": "datacenter-power" },
+      "members_from": {
+        "kind": "sector",
+        "slug": "datacenter-power"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n70ffdda17ca4", "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst", "published_at": "2026-09-24", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
+          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null
+        }
       ]
     },
     {
-      "id": "ir-fair-space-geospatial",
+      "id": "space-geospatial-jp",
       "rank": 8,
       "title_ja": "日本株 宇宙・地理空間",
-      "title_en": "Space · Geospatial (Japan)",
+      "title_en": "Space · Geospatial · Japan",
       "market": "JP",
-      "members_from": { "kind": "ir-fair-sector", "slug": "space-geospatial" },
+      "members_from": {
+        "kind": "sector",
+        "slug": "space-geospatial"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n70ffdda17ca4", "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst", "published_at": "2026-09-24", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
+          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null
+        }
       ]
     },
     {
-      "id": "ir-fair-infrastructure",
+      "id": "infrastructure-jp",
       "rank": 9,
       "title_ja": "日本株 インフラ",
-      "title_en": "Infrastructure (Japan)",
+      "title_en": "Infrastructure · Japan",
       "market": "JP",
-      "members_from": { "kind": "ir-fair-sector", "slug": "infrastructure" },
+      "members_from": {
+        "kind": "sector",
+        "slug": "infrastructure"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n70ffdda17ca4", "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst", "published_at": "2026-09-24", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n70ffdda17ca4",
+          "title": "日本株 電力・宇宙・インフラ：10/27〜11/13のQ2決算に締切を置いた14銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null
+        }
       ]
     },
     {
-      "id": "ir-fair-semiconductors-fa",
+      "id": "semiconductors-fa-jp",
       "rank": 10,
-      "title_ja": "日本株 半導体・FA・装置（装置・材料層）",
-      "title_en": "Semiconductors · FA · Equipment (Japan)",
+      "title_ja": "日本株 半導体・FA・装置",
+      "title_en": "Semiconductors · FA · Equipment · Japan",
       "market": "JP",
-      "members_from": { "kind": "ir-fair-sector", "slug": "semiconductors-fa" },
+      "members_from": {
+        "kind": "sector",
+        "slug": "semiconductors-fa"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n5468ee860649", "title": "日本フィジカルAI 装置・材料層：IRフェア出展10社のdated catalystと採点実績77%", "published_at": "2026-09-04", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n5468ee860649",
+          "title": "日本フィジカルAI 装置・材料層：IRフェア出展10社のdated catalystと採点実績77%",
+          "published_at": "2026-09-04",
+          "pageviews": null
+        }
       ]
     },
     {
-      "id": "ir-fair-healthcare",
+      "id": "healthcare-jp",
       "rank": 11,
       "title_ja": "日本株 ヘルスケア・創薬",
-      "title_en": "Healthcare · Drug discovery (Japan)",
+      "title_en": "Healthcare · Drug discovery · Japan",
       "market": "JP",
-      "members_from": { "kind": "ir-fair-sector", "slug": "healthcare" },
+      "members_from": {
+        "kind": "sector",
+        "slug": "healthcare"
+      },
       "articles": [
-        { "url": "https://note.com/x402inc/n/n604e2379834b", "title": "日本株 ヘルスケア・創薬：ロート製薬の上方修正450億円とケイファーマのALS第3相、6銘柄のdated catalyst", "published_at": "2026-09-24", "pageviews": null }
+        {
+          "url": "https://note.com/x402inc/n/n604e2379834b",
+          "title": "日本株 ヘルスケア・創薬：ロート製薬の上方修正450億円とケイファーマのALS第3相、6銘柄のdated catalyst",
+          "published_at": "2026-09-24",
+          "pageviews": null
+        }
       ]
     }
   ]

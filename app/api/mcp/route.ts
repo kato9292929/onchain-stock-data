@@ -199,7 +199,7 @@ const handler = createMcpHandler(
       {
         title: "List themes",
         description:
-          "Every theme this site tracks (neocloud US/JP, physical AI US/JP, weekly selections, IR Fair sectors): id, member count, members with an event in the next 14 days. Field reference: /docs.",
+          "Every theme this site tracks (neocloud US/JP, physical AI US/JP, weekly selections, sector themes): id, member count, members with an event in the next 14 days. Field reference: /docs.",
         inputSchema: z.object({}),
         annotations: { title: "List themes", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       },
