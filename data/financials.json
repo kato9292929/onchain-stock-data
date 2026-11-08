@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-08T12:53:37.814Z",
+  "updated_at": "2026-11-08T23:57:41.161Z",
   "sources": {
     "us": "https://data.sec.gov/api/xbrl/companyfacts/",
     "jp": "https://www.release.tdnet.info/inbs/I_main_00.html"
@@ -4439,7 +4439,7 @@
       "cik": "0001158114",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001158114.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -4557,7 +4557,7 @@
       "cik": "0000320193",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-27",
         "revenue": {
@@ -4675,7 +4675,7 @@
       "cik": "0000006281",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000006281.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -4793,7 +4793,7 @@
       "cik": "0001736297",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001736297.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -4911,7 +4911,7 @@
       "cik": "0001280263",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001280263.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -5029,7 +5029,7 @@
       "cik": "0001018724",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001018724.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5147,7 +5147,7 @@
       "cik": "0001596532",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001596532.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5265,7 +5265,7 @@
       "cik": "0001144879",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001144879.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-31",
         "revenue": {
@@ -5383,7 +5383,7 @@
       "cik": "0001828108",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001828108.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5501,7 +5501,7 @@
       "cik": "0001730168",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001730168.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -5619,7 +5619,7 @@
       "cik": "0000018230",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000018230.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5737,7 +5737,7 @@
       "cik": "0000851205",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000851205.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-10-04",
         "revenue": {
@@ -5855,7 +5855,7 @@
       "cik": "0001819989",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001819989.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5973,7 +5973,7 @@
       "cik": "0001030894",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001030894.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6091,7 +6091,7 @@
       "cik": "0001679788",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001679788.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6209,7 +6209,7 @@
       "cik": "0001839341",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001839341.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6327,7 +6327,7 @@
       "cik": "0000909832",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000909832.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-05-10",
         "revenue": {
@@ -6445,7 +6445,7 @@
       "cik": "0001807794",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001807794.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -6563,7 +6563,7 @@
       "cik": "0001769628",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001769628.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -6681,7 +6681,7 @@
       "cik": "0000315189",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000315189.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -6799,7 +6799,7 @@
       "cik": "0001652044",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001652044.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6917,7 +6917,7 @@
       "cik": "0001653482",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001653482.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -7035,7 +7035,7 @@
       "cik": "0001720424",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001720424.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -7129,7 +7129,7 @@
       "cik": "0001964789",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001964789.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7247,7 +7247,7 @@
       "cik": "0001980994",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001980994.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-03-31",
         "revenue": null,
@@ -7317,7 +7317,7 @@
       "cik": "0001048268",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001048268.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -7435,7 +7435,7 @@
       "cik": "0001642896",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001642896.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -7553,7 +7553,7 @@
       "cik": "0001878848",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001878848.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7671,7 +7671,7 @@
       "cik": "0000019617",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000019617.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7765,7 +7765,7 @@
       "cik": "0000059478",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000059478.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7859,7 +7859,7 @@
       "cik": "0000855658",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000855658.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-10-03",
         "revenue": {
@@ -7977,7 +7977,7 @@
       "cik": "0001397187",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001397187.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -8095,7 +8095,7 @@
       "cik": "0001910139",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001910139.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-26",
         "revenue": {
@@ -8213,7 +8213,7 @@
       "cik": "0001441816",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001441816.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -8331,7 +8331,7 @@
       "cik": "0001326801",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001326801.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8449,7 +8449,7 @@
       "cik": "0000067347",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000067347.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8567,7 +8567,7 @@
       "cik": "0000789019",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8685,7 +8685,7 @@
       "cik": "0001050446",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001050446.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8803,7 +8803,7 @@
       "cik": "0000723125",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000723125.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-05-28",
         "revenue": {
@@ -8921,7 +8921,7 @@
       "cik": "0001513845",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001513845.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": null,
       "latest_annual": {
         "period_end": "2023-12-31",
@@ -8985,7 +8985,7 @@
       "cik": "0001045810",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-07-26",
         "revenue": {
@@ -9103,7 +9103,7 @@
       "cik": "0001852131",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001852131.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-10-02",
         "revenue": {
@@ -9221,7 +9221,7 @@
       "cik": "0001097864",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001097864.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-10-02",
         "revenue": {
@@ -9339,7 +9339,7 @@
       "cik": "0001816581",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001816581.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -9457,7 +9457,7 @@
       "cik": "0001114995",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001114995.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -9575,7 +9575,7 @@
       "cik": "0000080420",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000080420.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -9693,7 +9693,7 @@
       "cik": "0000804328",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000804328.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-28",
         "revenue": {
@@ -9811,7 +9811,7 @@
       "cik": "0001819994",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001819994.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -9929,7 +9929,7 @@
       "cik": "0001024478",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001024478.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -10047,7 +10047,7 @@
       "cik": "0001583708",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001583708.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -10165,7 +10165,7 @@
       "cik": "0001832483",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001832483.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10283,7 +10283,7 @@
       "cik": "0001822966",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001822966.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10401,7 +10401,7 @@
       "cik": "0001837240",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001837240.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-27",
         "revenue": {
@@ -10519,7 +10519,7 @@
       "cik": "0000097210",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000097210.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-27",
         "revenue": {
@@ -10637,7 +10637,7 @@
       "cik": "0000931427",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000931427.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": null,
       "latest_annual": null
     },
@@ -10647,7 +10647,7 @@
       "cik": "0001756262",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001756262.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10765,7 +10765,7 @@
       "cik": "0001318605",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001318605.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10883,7 +10883,7 @@
       "cik": "0000097476",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000097476.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11001,7 +11001,7 @@
       "cik": "0000731766",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000731766.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11119,7 +11119,7 @@
       "cik": "0001403161",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001403161.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -11213,7 +11213,7 @@
       "cik": "0001607678",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001607678.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11331,7 +11331,7 @@
       "cik": "0001674101",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001674101.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11449,7 +11449,7 @@
       "cik": "0001083301",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001083301.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11567,7 +11567,7 @@
       "cik": "0002042022",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002042022.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -11685,7 +11685,7 @@
       "cik": "0000877212",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000877212.json",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-08T23:57:41.161Z",
       "latest_quarter": {
         "period_end": "2026-10-03",
         "revenue": {
