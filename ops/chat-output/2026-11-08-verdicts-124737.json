@@ -1,0 +1,101 @@
+{
+  "type": "verdicts",
+  "items": [
+    {
+      "id": "us:2026-09-21:META",
+      "status": "hit",
+      "reasoning": "10/21 公表の Q3 2026 決算で広告収入は 630.6 億ドル、前年同期比 +26%（為替除きも +26%）。条件の +20% 超を満たす。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0001326801/000162828026066700/meta-09302026xexhibit991.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-05:META",
+      "status": "partial",
+      "reasoning": "広告収入は前年同期比 +26% で +20% 超を満たす。2026 年の設備投資見通しは 1,350〜1,450 億ドルに狭められたが、2027 年のガイダンスは示されず、「市場予想を下回らない」の部分は一次資料で判定できない。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0001326801/000162828026066700/meta-09302026xexhibit991.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-12:META",
+      "status": "na",
+      "reasoning": "条件は「広告収益成長率と AI 投資回収のガイダンスが市場予想を上回る」で、数値の閾値がなく市場予想との比較は一次資料で判定できない。AI 投資回収のガイダンスも開示されていない（広告収入は +26%）。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0001326801/000162828026066700/meta-09302026xexhibit991.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-09-21:CAT",
+      "status": "hit",
+      "reasoning": "10/29 の Q3 2026 決算で受注残は過去最高（決算発表）。同日の決算説明会で CEO が、受注残は主要3セグメント（Construction Industries・Resource Industries・Power & Energy）すべてで4四半期連続の前四半期比増加と説明した。建設・資源部門の受注残の前四半期比増加を満たす。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000018230/000001823026000052/ex991toformcat3q2026earnin.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-05:CAT",
+      "status": "hit",
+      "reasoning": "10/29 の Q3 2026 決算で Power Generation 売上が 34.21 億ドル（前年同期比 +30%）、主にデータセンター向けのタービン・大型レシプロエンジン。受注残は過去最高で、決算説明会で Power & Energy を含む3セグメントすべての前四半期比増加が示された。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000018230/000001823026000052/ex991toformcat3q2026earnin.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-12:CAT",
+      "status": "hit",
+      "reasoning": "10/29 の Q3 2026 決算で受注残は過去最高。決算説明会で Power & Energy を含む主要3セグメントの受注残が前四半期比で増加したと説明された。エネルギー・インフラ部門の受注残の前四半期比拡大を満たす。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000018230/000001823026000052/ex991toformcat3q2026earnin.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-19:CAT",
+      "status": "hit",
+      "reasoning": "10/29 の Q3 2026 決算で Power Generation 売上が前年同期比 +30%（主にデータセンター向け）。受注残は過去最高で、Power & Energy を含む3セグメントで前四半期比増加。データセンター・電力関連の受注の伸びと受注残の拡大の両方を満たす。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000018230/000001823026000052/ex991toformcat3q2026earnin.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "us:2026-10-19:LLY",
+      "status": "miss",
+      "reasoning": "10/29 の Q3 2026 決算で Mounjaro は 107.23 億ドル（Q2 の 99.43 億ドルから +7.8%）、Zepbound は 53.52 億ドル（Q2 の 49.28 億ドルから +8.6%）で、前四半期比二桁増に届かない。2027 年のガイダンスも示されていない（2026 年の売上見通しは 910〜920 億ドルへ引き上げ）。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0000059478/000005947826000104/q326lillysalesandearningsp.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "ext:ext_a28be648",
+      "status": "partial",
+      "reasoning": "7/27 公表の FY2026 Q4 決算で、Polaris Forge 1 の第2棟は Phase 1（75MW）が Ready for Service に達した。150MW 全体のサービス開始は示されていない。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0001144879/000114487926000044/apldq426earningsreleaseasf.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "ext:ext_aa265ca0",
+      "status": "miss",
+      "reasoning": "11/2 公表の Q3 2026 決算で、Barber Lake は「変更後のスケジュールどおり建設中」とされ、9/30 までの第1期 168MW の納入・引き渡しは示されていない。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "ext:ext_e0785097",
+      "status": "miss",
+      "reasoning": "11/2 公表の Q3 2026 決算で、Barber Lake は「変更後のマイルストーンどおり建設中」で、データホールは年末までに順次稼働とされた。9/30 までの第1期 168MW の納入は確認できない。",
+      "evidence_url": "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "ext:ext_a6f53848",
+      "status": "miss",
+      "reasoning": "Fermi の 11/3 のプレスリリースで、TensorWave とのリースは 10/31 のクロージング期日を延長なしで過ぎ、クロージング条件（建設資金の調達・保証・取締役会承認など）が満たされず未発効とされた。",
+      "evidence_url": "https://www.webdisclosure.com/press-release/fermi-provides-update-on-lease-agreement-as-parties-work-toward-closing-8Ma0LNS5bqM",
+      "evaluated_at": "2026-11-08T13:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    }
+  ]
+}

@@ -3104,10 +3104,12 @@
     "target_date": "2026-10-31",
     "submitted_at": "2026-11-06T16:52:16.129Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "miss",
+    "judgement_date": "2026-11-08",
+    "evidence_urls": [
+      "https://www.webdisclosure.com/press-release/fermi-provides-update-on-lease-agreement-as-parties-work-toward-closing-8Ma0LNS5bqM"
+    ],
+    "reasoning": "Fermi の 11/3 のプレスリリースで、TensorWave とのリースは 10/31 のクロージング期日を延長なしで過ぎ、クロージング条件（建設資金の調達・保証・取締役会承認など）が満たされず未発効とされた。",
     "catalyst_type": "fixed_date",
     "date_confidence": "confirmed",
     "country": "US",
@@ -3116,7 +3118,9 @@
     "parent_catalyst_id": null,
     "company_name": "TensorWave",
     "unlisted": true,
-    "author": "article"
+    "author": "article",
+    "evaluator": "claude-fable-5-1 (chat)",
+    "evaluated_at": "2026-11-08T13:30:00Z"
   },
   {
     "catalyst_id": "ext_ada6ecbf",
@@ -3771,10 +3775,12 @@
     "target_date": "2026-09-30",
     "submitted_at": "2026-11-07T06:54:58.398Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "miss",
+    "judgement_date": "2026-11-08",
+    "evidence_urls": [
+      "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm"
+    ],
+    "reasoning": "11/2 公表の Q3 2026 決算で、Barber Lake は「変更後のマイルストーンどおり建設中」で、データホールは年末までに順次稼働とされた。9/30 までの第1期 168MW の納入は確認できない。",
     "catalyst_type": "fixed_date",
     "date_confidence": "confirmed",
     "country": "US",
@@ -3786,7 +3792,9 @@
     "edition": "history",
     "superseded_by": "ext_28b1a9fd",
     "superseded_at": "2026-11-07",
-    "article_verdict": "未達"
+    "article_verdict": "未達",
+    "evaluator": "claude-fable-5-1 (chat)",
+    "evaluated_at": "2026-11-08T13:30:00Z"
   },
   {
     "catalyst_id": "ext_d8f2d325",
@@ -4434,10 +4442,12 @@
     "target_date": "2026-07-31",
     "submitted_at": "2026-11-07T06:54:58.398Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "partial",
+    "judgement_date": "2026-11-08",
+    "evidence_urls": [
+      "https://www.sec.gov/Archives/edgar/data/0001144879/000114487926000044/apldq426earningsreleaseasf.htm"
+    ],
+    "reasoning": "7/27 公表の FY2026 Q4 決算で、Polaris Forge 1 の第2棟は Phase 1（75MW）が Ready for Service に達した。150MW 全体のサービス開始は示されていない。",
     "catalyst_type": "event",
     "date_confidence": "estimated",
     "country": "US",
@@ -4448,7 +4458,9 @@
     "author": "article",
     "edition": "history",
     "superseded_by": "ext_425f3501",
-    "superseded_at": "2026-11-07"
+    "superseded_at": "2026-11-07",
+    "evaluator": "claude-fable-5-1 (chat)",
+    "evaluated_at": "2026-11-08T13:30:00Z"
   },
   {
     "catalyst_id": "ext_aa265ca0",
@@ -4463,10 +4475,12 @@
     "target_date": "2026-09-30",
     "submitted_at": "2026-11-07T06:54:58.398Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "miss",
+    "judgement_date": "2026-11-08",
+    "evidence_urls": [
+      "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm"
+    ],
+    "reasoning": "11/2 公表の Q3 2026 決算で、Barber Lake は「変更後のスケジュールどおり建設中」とされ、9/30 までの第1期 168MW の納入・引き渡しは示されていない。",
     "catalyst_type": "fixed_date",
     "date_confidence": "confirmed",
     "country": "US",
@@ -4477,7 +4491,9 @@
     "author": "article",
     "edition": "history",
     "superseded_by": "ext_e0785097",
-    "superseded_at": "2026-11-07"
+    "superseded_at": "2026-11-07",
+    "evaluator": "claude-fable-5-1 (chat)",
+    "evaluated_at": "2026-11-08T13:30:00Z"
   },
   {
     "catalyst_id": "ext_722d56c2",

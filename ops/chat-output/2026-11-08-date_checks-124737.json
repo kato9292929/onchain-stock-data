@@ -1,0 +1,24 @@
+{
+  "type": "date_checks",
+  "items": [
+    {
+      "ids": [
+        "us:2026-09-21:NVDA",
+        "us:2026-10-05:NVDA",
+        "us:2026-10-12:NVDA",
+        "us:2026-10-19:NVDA"
+      ],
+      "confirmed_date": "2026-11-17",
+      "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Sets-Conference-Call-for-Third-Quarter-Financial-Results/default.aspx"
+    },
+    {
+      "ids": [
+        "us:2026-10-05:COST",
+        "us:2026-10-12:COST",
+        "us:2026-10-19:COST"
+      ],
+      "confirmed_date": "2026-11-04",
+      "source_url": "https://s201.q4cdn.com/287523651/files/doc_news/Costco-Wholesale-Corporation-Reports-October-Sales-Results-2026.pdf"
+    }
+  ]
+}

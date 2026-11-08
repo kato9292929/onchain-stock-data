@@ -116,7 +116,7 @@ export function resolveNext(ticker, market, { jpx, jpxOk, announced, today, chec
   return { date: null, status: "unverified", source_url: null, checked_at: checkedAt };
 }
 
-async function fetchJpx() {
+export async function fetchJpx() {
   const base = "https://www.jpx.co.jp";
   const res = await fetch(JPX_INDEX, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(30_000) });
   if (!res.ok) throw new Error(`JPX index HTTP ${res.status}`);

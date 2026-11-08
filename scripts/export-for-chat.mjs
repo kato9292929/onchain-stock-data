@@ -459,6 +459,9 @@ export function buildExport(files, { today, since }) {
       article_verdicts: articleVerdicts.length,
     },
     due,
+    unchecked,
+    upcoming,
+    renewal,
   };
 }
 
