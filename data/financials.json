@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-11-06T16:55:10.422Z",
+  "updated_at": "2026-11-08T12:53:37.814Z",
   "sources": {
     "us": "https://data.sec.gov/api/xbrl/companyfacts/",
     "jp": "https://www.release.tdnet.info/inbs/I_main_00.html"
   },
   "last_run": {
-    "us_requested": 90,
+    "us_requested": 94,
     "us_failed": [
       {
         "ticker": "AGILITY",
@@ -21,6 +21,10 @@
       },
       {
         "ticker": "APPTRONIK",
+        "reason": "no SEC registrant for this ticker"
+      },
+      {
+        "ticker": "BEDROCK",
         "reason": "no SEC registrant for this ticker"
       },
       {
@@ -44,6 +48,14 @@
         "reason": "no SEC registrant for this ticker"
       },
       {
+        "ticker": "FLUIDSTACK",
+        "reason": "no SEC registrant for this ticker"
+      },
+      {
+        "ticker": "FOUNDRY",
+        "reason": "no SEC registrant for this ticker"
+      },
+      {
         "ticker": "GECKO",
         "reason": "no SEC registrant for this ticker"
       },
@@ -57,6 +69,10 @@
       },
       {
         "ticker": "LAMBDA",
+        "reason": "no SEC registrant for this ticker"
+      },
+      {
+        "ticker": "NSCALE",
         "reason": "no SEC registrant for this ticker"
       },
       {
@@ -113,7 +129,7 @@
       }
     ],
     "jp_requested": 226,
-    "jp_tdnet_pages": 94,
+    "jp_tdnet_pages": 92,
     "jp_found_in_window": 93,
     "jp_failed": []
   },
@@ -122,7 +138,7 @@
       "market": "JP",
       "company": "トーエネック",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -169,7 +185,7 @@
       "market": "JP",
       "company": "中外炉",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -216,7 +232,7 @@
       "market": "JP",
       "company": "暁飯島",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年8月期決算短信〔日本基準〕（非連結）",
         "accounting_standard": "JGAAP",
@@ -263,7 +279,7 @@
       "market": "JP",
       "company": "ニップン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -310,7 +326,7 @@
       "market": "JP",
       "company": "日東富士",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期　第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -357,7 +373,7 @@
       "market": "JP",
       "company": "フィード・ワン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -404,7 +420,7 @@
       "market": "JP",
       "company": "東エレデバ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期　第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -451,7 +467,7 @@
       "market": "JP",
       "company": "エバラ食品工業",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期  第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -498,7 +514,7 @@
       "market": "JP",
       "company": "日東紡",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -545,7 +561,7 @@
       "market": "JP",
       "company": "トヨタ紡織",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信［ＩＦＲＳ］（連結）",
         "accounting_standard": null,
@@ -632,7 +648,7 @@
       "market": "JP",
       "company": "帝繊維",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年12月期　第3四半期決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -679,7 +695,7 @@
       "market": "JP",
       "company": "明治電機",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期　第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -726,7 +742,7 @@
       "market": "JP",
       "company": "トーカロ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -773,7 +789,7 @@
       "market": "JP",
       "company": "フィックスターズ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年9月期 決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -820,7 +836,7 @@
       "market": "JP",
       "company": "さくらインターネット",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -867,7 +883,7 @@
       "market": "JP",
       "company": "スパバック",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -914,7 +930,7 @@
       "market": "JP",
       "company": "イビデン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -961,7 +977,7 @@
       "market": "JP",
       "company": "信越化",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1008,7 +1024,7 @@
       "market": "JP",
       "company": "リケンテクノス",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信（日本基準）（連結）",
         "accounting_standard": "JGAAP",
@@ -1055,7 +1071,7 @@
       "market": "JP",
       "company": "Ｇ－モビルス",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年8月期 決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1102,7 +1118,7 @@
       "market": "JP",
       "company": "Ｇ－サイエンスアーツ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年８月期　決算短信〔日本基準〕（非連結）",
         "accounting_standard": "JGAAP",
@@ -1149,7 +1165,7 @@
       "market": "JP",
       "company": "東名",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年８月期　決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1196,7 +1212,7 @@
       "market": "JP",
       "company": "関ペイント",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期  第２四半期決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1243,7 +1259,7 @@
       "market": "JP",
       "company": "東インキ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1290,7 +1306,7 @@
       "market": "JP",
       "company": "アルファシステムズ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（非連結）",
         "accounting_standard": "JGAAP",
@@ -1337,7 +1353,7 @@
       "market": "JP",
       "company": "ＮＣＤ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1384,7 +1400,7 @@
       "market": "JP",
       "company": "あすか製薬ＨＤ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1431,7 +1447,7 @@
       "market": "JP",
       "company": "石塚硝",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1478,7 +1494,7 @@
       "market": "JP",
       "company": "東海カーボン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年12月期第３四半期決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1525,7 +1541,7 @@
       "market": "JP",
       "company": "ＴＯＴＯ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1572,7 +1588,7 @@
       "market": "JP",
       "company": "ＮＧＫ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1619,7 +1635,7 @@
       "market": "JP",
       "company": "ＦＵＪＩＭＩ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1666,7 +1682,7 @@
       "market": "JP",
       "company": "大同特鋼",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -1706,7 +1722,7 @@
       "market": "JP",
       "company": "新日本電工",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年12月期 第3四半期決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1718,8 +1734,8 @@
         "revenue": {
           "value": 58907000000,
           "unit": "JPY",
-          "prior_value": null,
-          "yoy_pct": null,
+          "prior_value": 57864000000,
+          "yoy_pct": 1.8,
           "source_url": "https://www.release.tdnet.info/inbs/140120261106567167.pdf",
           "disclosed_at": "2026-11-06T13:00:00+09:00"
         },
@@ -1740,10 +1756,10 @@
           "disclosed_at": "2026-11-06T13:00:00+09:00"
         },
         "net_income": {
-          "value": null,
+          "value": -1380000000,
           "unit": "JPY",
           "prior_value": 439000000,
-          "yoy_pct": null,
+          "yoy_pct": -414.4,
           "source_url": "https://www.release.tdnet.info/inbs/140120261106567167.pdf",
           "disclosed_at": "2026-11-06T13:00:00+09:00"
         }
@@ -1753,7 +1769,7 @@
       "market": "JP",
       "company": "栗本鉄",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1800,7 +1816,7 @@
       "market": "JP",
       "company": "三菱製鋼",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1847,7 +1863,7 @@
       "market": "JP",
       "company": "ホッカン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -1894,7 +1910,7 @@
       "market": "JP",
       "company": "ディスコ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1941,7 +1957,7 @@
       "market": "JP",
       "company": "オイレス工",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -1988,7 +2004,7 @@
       "market": "JP",
       "company": "技研製作所",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年８月期　決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -2035,7 +2051,7 @@
       "market": "JP",
       "company": "ローツェ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年2月期 第2四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -2082,7 +2098,7 @@
       "market": "JP",
       "company": "菱化工機",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -2129,7 +2145,7 @@
       "market": "JP",
       "company": "月島ＨＤ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -2176,7 +2192,7 @@
       "market": "JP",
       "company": "新東工",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -2188,8 +2204,8 @@
         "revenue": {
           "value": 83648000000,
           "unit": "JPY",
-          "prior_value": null,
-          "yoy_pct": null,
+          "prior_value": 85710000000,
+          "yoy_pct": -2.4,
           "source_url": "https://www.release.tdnet.info/inbs/140120261019552890.pdf",
           "disclosed_at": "2026-11-05T15:40:00+09:00"
         },
@@ -2223,7 +2239,7 @@
       "market": "JP",
       "company": "トリニ工",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -2270,7 +2286,7 @@
       "market": "JP",
       "company": "ジャノメ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -2317,7 +2333,7 @@
       "market": "JP",
       "company": "ＮＴＮ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕(連結）",
         "accounting_standard": "JGAAP",
@@ -2364,7 +2380,7 @@
       "market": "JP",
       "company": "日立",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期 (中間期) 決算短信〔IFRS〕(連結)",
         "accounting_standard": "IFRS",
@@ -2404,7 +2420,7 @@
       "market": "JP",
       "company": "富士電機",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -2451,7 +2467,7 @@
       "market": "JP",
       "company": "安川電",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年2月期 第2四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -2491,7 +2507,7 @@
       "market": "JP",
       "company": "芝浦",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期決算短信[日本基準]（連結）",
         "accounting_standard": "JGAAP",
@@ -2538,7 +2554,7 @@
       "market": "JP",
       "company": "ＮＥＣ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔IFRS〕（連結）",
         "accounting_standard": "IFRS",
@@ -2578,7 +2594,7 @@
       "market": "JP",
       "company": "富士通",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期　第2四半期（中間期）決算短信〔ＩＦＲＳ〕(連結)",
         "accounting_standard": null,
@@ -2618,7 +2634,7 @@
       "market": "JP",
       "company": "ルネサス",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年12月期第３四半期決算短信〔ＩＦＲＳ〕(連結)",
         "accounting_standard": null,
@@ -2630,8 +2646,8 @@
         "revenue": {
           "value": 1234659000000,
           "unit": "JPY",
-          "prior_value": null,
-          "yoy_pct": null,
+          "prior_value": 969675000000,
+          "yoy_pct": 27.3,
           "source_url": "https://www.release.tdnet.info/inbs/140120261028557610.pdf",
           "disclosed_at": "2026-10-29T09:00:00+09:00"
         },
@@ -2644,14 +2660,21 @@
           "disclosed_at": "2026-10-29T09:00:00+09:00"
         },
         "ordinary_income": null,
-        "net_income": null
+        "net_income": {
+          "value": 589526000000,
+          "unit": "JPY",
+          "prior_value": -69086000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261028557610.pdf",
+          "disclosed_at": "2026-10-29T09:00:00+09:00"
+        }
       }
     },
     "6745": {
       "market": "JP",
       "company": "ホーチキ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -2698,7 +2721,7 @@
       "market": "JP",
       "company": "ソニーグループ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔IFRS〕（連結）",
         "accounting_standard": "IFRS",
@@ -2738,7 +2761,7 @@
       "market": "JP",
       "company": "メイコー",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -2785,7 +2808,7 @@
       "market": "JP",
       "company": "ヒロセ電",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -2825,7 +2848,7 @@
       "market": "JP",
       "company": "アドバンテス",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔IFRS〕(連結)",
         "accounting_standard": "IFRS",
@@ -2865,7 +2888,7 @@
       "market": "JP",
       "company": "レーザーテック",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年6月期　第1四半期決算短信〔日本基準〕　（連結）",
         "accounting_standard": "JGAAP",
@@ -2912,7 +2935,7 @@
       "market": "JP",
       "company": "ファナック",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -2959,7 +2982,7 @@
       "market": "JP",
       "company": "ローム",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -2987,16 +3010,16 @@
         "ordinary_income": {
           "value": 16892000000,
           "unit": "JPY",
-          "prior_value": null,
-          "yoy_pct": null,
+          "prior_value": 13422000000,
+          "yoy_pct": 25.9,
           "source_url": "https://www.release.tdnet.info/inbs/140120261102562256.pdf",
           "disclosed_at": "2026-11-05T15:30:00+09:00"
         },
         "net_income": {
           "value": 15580000000,
           "unit": "JPY",
-          "prior_value": null,
-          "yoy_pct": null,
+          "prior_value": 10318000000,
+          "yoy_pct": 51,
           "source_url": "https://www.release.tdnet.info/inbs/140120261102562256.pdf",
           "disclosed_at": "2026-11-05T15:30:00+09:00"
         }
@@ -3006,7 +3029,7 @@
       "market": "JP",
       "company": "村田製",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -3046,7 +3069,7 @@
       "market": "JP",
       "company": "エフテック",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3093,7 +3116,7 @@
       "market": "JP",
       "company": "トピー工",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3140,7 +3163,7 @@
       "market": "JP",
       "company": "豊田合",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -3180,7 +3203,7 @@
       "market": "JP",
       "company": "フジオーゼ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信[日本基準](連結)",
         "accounting_standard": "JGAAP",
@@ -3227,7 +3250,7 @@
       "market": "JP",
       "company": "ＳＰＫ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3274,7 +3297,7 @@
       "market": "JP",
       "company": "愛知時",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3321,7 +3344,7 @@
       "market": "JP",
       "company": "東精密",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期　第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3368,7 +3391,7 @@
       "market": "JP",
       "company": "フルヤ金属",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年６月期　第１四半期決算短信〔日本基準〕（連結)",
         "accounting_standard": "JGAAP",
@@ -3415,7 +3438,7 @@
       "market": "JP",
       "company": "プロネクサス",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -3455,7 +3478,7 @@
       "market": "JP",
       "company": "ＺＡＣＲＯＳ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3502,7 +3525,7 @@
       "market": "JP",
       "company": "タカラスタン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3549,7 +3572,7 @@
       "market": "JP",
       "company": "コクヨ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年12月期 第３四半期決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3596,7 +3619,7 @@
       "market": "JP",
       "company": "立川ブライ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2026年12月期 第３四半期決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3643,7 +3666,7 @@
       "market": "JP",
       "company": "蝶理",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3690,7 +3713,7 @@
       "market": "JP",
       "company": "東エレク",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3737,7 +3760,7 @@
       "market": "JP",
       "company": "カノークス",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3784,7 +3807,7 @@
       "market": "JP",
       "company": "ゴルドウイン",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期  第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3831,7 +3854,7 @@
       "market": "JP",
       "company": "ＳＢＩ新生銀行",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期  第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -3864,7 +3887,7 @@
       "market": "JP",
       "company": "東海東京",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3904,7 +3927,7 @@
       "market": "JP",
       "company": "ＪＲ東",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期(中間期)決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3951,7 +3974,7 @@
       "market": "JP",
       "company": "ＮＡＮＫＡＩ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -3998,7 +4021,7 @@
       "market": "JP",
       "company": "ＪＲ九州",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信[日本基準]（連結）",
         "accounting_standard": "JGAAP",
@@ -4045,7 +4068,7 @@
       "market": "JP",
       "company": "スカパーＪＳＡＴ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -4092,7 +4115,7 @@
       "market": "JP",
       "company": "ＫＤＤＩ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信〔ＩＦＲＳ〕（連結）",
         "accounting_standard": null,
@@ -4132,7 +4155,7 @@
       "market": "JP",
       "company": "東北電力",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -4179,7 +4202,7 @@
       "market": "JP",
       "company": "東邦瓦斯",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年3月期 第2四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -4226,7 +4249,7 @@
       "market": "JP",
       "company": "ＫＳＫ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期　第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -4273,7 +4296,7 @@
       "market": "JP",
       "company": "乃村工芸",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年２月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -4320,7 +4343,7 @@
       "market": "JP",
       "company": "日伝",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
         "accounting_standard": "JGAAP",
@@ -4367,7 +4390,7 @@
       "market": "JP",
       "company": "タキヒヨー",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-05T10:09:22.884Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest": {
         "title": "2027年２月期　第２四半期（中間期）決算短信〔日本基準〕(連結)",
         "accounting_standard": "JGAAP",
@@ -4416,7 +4439,7 @@
       "cik": "0001158114",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001158114.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -4534,7 +4557,7 @@
       "cik": "0000320193",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-27",
         "revenue": {
@@ -4652,7 +4675,7 @@
       "cik": "0000006281",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000006281.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -4770,7 +4793,7 @@
       "cik": "0001736297",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001736297.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -4888,7 +4911,7 @@
       "cik": "0001280263",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001280263.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -5006,7 +5029,7 @@
       "cik": "0001018724",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001018724.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5124,7 +5147,7 @@
       "cik": "0001596532",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001596532.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5242,7 +5265,7 @@
       "cik": "0001144879",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001144879.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-31",
         "revenue": {
@@ -5360,7 +5383,7 @@
       "cik": "0001828108",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001828108.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5478,7 +5501,7 @@
       "cik": "0001730168",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001730168.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -5596,7 +5619,7 @@
       "cik": "0000018230",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000018230.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5714,7 +5737,7 @@
       "cik": "0000851205",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000851205.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-10-04",
         "revenue": {
@@ -5832,7 +5855,7 @@
       "cik": "0001819989",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001819989.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -5950,7 +5973,7 @@
       "cik": "0001030894",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001030894.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6068,7 +6091,7 @@
       "cik": "0001679788",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001679788.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6186,7 +6209,7 @@
       "cik": "0001839341",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001839341.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6304,7 +6327,7 @@
       "cik": "0000909832",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000909832.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-05-10",
         "revenue": {
@@ -6422,7 +6445,7 @@
       "cik": "0001807794",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001807794.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -6540,7 +6563,7 @@
       "cik": "0001769628",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001769628.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -6658,7 +6681,7 @@
       "cik": "0000315189",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000315189.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -6776,7 +6799,7 @@
       "cik": "0001652044",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001652044.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -6894,7 +6917,7 @@
       "cik": "0001653482",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001653482.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -7012,7 +7035,7 @@
       "cik": "0001720424",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001720424.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -7106,7 +7129,7 @@
       "cik": "0001964789",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001964789.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7224,7 +7247,7 @@
       "cik": "0001980994",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001980994.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-03-31",
         "revenue": null,
@@ -7242,17 +7265,17 @@
           "source_url": "https://www.sec.gov/Archives/edgar/data/1980994/000143774926015538/0001437749-26-015538-index.htm"
         },
         "net_income": {
-          "value": -7048147970,
+          "value": 18519927257,
           "unit": "USD",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": 14468115204,
-          "prior_period_end": "2025-06-30",
-          "yoy_pct": -148.7,
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 4677568276,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 295.9,
           "concept": "us-gaap:NetIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-08-06",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1980994/000143774926026004/0001437749-26-026004-index.htm"
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1980994/000143774926035539/0001437749-26-035539-index.htm"
         },
         "eps_diluted": null
       },
@@ -7294,7 +7317,7 @@
       "cik": "0001048268",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001048268.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -7412,7 +7435,7 @@
       "cik": "0001642896",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001642896.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -7530,7 +7553,7 @@
       "cik": "0001878848",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001878848.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7648,7 +7671,7 @@
       "cik": "0000019617",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000019617.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7742,7 +7765,7 @@
       "cik": "0000059478",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000059478.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -7836,7 +7859,7 @@
       "cik": "0000855658",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000855658.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-10-03",
         "revenue": {
@@ -7954,7 +7977,7 @@
       "cik": "0001397187",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001397187.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -8072,7 +8095,7 @@
       "cik": "0001910139",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001910139.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-26",
         "revenue": {
@@ -8190,7 +8213,7 @@
       "cik": "0001441816",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001441816.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -8308,7 +8331,7 @@
       "cik": "0001326801",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001326801.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8426,7 +8449,7 @@
       "cik": "0000067347",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000067347.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8544,7 +8567,7 @@
       "cik": "0000789019",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8662,7 +8685,7 @@
       "cik": "0001050446",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001050446.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -8780,7 +8803,7 @@
       "cik": "0000723125",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000723125.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-05-28",
         "revenue": {
@@ -8898,7 +8921,7 @@
       "cik": "0001513845",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001513845.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": null,
       "latest_annual": {
         "period_end": "2023-12-31",
@@ -8962,7 +8985,7 @@
       "cik": "0001045810",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-07-26",
         "revenue": {
@@ -9080,7 +9103,7 @@
       "cik": "0001852131",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001852131.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-10-02",
         "revenue": {
@@ -9198,7 +9221,7 @@
       "cik": "0001097864",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001097864.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-10-02",
         "revenue": {
@@ -9316,7 +9339,7 @@
       "cik": "0001816581",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001816581.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -9434,7 +9457,7 @@
       "cik": "0001114995",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001114995.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -9552,7 +9575,7 @@
       "cik": "0000080420",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000080420.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -9670,7 +9693,7 @@
       "cik": "0000804328",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000804328.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-28",
         "revenue": {
@@ -9788,7 +9811,7 @@
       "cik": "0001819994",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001819994.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -9906,7 +9929,7 @@
       "cik": "0001024478",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001024478.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -10024,7 +10047,7 @@
       "cik": "0001583708",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001583708.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -10142,7 +10165,7 @@
       "cik": "0001832483",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001832483.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10260,7 +10283,7 @@
       "cik": "0001822966",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001822966.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10378,7 +10401,7 @@
       "cik": "0001837240",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001837240.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-27",
         "revenue": {
@@ -10496,7 +10519,7 @@
       "cik": "0000097210",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000097210.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-27",
         "revenue": {
@@ -10614,7 +10637,7 @@
       "cik": "0000931427",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000931427.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": null,
       "latest_annual": null
     },
@@ -10624,7 +10647,7 @@
       "cik": "0001756262",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001756262.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10742,7 +10765,7 @@
       "cik": "0001318605",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001318605.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10860,7 +10883,7 @@
       "cik": "0000097476",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000097476.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10978,7 +11001,7 @@
       "cik": "0000731766",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000731766.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11096,7 +11119,7 @@
       "cik": "0001403161",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001403161.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -11190,7 +11213,7 @@
       "cik": "0001607678",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001607678.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11308,7 +11331,7 @@
       "cik": "0001674101",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001674101.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11426,60 +11449,60 @@
       "cik": "0001083301",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001083301.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
-        "period_end": "2026-06-30",
+        "period_end": "2026-09-30",
         "revenue": {
-          "value": 44767000,
+          "value": 76230000,
           "unit": "USD",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": 47636000,
-          "prior_period_end": "2025-06-30",
-          "yoy_pct": -6,
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 50578000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 50.7,
           "concept": "us-gaap:Revenues",
           "form": "10-Q",
-          "filed": "2026-08-05",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000108330126000166/0001083301-26-000166-index.htm"
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071671/0001628280-26-071671-index.htm"
         },
         "operating_income": {
-          "value": -140450000,
+          "value": -88225000,
           "unit": "USD",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": -15590000,
-          "prior_period_end": "2025-06-30",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -24672000,
+          "prior_period_end": "2025-09-30",
           "yoy_pct": null,
           "concept": "us-gaap:OperatingIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-08-05",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000108330126000166/0001083301-26-000166-index.htm"
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071671/0001628280-26-071671-index.htm"
         },
         "net_income": {
-          "value": -939917000,
+          "value": 709912000,
           "unit": "USD",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": -18370000,
-          "prior_period_end": "2025-06-30",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -455050000,
+          "prior_period_end": "2025-09-30",
           "yoy_pct": null,
           "concept": "us-gaap:NetIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-08-05",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000108330126000166/0001083301-26-000166-index.htm"
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071671/0001628280-26-071671-index.htm"
         },
         "eps_diluted": {
-          "value": -1.94,
+          "value": -0.03,
           "unit": "USD/shares",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": -0.05,
-          "prior_period_end": "2025-06-30",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -1.13,
+          "prior_period_end": "2025-09-30",
           "yoy_pct": null,
           "concept": "us-gaap:EarningsPerShareDiluted",
           "form": "10-Q",
-          "filed": "2026-08-05",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000108330126000166/0001083301-26-000166-index.htm"
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071671/0001628280-26-071671-index.htm"
         }
       },
       "latest_annual": {
@@ -11544,7 +11567,7 @@
       "cik": "0002042022",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002042022.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -11662,7 +11685,7 @@
       "cik": "0000877212",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000877212.json",
-      "fetched_at": "2026-11-06T16:55:10.422Z",
+      "fetched_at": "2026-11-08T12:53:37.814Z",
       "latest_quarter": {
         "period_end": "2026-10-03",
         "revenue": {

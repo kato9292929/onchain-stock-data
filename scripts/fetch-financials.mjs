@@ -34,6 +34,9 @@ const SEC_UA = "OnchainStockData research bot (osd.x402jp.com)";
 const TDNET_UA = "OnchainStockData research bot (osd.x402jp.com)";
 const TDNET = "https://www.release.tdnet.info/inbs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// --reparse: read every 短信 still in the TDnet window again, even when the
+// same disclosure is already on record (after a parser fix).
+const REPARSE = process.argv.includes("--reparse");
 
 // ── shared ────────────────────────────────────────────────────────────────
 
@@ -222,7 +225,8 @@ const JP_NAMES = {
 /** Summary inline XBRL → current / prior period figures in JPY. Pure. */
 export function parseTanshin(html) {
   const facts = [];
-  for (const m of html.matchAll(/<ix:nonFraction([^>]*)>([\s\S]*?)<\/ix:nonFraction>/g)) {
+  // A nil fact is self-closing (<ix:nonFraction … />); it must not swallow the next fact.
+  for (const m of html.matchAll(/<ix:nonFraction(\s[^>]*?)(?<!\/)>([\s\S]*?)<\/ix:nonFraction>/g)) {
     const attrs = m[1];
     const name = attrs.match(/\bname="([^"]+)"/)?.[1] ?? "";
     const ctx = attrs.match(/\bcontextRef="([^"]+)"/)?.[1] ?? "";
@@ -294,7 +298,7 @@ async function fetchJp(codes, prev, fetchedAt, today) {
     const r = latest.get(code);
     const old = prev[code];
     const disclosedAt = r ? `${r.date}T${r.time}:00+09:00` : null;
-    if (!r || (old?.latest?.disclosed_at && old.latest.disclosed_at >= disclosedAt)) {
+    if (!r || (!REPARSE && old?.latest?.disclosed_at && old.latest.disclosed_at >= disclosedAt)) {
       if (old) out[code] = old;
       continue;
     }

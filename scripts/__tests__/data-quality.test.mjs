@@ -209,6 +209,12 @@ test("JP: 短信 summary XBRL → results only (no forecast), in yen, with YoY m
   assert.equal(ifrs.revenue.value, 100000000);
   assert.equal(ifrs.ordinary_income, null);
   assert.equal(parseTanshin("<html>no facts</html>"), null);
+  // A nil fact is self-closing; it must not take the next fact's value.
+  const nil = parseTanshin(
+    '<ix:nonFraction name="tse-ed-t:OrdinaryIncome" contextRef="' + CUR + '" xsi:nil="true"/>' + nf("NetSales", CUR, "100") + nf("NetSales", PRI, "80"),
+  );
+  assert.equal(nil.ordinary_income, null);
+  assert.deepEqual([nil.revenue.value, nil.revenue.prior_value], [100000000, 80000000]);
 });
 
 test("financials universe is every company with a condition; --all adds the Solana list", () => {
