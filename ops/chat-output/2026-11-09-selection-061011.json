@@ -1,0 +1,149 @@
+{
+  "type": "selection",
+  "market": "US",
+  "week_of": "2026-11-09",
+  "model": "claude-fable-5-1 (chat)",
+  "horizon": "1m",
+  "rationale": "11/12〜11/18に決算を出すAI・半導体・ネットワークの大型株（NVIDIA、Applied Materials、Cisco、Palo Alto Networks）は、各社が前回の決算で出したガイダンスの中央値（PANWは上限）を基準に置く。前回の決算では、Cisco がハイパースケーラーからAIインフラ受注を4Q単独で40億ドル、NVIDIAのデータセンター売上が前年同期比+117%と、需要は強い（各社8-K）。ネオクラウドのCoreWeave・WhiteFiberは10/20の記事の条件の数値をそのまま使う。Walmartはガイダンス下限を基準にした消費の確認枠。",
+  "used_external_data": true,
+  "external_source": "SEC 8-K（NVDA・AMAT・CSCO・WMT）、各社IRの決算日公表",
+  "holdings": [
+    {
+      "ticker": "NVDA",
+      "company_name": "NVIDIA",
+      "weight": 15,
+      "thesis": "11/17発表のQ3 FY2027決算で、売上高が会社ガイダンス中央値1,080億ドル以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "Q3 FY2027 revenue",
+          "operator": ">=",
+          "threshold": {
+            "value": 108,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q3 FY2027 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-17",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Sets-Conference-Call-for-Third-Quarter-Financial-Results/default.aspx"
+    },
+    {
+      "ticker": "AMAT",
+      "company_name": "Applied Materials",
+      "weight": 15,
+      "thesis": "11/12発表のQ4 FY2026決算で、売上高が会社ガイダンス中央値102.5億ドル以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "Q4 FY2026 revenue",
+          "operator": ">=",
+          "threshold": {
+            "value": 10.25,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q4 FY2026 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-12",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://ir.appliedmaterials.com/news-releases/news-release-details/applied-materials-report-fourth-quarter-and-fiscal-2026-results"
+    },
+    {
+      "ticker": "CSCO",
+      "company_name": "Cisco Systems",
+      "weight": 14,
+      "thesis": "11/12発表のQ1 FY2027決算で、売上高が会社ガイダンス中央値181億ドル以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "Q1 FY2027 revenue",
+          "operator": ">=",
+          "threshold": {
+            "value": 18.1,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q1 FY2027 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-12",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://investor.cisco.com/news/news-details/2026/Cisco-Schedules-Conference-Call-for-Q1-Fiscal-Year-2027-Financial-Results/default.aspx"
+    },
+    {
+      "ticker": "PANW",
+      "company_name": "Palo Alto Networks",
+      "weight": 14,
+      "thesis": "11/18発表のQ1 FY2027決算で、Next-Generation Security ARRが会社ガイダンス上限95.6億ドル以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "Q1 FY2027 Next-Generation Security ARR",
+          "operator": ">=",
+          "threshold": {
+            "value": 9.56,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q1 FY2027 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-18",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://stockhub.kr/en/newswire/prn/302927448"
+    },
+    {
+      "ticker": "WMT",
+      "company_name": "Walmart",
+      "weight": 14,
+      "thesis": "11月中旬のQ3 FY2027決算で、連結売上高の成長率（為替一定）が会社ガイダンス下限+3.0%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "Q3 FY2027 consolidated net sales growth (constant currency)",
+          "operator": ">=",
+          "threshold": {
+            "value": 3,
+            "unit": "%"
+          },
+          "source_doc": "Q3 FY2027 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-19",
+      "target_date_source": "model"
+    },
+    {
+      "ticker": "CRWV",
+      "company_name": "CoreWeave",
+      "weight": 14,
+      "thesis": "11月中旬のQ3 2026決算で、売上高が会社ガイダンス下限34.5億ドル以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "Q3 2026 revenue",
+          "operator": ">=",
+          "threshold": {
+            "value": 3.45,
+            "unit": "USD bn"
+          },
+          "source_doc": "Q3 2026 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-20",
+      "target_date_source": "model"
+    },
+    {
+      "ticker": "WYFI",
+      "company_name": "WhiteFiber",
+      "weight": 14,
+      "thesis": "11月中旬のQ3 2026決算で、NC-1の課金対象容量が40MW以上と開示されれば当たり。",
+      "success_conditions": [
+        {
+          "metric": "NC-1 billable capacity",
+          "operator": ">=",
+          "threshold": {
+            "value": 40,
+            "unit": "MW"
+          },
+          "source_doc": "Q3 2026 earnings release (8-K Ex.99.1)"
+        }
+      ],
+      "target_date": "2026-11-20",
+      "target_date_source": "model"
+    }
+  ]
+}

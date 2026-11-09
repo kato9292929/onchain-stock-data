@@ -1,7 +1,7 @@
 {
   "note": "When selection and judging moved from the Anthropic API in Actions to the chat operation (scripts/export-for-chat.mjs → chat → scripts/import-from-chat.mjs). Written by the importer on the first import of each kind and never moved afterwards. Rows from weeks on or after selection_chat_from[market] were picked in chat and are a separate population from the API weeks.",
   "selection_chat_from": {
-    "US": null,
+    "US": "2026-11-09",
     "JP": "2026-11-09"
   },
   "verdicts_chat_from": "2026-10-29"
