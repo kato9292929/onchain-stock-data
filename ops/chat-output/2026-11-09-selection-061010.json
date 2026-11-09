@@ -1,0 +1,212 @@
+{
+  "type": "selection",
+  "market": "JP",
+  "week_of": "2026-11-09",
+  "model": "claude-fable-5-1 (chat)",
+  "horizon": "1m",
+  "rationale": "10月下旬までに決算を出した半導体・電子部品の各社は、AIサーバー向け需要で上期の売上が大きく伸びた（イビデン電子事業+52.0%、東京エレクトロン デバイス半導体事業+35.3%、ディスコ+32.1%、村田製作所コンポーネント+30.9%、いずれも決算短信）。11/9〜11/16に決算を出す半導体装置・材料（KOKUSAI、レゾナック、味の素のABF）と、ネオクラウド・フィジカルAIの銘柄を、一次資料で判定できる数値条件で選ぶ。日付はすべてJPXの決算発表予定日。",
+  "used_external_data": true,
+  "external_source": "TDnet 決算短信（CC 書き出し 2026-11-08-primary.md）、JPX 決算発表予定日",
+  "holdings": [
+    {
+      "ticker": "6525",
+      "company_name": "KOKUSAI ELECTRIC",
+      "weight": 12,
+      "thesis": "11/9発表の2027年3月期Q2決算で、上期累計の売上高が前年同期比+10%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "上期累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 10,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信"
+        }
+      ],
+      "target_date": "2026-11-09",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan.xlsx"
+    },
+    {
+      "ticker": "4004",
+      "company_name": "レゾナック・ホールディングス",
+      "weight": 12,
+      "thesis": "11/11発表の2026年12月期Q3決算で、半導体・電子材料セグメントの1〜9月累計売上高が前年同期比+10%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "半導体・電子材料セグメント 1〜9月累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 10,
+            "unit": "%"
+          },
+          "source_doc": "2026年12月期 第3四半期決算短信（セグメント情報）"
+        }
+      ],
+      "target_date": "2026-11-11",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ticker": "2802",
+      "company_name": "味の素",
+      "weight": 10,
+      "thesis": "11/9発表の2027年3月期Q2決算で、ABF（層間絶縁材）を含むヘルスケア等セグメントの上期累計事業利益が前年同期比+10%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "ヘルスケア等セグメント 上期累計 事業利益 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 10,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "target_date": "2026-11-09",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan.xlsx"
+    },
+    {
+      "ticker": "9434",
+      "company_name": "ソフトバンク",
+      "weight": 10,
+      "thesis": "11/9発表の2027年3月期Q2決算で、エンタープライズ事業の上期累計セグメント利益が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "エンタープライズ事業 上期累計 セグメント利益 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "target_date": "2026-11-09",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan.xlsx"
+    },
+    {
+      "ticker": "6268",
+      "company_name": "ナブテスコ",
+      "weight": 10,
+      "thesis": "11/13発表の2026年12月期Q3決算で、通期営業利益の会社予想326億円を据え置きまたは上方修正すれば当たり。",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 326,
+            "unit": "億円"
+          },
+          "source_doc": "2026年12月期 第3四半期決算短信"
+        }
+      ],
+      "target_date": "2026-11-13",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ticker": "3905",
+      "company_name": "データセクション",
+      "weight": 10,
+      "thesis": "11/16発表の2027年3月期Q2決算で、通期売上高の会社予想1,621.9億円を据え置きまたは上方修正すれば当たり。",
+      "success_conditions": [
+        {
+          "metric": "通期売上高（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 1621.9,
+            "unit": "億円"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信"
+        }
+      ],
+      "target_date": "2026-11-16",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ticker": "593A",
+      "company_name": "ティアフォー",
+      "weight": 8,
+      "thesis": "11/13発表の2026年9月期決算で、通期売上高が会社計画84.84億円以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "2026年9月期 通期売上高",
+          "operator": ">=",
+          "threshold": {
+            "value": 84.84,
+            "unit": "億円"
+          },
+          "source_doc": "2026年9月期 決算短信"
+        }
+      ],
+      "target_date": "2026-11-13",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ticker": "6645",
+      "company_name": "オムロン",
+      "weight": 10,
+      "thesis": "11/10発表の2027年3月期Q2決算で、制御機器事業（IAB）の上期累計売上高が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "制御機器事業（IAB） 上期累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "target_date": "2026-11-10",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ticker": "7012",
+      "company_name": "川崎重工業",
+      "weight": 9,
+      "thesis": "11/10発表の2027年3月期Q2決算で、精密機械・ロボットセグメントの上期累計売上収益が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "精密機械・ロボットセグメント 上期累計 売上収益 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "target_date": "2026-11-10",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ticker": "4784",
+      "company_name": "GMOインターネット",
+      "weight": 9,
+      "thesis": "11/13発表の2026年12月期Q3決算で、1〜9月累計売上高が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "1〜9月累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2026年12月期 第3四半期決算短信"
+        }
+      ],
+      "target_date": "2026-11-13",
+      "target_date_source": "verified",
+      "target_date_source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    }
+  ]
+}

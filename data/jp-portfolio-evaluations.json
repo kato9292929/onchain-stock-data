@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-11-09T06:10:08.319Z",
+  "updated_at": "2026-11-09T06:10:10.540Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -1604,6 +1604,226 @@
       "ticker": "6594",
       "catalyst_target_date": "2026-10-21",
       "success_condition": "10/21発表のQ2決算でデータセンター向け冷却ファン・精密モーター売上が前年同期比+15%超なら強気材料。",
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "6525",
+      "catalyst_target_date": "2026-11-09",
+      "success_condition": "11/9発表の2027年3月期Q2決算で、上期累計の売上高が前年同期比+10%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "上期累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 10,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "4004",
+      "catalyst_target_date": "2026-11-11",
+      "success_condition": "11/11発表の2026年12月期Q3決算で、半導体・電子材料セグメントの1〜9月累計売上高が前年同期比+10%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "半導体・電子材料セグメント 1〜9月累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 10,
+            "unit": "%"
+          },
+          "source_doc": "2026年12月期 第3四半期決算短信（セグメント情報）"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "2802",
+      "catalyst_target_date": "2026-11-09",
+      "success_condition": "11/9発表の2027年3月期Q2決算で、ABF（層間絶縁材）を含むヘルスケア等セグメントの上期累計事業利益が前年同期比+10%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "ヘルスケア等セグメント 上期累計 事業利益 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 10,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "9434",
+      "catalyst_target_date": "2026-11-09",
+      "success_condition": "11/9発表の2027年3月期Q2決算で、エンタープライズ事業の上期累計セグメント利益が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "エンタープライズ事業 上期累計 セグメント利益 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "6268",
+      "catalyst_target_date": "2026-11-13",
+      "success_condition": "11/13発表の2026年12月期Q3決算で、通期営業利益の会社予想326億円を据え置きまたは上方修正すれば当たり。",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 326,
+            "unit": "億円"
+          },
+          "source_doc": "2026年12月期 第3四半期決算短信"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "3905",
+      "catalyst_target_date": "2026-11-16",
+      "success_condition": "11/16発表の2027年3月期Q2決算で、通期売上高の会社予想1,621.9億円を据え置きまたは上方修正すれば当たり。",
+      "success_conditions": [
+        {
+          "metric": "通期売上高（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 1621.9,
+            "unit": "億円"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "593A",
+      "catalyst_target_date": "2026-11-13",
+      "success_condition": "11/13発表の2026年9月期決算で、通期売上高が会社計画84.84億円以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "2026年9月期 通期売上高",
+          "operator": ">=",
+          "threshold": {
+            "value": 84.84,
+            "unit": "億円"
+          },
+          "source_doc": "2026年9月期 決算短信"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "6645",
+      "catalyst_target_date": "2026-11-10",
+      "success_condition": "11/10発表の2027年3月期Q2決算で、制御機器事業（IAB）の上期累計売上高が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "制御機器事業（IAB） 上期累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "7012",
+      "catalyst_target_date": "2026-11-10",
+      "success_condition": "11/10発表の2027年3月期Q2決算で、精密機械・ロボットセグメントの上期累計売上収益が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "精密機械・ロボットセグメント 上期累計 売上収益 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2027年3月期 第2四半期決算短信（セグメント情報）"
+        }
+      ],
+      "condition_source": "thesis",
+      "status": "pending",
+      "evaluated_at": null,
+      "evidence_url": null,
+      "reasoning": null
+    },
+    {
+      "week_of": "2026-11-09",
+      "ticker": "4784",
+      "catalyst_target_date": "2026-11-13",
+      "success_condition": "11/13発表の2026年12月期Q3決算で、1〜9月累計売上高が前年同期比+5%以上なら当たり。",
+      "success_conditions": [
+        {
+          "metric": "1〜9月累計 売上高 前年同期比",
+          "operator": ">=",
+          "threshold": {
+            "value": 5,
+            "unit": "%"
+          },
+          "source_doc": "2026年12月期 第3四半期決算短信"
+        }
+      ],
       "condition_source": "thesis",
       "status": "pending",
       "evaluated_at": null,
