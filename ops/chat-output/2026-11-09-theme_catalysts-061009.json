@@ -1,0 +1,703 @@
+{
+  "type": "theme_catalysts",
+  "author": "claude-fable-5-1 (chat)",
+  "items": [
+    {
+      "theme": "datacenter-power-jp",
+      "market": "JP",
+      "ticker": "1946",
+      "company_name": "トーエネック",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想240億円（2026-10-29公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 240,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261028558224.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "2760",
+      "company_name": "東京エレクトロン デバイス",
+      "listed": true,
+      "question": "第3四半期決算で通期経常利益の会社予想160億円（2026-10-28公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期経常利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期経常利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 160,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261028557756.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "3110",
+      "company_name": "日東紡",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想340億円（2026-11-05公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 340,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261104564750.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-jp",
+      "market": "JP",
+      "ticker": "3778",
+      "company_name": "さくらインターネット",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想41億円（2026-10-28公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 41,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261027556964.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "4062",
+      "company_name": "イビデン",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想1,330億円（2026-10-29公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 1330,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "5384",
+      "company_name": "フジミインコーポレーテッド",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想176億円（2026-11-05公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 176,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261102563003.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6323",
+      "company_name": "ローツェ",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想530億円（2026-10-08公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 530,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-01-09",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261007547481.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6339",
+      "company_name": "新東工業",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想73億円（2026-11-05公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 73,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261019552890.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6501",
+      "company_name": "日立",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想14,500億円（2026-10-28公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 14500,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261028557937.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6504",
+      "company_name": "富士電機",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想1,680億円（2026-10-29公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 1680,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6506",
+      "company_name": "安川電機",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想575億円（2026-10-09公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 575,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-01-09",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261009548685.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6590",
+      "company_name": "芝浦メカトロニクス",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想175億円（2026-11-05公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 175,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261104564472.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6701",
+      "company_name": "NEC",
+      "listed": true,
+      "question": "第3四半期決算で通期売上高の会社予想37,400億円（2026-10-28公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期売上高予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期売上高（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 37400,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261027556514.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6702",
+      "company_name": "富士通",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想4,150億円（2026-10-29公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 4150,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261029559089.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6758",
+      "company_name": "ソニーグループ",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想18,700億円（2026-11-05公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 18700,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261104564860.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6787",
+      "company_name": "メイコー",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想480億円（2026-11-06公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 480,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261106566785.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6806",
+      "company_name": "ヒロセ電機",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想500億円（2026-11-04公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 500,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261104563988.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6857",
+      "company_name": "アドバンテスト",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想9,670億円（2026-10-28公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 9670,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261028557599.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6920",
+      "company_name": "レーザーテック",
+      "listed": true,
+      "question": "第2四半期決算で通期営業利益の会社予想1,250億円（2026-10-30公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 1250,
+            "unit": "億円"
+          },
+          "source_doc": "第2四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "physical-ai-jp",
+      "market": "JP",
+      "ticker": "6954",
+      "company_name": "ファナック",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想2,407億円（2026-10-23公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 2407,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261021553848.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6963",
+      "company_name": "ローム",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想500億円（2026-11-05公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 500,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261102562256.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "6981",
+      "company_name": "村田製作所",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想5,200億円（2026-10-30公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 5200,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261029560100.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "7729",
+      "company_name": "東京精密",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想450億円（2026-11-04公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 450,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261030561899.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "7826",
+      "company_name": "フルヤ金属",
+      "listed": true,
+      "question": "第2四半期決算で通期営業利益の会社予想265億円（2026-11-06公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 265,
+            "unit": "億円"
+          },
+          "source_doc": "第2四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261105565722.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "semiconductor-supply-chain-jp",
+      "market": "JP",
+      "ticker": "8035",
+      "company_name": "東京エレクトロン",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想11,690億円（2026-10-30公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 11690,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "space-geospatial-jp",
+      "market": "JP",
+      "ticker": "9412",
+      "company_name": "スカパーJSAT",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想415億円（2026-11-04公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 415,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261102563312.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "datacenter-power-jp",
+      "market": "JP",
+      "ticker": "9506",
+      "company_name": "東北電力",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想2,100億円（2026-10-30公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 2100,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261027557112.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "datacenter-power-jp",
+      "market": "JP",
+      "ticker": "9533",
+      "company_name": "東邦瓦斯",
+      "listed": true,
+      "question": "第3四半期決算で通期営業利益の会社予想190億円（2026-10-29公表時点）を据え置きまたは上方修正する",
+      "fail_direction": "通期営業利益予想の下方修正",
+      "success_conditions": [
+        {
+          "metric": "通期営業利益（会社予想）",
+          "operator": ">=",
+          "threshold": {
+            "value": 190,
+            "unit": "億円"
+          },
+          "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+        }
+      ],
+      "target_date": "2027-02-05",
+      "date_confidence": "estimated",
+      "source_url": "https://www.release.tdnet.info/inbs/140120261027556591.pdf",
+      "role": "main"
+    },
+    {
+      "theme": "neocloud-us",
+      "market": "US",
+      "ticker": "FOUNDRY",
+      "company_name": "Foundry",
+      "listed": false,
+      "question": "2026-12-31までに、新規の資金調達（調達額の明示あり）または契約額を明示した商用契約を会社が公表する",
+      "fail_direction": "期日までに金額を明示した調達・契約の公表がない",
+      "success_conditions": [
+        {
+          "metric": "金額を明示した新規資金調達または商用契約の公表件数",
+          "operator": ">=",
+          "threshold": {
+            "value": 1,
+            "unit": "event"
+          },
+          "source_doc": "Foundry（Mithril）の公式発表・プレスリリース"
+        }
+      ],
+      "target_date": "2026-12-31",
+      "date_confidence": "confirmed",
+      "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+      "role": "main",
+      "supersedes": "ext_5a2f7d60"
+    }
+  ]
+}
