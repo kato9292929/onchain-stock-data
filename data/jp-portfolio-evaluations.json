@@ -1,7 +1,7 @@
 {
   "source": "claude-jp-portfolio-evaluations",
   "note": "Catalyst evaluations for the weekly JP Claude Portfolio. Auto-registered from jp-portfolio-history.json and judged (JP disclosure sources) by the evaluate-catalysts workflow at target_date + 7 days. Not investment advice.",
-  "updated_at": "2026-11-04T12:05:56.749Z",
+  "updated_at": "2026-11-09T06:10:08.319Z",
   "evaluations": [
     {
       "week_of": "2026-06-22",
@@ -791,11 +791,12 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10月末発表の2Q決算でパワー半導体売上が前年同期比+15%超、SiC能力増強計画のアップデートで通期上方修正なら買い増し",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "partial",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "reasoning": "半導体部門の外部売上はQ2累計1,064.15億円で前年同期比-1.0%と、+15%超に届かない（xEV向けパワー半導体の需要減）。通期予想は売上1.30兆円→1.35兆円、営業利益1,565億円→1,680億円へ上方修正された。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-08-31",
@@ -813,11 +814,12 @@
       "ticker": "4062",
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10月下旬予定の第2四半期決算でABF基板の稼働率上昇とGB300向け出荷増が確認されれば上振れ。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "reasoning": "ABF基板の稼働率とGB300向けの出荷は、決算短信・補足資料のいずれにも数値が開示されていない（電子事業全体は前年同期比+52.0%）。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-08-31",
@@ -869,11 +871,12 @@
       "ticker": "8035",
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10月30日前後予定の第2四半期決算で先端ロジック向け装置受注の会社計画超過が確認できれば強気材料。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "reasoning": "東京エレクトロンは装置受注高も受注の会社計画も開示しておらず、先端ロジック向け受注の計画超過を判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-08-31",
@@ -902,11 +905,12 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10月末予定の中間決算でデータセンター向け電源・パワー半導体事業の受注残拡大が示されれば再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "reasoning": "データセンター向け電源・パワー半導体事業の受注残高は決算短信で開示されていない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-08-24",
@@ -1034,22 +1038,24 @@
       "ticker": "8035",
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10月下旬の中間決算でロジック/HBM向け前工程装置受注が前年比二桁増を確認できれば買い材料",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "reasoning": "東京エレクトロンは装置受注高を開示しておらず、ロジック/HBM向け受注の前年比を判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-21",
       "ticker": "4062",
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10月下旬の中間決算でFC-BGA稼働率上昇と増産投資計画の具体化が確認できれば上振れ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "partial",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "reasoning": "増産投資は具体化した（10/29の取締役会で河間事業場Cell6を中心に約1,510億円の設備投資を決議）。FC-BGAの稼働率は開示されておらず、稼働率上昇は確認できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-21",
@@ -1090,11 +1096,12 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-10-15",
       "success_condition": "10月中旬の第1四半期決算でEUVマスクブランクス検査装置の受注残が増加していれば上振れ",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "reasoning": "第1四半期決算短信に受注高・受注残高の記載がなく、EUVマスクブランクス検査装置の受注残は判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-21",
@@ -1112,11 +1119,12 @@
       "ticker": "6504",
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10月下旬の中間決算でデータセンター向け電源・パワー半導体の受注増加率が前年比二桁なら評価",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "reasoning": "データセンター向け電源・パワー半導体の受注高は決算短信で開示されていない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-21",
@@ -1145,22 +1153,24 @@
       "ticker": "8035",
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10/29のQ2決算でロジック・メモリ向け装置受注が前四半期比増加に転じれば需要回復の裏付けとなる。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "reasoning": "東京エレクトロンは装置受注高を開示しておらず、ロジック・メモリ向け受注の前四半期比を判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-14",
       "ticker": "4062",
       "catalyst_target_date": "2026-10-31",
       "success_condition": "10/31のQ2決算でABF/FCBGA基板事業の稼働率上昇によりセグメント増収率が前年比二桁を超えれば再評価。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "hit",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "reasoning": "ABF/FC-BGA基板を担う電子事業の売上高はQ2累計で1,725.40億円、前年同期比+52.0%で二桁増収。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-14",
@@ -1201,11 +1211,12 @@
       "ticker": "6920",
       "catalyst_target_date": "2026-10-14",
       "success_condition": "10/14の通期決算でEUVマスク検査装置の受注残高が前年同期比増加を維持していれば需要底堅さを確認。",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null,
-      "condition_source": "thesis"
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "reasoning": "レーザーテックは四半期の受注高・受注残高を開示しておらず（受注は通期のみ）、EUVマスク検査装置の受注残高を判定できない。",
+      "condition_source": "thesis",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-09-14",
@@ -1257,10 +1268,11 @@
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10/29頃の2Q決算で先端ロジック・メモリ向け装置受注高が前四半期比増加を維持すれば強気材料",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "reasoning": "東京エレクトロンは装置受注高を開示しておらず、先端ロジック・メモリ向け受注高の前四半期比を判定できない。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-05",
@@ -1268,10 +1280,11 @@
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10/30頃の2Q決算でAIサーバー向けパッケージ基板売上高が前年同期比20%超増なら上振れ確認",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "reasoning": "AIサーバー向けパッケージ基板に限った売上高は開示されていない。開示があるのは電子事業全体（前年同期比+52.0%、生成AI用・汎用サーバー向けを含む）のみ。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-05",
@@ -1291,10 +1304,11 @@
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10/30頃の1Q（6月期）決算でEUVマスク検査装置受注が前四半期比増加なら需要底打ちを確認",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "reasoning": "第1四半期決算短信に四半期の受注高の記載がなく、EUVマスク検査装置受注の前四半期比を判定できない。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-05",
@@ -1357,10 +1371,11 @@
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10/29の2Q決算でAI・先端ロジック向け装置受注残高が前期比2桁増となり通期計画が上方修正されれば当たり。",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "reasoning": "装置の受注残高は開示されていない。通期予想は今回が初の公表（売上3.70兆円・営業利益1.169兆円）で、従来の通期計画からの上方修正にも当たらない。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-12",
@@ -1379,10 +1394,11 @@
       "catalyst_target_date": "2026-10-29",
       "success_condition": "10/29の2Q決算でSiC・先端パッケージ関連装置の受注比率が拡大し売上高ガイダンスが上振れれば当たり。",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261021554279.pdf",
+      "reasoning": "ディスコは四半期の受注高・用途別の受注比率を決算短信で開示しておらず、通期の売上高ガイダンスも出していない（Q2累計売上高は前年同期比+32.1%）。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-12",
@@ -1455,10 +1471,11 @@
       "catalyst_target_date": "2026-10-30",
       "success_condition": "10/30の2Q決算でAIサーバ・データセンター向けMLCC出荷が前年同期比2桁増となれば当たり。",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261029560100.pdf",
+      "reasoning": "AIサーバ・データセンター向けMLCCの出荷量は開示されていない。開示はコンポーネント部門の売上（Q2累計7,405.09億円、前年同期比+30.9%）と、コンデンサがデータセンター向けを中心に増加したとの記述のみ。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-12",
@@ -1544,10 +1561,11 @@
       "catalyst_target_date": "2026-10-31",
       "success_condition": "10/31発表のQ2決算でABF基板（AI・高性能サーバ向け）売上が前年同期比+25%超なら需要加速を確認。",
       "condition_source": "thesis",
-      "status": "pending",
-      "evaluated_at": null,
-      "evidence_url": null,
-      "reasoning": null
+      "status": "na",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "reasoning": "AI・高性能サーバ向けABF基板に限った売上高は開示されていない。開示があるのは電子事業全体（前年同期比+52.0%）のみ。",
+      "evaluator": "claude-fable-5-1 (chat)"
     },
     {
       "week_of": "2026-10-19",

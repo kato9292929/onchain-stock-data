@@ -3256,10 +3256,12 @@
     "target_date": "2026-10-28",
     "submitted_at": "2026-11-06T16:52:16.129Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "hit",
+    "judgement_date": "2026-11-08",
+    "evidence_urls": [
+      "https://www.release.tdnet.info/inbs/140120261027556998.pdf"
+    ],
+    "reasoning": "上期（4〜9月）の営業利益は29.63億円で、7月公表の修正予想22億円を7.63億円上回った。",
     "catalyst_type": "fixed_date",
     "date_confidence": "confirmed",
     "country": "JP",
@@ -3267,7 +3269,9 @@
     "catalyst_role": "main",
     "parent_catalyst_id": null,
     "company_name": "さくらインターネット",
-    "author": "article"
+    "author": "article",
+    "evaluator": "claude-fable-5-1 (chat)",
+    "evaluated_at": "2026-11-08T19:30:00Z"
   },
   {
     "catalyst_id": "ext_242b9f98",
