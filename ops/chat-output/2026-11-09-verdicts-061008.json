@@ -1,0 +1,197 @@
+{
+  "type": "verdicts",
+  "items": [
+    {
+      "id": "irf:irf-1946",
+      "status": "hit",
+      "reasoning": "受取和解金30億円は特別利益で営業利益に含まれない。Q2累計の売上高1,252.76億円（前年同期比+0.5%）、営業利益101.78億円（同+18.8%）で増収増益。通期営業利益予想240億円は修正なし（据え置き）。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028558224.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "irf:irf-2760",
+      "status": "partial",
+      "reasoning": "Q2累計の売上高は前年同期比+30.9%で、通期売上予想を2,400億円から2,700億円へ上方修正（条件の2,250億円以上を満たす）。半導体及び電子デバイス事業は+35.3%と回復。ただし増収を牽引したのは半導体及び電子デバイス事業で、コンピュータシステム関連事業（CN）は+12.9%にとどまり、「CNが増収を牽引」は満たさない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557756.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "ext:ext_789a6c71",
+      "status": "hit",
+      "reasoning": "上期（4〜9月）の営業利益は29.63億円で、7月公表の修正予想22億円を7.63億円上回った。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261027556998.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "irf:irf-4062",
+      "status": "hit",
+      "reasoning": "Q2累計で電子事業の売上高は1,725.40億円（前年同期比+52.0%）と増収継続。通期予想を売上5,500億円→5,650億円、営業利益1,270億円→1,330億円へ上方修正。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557732.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-14:4062",
+      "status": "hit",
+      "reasoning": "ABF/FC-BGA基板を担う電子事業の売上高はQ2累計で1,725.40億円、前年同期比+52.0%で二桁増収。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-08-31:4062",
+      "status": "na",
+      "reasoning": "ABF基板の稼働率とGB300向けの出荷は、決算短信・補足資料のいずれにも数値が開示されていない（電子事業全体は前年同期比+52.0%）。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-21:4062",
+      "status": "partial",
+      "reasoning": "増産投資は具体化した（10/29の取締役会で河間事業場Cell6を中心に約1,510億円の設備投資を決議）。FC-BGAの稼働率は開示されておらず、稼働率上昇は確認できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-05:4062",
+      "status": "na",
+      "reasoning": "AIサーバー向けパッケージ基板に限った売上高は開示されていない。開示があるのは電子事業全体（前年同期比+52.0%、生成AI用・汎用サーバー向けを含む）のみ。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-19:4062",
+      "status": "na",
+      "reasoning": "AI・高性能サーバ向けABF基板に限った売上高は開示されていない。開示があるのは電子事業全体（前年同期比+52.0%）のみ。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-12:6146",
+      "status": "na",
+      "reasoning": "ディスコは四半期の受注高・用途別の受注比率を決算短信で開示しておらず、通期の売上高ガイダンスも出していない（Q2累計売上高は前年同期比+32.1%）。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261021554279.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "irf:irf-6504",
+      "status": "partial",
+      "reasoning": "Q2累計でエネルギー部門の外部売上は1,919.80億円（前年同期比+18.2%）と増収継続、通期予想は売上1.30兆円→1.35兆円・営業利益1,565億円→1,680億円へ上方修正。一方、半導体部門の外部売上は1,064.15億円（同-1.0%）で減収。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-08-10:6504",
+      "status": "partial",
+      "reasoning": "半導体部門の外部売上はQ2累計1,064.15億円で前年同期比-1.0%と、+15%超に届かない（xEV向けパワー半導体の需要減）。通期予想は売上1.30兆円→1.35兆円、営業利益1,565億円→1,680億円へ上方修正された。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-21:6504",
+      "status": "na",
+      "reasoning": "データセンター向け電源・パワー半導体の受注高は決算短信で開示されていない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-08-31:6504",
+      "status": "na",
+      "reasoning": "データセンター向け電源・パワー半導体事業の受注残高は決算短信で開示されていない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-14:6920",
+      "status": "na",
+      "reasoning": "レーザーテックは四半期の受注高・受注残高を開示しておらず（受注は通期のみ）、EUVマスク検査装置の受注残高を判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-21:6920",
+      "status": "na",
+      "reasoning": "第1四半期決算短信に受注高・受注残高の記載がなく、EUVマスクブランクス検査装置の受注残は判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-05:6920",
+      "status": "na",
+      "reasoning": "第1四半期決算短信に四半期の受注高の記載がなく、EUVマスク検査装置受注の前四半期比を判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-12:6981",
+      "status": "na",
+      "reasoning": "AIサーバ・データセンター向けMLCCの出荷量は開示されていない。開示はコンポーネント部門の売上（Q2累計7,405.09億円、前年同期比+30.9%）と、コンデンサがデータセンター向けを中心に増加したとの記述のみ。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261029560100.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-14:8035",
+      "status": "na",
+      "reasoning": "東京エレクトロンは装置受注高を開示しておらず、ロジック・メモリ向け受注の前四半期比を判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-09-21:8035",
+      "status": "na",
+      "reasoning": "東京エレクトロンは装置受注高を開示しておらず、ロジック/HBM向け受注の前年比を判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-05:8035",
+      "status": "na",
+      "reasoning": "東京エレクトロンは装置受注高を開示しておらず、先端ロジック・メモリ向け受注高の前四半期比を判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-08-31:8035",
+      "status": "na",
+      "reasoning": "東京エレクトロンは装置受注高も受注の会社計画も開示しておらず、先端ロジック向け受注の計画超過を判定できない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "jp:2026-10-12:8035",
+      "status": "na",
+      "reasoning": "装置の受注残高は開示されていない。通期予想は今回が初の公表（売上3.70兆円・営業利益1.169兆円）で、従来の通期計画からの上方修正にも当たらない。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "irf:irf-9506",
+      "status": "hit",
+      "reasoning": "4/30に未定としていた2027年3月期の通期連結業績予想を、Q2決算と同時に公表した（売上高3.47兆円・経常利益1,700億円・純利益1,200億円）。期日10/29は決算日の推定で、公表は同じ決算発表。",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261029559714.pdf",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evaluator": "claude-fable-5-1 (chat)"
+    }
+  ]
+}

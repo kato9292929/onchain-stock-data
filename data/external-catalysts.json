@@ -3256,10 +3256,12 @@
     "target_date": "2026-10-28",
     "submitted_at": "2026-11-06T16:52:16.129Z",
     "submitter_contact": null,
-    "status": "pending",
-    "judgement_date": null,
-    "evidence_urls": [],
-    "reasoning": null,
+    "status": "hit",
+    "judgement_date": "2026-11-08",
+    "evidence_urls": [
+      "https://www.release.tdnet.info/inbs/140120261027556998.pdf"
+    ],
+    "reasoning": "上期（4〜9月）の営業利益は29.63億円で、7月公表の修正予想22億円を7.63億円上回った。",
     "catalyst_type": "fixed_date",
     "date_confidence": "confirmed",
     "country": "JP",
@@ -3267,7 +3269,9 @@
     "catalyst_role": "main",
     "parent_catalyst_id": null,
     "company_name": "さくらインターネット",
-    "author": "article"
+    "author": "article",
+    "evaluator": "claude-fable-5-1 (chat)",
+    "evaluated_at": "2026-11-08T19:30:00Z"
   },
   {
     "catalyst_id": "ext_242b9f98",
@@ -4190,7 +4194,9 @@
     "unlisted": true,
     "author": "article",
     "edition": "history",
-    "article_verdict": "期日前・進捗なし"
+    "article_verdict": "期日前・進捗なし",
+    "superseded_by": "ext_54b9e310",
+    "superseded_at": "2026-11-09"
   },
   {
     "catalyst_id": "ext_58af7e59",
@@ -4845,5 +4851,1050 @@
     "edition": "history",
     "superseded_by": "ext_87a841b1",
     "superseded_at": "2026-11-07"
+  },
+  {
+    "catalyst_id": "ext_7737f39d",
+    "ticker": "1946",
+    "market": "JP",
+    "source": "theme:datacenter-power-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261028558224.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想240億円（2026-10-29公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 240,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "datacenter-power-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "トーエネック",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_4d8d8863",
+    "ticker": "2760",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261028557756.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期経常利益の会社予想160億円（2026-10-28公表時点）を据え置きまたは上方修正する【外れ方向】通期経常利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期経常利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 160,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "東京エレクトロン デバイス",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_34f61f20",
+    "ticker": "3110",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261104564750.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想340億円（2026-11-05公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 340,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "日東紡",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_330129bf",
+    "ticker": "3778",
+    "market": "JP",
+    "source": "theme:neocloud-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261027556964.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想41億円（2026-10-28公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 41,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "neocloud-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "さくらインターネット",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_a4e7ada7",
+    "ticker": "4062",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261028557691.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想1,330億円（2026-10-29公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 1330,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "イビデン",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_351417c1",
+    "ticker": "5384",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261102563003.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想176億円（2026-11-05公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 176,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "フジミインコーポレーテッド",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_4f6736c2",
+    "ticker": "6323",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261007547481.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想530億円（2026-10-08公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 530,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-01-09",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ローツェ",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_7a67da83",
+    "ticker": "6339",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261019552890.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想73億円（2026-11-05公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 73,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "新東工業",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_6d498688",
+    "ticker": "6501",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261028557937.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想14,500億円（2026-10-28公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 14500,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "日立",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_0860ddcf",
+    "ticker": "6504",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想1,680億円（2026-10-29公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 1680,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "富士電機",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_f6b64277",
+    "ticker": "6506",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261009548685.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想575億円（2026-10-09公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 575,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-01-09",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "安川電機",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_67ab844a",
+    "ticker": "6590",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261104564472.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想175億円（2026-11-05公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 175,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "芝浦メカトロニクス",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_dfc190c8",
+    "ticker": "6701",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261027556514.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期売上高の会社予想37,400億円（2026-10-28公表時点）を据え置きまたは上方修正する【外れ方向】通期売上高予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期売上高（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 37400,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "NEC",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_c3503bca",
+    "ticker": "6702",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261029559089.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想4,150億円（2026-10-29公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 4150,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "富士通",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_05a88f16",
+    "ticker": "6758",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261104564860.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想18,700億円（2026-11-05公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 18700,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ソニーグループ",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_9c04f731",
+    "ticker": "6787",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261106566785.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想480億円（2026-11-06公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 480,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "メイコー",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_48135aa7",
+    "ticker": "6806",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261104563988.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想500億円（2026-11-04公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 500,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ヒロセ電機",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_bf918df2",
+    "ticker": "6857",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261028557599.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想9,670億円（2026-10-28公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 9670,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "アドバンテスト",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_027f94f9",
+    "ticker": "6920",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261030560435.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第2四半期決算で通期営業利益の会社予想1,250億円（2026-10-30公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 1250,
+          "unit": "億円"
+        },
+        "source_doc": "第2四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "レーザーテック",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_f4588884",
+    "ticker": "6954",
+    "market": "JP",
+    "source": "theme:physical-ai-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261021553848.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想2,407億円（2026-10-23公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 2407,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "physical-ai-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ファナック",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_c3c96caf",
+    "ticker": "6963",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261102562256.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想500億円（2026-11-05公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 500,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ローム",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_d1ef93c2",
+    "ticker": "6981",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261029560100.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想5,200億円（2026-10-30公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 5200,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "村田製作所",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_4f3ea8de",
+    "ticker": "7729",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261030561899.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想450億円（2026-11-04公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 450,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "東京精密",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_907476f0",
+    "ticker": "7826",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261105565722.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第2四半期決算で通期営業利益の会社予想265億円（2026-11-06公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 265,
+          "unit": "億円"
+        },
+        "source_doc": "第2四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "フルヤ金属",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_96e62c23",
+    "ticker": "8035",
+    "market": "JP",
+    "source": "theme:semiconductor-supply-chain-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120260924539503.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想11,690億円（2026-10-30公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 11690,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "semiconductor-supply-chain-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "東京エレクトロン",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_87d94af6",
+    "ticker": "9412",
+    "market": "JP",
+    "source": "theme:space-geospatial-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261102563312.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想415億円（2026-11-04公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 415,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "space-geospatial-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "スカパーJSAT",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_f343f76a",
+    "ticker": "9506",
+    "market": "JP",
+    "source": "theme:datacenter-power-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261027557112.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想2,100億円（2026-10-30公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 2100,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "datacenter-power-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "東北電力",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_e57b633b",
+    "ticker": "9533",
+    "market": "JP",
+    "source": "theme:datacenter-power-jp",
+    "source_url": "https://www.release.tdnet.info/inbs/140120261027556591.pdf",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "第3四半期決算で通期営業利益の会社予想190億円（2026-10-29公表時点）を据え置きまたは上方修正する【外れ方向】通期営業利益予想の下方修正",
+    "success_conditions": [
+      {
+        "metric": "通期営業利益（会社予想）",
+        "operator": ">=",
+        "threshold": {
+          "value": 190,
+          "unit": "億円"
+        },
+        "source_doc": "第3四半期決算の決算短信（業績予想の修正の有無と通期予想）"
+      }
+    ],
+    "target_date": "2027-02-05",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "event",
+    "date_confidence": "estimated",
+    "country": "JP",
+    "series": "datacenter-power-jp",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "東邦瓦斯",
+    "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_54b9e310",
+    "ticker": "FOUNDRY",
+    "market": "US",
+    "source": "theme:neocloud-us",
+    "source_url": "https://note.com/x402inc/n/n63fa0862b031",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "2026-12-31までに、新規の資金調達（調達額の明示あり）または契約額を明示した商用契約を会社が公表する【外れ方向】期日までに金額を明示した調達・契約の公表がない",
+    "success_conditions": [
+      {
+        "metric": "金額を明示した新規資金調達または商用契約の公表件数",
+        "operator": ">=",
+        "threshold": {
+          "value": 1,
+          "unit": "event"
+        },
+        "source_doc": "Foundry（Mithril）の公式発表・プレスリリース"
+      }
+    ],
+    "target_date": "2026-12-31",
+    "submitted_at": "2026-11-09T06:10:09.846Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "fixed_date",
+    "date_confidence": "confirmed",
+    "country": "US",
+    "series": "neocloud-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Foundry",
+    "unlisted": true,
+    "author": "claude-fable-5-1 (chat)"
   }
 ]

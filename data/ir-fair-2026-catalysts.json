@@ -1,7 +1,7 @@
 {
   "source": "nikkei-tse-ir-fair-2026",
   "note": "IR Fair 2026 exhibitors grouped by TSE 33-sector. Draft roster only — due_date/success_condition/fail_condition/source must be verified from primary sources before an entry is promoted to stage:active. draft rows are display-only and are NEVER scored (no LLM touches this file on ingest).",
-  "updated_at": "2026-11-04T12:05:56.749Z",
+  "updated_at": "2026-11-09T06:10:08.319Z",
   "sectors": [
     {
       "id": "情報・通信業",
@@ -462,14 +462,19 @@
       "success_condition": "締切までに2027年3月期の通期業績予想を公表する、またはNTT東日本・日本政策投資銀行と進める東北・新潟地域のデータセンター誘致について立地決定・契約・供給計画のいずれかを具体名または数値つきで公表する。",
       "fail_condition": "通期予想が未定のまま据え置かれ、誘致の進展も開示されない（沈黙＝ミス）。",
       "source": "https://irbank.net/9506/pl",
-      "status": "pending",
+      "status": "hit",
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
       "tse_market_as_of": "2026-09-30",
-      "activated_at": "2026-10-15"
+      "activated_at": "2026-10-15",
+      "reasoning": "4/30に未定としていた2027年3月期の通期連結業績予想を、Q2決算と同時に公表した（売上高3.47兆円・経常利益1,700億円・純利益1,200億円）。期日10/29は決算日の推定で、公表は同じ決算発表。",
+      "evaluator": "claude-fable-5-1 (chat)",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261029559714.pdf",
+      "judgement_date": "2026-11-08"
     },
     {
       "catalyst_id": "irf-7299",
@@ -2031,14 +2036,19 @@
       "success_condition": "Q2決算で受取和解金30億円を除いたベースで設備工事業が増収増益となり、通期営業利益240億円を据え置き以上。",
       "fail_condition": "和解金を除くと減益、または通期下方修正。",
       "source": "https://www.release.tdnet.info/inbs/140120260728501161.pdf",
-      "status": "pending",
+      "status": "hit",
       "date_estimated": true,
       "condition_source": "distilled",
       "researched_at": "2026-09-26",
       "sector_slug": "datacenter-power",
       "tse_market_at_fetch": "プライム",
       "tse_market_as_of": "2026-09-30",
-      "activated_at": "2026-10-15"
+      "activated_at": "2026-10-15",
+      "reasoning": "受取和解金30億円は特別利益で営業利益に含まれない。Q2累計の売上高1,252.76億円（前年同期比+0.5%）、営業利益101.78億円（同+18.8%）で増収増益。通期営業利益予想240億円は修正なし（据え置き）。",
+      "evaluator": "claude-fable-5-1 (chat)",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028558224.pdf",
+      "judgement_date": "2026-11-08"
     },
     {
       "catalyst_id": "irf-6289",
@@ -2820,9 +2830,14 @@
       "success_condition": "次回四半期でCN（AIサーバ／DC）事業が増収を牽引し、半導体流通も回復して通期の増収ガイダンス（2027/3期 売上2,250億計画）を維持以上",
       "fail_condition": "半導体流通の低迷が続き当該事業が減収、または通期計画を下方修正",
       "source": "https://www.teldevice.co.jp/ir/",
-      "status": "pending",
+      "status": "partial",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "reasoning": "Q2累計の売上高は前年同期比+30.9%で、通期売上予想を2,400億円から2,700億円へ上方修正（条件の2,250億円以上を満たす）。半導体及び電子デバイス事業は+35.3%と回復。ただし増収を牽引したのは半導体及び電子デバイス事業で、コンピュータシステム関連事業（CN）は+12.9%にとどまり、「CNが増収を牽引」は満たさない。",
+      "evaluator": "claude-fable-5-1 (chat)",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557756.pdf",
+      "judgement_date": "2026-11-08"
     },
     {
       "catalyst_id": "irf-2986",
@@ -3469,9 +3484,14 @@
       "success_condition": "次回四半期決算でパワー半導体/エネルギー（DC電源）が前年同期比で増収継続し、通期ガイダンス据え置き以上",
       "fail_condition": "DC・パワエレ需要一服で当該部門が減収、または通期下方修正",
       "source": "https://www.fujielectric.co.jp/ir/library/detail/index06.html",
-      "status": "pending",
+      "status": "partial",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "reasoning": "Q2累計でエネルギー部門の外部売上は1,919.80億円（前年同期比+18.2%）と増収継続、通期予想は売上1.30兆円→1.35兆円・営業利益1,565億円→1,680億円へ上方修正。一方、半導体部門の外部売上は1,064.15億円（同-1.0%）で減収。",
+      "evaluator": "claude-fable-5-1 (chat)",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261019552779.pdf",
+      "judgement_date": "2026-11-08"
     },
     {
       "catalyst_id": "irf-4062",
@@ -3490,9 +3510,14 @@
       "success_condition": "次回決算で電子（ICパッケージ基板）が生成AI需要で増収継続し、通期上方修正の売上5,500億/営業益1,270億の線を維持以上",
       "fail_condition": "AIサーバー基板の受注一服で電子部門が減収、または通期予想の下方修正",
       "source": "https://finance.biggo.jp/news/jpx_tdnet_140120260731504718",
-      "status": "pending",
+      "status": "hit",
       "tse_market_at_fetch": "プライム",
-      "tse_market_as_of": "2026-09-30"
+      "tse_market_as_of": "2026-09-30",
+      "reasoning": "Q2累計で電子事業の売上高は1,725.40億円（前年同期比+52.0%）と増収継続。通期予想を売上5,500億円→5,650億円、営業利益1,270億円→1,330億円へ上方修正。",
+      "evaluator": "claude-fable-5-1 (chat)",
+      "evaluated_at": "2026-11-08T19:30:00Z",
+      "evidence_url": "https://www.release.tdnet.info/inbs/140120261028557732.pdf",
+      "judgement_date": "2026-11-08"
     },
     {
       "catalyst_id": "irf-4004",

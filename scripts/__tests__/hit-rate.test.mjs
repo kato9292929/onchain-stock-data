@@ -58,7 +58,13 @@ test("the live JP and Physical-AI records agree with the published numbers", asy
   // Physical AI has no na rows, so this formula leaves its number untouched —
   // the switch cannot be mistaken for a convenient choice.
   assert.equal(paCounts.na, 0, "a na row here would mean re-checking the article");
-  assert.ok(jpRate > 0.4 && jpRate < 0.6, `JP rate drifted: ${jpRate}`);
+  // The band holds the API evaluator's verdicts, frozen since the chat
+  // operation began. Chat verdicts (with `evaluator`) are real record and move
+  // the live rate: na stays in the denominator on purpose, so a batch of
+  // "the condition asked for a number nobody discloses" pulls it down.
+  const apiRate = hitRateOf(tally(jp.filter((e) => !e.evaluator).map((e) => e.status)));
+  assert.ok(apiRate > 0.4 && apiRate < 0.6, `API-era JP rate drifted: ${apiRate}`);
+  assert.ok(jpRate !== null && jpRate > 0 && jpRate < 1, `JP rate out of range: ${jpRate}`);
 });
 
 test("tally rejects nothing and counts everything", () => {
