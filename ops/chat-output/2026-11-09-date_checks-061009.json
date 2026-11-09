@@ -1,0 +1,27 @@
+{
+  "type": "date_checks",
+  "items": [
+    {
+      "ids": [
+        "jp:2026-10-19:3436",
+        "jp:2026-10-12:3436"
+      ],
+      "confirmed_date": "2026-11-11",
+      "source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ids": [
+        "jp:2026-10-12:4004"
+      ],
+      "confirmed_date": "2026-11-11",
+      "source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan09_1106.xlsx"
+    },
+    {
+      "ids": [
+        "jp:2026-10-19:6525"
+      ],
+      "confirmed_date": "2026-11-09",
+      "source_url": "https://www.jpx.co.jp/listing/event-schedules/financial-announcement/tvdivq0000001ofb-att/kessan.xlsx"
+    }
+  ]
+}
