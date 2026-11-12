@@ -23,7 +23,8 @@
     "fetch:financials": "node scripts/fetch-financials.mjs",
     "audit:conditions": "node scripts/audit-conditions.mjs",
     "export:chat:primary": "node --import tsx scripts/export-primary.mjs",
-    "export:chat:neocloud": "node --import tsx scripts/export-neocloud.mjs"
+    "export:chat:neocloud": "node --import tsx scripts/export-neocloud.mjs",
+    "neocloud:sources": "node --import tsx scripts/neocloud-sources.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",

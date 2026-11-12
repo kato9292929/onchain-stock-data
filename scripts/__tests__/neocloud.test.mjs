@@ -5,7 +5,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { planImport, metricId } from "../import-from-chat.mjs";
+import { planImport, metricId, normalizeMetric, isReprint } from "../import-from-chat.mjs";
+import { numberPatterns, findNumber } from "../neocloud-sources.mjs";
 import { buildExport } from "../export-for-chat.mjs";
 import {
   excerpt,
@@ -86,9 +87,9 @@ test("metrics: no URL, no estimate, no stranger, MW for power, a period for guid
     row({ source_url: "" }),
     row({ estimated: true }),
     row({ ticker: "NVDA" }),
-    row({ unit: "GW", value: 4.6 }),
+    row({ unit: "kW", value: 4600000 }),
     row({ item: "revenue_guidance", unit: "USD", value: null, low: 13e9, high: 13.3e9 }),
-    row({ item: "backlog_usd", unit: "USD bn", value: 132.5 }),
+    row({ item: "backlog_usd", unit: "EUR", value: 132.5e9 }),
     row({ as_of: "2026-12-31" }),
     row({ item: "financing", unit: "USD", value: 4.2e9 }),
     row({ item: "key_contracts", unit: "USD", value: 1e9, detail: { term: "5y" } }),
@@ -124,6 +125,47 @@ test("metrics: not disclosed is a null row; guidance ranges and JP yen are kept 
   assert.deepEqual(plan.notes[1], "項目別: backlog_usd 1・revenue_guidance 2");
   const jp = plan.writes.neocloudMetrics.metrics.find((r) => r.ticker === "3778");
   assert.equal(jp.market, "JP");
+});
+
+test("metrics: the chat's spellings are read as the schema's — renames and exact unit factors only", () => {
+  const n = normalizeMetric({ ticker: "CRWV", metric: "revenue_guidance", value: 13.0, value_high: 13.3, unit: "USD bn", as_of: "2026-12-31", published_at: "2026-11-10" });
+  assert.deepEqual(
+    { item: n.item, value: n.value, low: n.low, high: n.high, unit: n.unit, as_of: n.as_of, period: n.period },
+    { item: "revenue_guidance", value: null, low: 13e9, high: 13.3e9, unit: "USD", as_of: "2026-11-10", period: "〜2026-12-31" },
+  );
+  assert.equal(normalizeMetric({ metric: "financing", value: 0.775, unit: "USD bn" }).value, 775000000);
+  assert.equal(normalizeMetric({ metric: "contracted_power_mw", value: 4.6, unit: "GW" }).value, 4600);
+  assert.equal(normalizeMetric({ metric: "key_contracts", value: null, unit: null }).unit, null);
+  // A non-guidance number dated after its document is still refused.
+  assert.equal(normalizeMetric({ metric: "contracted_power_mw", value: 1, unit: "MW", as_of: "2026-12-31", published_at: "2026-11-10" }).as_of, "2026-12-31");
+
+  const plan = planImport(
+    {
+      type: "metrics",
+      items: [
+        { ticker: "CRWV", metric: "financing", value: 4.2, unit: "USD bn", as_of: "2026-09-30", source_url: `${SEC}/press.htm`, published_at: "2026-11-10", note: "転換社債" },
+        { ticker: "CRWV", metric: "financing", value: 2.6, unit: "USD bn", as_of: "2026-09-30", source_url: `${SEC}/press.htm`, published_at: "2026-11-10", note: "DDTL 5.5" },
+        { ticker: "CRWV", metric: "key_contracts", value: null, unit: null, as_of: "2026-11-10", source_url: `${SEC}/press.htm`, published_at: "2026-11-10", note: "契約額は非開示" },
+        { ticker: "CRWV", metric: "energized_mw", value: 1700, unit: "MW", as_of: "2026-09-30", source_url: "https://menafn.com/x", published_at: "2026-11-10" },
+      ],
+    },
+    files(),
+    ctx,
+  );
+  assert.equal(plan.applied, 3, "two financings from one document are two rows");
+  assert.match(plan.rejected[0].reasons.join(), /reprint/);
+  assert.equal(isReprint("https://www.finviz.com/news/1"), true);
+  assert.equal(isReprint("https://www.sec.gov/Archives/x.htm"), false);
+});
+
+test("sources: a number counts as found only where the document prints it", () => {
+  const text = "RPO were 38.7 billion. We now expect ARR to exceed 7 billion. 1,590 million of notes. 102 MW online; over 1.7 GW active.";
+  assert.match(findNumber(text, 7.0, "USD bn"), /exceed 7 billion/, "not the 7 of 38.7");
+  assert.ok(findNumber(text, 1.59, "USD bn"));
+  assert.ok(findNumber(text, 102, "MW"));
+  assert.ok(findNumber(text, 1700, "MW"));
+  assert.equal(findNumber(text, 8.7, "USD bn"), null);
+  assert.equal(numberPatterns(null, "MW").length, 0);
 });
 
 // ── bodies ────────────────────────────────────────────────────────────────

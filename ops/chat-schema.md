@@ -306,6 +306,15 @@ E 節に出たテーマの銘柄に、次のカタリストを足すためのも
 | published_at | ○ | その書類の提出日・公表日 |
 | note | − | 定義の違い（「契約済み」が LOI を含むかなど）を一文で |
 
+- 次の書き方は、取り込み時にスキーマの形へ読み替える（名前の付け替えと単位の正確な倍率だけで、数字は推測しない）。
+  `metric` → `item`、`value_high` / `value_low` → `high` / `low`（このとき value は幅の下限として low に移る）、
+  `USD bn`・`USD m`・`億円`・`百万円`・`GW` → USD / JPY の全額・MW、ガイダンスで `as_of` が対象期間の末日のもの →
+  `period: "〜その日"` と、公表日を `as_of` にしたもの。
+- 転載・まとめサイト（menafn・finviz・placera・finanznachrichten・stockhub など）の URL は不採用。書き出しにある
+  SEC の書類（8-K の Ex.99.1、10-Q）か、会社 IR・配信元（GlobeNewswire 等）の URL を使う。
+- 取り込みの前に `npm run neocloud:sources -- <返答.json> --out <確認済み.json>` で、各行の数字がその書類に
+  印字されているかを確かめる。見つからない行は、同じ日の EDGAR の書類で見つかればその書類に置き換え、
+  どこにもなければ外して `-dropped.json` に残し、チャットに返す。
 - `estimated` などの推定の印が付いた行は不採用。
 - 同じ会社・項目・時点・書類のものは「already recorded」で不採用（再送しても重ならない）。
 - 開示がない項目は `value: null` の行で返してよい（その書類を見たが書いていない、という記録になる）。

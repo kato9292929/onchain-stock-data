@@ -627,8 +627,79 @@ export function metricId(r) {
     r.period ?? "",
     r.detail?.instrument ?? r.detail?.counterparty ?? "",
     r.detail?.name ?? "",
+    r.value ?? "",
+    r.low ?? "",
+    r.high ?? "",
   ].join("|");
   return `nm_${createHash("sha256").update(key).digest("hex").slice(0, 10)}`;
+}
+
+/** Reprint and aggregator sites: the number must come from the document itself. */
+export const REPRINT_HOSTS = [
+  "menafn.com", "finviz.com", "placera.se", "finanznachrichten.de", "stockhub.kr", "marketscreener.com",
+  "investing.com", "seekingalpha.com", "finance.yahoo.com", "morningstar.com", "stocktitan.net", "tipranks.com",
+  "benzinga.com", "marketbeat.com", "streetinsider.com", "theglobeandmail.com", "kabutan.jp", "minkabu.jp",
+];
+export const isReprint = (u) => {
+  try {
+    const h = new URL(u).hostname.replace(/^www\./, "");
+    return REPRINT_HOSTS.some((r) => h === r || h.endsWith(`.${r}`));
+  } catch {
+    return false;
+  }
+};
+
+const SCALE = {
+  "USD bn": ["USD", 1e9], "USD billion": ["USD", 1e9], "USD B": ["USD", 1e9], "bn USD": ["USD", 1e9],
+  "USD m": ["USD", 1e6], "USD mn": ["USD", 1e6], "USD million": ["USD", 1e6], "USD M": ["USD", 1e6],
+  "JPY bn": ["JPY", 1e9], "億円": ["JPY", 1e8], "百万円": ["JPY", 1e6], "JPY m": ["JPY", 1e6],
+  GW: ["MW", 1000],
+};
+
+/**
+ * The chat's spellings, read as the schema's. Only renames and exact unit
+ * factors — no number is guessed:
+ *   metric → item · value_high / value_low → high / low (value then becomes the
+ *   low end) · "USD bn", "億円", "GW" … → the full amount in USD / JPY, MW ·
+ *   guidance whose as_of is the end of the period it covers → that period, as
+ *   of the date it was given. Pure.
+ */
+export function normalizeMetric(raw) {
+  if (!raw || typeof raw !== "object") return raw;
+  const m = { ...raw };
+  if (m.item === undefined && m.metric !== undefined) m.item = m.metric;
+  delete m.metric;
+  if (m.high === undefined && m.value_high !== undefined) {
+    m.high = m.value_high;
+    if (m.low === undefined && typeof m.value === "number") {
+      m.low = m.value;
+      m.value = null;
+    }
+  }
+  if (m.low === undefined && m.value_low !== undefined) m.low = m.value_low;
+  delete m.value_high;
+  delete m.value_low;
+  const sc = SCALE[String(m.unit ?? "").trim()];
+  if (sc) {
+    const [unit, f] = sc;
+    const conv = (v) => (typeof v === "number" ? (unit === "MW" ? Math.round(v * f * 1000) / 1000 : Math.round(v * f)) : v);
+    m.value = conv(m.value);
+    if (m.low !== undefined) m.low = conv(m.low);
+    if (m.high !== undefined) m.high = conv(m.high);
+    m.unit = unit;
+  }
+  const none = m.value === null && m.low == null && m.high == null;
+  if (none && (m.unit === null || m.unit === undefined)) m.unit = POWER_ITEMS.includes(m.item) ? "MW" : null;
+  if (
+    GUIDANCE_ITEMS.has(m.item) &&
+    ISO_DATE.test(m.as_of ?? "") &&
+    ISO_DATE.test(m.published_at ?? "") &&
+    m.as_of > m.published_at
+  ) {
+    if (!nonEmpty(m.period)) m.period = `〜${m.as_of}`;
+    m.as_of = m.published_at;
+  }
+  return m;
 }
 
 export const EMPTY_METRICS = {
@@ -651,15 +722,19 @@ function importMetrics(p, files, ctx) {
   const byItem = {};
   const tickers = new Set();
   let applied = 0;
-  for (const [i, m] of items.entries()) {
+  for (const [i, raw] of items.entries()) {
+    const m = normalizeMetric(raw);
     const why = [];
     const ticker = String(m?.ticker ?? "").trim().toUpperCase();
     const c = companies.get(ticker);
     if (!c) why.push(`ticker ${ticker || "(empty)"} is not a neocloud member`);
     if (!METRIC_ITEMS.includes(m?.item)) why.push(`item must be one of ${METRIC_ITEMS.join("/")}`);
     const power = POWER_ITEMS.includes(m?.item);
+    const nothing = m?.value === null && m?.low == null && m?.high == null;
     if (power && m?.unit !== "MW") why.push("unit must be MW for a power item");
-    if (!power && !MONEY_UNITS.includes(m?.unit)) why.push(`unit must be ${MONEY_UNITS.join(" or ")} (full amount)`);
+    if (!power && !MONEY_UNITS.includes(m?.unit) && !(nothing && m?.unit === null)) {
+      why.push(`unit must be ${MONEY_UNITS.join(" or ")} (full amount)`);
+    }
     if (!("value" in (m ?? {})) || !finiteOrNull(m.value)) why.push("value must be a number, or null when not disclosed");
     for (const k of ["low", "high"]) if (m?.[k] !== undefined && !finiteOrNull(m[k])) why.push(`${k} must be a number`);
     for (const k of ["value", "low", "high"]) if (typeof m?.[k] === "number" && m[k] < 0) why.push(`${k} is negative`);
@@ -668,16 +743,19 @@ function importMetrics(p, files, ctx) {
     }
     if (GUIDANCE_ITEMS.has(m?.item) && !nonEmpty(m?.period)) why.push("period is required for guidance (e.g. FY2026)");
     const stated = m?.value !== null || m?.low != null || m?.high != null;
-    if (m?.item === "financing" && stated && !nonEmpty(m?.detail?.instrument)) {
-      why.push("detail.instrument is required for financing");
+    if (m?.item === "financing" && stated && !nonEmpty(m?.detail?.instrument) && !nonEmpty(m?.note)) {
+      why.push("detail.instrument (or a note naming the instrument) is required for financing");
     }
-    if (m?.item === "key_contracts" && (stated || m?.detail) && !nonEmpty(m?.detail?.counterparty)) {
-      why.push("detail.counterparty is required for key_contracts (write 非開示 when unnamed)");
+    if (m?.item === "key_contracts" && !nonEmpty(m?.detail?.counterparty) && !nonEmpty(m?.note)) {
+      why.push("detail.counterparty (or a note naming it; 非開示 when unnamed) is required for key_contracts");
     }
     if (m?.detail !== undefined && m.detail !== null && (typeof m.detail !== "object" || Array.isArray(m.detail))) {
       why.push("detail must be an object");
     }
     if (!isUrl(m?.source_url)) why.push("source_url is required");
+    else if (isReprint(m.source_url)) {
+      why.push("source_url is a reprint site — use the document itself (SEC 8-K Ex.99.1 / 10-Q, the company's IR or its wire release)");
+    }
     if (!ISO_DATE.test(m?.as_of ?? "")) why.push("as_of must be YYYY-MM-DD");
     if (!ISO_DATE.test(m?.published_at ?? "")) why.push("published_at must be YYYY-MM-DD");
     if (ISO_DATE.test(m?.published_at ?? "") && m.published_at > ctx.today) why.push("published_at is in the future");
