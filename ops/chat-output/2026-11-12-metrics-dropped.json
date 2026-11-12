@@ -1,0 +1,36 @@
+{
+  "type": "metrics",
+  "author": "claude-fable-5-1 (chat)",
+  "items": [
+    {
+      "ticker": "IREN",
+      "metric": "capex_guidance",
+      "value": 15,
+      "unit": "USD bn",
+      "as_of": "2027-06-30",
+      "source_url": "https://globenewswire.com/news-release/2026/11/05/3397020/0/en/iren-reports-q1-fy27-results.html",
+      "published_at": "2026-11-05",
+      "note": "FY27 の残りの設備投資（2026-09-30 起点、データセンターとGPU）"
+    },
+    {
+      "ticker": "CORZ",
+      "metric": "financing",
+      "value": 4.275,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001839341/000183934126000028/q32026corescientificinc-ea.htm",
+      "published_at": "2026-11-05",
+      "note": "1〜9月の借入による調達額"
+    },
+    {
+      "ticker": "WYFI",
+      "metric": "backlog_usd",
+      "value": 0.729,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.finanznachrichten.de/nachrichten-2026-11/70087389-whitefiber-inc-reports-third-quarter-2026-results-008.htm",
+      "published_at": "2026-11-10",
+      "note": "ASC 606 の残存履行義務（約）。将来のリース支払い約4.215億ドルは別"
+    }
+  ]
+}
