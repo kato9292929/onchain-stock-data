@@ -384,3 +384,30 @@ export function withTestnetPaywall(
     x402TestnetServer,
   );
 }
+
+/**
+ * withSolanaUsdcMicroPaywall for a parameterised route, with the 402 naming
+ * the URL actually requested (`resourceOf(req)`, a path such as
+ * "/api/neocloud/CRWV?view=full") instead of a ":ticker" template. One route
+ * config per distinct resource, built on first use and kept; callers bound the
+ * set (an unknown ticker is answered 404 before it reaches here). The safety
+ * valve runs on every config built.
+ */
+export function withSolanaUsdcMicroPaywallAt(
+  handler: Handler,
+  opts: { units: string; description: string; resourceOf: (req: NextRequest) => string },
+): (req: NextRequest) => Promise<NextResponse> {
+  const build = (resourcePath: string) => {
+    const rc = buildSolanaOnlyRouteConfig(solanaUsdcUnits(opts.units), opts.description, resourcePath);
+    assertSolanaExactUsdc(rc, opts.units);
+    return withX402AndInternal(handler, rc);
+  };
+  build("/"); // fail closed at import time, as withSolanaUsdcMicroPaywall does
+  const byResource = new Map<string, (req: NextRequest) => Promise<NextResponse>>();
+  return (req: NextRequest) => {
+    const resourcePath = opts.resourceOf(req);
+    let wrapped = byResource.get(resourcePath);
+    if (!wrapped) byResource.set(resourcePath, (wrapped = build(resourcePath)));
+    return wrapped(req);
+  };
+}

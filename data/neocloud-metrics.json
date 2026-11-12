@@ -1,0 +1,5 @@
+{
+  "note": "Neocloud business numbers, one row per number a document discloses (company · item · value · unit · as_of · source_url · published_at). Written by scripts/import-from-chat.mjs (type metrics). No estimates: a number the document does not state is value null, or no row. Money is the full amount in USD or JPY; power is MW.",
+  "updated_at": null,
+  "metrics": []
+}

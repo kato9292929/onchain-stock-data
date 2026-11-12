@@ -8,11 +8,17 @@
  *   D  判定日の照合待ち    pending rows whose deadline is still the model's own
  *   E  テーマの更新        per theme, members with an event in the next 14 days
  *                          and their current catalyst (answered as theme_catalysts)
+ *   F  ネオクラウドの開示  the neocloud companies' filings of the last 7 days
+ *                          (SEC EDGAR / TDnet) with excerpts (answered as metrics
+ *                          and signals). The one networked section: fetched at
+ *                          export time from free public sources, and its filing
+ *                          metadata kept in data/neocloud-filings.json.
  *
- * Read-only on data/. No network, no API: this is the half of the loop that
- * replaced the Anthropic calls in Actions, and it must cost nothing to run.
+ * No API, no model call: this is the half of the loop that replaced the
+ * Anthropic calls in Actions, and it must cost nothing to run. --offline skips
+ * the fetch (F then says so) and leaves data/ untouched.
  *
- *   node scripts/export-for-chat.mjs [--date YYYY-MM-DD] [--stdout]
+ *   node scripts/export-for-chat.mjs [--date YYYY-MM-DD] [--stdout] [--offline]
  *
  * The answer comes back as JSON (ops/chat-schema.md) through
  * scripts/import-from-chat.mjs.
@@ -29,6 +35,9 @@ import {
   GRACE_DAYS,
 } from "./lib/chat-ops.mjs";
 import { needsRenewal, upcomingByTheme } from "../lib/themes.ts";
+import { windowStart } from "../lib/neocloud.ts";
+import { collectFeed, renderFeed } from "./lib/neocloud-feed.mjs";
+import { keepFilingIndex, neocloudCompaniesFromRepo } from "./export-neocloud.mjs";
 
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "ops", "chat-input");
@@ -155,7 +164,7 @@ function holdingTable(p) {
  * Pure: everything the file says is derived from `files`, `today` and
  * `since`, so the export can be tested and reproduced.
  */
-export function buildExport(files, { today, since }) {
+export function buildExport(files, { today, since, neocloud = null }) {
   const rows = collectRows(files);
 
   const due = rows
@@ -202,6 +211,8 @@ export function buildExport(files, { today, since }) {
     `生成: scripts/export-for-chat.mjs（${today}）。返答の形式は ops/chat-schema.md。` +
       `取り込みは scripts/import-from-chat.mjs。判定・選定の記録者は "${CHAT_MODEL}"。`,
   );
+  L.push("");
+  L.push("**最優先は F 節（ネオクラウドの開示）**。F の数字を `metrics` で返してから、A〜E に進む。");
   L.push("");
   L.push("## 判定のルール（API 評価器と同じ）");
   L.push("");
@@ -447,6 +458,14 @@ export function buildExport(files, { today, since }) {
   }
   L.push("");
 
+  // ── F
+  const fHeading = "## F. ネオクラウドの直近7日の開示（最優先）";
+  if (neocloud) {
+    L.push(renderFeed(neocloud, { heading: fHeading }));
+  } else {
+    L.push(fHeading, "", "書き出しのときに取得していない（--offline）。`npm run export:chat:neocloud` で別に書き出せる。", "");
+  }
+
   return {
     markdown: L.join("\n"),
     counts: {
@@ -457,6 +476,7 @@ export function buildExport(files, { today, since }) {
       theme_rows: themeRows,
       renewal_rows: renewalRows,
       article_verdicts: articleVerdicts.length,
+      neocloud_filings: neocloud ? neocloud.filings.length : null,
     },
     due,
     unchecked,
@@ -481,12 +501,22 @@ async function main() {
   const di = args.indexOf("--date");
   const today = di >= 0 ? args[di + 1] : todayIso();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(today ?? "")) {
-    console.error("usage: export-for-chat.mjs [--date YYYY-MM-DD] [--stdout]");
+    console.error("usage: export-for-chat.mjs [--date YYYY-MM-DD] [--stdout] [--offline]");
     process.exit(2);
   }
   const files = await loadFiles();
   const since = await previousExportDate(today);
-  const { markdown, counts } = buildExport(files, { today, since });
+  let neocloud = null;
+  if (!args.includes("--offline")) {
+    neocloud = await collectFeed({
+      companies: await neocloudCompaniesFromRepo(),
+      from: windowStart(today, 7),
+      to: today,
+      log: (m) => console.log(`[neocloud] ${m}`),
+    });
+    if (!args.includes("--stdout")) await keepFilingIndex(neocloud, today);
+  }
+  const { markdown, counts } = buildExport(files, { today, since, neocloud });
   if (args.includes("--stdout")) {
     process.stdout.write(markdown);
     return;
@@ -495,7 +525,7 @@ async function main() {
   const out = path.join(OUT_DIR, `${today}.md`);
   await writeFile(out, markdown, "utf8");
   console.log(
-    `[export] ${path.relative(ROOT, out)}: A ${counts.due} 判定待ち · C ${counts.signals} signal · D ${counts.events} 開示（${counts.unchecked} 行）照合待ち`,
+    `[export] ${path.relative(ROOT, out)}: A ${counts.due} 判定待ち · C ${counts.signals} signal · D ${counts.events} 開示（${counts.unchecked} 行）照合待ち · F ${counts.neocloud_filings ?? "未取得"} 件のネオクラウド開示`,
   );
 }
 

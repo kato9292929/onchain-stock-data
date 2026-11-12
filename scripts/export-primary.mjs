@@ -180,14 +180,14 @@ const REVISION = /業績予想.*修正|修正.*業績予想|予想値と実績�
 
 // ── fetching ──────────────────────────────────────────────────────────────
 
-async function get(url, as = "text") {
+export async function get(url, as = "text") {
   const r = await fetch(url, { ...UA, signal: AbortSignal.timeout(60_000) });
   if (!r.ok) throw new Error(`${url} HTTP ${r.status}`);
   return as === "buf" ? Buffer.from(await r.arrayBuffer()) : r.text();
 }
 
 /** TDnet disclosures of the last `days` days, by 4-character code. */
-async function tdnetIndex(codes, today, days = 31) {
+export async function tdnetIndex(codes, today, days = 31) {
   const by = new Map();
   for (let d = 0; d <= days; d += 1) {
     const ymd = new Date(Date.parse(`${today}T00:00:00Z`) - d * 864e5).toISOString().slice(0, 10).replace(/-/g, "");
@@ -213,7 +213,7 @@ async function tdnetIndex(codes, today, days = 31) {
   return by;
 }
 
-function pdfPages(buf, label, url) {
+export function pdfPages(buf, label, url) {
   try {
     const text = execFileSync("pdftotext", ["-q", "-", "-"], { input: buf, maxBuffer: 64 * 1024 * 1024 }).toString("utf8");
     return text.split("\f").map((t, i) => ({ source: label, url, page: i + 1, text: t.trim() })).filter((p) => p.text);

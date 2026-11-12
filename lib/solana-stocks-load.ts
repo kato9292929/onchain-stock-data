@@ -9,6 +9,7 @@ import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { getSignals } from "@/lib/signals";
 import { getEarningsDates, getFinancials, type Records } from "@/lib/company-record";
 import { getJpListed, getThemes } from "@/lib/theme-members";
+import { getNeocloudFilings, getNeocloudMetrics } from "@/lib/neocloud";
 import {
   getSolanaStocks,
   summarize,
@@ -22,7 +23,7 @@ import {
  * files the same way. Static reads only; a missing file is null.
  */
 export async function loadRecords(): Promise<Records> {
-  const [usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes, jpListed] =
+  const [usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes, jpListed, neocloud, neocloudFilings] =
     await Promise.all([
       getPortfolioHistory().catch(() => null),
       getPortfolioEvaluations().catch(() => null),
@@ -35,8 +36,24 @@ export async function loadRecords(): Promise<Records> {
       getFinancials(),
       getThemes(),
       getJpListed(),
+      getNeocloudMetrics(),
+      getNeocloudFilings(),
     ]);
-  return { usHistory, usEvals, jpHistory, jpEvals, externals, irFair, signals, earnings, financials, themes, jpListed };
+  return {
+    usHistory,
+    usEvals,
+    jpHistory,
+    jpEvals,
+    externals,
+    irFair,
+    signals,
+    earnings,
+    financials,
+    themes,
+    jpListed,
+    neocloud,
+    neocloudFilings,
+  };
 }
 
 export async function loadSolanaStocks(): Promise<{

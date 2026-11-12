@@ -9,6 +9,7 @@ import {
 } from "@/lib/company-record";
 import { membersOf, type ThemeDef, type ThemesFile } from "@/lib/theme-members";
 import type { SolanaStocksFile } from "@/lib/solana-stocks";
+import { isNeocloudTheme, memberPower, metricSeries, neocloudCompanies, powerTotals } from "@/lib/neocloud";
 
 export { getThemes, membersOf, themesFor, type ThemeDef, type ThemesFile } from "@/lib/theme-members";
 
@@ -124,6 +125,7 @@ export function themeFreeBody(
     next_event_date: nextEventDate(m.ticker, rows, rec, today),
     active_catalysts: rows.filter((r) => r.status === "active").length,
     solana_token: solanaMints(m.ticker, solana).length > 0,
+    ...(isNeocloudTheme(theme) ? { power: memberPower(rec.neocloud, m.ticker) } : {}),
   }));
   return {
     id: theme.id,
@@ -134,6 +136,7 @@ export function themeFreeBody(
     lineage: lineageOut(theme),
     member_count: list.length,
     active_catalysts: list.reduce((n, x) => n + x.active_catalysts, 0),
+    ...(isNeocloudTheme(theme) ? { power_totals: neocloudPowerTotals(theme, rec) } : {}),
     members: list,
     full: {
       url: `${baseUrl}/api/themes/${encodeURIComponent(theme.id)}?view=full`,
@@ -166,6 +169,7 @@ export function themeFullBody(
       status_counts: statusCounts(rows),
       conditions: rows,
       solana_tokens: solanaMints(m.ticker, solana),
+      ...(isNeocloudTheme(theme) ? { metrics: metricSeries(rec.neocloud, m.ticker) } : {}),
     };
   });
   return {
@@ -177,8 +181,16 @@ export function themeFullBody(
     lineage: lineageOut(theme),
     member_count: list.length,
     status_counts: statusCounts(mr.flatMap((x) => x.rows)),
+    ...(isNeocloudTheme(theme) ? { power_totals: neocloudPowerTotals(theme, rec) } : {}),
     members: list,
   };
+}
+
+/** Contracted and energized MW summed over the theme's article members that disclosed them. */
+function neocloudPowerTotals(theme: ThemeDef, rec: Records) {
+  const companies = neocloudCompanies(rec.themes).filter((c) => c.theme === theme.id);
+  const t = powerTotals(companies, rec.neocloud);
+  return theme.market === "JP" ? t.JP : t.US;
 }
 
 /**

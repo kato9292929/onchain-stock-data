@@ -16,6 +16,9 @@
  *                export marks it 未検証.
  *   date_checks  the company's own disclosure date for rows whose deadline is
  *                still the model's. Never moves target_date.
+ *   theme_catalysts  a theme's next conditions (ops/chat-schema.md §5).
+ *   metrics      neocloud business numbers, one row per disclosed number, each
+ *                with its document URL. No estimates; undisclosed is null.
  *
  * No network, no API. Runs under tsx (`node --import tsx`) so it can reuse the
  * listing screen and the week-over-week diff from lib/ rather than copy them.
@@ -36,6 +39,7 @@ import {
 import { excludeDelisted } from "../lib/listing-status.ts";
 import { diffHoldings, MAX_HOLDING_WEIGHT } from "../lib/portfolio.ts";
 import { themesFor } from "../lib/themes.ts";
+import { METRIC_ITEMS, MONEY_UNITS, POWER_ITEMS, neocloudCompanies } from "../lib/neocloud.ts";
 import { createHash } from "node:crypto";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -58,6 +62,7 @@ export const FILES = {
   eras: "data/operation-eras.json",
   listed: "data/jp-listed.json",
   themes: "data/themes.json",
+  neocloudMetrics: "data/neocloud-metrics.json",
 };
 
 const isUrl = (u) => typeof u === "string" && /^https?:\/\/[^\s]+\.[^\s]+/.test(u);
@@ -607,12 +612,123 @@ function importThemeCatalysts(p, files, ctx) {
 
 // ── entry ─────────────────────────────────────────────────────────────────
 
+// ── metrics (neocloud) ────────────────────────────────────────────────────
+
+const GUIDANCE_ITEMS = new Set(["revenue_guidance", "capex_guidance"]);
+const ESTIMATE_KEYS = ["estimate", "estimated", "estimation", "approx", "approximate", "assumed"];
+const finiteOrNull = (v) => v === null || (typeof v === "number" && Number.isFinite(v));
+
+export function metricId(r) {
+  const key = [
+    r.ticker,
+    r.item,
+    r.as_of,
+    r.source_url,
+    r.period ?? "",
+    r.detail?.instrument ?? r.detail?.counterparty ?? "",
+    r.detail?.name ?? "",
+  ].join("|");
+  return `nm_${createHash("sha256").update(key).digest("hex").slice(0, 10)}`;
+}
+
+export const EMPTY_METRICS = {
+  note:
+    "Neocloud business numbers, one row per number a document discloses (company · item · value · unit · as_of · " +
+    "source_url · published_at). Written by scripts/import-from-chat.mjs (type metrics). No estimates: a number " +
+    "the document does not state is value null, or no row. Money is the full amount in USD or JPY; power is MW.",
+  updated_at: null,
+  metrics: [],
+};
+
+function importMetrics(p, files, ctx) {
+  const items = Array.isArray(p.items) ? p.items : [];
+  if (items.length === 0) return { errors: ["items is empty"] };
+  const companies = new Map(neocloudCompanies(files.themes).map((c) => [c.ticker, c]));
+  if (companies.size === 0) return { errors: ["data/themes.json has no neocloud members"] };
+  const file = structuredClone(files.neocloudMetrics ?? EMPTY_METRICS);
+  const ids = new Set(file.metrics.map((r) => r.id));
+  const rejected = [];
+  const byItem = {};
+  const tickers = new Set();
+  let applied = 0;
+  for (const [i, m] of items.entries()) {
+    const why = [];
+    const ticker = String(m?.ticker ?? "").trim().toUpperCase();
+    const c = companies.get(ticker);
+    if (!c) why.push(`ticker ${ticker || "(empty)"} is not a neocloud member`);
+    if (!METRIC_ITEMS.includes(m?.item)) why.push(`item must be one of ${METRIC_ITEMS.join("/")}`);
+    const power = POWER_ITEMS.includes(m?.item);
+    if (power && m?.unit !== "MW") why.push("unit must be MW for a power item");
+    if (!power && !MONEY_UNITS.includes(m?.unit)) why.push(`unit must be ${MONEY_UNITS.join(" or ")} (full amount)`);
+    if (!("value" in (m ?? {})) || !finiteOrNull(m.value)) why.push("value must be a number, or null when not disclosed");
+    for (const k of ["low", "high"]) if (m?.[k] !== undefined && !finiteOrNull(m[k])) why.push(`${k} must be a number`);
+    for (const k of ["value", "low", "high"]) if (typeof m?.[k] === "number" && m[k] < 0) why.push(`${k} is negative`);
+    if (ESTIMATE_KEYS.some((k) => m?.[k] !== undefined && m[k] !== false) || m?.source_tier === "estimate") {
+      why.push("estimates are not recorded");
+    }
+    if (GUIDANCE_ITEMS.has(m?.item) && !nonEmpty(m?.period)) why.push("period is required for guidance (e.g. FY2026)");
+    const stated = m?.value !== null || m?.low != null || m?.high != null;
+    if (m?.item === "financing" && stated && !nonEmpty(m?.detail?.instrument)) {
+      why.push("detail.instrument is required for financing");
+    }
+    if (m?.item === "key_contracts" && (stated || m?.detail) && !nonEmpty(m?.detail?.counterparty)) {
+      why.push("detail.counterparty is required for key_contracts (write 非開示 when unnamed)");
+    }
+    if (m?.detail !== undefined && m.detail !== null && (typeof m.detail !== "object" || Array.isArray(m.detail))) {
+      why.push("detail must be an object");
+    }
+    if (!isUrl(m?.source_url)) why.push("source_url is required");
+    if (!ISO_DATE.test(m?.as_of ?? "")) why.push("as_of must be YYYY-MM-DD");
+    if (!ISO_DATE.test(m?.published_at ?? "")) why.push("published_at must be YYYY-MM-DD");
+    if (ISO_DATE.test(m?.published_at ?? "") && m.published_at > ctx.today) why.push("published_at is in the future");
+    if (ISO_DATE.test(m?.as_of ?? "") && ISO_DATE.test(m?.published_at ?? "") && m.as_of > m.published_at) {
+      why.push("as_of is after published_at");
+    }
+    const row = {
+      ticker,
+      market: c?.market ?? null,
+      item: m?.item,
+      value: m?.value ?? null,
+      unit: m?.unit,
+      as_of: m?.as_of,
+      ...(nonEmpty(m?.period) ? { period: m.period.trim() } : {}),
+      ...(typeof m?.low === "number" ? { low: m.low } : {}),
+      ...(typeof m?.high === "number" ? { high: m.high } : {}),
+      ...(m?.detail && typeof m.detail === "object" ? { detail: m.detail } : {}),
+      source_url: m?.source_url,
+      published_at: m?.published_at,
+      ...(nonEmpty(m?.note) ? { note: m.note.trim() } : {}),
+    };
+    const id = why.length ? null : metricId(row);
+    if (id && ids.has(id)) why.push(`already recorded (${id})`);
+    if (why.length) {
+      rejected.push({ index: i, id: ticker ? `${ticker}:${m?.item ?? "?"}` : null, reasons: why });
+      continue;
+    }
+    ids.add(id);
+    file.metrics.push({ id, ...row, added_at: ctx.now, added_by: CHAT_MODEL });
+    byItem[row.item] = (byItem[row.item] ?? 0) + 1;
+    tickers.add(ticker);
+    applied += 1;
+  }
+  file.updated_at = ctx.now;
+  const perItem = METRIC_ITEMS.filter((k) => byItem[k]).map((k) => `${k} ${byItem[k]}`);
+  return {
+    writes: applied ? { neocloudMetrics: file } : {},
+    applied,
+    rejected,
+    notes: [`${tickers.size}社: ${[...tickers].join(", ")}`, `項目別: ${perItem.join("・") || "なし"}`],
+    label: `${applied}行・${tickers.size}社`,
+  };
+}
+
 const HANDLERS = {
   selection: importSelection,
   verdicts: importVerdicts,
   signals: importSignals,
   date_checks: importDateChecks,
   theme_catalysts: importThemeCatalysts,
+  metrics: importMetrics,
 };
 
 /**
