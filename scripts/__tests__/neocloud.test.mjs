@@ -172,6 +172,8 @@ test("sources: a number counts as found only where the document prints it", () =
   assert.ok(findNumber("raising guidance to a range of 13.0 billion to 13.3 billion", 13.0, "USD bn", 13.3));
   assert.equal(findNumber("$17–20B", 17, "USD bn", 21), null);
   assert.equal(findNumber("Total remaining performance obligations $ 728,982", 729.0, "USD m"), null, "729.0 is not 728,982");
+  assert.ok(findNumber("Total remaining performance obligations $ 728,982", 728982, "USD thousand"));
+  assert.equal(normalizeMetric({ metric: "backlog_usd", value: 728982, unit: "USD thousand" }).value, 728982000);
 });
 
 // ── bodies ────────────────────────────────────────────────────────────────

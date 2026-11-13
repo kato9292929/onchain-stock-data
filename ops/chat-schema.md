@@ -308,7 +308,7 @@ E 節に出たテーマの銘柄に、次のカタリストを足すためのも
 
 - 次の書き方は、取り込み時にスキーマの形へ読み替える（名前の付け替えと単位の正確な倍率だけで、数字は推測しない）。
   `metric` → `item`、`value_high` / `value_low` → `high` / `low`（このとき value は幅の下限として low に移る）、
-  `USD bn`・`USD m`・`億円`・`百万円`・`GW` → USD / JPY の全額・MW、ガイダンスで `as_of` が対象期間の末日のもの →
+  `USD bn`・`USD m`・`USD thousand`・`億円`・`百万円`・`千円`・`GW` → USD / JPY の全額・MW、ガイダンスで `as_of` が対象期間の末日のもの →
   `period: "〜その日"` と、公表日を `as_of` にしたもの。
 - 転載・まとめサイト（menafn・finviz・placera・finanznachrichten・stockhub など）の URL は不採用。書き出しにある
   SEC の書類（8-K の Ex.99.1、10-Q）か、会社 IR・配信元（GlobeNewswire 等）の URL を使う。

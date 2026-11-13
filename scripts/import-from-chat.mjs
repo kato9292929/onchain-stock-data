@@ -652,6 +652,7 @@ export const isReprint = (u) => {
 const SCALE = {
   "USD bn": ["USD", 1e9], "USD billion": ["USD", 1e9], "USD B": ["USD", 1e9], "bn USD": ["USD", 1e9],
   "USD m": ["USD", 1e6], "USD mn": ["USD", 1e6], "USD million": ["USD", 1e6], "USD M": ["USD", 1e6],
+  "USD thousand": ["USD", 1e3], "USD thousands": ["USD", 1e3], "USD k": ["USD", 1e3], "千円": ["JPY", 1e3],
   "JPY bn": ["JPY", 1e9], "億円": ["JPY", 1e8], "百万円": ["JPY", 1e6], "JPY m": ["JPY", 1e6],
   GW: ["MW", 1000],
 };

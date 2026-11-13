@@ -78,6 +78,8 @@ export function numberPatterns(value, unit) {
   if (/\bm\b|million|mn/i.test(u)) {
     return [new RegExp(`${NB}${numRe(value)}\\s*(?:million|mn|M)${END}`, "i"), new RegExp(`(?<![\\d.,])${commaRe(value * 1000)}(?![\\d,])`)];
   }
+  // A table in thousands prints the number itself: 728,982.
+  if (/thousand|\bk\b/i.test(u)) return [new RegExp(`(?<![\\d.,])${commaRe(value)}(?![\\d,])`)];
   if (u === "USD") return [new RegExp(`(?<![\\d.,])${commaRe(value)}(?![\\d,])`)];
   return [];
 }
