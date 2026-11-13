@@ -14,6 +14,7 @@ import { loadRecords } from "@/lib/solana-stocks-load";
 import { getSolanaStocks } from "@/lib/solana-stocks";
 import { findTheme, getThemes, themeFreeBody, themesIndexBody } from "@/lib/themes";
 import { loadSolanaStocks } from "@/lib/solana-stocks-load";
+import { companyFreeBody, digestFreeBody, findNeocloudCompany } from "@/lib/neocloud";
 
 /**
  * Remote MCP server for Onchain Stock Data.
@@ -32,8 +33,9 @@ import { loadSolanaStocks } from "@/lib/solana-stocks-load";
  * Mounted as a single web-standard handler (mcp-handler v2) at /api/mcp.
  *
  * FREE / PAID line (kept in sync with the README):
- *   - FREE, unsigned MCP reads (all 5 tools here): portfolio_get, catalysts_list,
- *     scoreboard_get, signal_get, solana_stock_get, themes_list, theme_get. Every tool is read-only (annotations:
+ *   - FREE, unsigned MCP reads (every tool here): neocloud_theme, neocloud_company,
+ *     neocloud_digest, portfolio_get, catalysts_list, scoreboard_get, signal_get,
+ *     solana_stock_get, themes_list, theme_get. Every tool is read-only (annotations:
  *     readOnlyHint:true, destructiveHint:false) and serves committed git data —
  *     no model call, so a tool invocation costs nothing to run.
  *   - PAID access lives on the HTTP per-call endpoints, NOT on this MCP surface:
@@ -56,6 +58,71 @@ function text(value: unknown) {
 
 const handler = createMcpHandler(
   (server) => {
+    // ── read-only: neocloud (free views; the paid twins are HTTP per-call) ─
+    const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+    server.registerTool(
+      "neocloud_theme",
+      {
+        title: "Get the neocloud theme (US / JP)",
+        description:
+          "Free view of the neocloud theme: US 18 or JP 5 companies with next earnings (primary source only), each company's latest contracted and energized MW with the document URL, and the theme total. The full theme (conditions, verdicts and every number over time) is the per-call URL in `full` (0.01 USDC, x402 on Solana).",
+        inputSchema: z.object({ market: z.enum(["us", "jp"]).default("us") }),
+        annotations: { title: "Get the neocloud theme (US / JP)", ...RO },
+      },
+      async ({ market }) => {
+        const [themes, rec, solana] = await Promise.all([getThemes(), loadRecords(), getSolanaStocks().catch(() => null)]);
+        const t = findTheme(themes, market === "jp" ? "neocloud-jp" : "neocloud-us");
+        if (!t) return text({ error: "theme not found" });
+        return text(themeFreeBody(t, rec, solana, new Date().toISOString().slice(0, 10), PUBLIC_BASE_URL));
+      },
+    );
+    server.registerTool(
+      "neocloud_company",
+      {
+        title: "Get one neocloud company's latest numbers",
+        description:
+          "Free view of one neocloud company (e.g. CRWV, NBIS, IREN, 3778): the latest disclosed number per item — contracted and energized MW, backlog / RPO, revenue and capex guidance, financing, key contracts — each with its filing URL and date; null where nothing is disclosed. The series over time, conditions and verdicts are the per-call URL in `full` (0.001 USDC, x402 on Solana).",
+        inputSchema: z.object({ ticker: z.string().describe("Ticker or code, e.g. CRWV, 3778, LAMBDA") }),
+        annotations: { title: "Get one neocloud company's latest numbers", ...RO },
+      },
+      async ({ ticker }) => {
+        const rec = await loadRecords();
+        const company = findNeocloudCompany(rec.themes, ticker);
+        if (!company) return text({ error: "not a neocloud company", ticker: ticker.toUpperCase() });
+        return text(
+          companyFreeBody(
+            { company, rec, metrics: rec.neocloud, filings: rec.neocloudFilings, today: new Date().toISOString().slice(0, 10) },
+            PUBLIC_BASE_URL,
+          ),
+        );
+      },
+    );
+    server.registerTool(
+      "neocloud_digest",
+      {
+        title: "Neocloud disclosures of the last 7 days",
+        description:
+          "Free list of the neocloud companies with a filing (SEC EDGAR / TDnet) or a newly recorded number in the last 7 days. The filings, summaries and how each number moved are the per-call URL in `full` (0.001 USDC, x402 on Solana).",
+        inputSchema: z.object({}),
+        annotations: { title: "Neocloud disclosures of the last 7 days", ...RO },
+      },
+      async () => {
+        const rec = await loadRecords();
+        return text(
+          digestFreeBody(
+            {
+              themes: rec.themes,
+              metrics: rec.neocloud,
+              filings: rec.neocloudFilings,
+              signals: rec.signals,
+              today: new Date().toISOString().slice(0, 10),
+            },
+            PUBLIC_BASE_URL,
+          ),
+        );
+      },
+    );
+
     // ── read-only: US / JP portfolio ────────────────────────────────────
     server.registerTool(
       "portfolio_get",

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withSolanaUsdcMicroPaywall, withPublicCors, corsPreflight } from "@/lib/x402-route";
+import { withSolanaUsdcMicroPaywallAt, withPublicCors, corsPreflight } from "@/lib/x402-route";
 import { PUBLIC_BASE_URL, THEME_CALL_PRICE } from "@/lib/x402";
 import { loadRecords } from "@/lib/solana-stocks-load";
 import { getSolanaStocks } from "@/lib/solana-stocks";
@@ -34,7 +34,7 @@ async function load() {
   return { themes, rec, solana, today: new Date().toISOString().slice(0, 10) };
 }
 
-const paidGet = withSolanaUsdcMicroPaywall(
+const paidGet = withSolanaUsdcMicroPaywallAt(
   async (req: NextRequest) => {
     const { themes, rec, solana, today } = await load();
     const theme = findTheme(themes, themeOf(req));
@@ -49,7 +49,8 @@ const paidGet = withSolanaUsdcMicroPaywall(
       "catalysts with question, target date and structured conditions (metric / operator / threshold / source " +
       "document), the latest verdict with its evidence URL, next earnings from a primary source, and the Solana " +
       "token mints. Field reference: /docs.",
-    resourcePath: "/api/themes/:theme?view=full",
+    // The 402 names the theme actually requested (known ids only: unknown is 404 above).
+    resourceOf: (req) => `/api/themes/${encodeURIComponent(themeOf(req))}?view=full`,
   },
 );
 

@@ -138,10 +138,24 @@ export function GET(): NextResponse {
         accepts: solanaOnlyLeg("/api/edinet/:code", PER_CALL_PRICE.base_units),
       },
       {
+        path: "/api/neocloud/:ticker?view=full",
+        method: "GET",
+        description:
+          "One neocloud company (US 18 / JP 5) in one call: every disclosed number over time — contracted and energized MW, backlog / RPO, revenue and capex guidance, financing, key contracts — each with its filing URL and date (SEC EDGAR / TDnet, no estimates), plus the company's conditions and verdicts and recent filings. 0.001 USDC. Field reference: /docs.",
+        accepts: solanaOnlyLeg("/api/neocloud/:ticker?view=full", PER_CALL_PRICE.base_units),
+      },
+      {
+        path: "/api/neocloud/digest?view=full",
+        method: "GET",
+        description:
+          "The last 7 days of neocloud disclosures: each company's filings with URLs, the summaries recorded from them, and every newly recorded number beside the previous one. 0.001 USDC. Field reference: /docs.",
+        accepts: solanaOnlyLeg("/api/neocloud/digest?view=full", PER_CALL_PRICE.base_units),
+      },
+      {
         path: "/api/themes/:theme?view=full",
         method: "GET",
         description:
-          "One theme in one call (neocloud US/JP, physical AI US/JP, weekly selections, sector themes such as data centers · power): every member's catalysts with question, target date and structured conditions with the source document, latest verdict with evidence URL, next earnings from a primary source, Solana token mints. 0.01 USDC. Field reference: /docs.",
+          "One theme in one call (neocloud US/JP, physical AI US/JP, weekly selections, sector themes such as data centers · power): every member's catalysts with question, target date and structured conditions with the source document, latest verdict with evidence URL, next earnings from a primary source, Solana token mints; for neocloud-us / neocloud-jp also every member's disclosed numbers over time. 0.01 USDC. Field reference: /docs.",
         accepts: solanaOnlyLeg("/api/themes/:theme?view=full", THEME_CALL_PRICE.base_units),
       },
       {
@@ -177,6 +191,19 @@ export function GET(): NextResponse {
         url: resourceUrl("/api/edinet"),
       },
       {
+        path: "/api/neocloud/:ticker",
+        method: "GET",
+        description:
+          "One neocloud company's latest disclosed number per item (contracted / energized MW, backlog, guidance, financing, key contracts), each with its document URL; null where nothing is disclosed. Field reference: /docs.",
+        url: resourceUrl("/api/neocloud/:ticker"),
+      },
+      {
+        path: "/api/neocloud/digest",
+        method: "GET",
+        description: "The neocloud companies with a filing or a newly recorded number in the last 7 days. Field reference: /docs.",
+        url: resourceUrl("/api/neocloud/digest"),
+      },
+      {
         path: "/api/themes",
         method: "GET",
         description: "Every theme: id, name, member count, members with an event in the next 14 days. Field reference: /docs.",
@@ -186,7 +213,7 @@ export function GET(): NextResponse {
         path: "/api/themes/:theme",
         method: "GET",
         description:
-          "One theme's members: ticker, company, next earnings (primary source only), next event date, Solana token yes/no. Field reference: /docs.",
+          "One theme's members: ticker, company, next earnings (primary source only), next event date, Solana token yes/no; for neocloud-us / neocloud-jp also each member's latest contracted and energized MW and the theme total. Field reference: /docs.",
         url: resourceUrl("/api/themes/:theme"),
       },
       {

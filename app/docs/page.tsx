@@ -50,6 +50,28 @@ export default function DocsPage() {
         </p>
       </header>
 
+      <Section id="neocloud" title="Neocloud">
+        <Fields
+          rows={[
+            ["GET /api/neocloud/{ticker}", "Free. One of the 23 neocloud companies (neocloud-us 18, neocloud-jp 5): next_earnings and latest — the latest row per item, null where nothing is disclosed — plus metric_rows and full (the per-call URL)."],
+            [`GET /api/neocloud/{ticker}?view=full`, `Paid, ${PER_CALL_PRICE.usdc} USDC. latest, series (every row, item order, oldest first), conditions and latest_verdict, documents (the URLs the rows come from) and filings.`],
+            ["GET /api/neocloud/digest", "Free. window (the last 7 days, today included) and the companies with a filing or a newly recorded number in it: filings, forms, new_metrics, latest_disclosed_at."],
+            [`GET /api/neocloud/digest?view=full`, `Paid, ${PER_CALL_PRICE.usdc} USDC. Per company: filings (form, title, filed_at, url), summaries (signals recorded from the filings) and metric_changes (each new row with previous and change).`],
+            ["item", "contracted_power_mw (contracted power capacity), energized_mw (energized / billing capacity), backlog_usd (backlog or RPO), revenue_guidance, capex_guidance, financing (notes, loans, equity), key_contracts (customer, value, term, MW)."],
+            ["value / unit", "The number as the document states it. MW for the two power items; otherwise the full amount in USD or JPY. null means the document was read and does not state it. No estimates."],
+            ["low / high / period", "Guidance given as a range, and the period it covers (e.g. FY2026, Q4 2026)."],
+            ["as_of / published_at", "as_of: the date the number is as of (quarter end, announcement date). published_at: the filing or release date of source_url."],
+            ["detail", "financing: instrument, rate, maturity, lender. key_contracts: counterparty (非開示 when unnamed), term, mw."],
+            ["power / power_totals", "On /api/themes/neocloud-us and neocloud-jp: each member's latest contracted_power_mw and energized_mw, and their sum over the members that disclosed one (with how many did)."],
+            ["source", "US listed: SEC EDGAR (10-Q, 10-K, 8-K and its Ex.99, 6-K, 20-F, 40-F). JP: TDnet (決算短信, 説明資料). Unlisted: the company's own announcements."],
+          ]}
+        />
+        <p className="text-[12px] text-slate-500">
+          Example: <code>{`${PUBLIC_BASE_URL}/api/neocloud/CRWV`}</code>. A ticker outside the 23 is 404 before any payment
+          is asked for; the 402 names the URL requested.
+        </p>
+      </Section>
+
       <Section id="endpoints" title="Per-company endpoints">
         <Fields
           rows={[

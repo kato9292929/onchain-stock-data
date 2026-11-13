@@ -245,6 +245,82 @@ E 節に出たテーマの銘柄に、次のカタリストを足すためのも
 - selection の各行には `themes`（data/themes.json の id の配列、任意）を付けられる。付けなくても、
   その銘柄がすでに属するテーマは取り込み時に自動で付く。
 
+## 6. metrics（ネオクラウドの数値）— 書き出しの F 節・ネオクラウド書き出しへの返答
+
+ネオクラウド（data/themes.json の `neocloud-us` 18社・`neocloud-jp` 5社）の事業の数字を、開示のたびに 1 行ずつ記録する。
+条件や判定ではなく、時系列の記録。`data/neocloud-metrics.json` に入り、`/api/neocloud/{ticker}` と
+`/api/themes/neocloud-us`（`neocloud-jp`）に出る。
+
+```json
+{
+  "type": "metrics",
+  "items": [
+    {
+      "ticker": "CRWV",
+      "item": "contracted_power_mw",
+      "value": 2900,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1769628/.../crwv-20260930.htm",
+      "published_at": "2026-11-12"
+    },
+    {
+      "ticker": "CRWV",
+      "item": "revenue_guidance",
+      "value": null,
+      "low": 5100000000,
+      "high": 5300000000,
+      "unit": "USD",
+      "period": "Q4 2026",
+      "as_of": "2026-11-10",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1769628/.../ex99-1.htm",
+      "published_at": "2026-11-10"
+    },
+    {
+      "ticker": "CIFR",
+      "item": "financing",
+      "value": 1400000000,
+      "unit": "USD",
+      "as_of": "2026-10-13",
+      "detail": { "instrument": "senior secured notes", "rate": "7.125%", "maturity": "2030-11-15" },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1819989/.../d134900d8k.htm",
+      "published_at": "2026-10-13"
+    }
+  ]
+}
+```
+
+（上の数字と URL は形の例で、実際の値ではない。）
+
+| 項目 | 必須 | 規則 |
+| --- | --- | --- |
+| ticker | ○ | ネオクラウドの 23 社のどれか（未上場は `LAMBDA` などのスラッグ） |
+| item | ○ | `contracted_power_mw` 契約済みの電力容量 / `energized_mw` 稼働（通電・課金開始）している容量 / `backlog_usd` 受注残・RPO / `revenue_guidance` 売上ガイダンス / `capex_guidance` 設備投資ガイダンス / `financing` 社債・融資・増資 / `key_contracts` 顧客との契約 |
+| value | ○ | 書類に書いてある数字そのもの。**書いていなければ `null`**。推定・按分・換算した値は入れない |
+| unit | ○ | 電力の 2 項目は `MW`（GW は MW に直す）。それ以外は `USD` か `JPY` の**全額**（例 55.6 億ドル → `5560000000`） |
+| low / high | − | ガイダンスが幅のとき。このとき value は `null` でよい |
+| period | ガイダンスは○ | ガイダンスの対象期間（`FY2026`、`Q4 2026`、`2027年3月期`） |
+| as_of | ○ | 数字の時点（四半期末、契約・調達の発表日、ガイダンスを出した日）。published_at より後にはできない |
+| detail | 一部○ | `financing` は `instrument`（社債・タームローン・増資など）が必須、`rate`・`maturity`・`lender` は任意。`key_contracts` は `counterparty`（名前が出ていなければ `非開示`）が必須、`term`・`mw` は任意 |
+| source_url | ○ | 数字が載っている書類そのもの（10-Q・8-K の本文や Ex.99.1、決算短信・説明資料の PDF、未上場は会社の公式発表）。転載ページは不可 |
+| published_at | ○ | その書類の提出日・公表日 |
+| note | − | 定義の違い（「契約済み」が LOI を含むかなど）を一文で |
+
+- 次の書き方は、取り込み時にスキーマの形へ読み替える（名前の付け替えと単位の正確な倍率だけで、数字は推測しない）。
+  `metric` → `item`、`value_high` / `value_low` → `high` / `low`（このとき value は幅の下限として low に移る）、
+  `USD bn`・`USD m`・`USD thousand`・`億円`・`百万円`・`千円`・`GW` → USD / JPY の全額・MW、ガイダンスで `as_of` が対象期間の末日のもの →
+  `period: "〜その日"` と、公表日を `as_of` にしたもの。
+- 転載・まとめサイト（menafn・finviz・placera・finanznachrichten・stockhub など）の URL は不採用。書き出しにある
+  SEC の書類（8-K の Ex.99.1、10-Q）か、会社 IR・配信元（GlobeNewswire 等）の URL を使う。
+- 取り込みの前に `npm run neocloud:sources -- <返答.json> --out <確認済み.json>` で、各行の数字がその書類に
+  印字されているかを確かめる。見つからない行は、同じ日の EDGAR の書類で見つかればその書類に置き換え、
+  どこにもなければ外して `-dropped.json` に残し、チャットに返す。
+- `estimated` などの推定の印が付いた行は不採用。
+- 同じ会社・項目・時点・書類のものは「already recorded」で不採用（再送しても重ならない）。
+- 開示がない項目は `value: null` の行で返してよい（その書類を見たが書いていない、という記録になる）。
+- 書類で見つけた事業の出来事（新しい契約・稼働の遅れなど）は、数字にならないものを `signals` で返す。
+  `tickers` にティッカー、`source_url` に書類、`observed_at` に書類の日付を入れると、`/api/neocloud/digest` の要約に出る。
+
 ## 切替日（別集団としての集計）
 
 data/operation-eras.json に、取り込みが初回に自動で書く。以後は動かさない。

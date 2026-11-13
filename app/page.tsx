@@ -9,6 +9,8 @@ import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
 import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes, themesIndexBody } from "@/lib/themes";
 import { ThemeCards } from "./components/theme-cards";
+import { NeocloudSummary } from "./components/neocloud-summary";
+import { digestFreeBody, neocloudCompanies, nextReporters, powerTotals } from "@/lib/neocloud";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +31,36 @@ export default async function Home() {
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
   const cur = portfolio?.current ?? null;
+  const ncCompanies = neocloudCompanies(themes);
+  const ncTotals = rec ? powerTotals(ncCompanies, rec.neocloud) : null;
+  const ncDigest = rec
+    ? digestFreeBody(
+        { themes, metrics: rec.neocloud, filings: rec.neocloudFilings, signals: rec.signals, today: asOf },
+        "",
+      )
+    : null;
 
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
+        {/* Neocloud — first: the most-read article series, kept as numbers from the filings */}
+        {rec && ncTotals && ncDigest && ncCompanies.length > 0 && (
+          <NeocloudSummary
+            markets={[
+              { market: "US", theme: "neocloud-us", title: "US neocloud", ...ncTotals.US },
+              { market: "JP", theme: "neocloud-jp", title: "Japan neocloud", ...ncTotals.JP },
+            ]}
+            disclosures={{
+              count: ncDigest.disclosure_count,
+              companies: ncDigest.company_count,
+              from: ncDigest.window.from,
+              to: ncDigest.window.to,
+            }}
+            nextReporters={nextReporters(ncCompanies, rec, asOf, 3)}
+            pricePerCall={PER_CALL_PRICE.usdc}
+          />
+        )}
+
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} />
 
         {/* Themes — first: the stock lists the most-read articles were written around */}
@@ -281,6 +309,9 @@ export default async function Home() {
                   ["scoreboard_get", "Physical-AI hit / partial / miss tally, overall and per article."],
                   ["signal_get", "Directional signals by ticker / theme (paid x402 testnet twin)."],
                   ["solana_stock_get", "A tokenized stock on Solana — mints, next earnings, conditions, per-call URL."],
+                  ["neocloud_theme", "The neocloud theme (US 18 / JP 5): next earnings and each company's contracted and energized MW."],
+                  ["neocloud_company", "One neocloud company's latest disclosed numbers, each with its filing."],
+                  ["neocloud_digest", "Neocloud companies with a filing in the last 7 days."],
                   ["themes_list", "Every theme (neocloud, physical AI, sector themes, weekly) and its upcoming events."],
                   ["theme_get", "One theme's members — next earnings, next event, Solana token, per-call URL."],
                 ].map(([name, desc]) => (

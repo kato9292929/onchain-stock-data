@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs";
+import type { NeocloudFilingsFile, NeocloudMetricsFile } from "@/lib/neocloud";
 import path from "node:path";
 import type {
   ExternalCatalyst,
@@ -83,6 +84,8 @@ export interface Records {
   financials?: FinancialsFile | null;
   themes?: ThemesFile | null;
   jpListed?: JpListedFile | null;
+  neocloud?: NeocloudMetricsFile | null;
+  neocloudFilings?: NeocloudFilingsFile | null;
 }
 
 // ── next earnings ─────────────────────────────────────────────────────────

@@ -1,0 +1,17 @@
+{
+  "type": "metrics",
+  "author": "claude-fable-5-1 (chat)",
+  "items": [
+    {
+      "ticker": "WYFI",
+      "metric": "backlog_usd",
+      "value": 729,
+      "unit": "USD m",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.finanznachrichten.de/nachrichten-2026-11/70087389-whitefiber-inc-reports-third-quarter-2026-results-008.htm",
+      "published_at": "2026-11-10",
+      "quote": "remaining performance obligations ... approximately $729.0 million（ASC 606）",
+      "note": "決算発表（PR Newswire 配信の本文）に記載。同日の 8-K Ex.99.1 か Q3 の 10-Q に同じ数字があれば、その sec.gov の URL に置き換える。どちらにもなければ取り込まない"
+    }
+  ]
+}

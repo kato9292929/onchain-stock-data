@@ -1,0 +1,463 @@
+{
+  "type": "metrics",
+  "author": "claude-fable-5-1 (chat)",
+  "items": [
+    {
+      "ticker": "CRWV",
+      "metric": "energized_mw",
+      "value": 1700,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "note": "Active power。会社開示は「over 1.7 GW」（下限値）。四半期中に200MW超を追加、年末目標は1.85GW超"
+    },
+    {
+      "ticker": "CRWV",
+      "metric": "contracted_power_mw",
+      "value": 4600,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "note": "会社開示は「over 4.6 GW」（下限値）。うち国外1.3GW超（インド・インドネシア・スペイン）"
+    },
+    {
+      "ticker": "CRWV",
+      "metric": "backlog_usd",
+      "value": 132.5,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "note": "Revenue backlog（約）"
+    },
+    {
+      "ticker": "CRWV",
+      "metric": "revenue_guidance",
+      "value": 13,
+      "unit": "USD bn",
+      "as_of": "2026-12-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "value_high": 13.3,
+      "note": "FY2026 売上ガイダンス（上方修正）"
+    },
+    {
+      "ticker": "CRWV",
+      "metric": "capex_guidance",
+      "value": 37,
+      "unit": "USD bn",
+      "as_of": "2026-12-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "value_high": 39,
+      "note": "FY2026 設備投資ガイダンス（下限を35→37に引き上げ）"
+    },
+    {
+      "ticker": "CRWV",
+      "metric": "financing",
+      "value": 4.2,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "note": "転換社債（増額発行、約）。利率は非開示"
+    },
+    {
+      "ticker": "CRWV",
+      "metric": "financing",
+      "value": 2.6,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001769628/000176962826000461/coreweave3q26earningspress.htm",
+      "published_at": "2026-11-10",
+      "note": "DDTL 5.5 Facility。利率は非開示"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "contracted_power_mw",
+      "value": 4000,
+      "unit": "MW",
+      "as_of": "2026-11-12",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "会社開示は「more than 4 GW contracted」（下限値）。2026年末の目標は5GW"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "revenue_guidance",
+      "value": 7,
+      "unit": "USD bn",
+      "as_of": "2027-02-28",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "ARR 70億ドル超を2027年2月に見込む（従来は2026年12月に70〜90億ドル）。ARR は2026年9月末で64億ドル"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "capex_guidance",
+      "value": 27,
+      "unit": "USD bn",
+      "as_of": "2026-12-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "2026年 設備投資（約、従来200〜250億ドル）"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "capex_guidance",
+      "value": 40,
+      "unit": "USD bn",
+      "as_of": "2027-12-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "value_high": 45,
+      "note": "2027年 設備投資見通し"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "financing",
+      "value": 5.75,
+      "unit": "USD bn",
+      "as_of": "2026-08-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "転換社債（8月発行）"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "financing",
+      "value": 3.5,
+      "unit": "USD bn",
+      "as_of": "2026-10-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "Citi とのシニア担保付ファシリティ（10月）"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "financing",
+      "value": 0.775,
+      "unit": "USD bn",
+      "as_of": "2026-07-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "資産担保ファシリティ（7月、SOFR+2.50%）"
+    },
+    {
+      "ticker": "NBIS",
+      "metric": "key_contracts",
+      "value": null,
+      "unit": null,
+      "as_of": "2026-11-12",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "Microsoft（ニュージャージー）：契約容量の半分超を2026年末までに引き渡し、残りは2027年第2四半期。契約額は非開示"
+    },
+    {
+      "ticker": "IREN",
+      "metric": "backlog_usd",
+      "value": 20.3,
+      "unit": "USD bn",
+      "as_of": "2026-11-05",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1878848/000187884826000065/irenreportsq1-fy27result.htm",
+      "published_at": "2026-11-05",
+      "note": "Revenue backlog。約3分の2が投資適格の相手方。顧客はNVIDIA・Microsoftほか13社",
+      "replaced_from": "https://globenewswire.com/news-release/2026/11/05/3397020/0/en/iren-reports-q1-fy27-results.html"
+    },
+    {
+      "ticker": "IREN",
+      "metric": "revenue_guidance",
+      "value": 4,
+      "unit": "USD bn",
+      "as_of": "2027-01-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1878848/000187884826000065/irenreportsq1-fy27result.htm",
+      "published_at": "2026-11-05",
+      "note": "AI Cloud ARR 40億ドル超の目標。全量契約・資金手当て済み。時期は2026年末→2027年1月（2月にずれる可能性）",
+      "replaced_from": "https://globenewswire.com/news-release/2026/11/05/3397020/0/en/iren-reports-q1-fy27-results.html"
+    },
+    {
+      "ticker": "IREN",
+      "metric": "contracted_power_mw",
+      "value": 5000,
+      "unit": "MW",
+      "as_of": "2026-11-05",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1878848/000187884826000065/irenreportsq1-fy27result.htm",
+      "published_at": "2026-11-05",
+      "note": "Secured power（系統電力の確保）「more than 5GW」。顧客との契約容量ではない",
+      "replaced_from": "https://globenewswire.com/news-release/2026/11/05/3397020/0/en/iren-reports-q1-fy27-results.html"
+    },
+    {
+      "ticker": "IREN",
+      "metric": "financing",
+      "value": 2.36,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1878848/000187884826000066/iren-20260930.htm",
+      "published_at": "2026-11-05",
+      "note": "ファイナンス・ファシリティからの調達（Q1 FY27）",
+      "replaced_from": "https://globenewswire.com/news-release/2026/11/05/3397020/0/en/iren-reports-q1-fy27-results.html"
+    },
+    {
+      "ticker": "IREN",
+      "metric": "key_contracts",
+      "value": null,
+      "unit": null,
+      "as_of": "2026-11-05",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1878848/000187884826000065/irenreportsq1-fy27result.htm",
+      "published_at": "2026-11-05",
+      "note": "Microsoft 向け Horizon 1 が稼働（GB300 NVL72）。Horizon 2〜4 は建設の最終段階。期末後にフロンティアAIラボと5年契約（IT-MWあたり約2,200万ドル、GPU設備投資の90%前払い）",
+      "replaced_from": "https://globenewswire.com/news-release/2026/11/05/3397020/0/en/iren-reports-q1-fy27-results.html"
+    },
+    {
+      "ticker": "APLD",
+      "metric": "contracted_power_mw",
+      "value": 1410,
+      "unit": "MW",
+      "as_of": "2026-10-07",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1144879/000114487926000057/apldq127earningsrelease.htm",
+      "published_at": "2026-10-07",
+      "note": "5キャンパスのリース済み critical IT（約）",
+      "replaced_from": "https://menafn.com/1111777097/Applied-Digital-Reports-Fiscal-First-Quarter-2027-Results"
+    },
+    {
+      "ticker": "APLD",
+      "metric": "energized_mw",
+      "value": 250,
+      "unit": "MW",
+      "as_of": "2026-10-01",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1144879/000114487926000057/apldq127earningsrelease.htm",
+      "published_at": "2026-10-07",
+      "note": "Polaris Forge 1 の稼働容量（第1棟100MW＋第2棟75MW×2）",
+      "replaced_from": "https://menafn.com/1111777097/Applied-Digital-Reports-Fiscal-First-Quarter-2027-Results"
+    },
+    {
+      "ticker": "APLD",
+      "metric": "backlog_usd",
+      "value": 36,
+      "unit": "USD bn",
+      "as_of": "2026-10-07",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1144879/000114487926000057/apldq127earningsrelease.htm",
+      "published_at": "2026-10-07",
+      "note": "リースの初期期間の契約収入（約）。更新オプションをすべて行使した場合は約860億ドル",
+      "replaced_from": "https://menafn.com/1111777097/Applied-Digital-Reports-Fiscal-First-Quarter-2027-Results"
+    },
+    {
+      "ticker": "APLD",
+      "metric": "financing",
+      "value": 1.59,
+      "unit": "USD bn",
+      "as_of": "2026-08-31",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1144879/000114487926000057/apldq127earningsrelease.htm",
+      "published_at": "2026-10-07",
+      "note": "APLD ComputeCo 3 の 7.000% シニア担保付債（2031年満期）。Polaris Forge 1 第3棟（150MW）の資金",
+      "replaced_from": "https://menafn.com/1111777097/Applied-Digital-Reports-Fiscal-First-Quarter-2027-Results"
+    },
+    {
+      "ticker": "APLD",
+      "metric": "key_contracts",
+      "value": null,
+      "unit": null,
+      "as_of": "2026-10-07",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1144879/000114487926000057/apldq127earningsrelease.htm",
+      "published_at": "2026-10-07",
+      "note": "Delta Forge 2（アラバマ）：投資適格ハイパースケーラーと210MW・15年リース、初期期間の契約収入約52億ドル",
+      "replaced_from": "https://menafn.com/1111777097/Applied-Digital-Reports-Fiscal-First-Quarter-2027-Results"
+    },
+    {
+      "ticker": "CIFR",
+      "metric": "backlog_usd",
+      "value": 9.1,
+      "unit": "USD bn",
+      "as_of": "2026-11-02",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm",
+      "published_at": "2026-11-02",
+      "note": "Barber Lake の契約収入（約）。2期目の10年分（約52億ドル）を含む、計20年"
+    },
+    {
+      "ticker": "CIFR",
+      "metric": "energized_mw",
+      "value": null,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm",
+      "published_at": "2026-11-02",
+      "note": "MWの開示なし。Black Pearl で最初の容量を引き渡し、賃料が発生"
+    },
+    {
+      "ticker": "CIFR",
+      "metric": "financing",
+      "value": 0.85,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001819989/000181998926000047/exh991-q326_earningsxprxvf.htm",
+      "published_at": "2026-11-02",
+      "note": "0.000% 転換社債（2032年満期）"
+    },
+    {
+      "ticker": "WULF",
+      "metric": "energized_mw",
+      "value": 102,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071306/a_wulfearningsreleaseq32026.htm",
+      "published_at": "2026-11-06",
+      "note": "収益を生む critical IT 容量",
+      "replaced_from": "https://menafn.com/1111925373/Terawulf-Reports-Third-Quarter-2026-Results"
+    },
+    {
+      "ticker": "WULF",
+      "metric": "contracted_power_mw",
+      "value": 401,
+      "unit": "MW",
+      "as_of": "2026-11-06",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071306/a_wulfearningsreleaseq32026.htm",
+      "published_at": "2026-11-06",
+      "note": "Justified/Anthropic とのリース分のみ（約401MW critical IT）。全リースの合計は本リリースに記載なし",
+      "replaced_from": "https://menafn.com/1111925373/Terawulf-Reports-Third-Quarter-2026-Results"
+    },
+    {
+      "ticker": "WULF",
+      "metric": "backlog_usd",
+      "value": 19,
+      "unit": "USD bn",
+      "as_of": "2026-11-06",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071306/a_wulfearningsreleaseq32026.htm",
+      "published_at": "2026-11-06",
+      "note": "Justified/Anthropic リースの契約収入（約）",
+      "replaced_from": "https://menafn.com/1111925373/Terawulf-Reports-Third-Quarter-2026-Results"
+    },
+    {
+      "ticker": "WULF",
+      "metric": "key_contracts",
+      "value": null,
+      "unit": null,
+      "as_of": "2026-11-06",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1083301/000162828026071306/a_wulfearningsreleaseq32026.htm",
+      "published_at": "2026-11-06",
+      "note": "CB-4：2026年第4四半期に段階的引き渡しと賃料開始。CB-5：2027年初めから段階的引き渡し",
+      "replaced_from": "https://menafn.com/1111925373/Terawulf-Reports-Third-Quarter-2026-Results"
+    },
+    {
+      "ticker": "CORZ",
+      "metric": "energized_mw",
+      "value": 485,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001839341/000183934126000028/q32026corescientificinc-ea.htm",
+      "published_at": "2026-11-05",
+      "note": "課金中の容量（Q2末は395MW）。年換算のコロケーション売上は7億ドル超"
+    },
+    {
+      "ticker": "HUT",
+      "metric": "backlog_usd",
+      "value": 26.6,
+      "unit": "USD bn",
+      "as_of": "2026-11-04",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1964789/000110465926122347/tm2628741d1_ex99-1.htm",
+      "published_at": "2026-11-04",
+      "note": "AIデータセンターのリースの初期期間の契約額合計（約）",
+      "replaced_from": "https://www.placera.se/pressmeddelanden/hut-8-mining-hut-8-reports-third-quarter-2026-results-20261104"
+    },
+    {
+      "ticker": "HUT",
+      "metric": "key_contracts",
+      "value": null,
+      "unit": null,
+      "as_of": "2026-11-04",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1964789/000110465926122347/tm2628741d1_ex99-1.htm",
+      "published_at": "2026-11-04",
+      "note": "Beacon Point Phase 2：352MW ITのリース、初期期間の契約額約98億ドル（Phase 1 のテナントが倍増）。River Bend：最初のデータホールの引き渡しは2027年第2四半期",
+      "replaced_from": "https://www.placera.se/pressmeddelanden/hut-8-mining-hut-8-reports-third-quarter-2026-results-20261104"
+    },
+    {
+      "ticker": "HUT",
+      "metric": "financing",
+      "value": 1.07,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1964789/000119312526446146/hut-20260930.htm",
+      "published_at": "2026-11-04",
+      "note": "4年のシニア担保付リボルビング（期末の借入なし）",
+      "replaced_from": "https://www.placera.se/pressmeddelanden/hut-8-mining-hut-8-reports-third-quarter-2026-results-20261104"
+    },
+    {
+      "ticker": "HIVE",
+      "metric": "backlog_usd",
+      "value": 0.185,
+      "unit": "USD bn",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1720424/000106299326005856/exhibit99-1.htm",
+      "published_at": "2026-11-10",
+      "note": "GPU Cloud の契約済みARR（約、稼働中の約4,000万ドルを含む）",
+      "replaced_from": "https://finviz.com/news/419724/hive-reports-q2-revenue-of-849-million-with-ai-gpu-revenue-expanding-70-as-dual-engine-model-drives-resilience-with-139-million-in-cash-on-the-balance-sheet"
+    },
+    {
+      "ticker": "HIVE",
+      "metric": "energized_mw",
+      "value": 440,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1720424/000106299326005856/exhibit99-1.htm",
+      "published_at": "2026-11-10",
+      "note": "全社の電力容量（マイニングを含む）。Yguazú の100MWを2026年第4四半期に加え約540MWへ",
+      "replaced_from": "https://finviz.com/news/419724/hive-reports-q2-revenue-of-849-million-with-ai-gpu-revenue-expanding-70-as-dual-engine-model-drives-resilience-with-139-million-in-cash-on-the-balance-sheet"
+    },
+    {
+      "ticker": "HIVE",
+      "metric": "key_contracts",
+      "value": null,
+      "unit": null,
+      "as_of": "2026-11-10",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1720424/000106299326005856/exhibit99-1.htm",
+      "published_at": "2026-11-10",
+      "note": "Bell AI Fabric/Cohere：GB200 NVL72 2,304基、3年で約2.25億ドル。出荷は2026年内の見込み",
+      "replaced_from": "https://finviz.com/news/419724/hive-reports-q2-revenue-of-849-million-with-ai-gpu-revenue-expanding-70-as-dual-engine-model-drives-resilience-with-139-million-in-cash-on-the-balance-sheet"
+    },
+    {
+      "ticker": "HIVE",
+      "metric": "financing",
+      "value": 0.129,
+      "unit": "USD bn",
+      "as_of": "2026-11-10",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1720424/000106299326005856/exhibit99-1.htm",
+      "published_at": "2026-11-10",
+      "note": "GB200 購入資金の借入",
+      "replaced_from": "https://finviz.com/news/419724/hive-reports-q2-revenue-of-849-million-with-ai-gpu-revenue-expanding-70-as-dual-engine-model-drives-resilience-with-139-million-in-cash-on-the-balance-sheet"
+    },
+    {
+      "ticker": "WYFI",
+      "metric": "energized_mw",
+      "value": 40,
+      "unit": "MW",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2042022/000121390026117723/ea0311622-8k_whitefiber.htm",
+      "published_at": "2026-11-10",
+      "note": "NC-1 の契約IT容量40MWがすべて稼働し課金開始（8月予定から遅延）",
+      "replaced_from": "https://www.finanznachrichten.de/nachrichten-2026-11/70087389-whitefiber-inc-reports-third-quarter-2026-results-008.htm"
+    },
+    {
+      "ticker": "WYFI",
+      "metric": "financing",
+      "value": 0.3,
+      "unit": "USD bn",
+      "as_of": "2026-11-10",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2042022/000121390026117723/ea0311622-8k_whitefiber.htm",
+      "published_at": "2026-11-10",
+      "note": "NC-1 担保付ファシリティ（5年、Term SOFR+600bp、SOFR下限2.00%）",
+      "replaced_from": "https://www.finanznachrichten.de/nachrichten-2026-11/70087389-whitefiber-inc-reports-third-quarter-2026-results-008.htm"
+    },
+    {
+      "ticker": "WYFI",
+      "metric": "financing",
+      "value": 0.31,
+      "unit": "USD bn",
+      "as_of": "2026-11-10",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2042022/000121390026117728/ea0310427-10q_whitefiber.htm",
+      "published_at": "2026-11-10",
+      "note": "5% 転換社債（2032年満期）",
+      "replaced_from": "https://www.finanznachrichten.de/nachrichten-2026-11/70087389-whitefiber-inc-reports-third-quarter-2026-results-008.htm"
+    }
+  ]
+}
