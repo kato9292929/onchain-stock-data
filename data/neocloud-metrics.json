@@ -1,6 +1,6 @@
 {
   "note": "Neocloud business numbers, one row per number a document discloses (company · item · value · unit · as_of · source_url · published_at). Written by scripts/import-from-chat.mjs (type metrics). No estimates: a number the document does not state is value null, or no row. Money is the full amount in USD or JPY; power is MW.",
-  "updated_at": "2026-11-13T09:26:27.260Z",
+  "updated_at": "2026-11-13T13:09:54.513Z",
   "metrics": [
     {
       "id": "nm_3bde3715e4",
@@ -660,6 +660,20 @@
       "published_at": "2026-11-12",
       "note": "2027年の売上ガイダンス（暫定）170〜200億ドル。前回の返答で漏れていた行",
       "added_at": "2026-11-13T09:26:27.260Z",
+      "added_by": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "nm_ba3fa6e485",
+      "ticker": "WYFI",
+      "market": "US",
+      "item": "backlog_usd",
+      "value": 728982000,
+      "unit": "USD",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0002042022/000121390026117728/ea0310427-10q_whitefiber.htm",
+      "published_at": "2026-11-10",
+      "note": "Q3 2026 の 10-Q に載っている ASC 606 の残存履行義務。将来のリース支払いは含まない",
+      "added_at": "2026-11-13T13:09:54.513Z",
       "added_by": "claude-fable-5-1 (chat)"
     }
   ]

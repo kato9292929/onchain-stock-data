@@ -1,0 +1,17 @@
+{
+  "type": "metrics",
+  "author": "claude-fable-5-1 (chat)",
+  "items": [
+    {
+      "ticker": "WYFI",
+      "metric": "backlog_usd",
+      "value": 728982,
+      "unit": "USD thousand",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0002042022/000121390026117728/ea0310427-10q_whitefiber.htm",
+      "published_at": "2026-11-10",
+      "quote": "Total remaining performance obligations ... 728,982（Note 3 REVENUE、Remaining performance obligation の表、単位：千ドル）",
+      "note": "Q3 2026 の 10-Q に載っている ASC 606 の残存履行義務。将来のリース支払いは含まない"
+    }
+  ]
+}
