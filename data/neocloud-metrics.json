@@ -1,6 +1,6 @@
 {
   "note": "Neocloud business numbers, one row per number a document discloses (company · item · value · unit · as_of · source_url · published_at). Written by scripts/import-from-chat.mjs (type metrics). No estimates: a number the document does not state is value null, or no row. Money is the full amount in USD or JPY; power is MW.",
-  "updated_at": "2026-11-12T18:30:55.312Z",
+  "updated_at": "2026-11-13T09:26:27.260Z",
   "metrics": [
     {
       "id": "nm_3bde3715e4",
@@ -614,6 +614,52 @@
       "published_at": "2026-11-10",
       "note": "5% 転換社債（2032年満期）",
       "added_at": "2026-11-12T18:30:55.312Z",
+      "added_by": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "nm_804bfe58c5",
+      "ticker": "IREN",
+      "market": "US",
+      "item": "capex_guidance",
+      "value": 15000000000,
+      "unit": "USD",
+      "as_of": "2026-09-30",
+      "period": "FY27（2026-09-30 以降の残り）",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1878848/000187884826000065/irenreportsq1-fy27result.htm",
+      "published_at": "2026-11-05",
+      "note": "FY27 の残りの設備投資 150億ドル（2026-09-30 起点）。出典は IREN の IR サイト（会社公式）。同日の SEC 6-K の Ex.99.1 にも同文があれば、その URL に置き換えてよい",
+      "added_at": "2026-11-13T09:26:27.260Z",
+      "added_by": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "nm_bdd40e79d9",
+      "ticker": "CORZ",
+      "market": "US",
+      "item": "financing",
+      "value": 4275250000,
+      "unit": "USD",
+      "as_of": "2026-09-30",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001839341/000183934126000028/q32026corescientificinc-ea.htm",
+      "published_at": "2026-11-05",
+      "note": "1〜9月の借入による調達額。書類上は千ドル単位で 4,275,250。前回は 4.275 USD bn と書いたため照合で一致しなかった",
+      "added_at": "2026-11-13T09:26:27.260Z",
+      "added_by": "claude-fable-5-1 (chat)"
+    },
+    {
+      "id": "nm_302cb7448d",
+      "ticker": "NBIS",
+      "market": "US",
+      "item": "revenue_guidance",
+      "value": null,
+      "unit": "USD",
+      "as_of": "2026-11-12",
+      "period": "〜2027-12-31",
+      "low": 17000000000,
+      "high": 20000000000,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001513845/000110465926126008/tm2629571d1_ex99-2.htm",
+      "published_at": "2026-11-12",
+      "note": "2027年の売上ガイダンス（暫定）170〜200億ドル。前回の返答で漏れていた行",
+      "added_at": "2026-11-13T09:26:27.260Z",
       "added_by": "claude-fable-5-1 (chat)"
     }
   ]
