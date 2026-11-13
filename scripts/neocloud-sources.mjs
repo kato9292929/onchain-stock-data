@@ -59,29 +59,41 @@ const commaRe = (v) => {
 /** Not preceded by a digit, comma or point: 7 must not match the 7 of "38.7". */
 const NB = "(?<![\\d.,])";
 
+/** The unit word ends here; a footnote number may follow ("$15 billion11"). */
+const END = "(?![a-z])";
+
 /** The ways a filing prints a raw chat number (value in the chat's own unit). Pure. */
 export function numberPatterns(value, unit) {
   const u = String(unit ?? "");
   if (typeof value !== "number") return [];
-  if (u === "MW") return [new RegExp(`${NB}${commaRe(value)}\\s*(?:MWs?|megawatts?)\\b`, "i"), new RegExp(`${NB}${numRe(value / 1000)}\\s*(?:GWs?|gigawatts?)\\b`, "i")];
-  if (u === "GW") return [new RegExp(`${NB}${numRe(value)}\\s*(?:GWs?|gigawatts?)\\b`, "i")];
+  if (u === "MW") return [new RegExp(`${NB}${commaRe(value)}\\s*(?:MWs?|megawatts?)${END}`, "i"), new RegExp(`${NB}${numRe(value / 1000)}\\s*(?:GWs?|gigawatts?)${END}`, "i")];
+  if (u === "GW") return [new RegExp(`${NB}${numRe(value)}\\s*(?:GWs?|gigawatts?)${END}`, "i")];
   if (/bn|billion/i.test(u)) {
     return [
-      new RegExp(`${NB}${numRe(value)}\\s*(?:billion|bn|B)\\b`, "i"),
-      new RegExp(`${NB}${commaRe(value * 1000)}\\s*(?:million|mn|M)\\b`, "i"),
+      new RegExp(`${NB}${numRe(value)}\\s*(?:billion|bn|B)${END}`, "i"),
+      new RegExp(`${NB}${commaRe(value * 1000)}\\s*(?:million|mn|M)${END}`, "i"),
       new RegExp(`(?<![\\d.,])${commaRe(value * 1e6)}(?![\\d,])`),
     ];
   }
   if (/\bm\b|million|mn/i.test(u)) {
-    return [new RegExp(`${NB}${numRe(value)}\\s*(?:million|mn|M)\\b`, "i"), new RegExp(`(?<![\\d.,])${commaRe(value * 1000)}(?![\\d,])`)];
+    return [new RegExp(`${NB}${numRe(value)}\\s*(?:million|mn|M)${END}`, "i"), new RegExp(`(?<![\\d.,])${commaRe(value * 1000)}(?![\\d,])`)];
   }
   if (u === "USD") return [new RegExp(`(?<![\\d.,])${commaRe(value)}(?![\\d,])`)];
   return [];
 }
 
-export function findNumber(text, value, unit) {
+/** A range as filings print it: "$17-20B", "13.0 billion to 13.3 billion", "$40–45 billion". Pure. */
+export function rangePatterns(low, high, unit) {
+  const u = String(unit ?? "");
+  if (typeof low !== "number" || typeof high !== "number") return [];
+  const word = /bn|billion/i.test(u) ? "(?:billion|bn|B)" : /\bm\b|million|mn/i.test(u) ? "(?:million|mn|M)" : u === "MW" ? "(?:MWs?|megawatts?)" : null;
+  if (!word) return [];
+  return [new RegExp(`${NB}${numRe(low)}\\s*(?:${word}\\s*)?(?:-|–|—|to)\\s*\\$?\\s*${numRe(high)}\\s*${word}${END}`, "i")];
+}
+
+export function findNumber(text, value, unit, high = null) {
   if (!text) return null;
-  for (const re of numberPatterns(value, unit)) {
+  for (const re of [...rangePatterns(value, high, unit), ...numberPatterns(value, unit)]) {
     const m = re.exec(text);
     if (m) return text.slice(Math.max(0, m.index - 80), m.index + m[0].length + 40).replace(/\s+/g, " ");
   }
@@ -135,7 +147,7 @@ async function main() {
     const ticker = String(raw.ticker).toUpperCase();
     const item = raw.metric ?? raw.item;
     if (!isReprint(raw.source_url)) {
-      const snip = findNumber(await docText(raw.source_url), value, raw.unit);
+      const snip = findNumber(await docText(raw.source_url), value, raw.unit, raw.value_high ?? raw.high ?? null);
       if (snip) {
         report.push({ i, ticker, item, result: "found in the cited document", snip });
         continue;
@@ -144,7 +156,7 @@ async function main() {
     let hit = null;
     if (NEOCLOUD_CIKS[ticker]) {
       for (const d of await sameDayDocs(ticker, raw.published_at)) {
-        const snip = findNumber(await docText(d.url), value, raw.unit);
+        const snip = findNumber(await docText(d.url), value, raw.unit, raw.value_high ?? raw.high ?? null);
         if (snip) {
           hit = { ...d, snip };
           break;
