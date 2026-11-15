@@ -10,8 +10,10 @@ import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes, themesIndexBody } from "@/lib/themes";
 import { ThemeCards } from "./components/theme-cards";
 import { NeocloudSummary, SiteIntro } from "./components/neocloud-summary";
+import { LangToggle } from "./components/lang-toggle";
 import { neocloudCompanies } from "@/lib/neocloud";
 import { coverageStats, neocloudFrontRows } from "@/lib/neocloud-page";
+import { getLang } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -36,12 +38,17 @@ export default async function Home() {
   const ncThemes = (themes?.themes ?? []).filter((t) => t.id === "neocloud-us" || t.id === "neocloud-jp");
   const ncRows = rec ? neocloudFrontRows(ncThemes, rec, asOf, 6) : [];
   const stats = rec && themes ? coverageStats(themes.themes, rec, asOf) : null;
+  const lang = await getLang();
 
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
+        <div className="mb-3 flex justify-end">
+          <LangToggle lang={lang} />
+        </div>
+
         {/* 1. What OSD is, and how much is on record */}
-        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} />}
+        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} lang={lang} />}
 
         {/* 2. Neocloud: the most-read article series, one row per company */}
         {ncRows.length > 0 && (
@@ -50,6 +57,7 @@ export default async function Home() {
             usCount={ncCompanies.filter((c) => c.market === "US").length}
             jpCount={ncCompanies.filter((c) => c.market === "JP").length}
             pricePerCall={PER_CALL_PRICE.usdc}
+            lang={lang}
           />
         )}
 

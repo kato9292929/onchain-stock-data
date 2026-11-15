@@ -50,15 +50,22 @@ test("committed: the earlier editions' 40 neocloud conditions each have one of t
 test("committed: the cards render every earlier condition with its state label", () => {
   for (const id of ["neocloud-us", "neocloud-jp"]) {
     const v = neocloudThemeView(theme(id), rec, TODAY);
-    const html = v.cards.map((c) => renderToStaticMarkup(React.createElement(NeocloudCompanyCard, { c }))).join("");
+    const html = v.cards.map((c) => renderToStaticMarkup(React.createElement(NeocloudCompanyCard, { c, lang: "ja" }))).join("");
     const shown = (html.match(/data-state="(judged|before|awaiting|replaced)"/g) ?? []).length;
     const current = v.cards.reduce((n, c) => n + (c.member ? c.current.length : 0), 0);
     assert.equal(shown, v.earlier_total + current, `${id}: one state badge per earlier and current condition`);
     const top = renderToStaticMarkup(
-      React.createElement(NeocloudLineageSummary, { chain: lineageChain(theme(id)), total: v.earlier_total, counts: v.earlier_counts, byEdition: v.by_edition }),
+      React.createElement(NeocloudLineageSummary, { chain: lineageChain(theme(id)), total: v.earlier_total, counts: v.earlier_counts, byEdition: v.by_edition, lang: "ja" }),
     );
     assert.match(top, /記事の版/);
-    assert.match(top, /Article editions/);
+    assert.doesNotMatch(top, /Article editions/, "one language at a time");
+    const topEn = renderToStaticMarkup(
+      React.createElement(NeocloudLineageSummary, { chain: lineageChain(theme(id)), total: v.earlier_total, counts: v.earlier_counts, byEdition: v.by_edition, lang: "en" }),
+    );
+    assert.match(topEn, /Article editions/);
+    assert.doesNotMatch(topEn, /記事の版|判定済み|期日前/, "no Japanese labels in English");
+    const cardEn = renderToStaticMarkup(React.createElement(NeocloudCompanyCard, { c: v.cards[0], lang: "en" }));
+    assert.doesNotMatch(cardEn, /今の条件|判定予定|記事上の評価|次の決算/);
     for (const a of theme(id).lineage) assert.ok(top.includes(a.url), `lineage link ${a.url}`);
   }
 });
@@ -83,10 +90,14 @@ test("front page: up to six neocloud companies, the next to report first; a comp
 
   // A row with nothing recorded and no date, beside one with both.
   const bare = { ticker: "9999", company: "Bare Co", market: "JP", next_earnings: { date: null, kind: "unknown", source_url: null }, condition: null, metric: null };
-  const html = renderToStaticMarkup(React.createElement(NeocloudSummary, { rows: [...rows, bare], usCount: 18, jpCount: 5, pricePerCall: 0.001 }));
+  const html = renderToStaticMarkup(React.createElement(NeocloudSummary, { rows: [...rows, bare], usCount: 18, jpCount: 5, pricePerCall: 0.001, lang: "en" }));
   assert.match(html, /Neocloud — 18 US · 5 Japan/);
   assert.match(html, /0\.001 USDC per call/);
-  assert.match(html, /1 回 0\.001 USDC/, "Japanese beside the English");
+  assert.doesNotMatch(html, /ネオクラウド|確定|推定|期日|一覧/, "English only");
+  const ja = renderToStaticMarkup(React.createElement(NeocloudSummary, { rows: [...rows, bare], usCount: 18, jpCount: 5, pricePerCall: 0.001, lang: "ja" }));
+  assert.match(ja, /ネオクラウド — 米国 18社・日本 5社/);
+  assert.match(ja, /1 回 0\.001 USDC/);
+  assert.doesNotMatch(ja, /per call|confirmed|estimated|All 18 US/, "Japanese only");
   for (const href of ["/themes/neocloud-us", "/themes/neocloud-jp", "/api/neocloud/digest"]) assert.ok(html.includes(`href="${href}"`), href);
   const rowHtml = (t) => html.match(new RegExp(`<li[^>]*data-row="${t}"[\\s\\S]*?</li>`))?.[0] ?? "";
   for (const r of [...rows, bare].filter((x) => !x.metric)) {
@@ -101,10 +112,22 @@ test("front page: up to six neocloud companies, the next to report first; a comp
 test("front page: the service is described first, with what is on record", () => {
   const st = coverageStats(rec.themes.themes, rec, TODAY);
   assert.ok(st.companies > 0 && st.active_conditions > 0 && st.judged_conditions > 0);
-  const html = renderToStaticMarkup(React.createElement(SiteIntro, { companies: st.companies, active: st.active_conditions, judged: st.judged_conditions }));
+  const html = renderToStaticMarkup(React.createElement(SiteIntro, { companies: st.companies, active: st.active_conditions, judged: st.judged_conditions, lang: "en" }));
   assert.match(html, /<h1/);
   assert.match(html, /scored HIT \/ PARTIAL \/ MISS/);
   assert.match(html, /companies covered/);
-  assert.match(html, /収録銘柄/, "Japanese beside the English");
-  assert.match(html, /会社自身の開示/);
+  assert.doesNotMatch(html, /収録銘柄|会社自身の開示/, "English only");
+  const ja = renderToStaticMarkup(React.createElement(SiteIntro, { companies: st.companies, active: st.active_conditions, judged: st.judged_conditions, lang: "ja" }));
+  assert.match(ja, /Claude が運用する株式リサーチ/);
+  assert.match(ja, /収録銘柄/);
+  assert.doesNotMatch(ja, /companies covered|Free to read/, "Japanese only");
+});
+
+test("language: the cookie wins, else the browser's first language, else English", async () => {
+  const { langFrom } = await import("../../lib/i18n.ts");
+  assert.equal(langFrom("ja", "en-US,en;q=0.9"), "ja");
+  assert.equal(langFrom("en", "ja,en;q=0.8"), "en");
+  assert.equal(langFrom(undefined, "ja-JP,ja;q=0.9,en;q=0.8"), "ja");
+  assert.equal(langFrom(undefined, "en-US,ja;q=0.5"), "en");
+  assert.equal(langFrom("fr", null), "en");
 });
