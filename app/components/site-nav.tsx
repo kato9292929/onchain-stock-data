@@ -10,9 +10,7 @@ const NAV = [
   // The logo disc is Home too, so the word is dropped on phones to make room.
   { href: "/", label: "Home", ja: "ホーム", wideOnly: true },
   { href: "/solana-stocks", label: "Stocks", ja: "銘柄" },
-  { href: "/themes", label: "Themes", ja: "テーマ" },
-  { href: "/catalysts", label: "Catalysts", ja: "カタリスト" },
-  { href: "/portfolio", label: "Selection", ja: "選定" },
+  { href: "/selection", label: "Selection", ja: "選定" },
 ];
 
 const SHADOW = "0 4px 14px rgba(0,0,0,0.16)";

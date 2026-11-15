@@ -66,20 +66,20 @@ export function LandingHero({
           </>
         )}
 
-        {/* First view: the themes are the front door; the token list hangs off each theme. */}
+        {/* First view: the stocks are the front door. */}
         <Link
-          href="/themes"
+          href="/solana-stocks"
           className="font-inter mt-6 inline-flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/90 px-5 py-3 shadow-sm backdrop-blur-sm transition-all hover:border-slate-300 hover:no-underline!"
         >
           <span className="flex flex-col">
             <span className="font-outfit text-[26px] font-semibold leading-none tabular-nums text-[#0a1b33]">
-              {themeCount} themes
+              {solanaCount.toLocaleString()} stocks
             </span>
             <span className="mt-1 text-[12px] font-semibold text-slate-500">
-              neocloud · physical AI · data centers · power · weekly picks
+              conditions · verdicts · filings — per call
             </span>
             <span className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-slate-400">
-              <SolanaMark className="h-2.5 w-auto" title={null} /> {solanaCount.toLocaleString()} tokenized stocks on Solana
+              <SolanaMark className="h-2.5 w-auto" title={null} /> tokenized on Solana
             </span>
           </span>
           <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#0a152d] px-4 py-2 text-[12px] font-semibold text-white">
@@ -96,15 +96,6 @@ export function LandingHero({
           <span className="text-slate-400">· no SOL needed</span>
         </Link>
 
-        <Link href="/catalysts">
-          <motion.span
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="font-inter mt-4 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-6 py-3 text-[13px] font-semibold text-[#0a1b33] shadow-sm"
-          >
-            View catalysts <ChevronRight className="h-4 w-4" />
-          </motion.span>
-        </Link>
       </motion.div>
 
       {/* floating bottom navbar */}
@@ -125,20 +116,8 @@ export function LandingHero({
             Stocks
           </Link>
           <Link
-            href="/themes"
+            href="/selection"
             className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
-          >
-            Themes
-          </Link>
-          <Link
-            href="/catalysts"
-            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
-          >
-            Catalysts
-          </Link>
-          <Link
-            href="/portfolio"
-            className="hidden px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:inline sm:px-4"
           >
             Selection
           </Link>
