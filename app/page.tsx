@@ -1,40 +1,45 @@
 import Link from "next/link";
-import { readExternalCatalysts } from "@/lib/external-catalysts";
-import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { LandingHero } from "./components/landing-hero";
-import { RailMarquee } from "./components/rail-marquee";
 import { SolanaMark } from "./components/solana-mark";
 import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
 import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes, themesIndexBody } from "@/lib/themes";
-import { ThemeCards, ThemesOverall } from "./components/theme-cards";
-import { NeocloudSummary, SiteIntro } from "./components/neocloud-summary";
+import { ThemeCards } from "./components/theme-cards";
+import { LedgerCards } from "./components/ledger-cards";
+import { frontLedger } from "@/lib/front-ledger";
 import { LangToggle } from "./components/lang-toggle";
-import { neocloudCompanies } from "@/lib/neocloud";
-import { coverageStats, neocloudFrontRows } from "@/lib/neocloud-page";
 import { getLang, pick } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
+
+function SectionHead({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
+  return (
+    <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+      <div>
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{eyebrow}</div>
+        <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{title}</h2>
+      </div>
+      {children && <span className="flex flex-wrap gap-4">{children}</span>}
+    </div>
+  );
+}
+
+const linkCls = "text-sm font-semibold text-[#0a152d] hover:underline";
+
 
 /**
  * Light, readable landing. Product axis: prediction track record (catalysts) +
  * this week's catalyst-derived selection. No P&L / benchmark tracking.
  */
 export default async function Home() {
-  const [catalysts, solana, themes, rec] = await Promise.all([
-    readExternalCatalysts().catch(() => []),
+  const [solana, themes, rec] = await Promise.all([
     loadSummaries().catch(() => null),
     getThemes(),
     loadRecords().catch(() => null),
   ]);
   const themeIndex = themes && rec ? themesIndexBody(themes, rec, new Date().toISOString().slice(0, 10)) : null;
   const asOf = new Date().toISOString().slice(0, 10);
-  const board = buildScoreboard(catalysts, asOf);
-  const o = board.overall;
-  const ncCompanies = neocloudCompanies(themes);
-  const ncThemes = (themes?.themes ?? []).filter((t) => t.id === "neocloud-us" || t.id === "neocloud-jp");
-  const ncRows = rec ? neocloudFrontRows(ncThemes, rec, asOf, 6) : [];
-  const stats = rec && themes ? coverageStats(themes.themes, rec, asOf) : null;
+  const ledger = rec && themes ? frontLedger(themes.themes, rec, asOf) : null;
   const lang = await getLang();
 
   return (
@@ -46,117 +51,98 @@ export default async function Home() {
 
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
 
-        {/* Themes — first: the stock lists the most-read articles were written around */}
-        {themeIndex && (
-          <section className="mt-16">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                  {pick(lang, `Themes · ${THEME_CALL_PRICE.usdc} USDC per call`, `テーマ · 1 回 ${THEME_CALL_PRICE.usdc} USDC`)}
+        {ledger && (
+          <>
+            {/* 1. What the product does, and the whole record — one panel */}
+            <section className="mt-16">
+              <SectionHead
+                eyebrow={pick(lang, "How it works", "仕組み")}
+                title={pick(lang, "A dated, numeric condition per stock. The filing decides.", "銘柄ごとに、期日と数値の条件。当たり外れは決算書類で決まる")}
+              />
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <ol className="grid gap-4 text-[13px] text-slate-600 sm:grid-cols-3">
+                  {[
+                    [pick(lang, "Condition", "条件"), pick(lang, "A number and a threshold the company will disclose — e.g. capacity ≥ 40 MW.", "会社が開示する数字と基準。例：容量 40 MW 以上。")],
+                    [pick(lang, "Deadline", "期日"), pick(lang, "The earnings date the number comes out on.", "その数字が出る決算日。")],
+                    [pick(lang, "Verdict", "判定"), pick(lang, "HIT / PARTIAL / MISS against the filing, with its URL.", "決算書類で HIT / PARTIAL / MISS。書類の URL 付き。")],
+                  ].map(([k, v], i) => (
+                    <li key={k} className="flex gap-3">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0a152d] text-[11px] font-semibold text-white">{i + 1}</span>
+                      <span>
+                        <span className="font-semibold text-[#0a1b33]">{k}</span>
+                        <br />
+                        {v}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+                <div className="mt-6 flex items-baseline justify-between border-t border-slate-100 pt-4">
+                  <span className="font-outfit text-[#0a1b33]">{pick(lang, "Record so far", "これまでの記録")}</span>
+                  <span className="text-xs text-slate-400">
+                    {pick(lang, `${ledger.companies} companies · ${ledger.judged} judged`, `${ledger.companies}社 · 判定済み ${ledger.judged}件`)}
+                  </span>
                 </div>
-                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{pick(lang, "Themes", "テーマ")}</h2>
+                <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+                  {(
+                    [
+                      [pick(lang, "Hit rate", "的中率"), ledger.hit_rate == null ? "—" : `${(ledger.hit_rate * 100).toFixed(0)}%`, true],
+                      ["HIT", ledger.counts.hit, false],
+                      ["PARTIAL", ledger.counts.partial, false],
+                      ["MISS", ledger.counts.miss, false],
+                      [pick(lang, "Pending", "判定待ち"), ledger.active, false],
+                    ] as Array<[string, string | number, boolean]>
+                  ).map(([label, value, accent]) => (
+                    <div key={label} className="rounded-xl border border-slate-100 bg-slate-50 p-2 text-center">
+                      <div className={`text-lg font-semibold tabular-nums ${accent ? "text-[#0a1b33]" : "text-slate-700"}`}>{value}</div>
+                      <div className="text-[10px] uppercase tracking-wide text-slate-400">{label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <span className="flex gap-4">
-                <Link href="/themes" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                  {pick(lang, "All themes →", "テーマ一覧 →")}
-                </Link>
-                {solana && (
-                  <Link href="/solana-stocks" className="inline-flex items-center gap-1 text-sm font-semibold text-[#0a152d] hover:underline">
-                    <SolanaMark className="h-3 w-auto" title={null} />{" "}
-                    {pick(lang, `${solana.rows.length.toLocaleString()} tokenized stocks →`, `トークン化株 ${solana.rows.length.toLocaleString()} →`)}
+            </section>
+
+            {/* 2. Judged — the record, one shape per company */}
+            {ledger.recent.length > 0 && (
+              <section className="mt-16">
+                <SectionHead eyebrow={pick(lang, "Track record", "実績")} title={pick(lang, "Recently judged", "最近の判定")}>
+                  <Link href="/catalysts" className={linkCls}>
+                    {pick(lang, "All verdicts →", "判定の一覧 →")}
                   </Link>
-                )}
-              </span>
-            </div>
-            <ThemesOverall themes={themeIndex.themes} lang={lang} />
-            <div className="mt-4">
-              <ThemeCards themes={[...themeIndex.selections, ...themeIndex.themes]} lang={lang} />
-            </div>
-          </section>
+                </SectionHead>
+                <LedgerCards items={ledger.recent} lang={lang} />
+              </section>
+            )}
+
+            {/* 3. Pending — the same shape */}
+            {ledger.upcoming.length > 0 && (
+              <section className="mt-16">
+                <SectionHead eyebrow={pick(lang, "Pending", "判定待ち")} title={pick(lang, "Coming up", "これから判定")}>
+                  {solana && (
+                    <Link href="/solana-stocks" className={`inline-flex items-center gap-1 ${linkCls}`}>
+                      <SolanaMark className="h-3 w-auto" title={null} />{" "}
+                      {pick(lang, `${solana.rows.length.toLocaleString()} tokenized stocks →`, `トークン化株 ${solana.rows.length.toLocaleString()} →`)}
+                    </Link>
+                  )}
+                </SectionHead>
+                <LedgerCards items={ledger.upcoming} lang={lang} />
+              </section>
+            )}
+          </>
         )}
 
-        <div className="mt-10">
-          <RailMarquee />
-        </div>
-
-        {/* Catalysts — the track record */}
-        <section className="mt-16">
-          <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                Track record
-              </div>
-              <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Catalysts</h2>
-            </div>
-            <span className="flex gap-4">
-              <Link href="/catalysts" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                Sectors →
+        {/* 4. Themes — entry points; only those with something to judge */}
+        {themeIndex && (
+          <section className="mt-16">
+            <SectionHead
+              eyebrow={pick(lang, `Themes · ${THEME_CALL_PRICE.usdc} USDC per call`, `テーマ · 1 回 ${THEME_CALL_PRICE.usdc} USDC`)}
+              title={pick(lang, "Browse by theme", "テーマから見る")}
+            >
+              <Link href="/themes" className={linkCls}>
+                {pick(lang, `All ${themeIndex.themes.length + themeIndex.selections.length} themes →`, `全 ${themeIndex.themes.length + themeIndex.selections.length} テーマ →`)}
               </Link>
-              <Link href="/catalysts/physical-ai" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                Physical AI →
-              </Link>
-            </span>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-baseline justify-between">
-              <span className="font-outfit text-[#0a1b33]">Overall</span>
-              <span className="text-xs text-slate-400">{o.total} conditions</span>
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
-              {[
-                ["Hit rate", o.hit_rate == null ? "—" : `${(o.hit_rate * 100).toFixed(0)}%`, true],
-                ["HIT", o.counts.hit, false],
-                ["PARTIAL", o.counts.partial, false],
-                ["MISS", o.counts.miss, false],
-                ["N/A", o.counts.na, false],
-                ["Pending", o.counts.pending, false],
-              ].map(([label, value, accent]) => (
-                <div key={label as string} className="rounded-xl border border-slate-100 bg-slate-50 p-2 text-center">
-                  <div className={`text-lg font-semibold tabular-nums ${accent ? "text-[#0a1b33]" : "text-slate-700"}`}>
-                    {value as string | number}
-                  </div>
-                  <div className="text-[10px] uppercase tracking-wide text-slate-400">{label as string}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Physical AI 6 + sectors, as light chips */}
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {board.articles.map((a) => (
-              <Link
-                key={a.article}
-                href={`/catalysts/physical-ai-${a.article}`}
-                className="rounded-2xl border border-slate-200 bg-white p-4 no-underline shadow-sm transition-all hover:border-slate-300 hover:no-underline!"
-              >
-                <div className="text-[11px] text-slate-400">Article {a.article}</div>
-                <div className="font-outfit text-sm font-semibold text-[#0a1b33]">
-                  {ARTICLE_TITLES[a.article] ?? a.title}
-                </div>
-                <div className="mt-2 text-[11px] text-slate-500">
-                  Hit rate{" "}
-                  <span className="font-semibold text-[#0a1b33]">
-                    {a.hit_rate == null ? "—" : `${(a.hit_rate * 100).toFixed(0)}%`}
-                  </span>{" "}
-                  · {a.judged}/{a.total}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Coverage and neocloud — below Catalysts, same section shape */}
-        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} lang={lang} />}
-
-        {ncRows.length > 0 && (
-          <NeocloudSummary
-            rows={ncRows}
-            usCount={ncCompanies.filter((c) => c.market === "US").length}
-            jpCount={ncCompanies.filter((c) => c.market === "JP").length}
-            pricePerCall={PER_CALL_PRICE.usdc}
-            lang={lang}
-          />
+            </SectionHead>
+            <ThemeCards themes={[...themeIndex.selections, ...themeIndex.themes].filter((t) => t.active_catalysts > 0)} lang={lang} />
+          </section>
         )}
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
