@@ -78,6 +78,10 @@ export const REPORT_DOC_TYPES = ["120", "140", "160"];
 export interface EdinetDoc {
   doc_id: string;
   edinet_code: string | null;
+  /** 発行者 EDINET コード: on a 大量保有報告書, the company whose shares are held. */
+  issuer_edinet_code?: string | null;
+  /** EDINET withdrawalStatus "1" = 取下げ (withdrawn). */
+  withdrawn?: boolean;
   sec_code: string | null;
   filer_name: string | null;
   doc_description: string | null;
@@ -91,6 +95,8 @@ export interface EdinetDoc {
 interface RawResult {
   docID?: string;
   edinetCode?: string | null;
+  issuerEdinetCode?: string | null;
+  withdrawalStatus?: string | null;
   secCode?: string | null;
   filerName?: string | null;
   docDescription?: string | null;
@@ -114,10 +120,12 @@ export function secCodeFor(ticker: string): string {
   return t;
 }
 
-function reshape(r: RawResult): EdinetDoc {
+export function reshape(r: RawResult): EdinetDoc {
   return {
     doc_id: r.docID ?? "",
     edinet_code: r.edinetCode ?? null,
+    issuer_edinet_code: r.issuerEdinetCode ?? null,
+    withdrawn: r.withdrawalStatus === "1",
     sec_code: r.secCode ?? null,
     filer_name: r.filerName ?? null,
     doc_description: r.docDescription ?? null,
@@ -572,6 +580,11 @@ export async function dumpReportElements(
 ): Promise<EdinetElementDump> {
   const doc = await getLatestReport(ticker, windowDays);
   if (!doc) return { doc: null, count: 0, elements: [], error: "no report in window" };
+  return dumpDocElements(doc, limit);
+}
+
+/** The same dump for any one EDINET document (e.g. a 大量保有報告書). NEVER throws. */
+export async function dumpDocElements(doc: EdinetDoc, limit = 600): Promise<EdinetElementDump> {
   try {
     const files = await fetchReportZip(doc.doc_id);
     const zipEntries = Object.keys(files);
@@ -708,4 +721,83 @@ async function finCacheSet(
   } catch {
     // best-effort cache; ignore
   }
+}
+
+// ── 大量保有報告書 (large-holding reports) ─────────────────────────────────────
+
+/** 350 大量保有報告書 (a holder crossed 5%), 360 変更報告書 (a ±1pt change, etc.). */
+export const LARGE_HOLDING_DOC_TYPES = ["350", "360"];
+/** Default scan window for the large-holding time series. */
+export const LARGE_HOLDING_WINDOW_DAYS = 180;
+
+export interface LargeHoldingFiling {
+  doc_id: string;
+  /** initial = 大量保有報告書 (350), change = 変更報告書 (360) */
+  kind: "initial" | "change";
+  doc_type_code: string;
+  /** The filer: who holds the shares. */
+  holder_name: string | null;
+  holder_edinet_code: string | null;
+  submit_datetime: string | null;
+  doc_description: string | null;
+  /** The report itself as PDF via the official EDINET API v2 (an EDINET key is required to fetch it). */
+  pdf_api_url: string;
+}
+
+export interface LargeHoldings {
+  sec_code: string;
+  /** The company's own EDINET code, read off its own filings in the window; null if none was filed there. */
+  issuer_edinet_code: string | null;
+  issuer_name: string | null;
+  /** Newest first. Withdrawn (取下げ) reports are left out. */
+  filings: LargeHoldingFiling[];
+}
+
+/**
+ * The large-holding reports filed on one company, from EDINET document lists.
+ * Pure: the company's EDINET code comes from any document it filed itself
+ * (matched by securities code), then every 350 / 360 whose 発行者 is that code.
+ * Only list fields are used — nothing is read out of the reports' XBRL.
+ */
+export function largeHoldingsFromDocs(docs: EdinetDoc[], ticker: string): LargeHoldings {
+  const sec = secCodeFor(ticker);
+  const own = docs.find((d) => d.sec_code === sec && d.edinet_code);
+  const issuer = own?.edinet_code ?? null;
+  const seen = new Set<string>();
+  const filings: LargeHoldingFiling[] = [];
+  if (issuer) {
+    for (const d of docs) {
+      if (d.withdrawn || !d.doc_id || seen.has(d.doc_id)) continue;
+      if (!d.doc_type_code || !LARGE_HOLDING_DOC_TYPES.includes(d.doc_type_code)) continue;
+      if (d.issuer_edinet_code !== issuer) continue;
+      seen.add(d.doc_id);
+      filings.push({
+        doc_id: d.doc_id,
+        kind: d.doc_type_code === "350" ? "initial" : "change",
+        doc_type_code: d.doc_type_code,
+        holder_name: d.filer_name,
+        holder_edinet_code: d.edinet_code,
+        submit_datetime: d.submit_datetime,
+        doc_description: d.doc_description,
+        pdf_api_url: `${BASE}/documents/${encodeURIComponent(d.doc_id)}?type=2`,
+      });
+    }
+  }
+  filings.sort((a, b) => (b.submit_datetime ?? "").localeCompare(a.submit_datetime ?? ""));
+  return { sec_code: sec, issuer_edinet_code: issuer, issuer_name: own?.filer_name ?? null, filings };
+}
+
+/** The large-holding time series for one company over the last `windowDays` of EDINET lists (each list cached weekly). */
+export async function getLargeHoldings(
+  ticker: string,
+  windowDays: number = LARGE_HOLDING_WINDOW_DAYS,
+): Promise<LargeHoldings> {
+  const today = new Date();
+  const dates: string[] = [];
+  for (let i = 0; i < windowDays; i++) {
+    const d = new Date(today);
+    d.setUTCDate(today.getUTCDate() - i);
+    dates.push(ymd(d));
+  }
+  return largeHoldingsFromDocs(await fetchDateLists(dates), ticker);
 }
