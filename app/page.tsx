@@ -44,23 +44,7 @@ export default async function Home() {
           <LangToggle lang={lang} />
         </div>
 
-        {/* 1. What OSD is, and how much is on record */}
-        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} lang={lang} />}
-
-        {/* 2. Neocloud: the most-read article series, one row per company */}
-        {ncRows.length > 0 && (
-          <NeocloudSummary
-            rows={ncRows}
-            usCount={ncCompanies.filter((c) => c.market === "US").length}
-            jpCount={ncCompanies.filter((c) => c.market === "JP").length}
-            pricePerCall={PER_CALL_PRICE.usdc}
-            lang={lang}
-          />
-        )}
-
-        <div className="mt-12">
-          <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro={!stats} />
-        </div>
+        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
 
         {/* Themes — first: the stock lists the most-read articles were written around */}
         {themeIndex && (
@@ -161,6 +145,19 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        {/* Coverage and neocloud — below Catalysts, same section shape */}
+        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} lang={lang} />}
+
+        {ncRows.length > 0 && (
+          <NeocloudSummary
+            rows={ncRows}
+            usCount={ncCompanies.filter((c) => c.market === "US").length}
+            jpCount={ncCompanies.filter((c) => c.market === "JP").length}
+            pricePerCall={PER_CALL_PRICE.usdc}
+            lang={lang}
+          />
+        )}
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
         <section id="x402" className="mt-16">

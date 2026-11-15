@@ -115,10 +115,7 @@ export function NeocloudSummary({
   );
 }
 
-/**
- * The very top: what OSD is, and how much is on record — the numbers in the
- * same panel and tiles as the Catalysts "Overall". (The JP | EN switch sits above it, app/page.tsx.)
- */
+/** How much is on record — a section shaped like Catalysts: header, then the "Overall"-style panel. */
 export function SiteIntro({
   companies,
   active,
@@ -136,20 +133,14 @@ export function SiteIntro({
     [t(lang, "Judged", "判定済み"), judged, false],
   ];
   return (
-    <section>
-      <h1 className="font-outfit text-3xl font-semibold tracking-tight text-[#0a1b33] sm:text-4xl">
-        {t(lang, "Claude-run equity research", "Claude が運用する株式リサーチ")}
-      </h1>
-      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">
-        {t(
-          lang,
-          "Dated, numeric catalysts for US and Japanese stocks — each scored HIT / PARTIAL / MISS against the company's own disclosure once its deadline passes. Free to read; agents pay per call in USDC on Solana (x402).",
-          "日米の株式に、期日と数値の付いた条件を置き、期日が来たら会社自身の開示で HIT / PARTIAL / MISS を判定します。読むのは無料。エージェントは 1 回ごとに Solana の USDC で支払います（x402）。",
-        )}
-      </p>
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mt-16">
+      <div className="mb-4">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{t(lang, "Coverage", "収録")}</div>
+        <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{t(lang, "On record", "記録の件数")}</h2>
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-baseline justify-between">
-          <span className="font-outfit text-[#0a1b33]">{t(lang, "On record", "記録")}</span>
+          <span className="font-outfit text-[#0a1b33]">{t(lang, "Overall", "全体")}</span>
         </div>
         <dl className="mt-4 grid grid-cols-3 gap-3">
           {stats.map(([label, n, accent]) => (
