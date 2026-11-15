@@ -12,6 +12,10 @@
 // The x402 2026-11-15 check: a refetch used to fall back to "is there a payment of this amount
 // on chain?" when no record existed, which let one payment be re-spent on any other URL of the
 // same price. That path is gone: no record, or a record for another URL, is 404.
+//
+// After a settled body is sent, the settlement transaction is checked on chain (status, USDC
+// into payTo, exact amount). A failure is marked on the record and logged; a payer whose
+// payment did not match is refused with 402 from then on (lib/payer-blocklist.ts).
 import type { RouteConfig } from "@x402/core/server";
 import type { PaymentOption } from "@x402/core/http";
 import {
@@ -34,7 +38,10 @@ import {
   type ReceiptStore,
 } from "@x402jp/delivery-receipt-seller";
 import { ASSET_SOLANA_USDC, SOLANA_NETWORK } from "./x402";
-import { signatureState, solanaRpcUrl, type SignatureState } from "./solana-confirm";
+import { after } from "next/server";
+import { getBase64Encoder, getTransactionDecoder } from "@solana/kit";
+import { solanaRpcUrl, verifySettlement, type SettlementResult } from "./solana-confirm";
+import { payerBlocklist, type PayerBlocklist } from "./payer-blocklist";
 
 export type ReceiptStoreKind = "upstash" | "file" | "none";
 
@@ -105,18 +112,31 @@ export function solanaRequirement(rc: RouteConfig): PaymentRequirement | null {
 
 export const PAID_CACHE_CONTROL = "no-store, private";
 
+/** What the after-delivery chain check found, kept on the delivery record. */
+export interface ChainCheck {
+  status: SettlementResult["status"];
+  detail: string;
+  checked_at: string;
+}
+
 export interface ReceiptDeps {
   seller: ReceiptSeller;
   storeKind: ReceiptStoreKind;
-  /** On-chain state of a settled transaction (lib/solana-confirm). */
-  confirm: (signature: string, network: string) => Promise<SignatureState>;
+  /** Reads the settlement transaction on chain (lib/solana-confirm verifySettlement). */
+  verify: (signature: string, requirement: PaymentRequirement) => Promise<SettlementResult>;
+  /** Runs work after the response is sent (next/server `after`). */
+  defer: (work: () => Promise<void>) => void;
+  blocklist: PayerBlocklist;
+  log?: (line: string) => void;
   now?: () => Date;
 }
 
 export const defaultReceiptDeps = (): ReceiptDeps => ({
   seller: receiptSeller(),
   storeKind: receiptStoreKind(),
-  confirm: (sig, network) => signatureState(sig, { rpcUrl: solanaRpcUrl(network) }),
+  verify: (sig, r) => verifySettlement(sig, r, { rpcUrl: solanaRpcUrl(r.network) }),
+  defer: (work) => after(work),
+  blocklist: payerBlocklist(),
 });
 
 export interface WithReceiptsOptions {
@@ -125,7 +145,7 @@ export interface WithReceiptsOptions {
   requirement: PaymentRequirement;
   /** The URL paid for: PUBLIC_BASE_URL + path + query of this request. */
   resource: string;
-  /** Called once a settled 2xx is confirmed on chain, before the body is sent. */
+  /** Called once a settled 2xx is about to be sent. */
   onDelivered?: (body: Uint8Array, contentType: string) => Promise<void>;
 }
 
@@ -150,44 +170,46 @@ const pick = (req: { headers: Headers }, names: readonly string[]) => {
 
 const is2xx = (s: number) => s >= 200 && s < 300;
 
-function unconfirmed(paymentId: string, state: SignatureState, headers: Headers) {
-  const out = json(
-    503,
-    {
-      error: "payment_unconfirmed",
-      message:
-        state === "failed"
-          ? "The settlement transaction failed on chain; nothing is delivered."
-          : "The settlement is not yet confirmed on chain. Retry with the same payment header and " +
-            `${REFETCH_HEADER}: <payment_id>; nothing is charged again.`,
-      payment_id: paymentId,
-      chain_state: state,
-      refetch_header: REFETCH_HEADER,
-    },
-    { "retry-after": "10" },
-  );
-  for (const h of PAYMENT_RESPONSE_HEADERS) {
-    const v = headers.get(h);
-    if (v) out.headers.set(h, v);
+/** The wallets that signed a Solana payment (the buyer; the fee payer has not signed yet). */
+export function solanaSignerAddresses(paymentHeader: string | null): string[] {
+  const p = decodePaymentHeader(paymentHeader);
+  // solanaPayerSignatures checks every signature against the message; none valid → none.
+  if (!p || solanaPayerSignatures(p).length === 0) return [];
+  try {
+    const txB64 = (p.payload as { transaction?: string })?.transaction ?? "";
+    const tx = getTransactionDecoder().decode(getBase64Encoder().encode(txB64));
+    return Object.entries(tx.signatures)
+      .filter(([, sig]) => sig && !sig.every((b) => b === 0))
+      .map(([addr]) => addr);
+  } catch {
+    return [];
   }
-  return out;
+}
+
+async function markRecord(seller: ReceiptSeller, paymentId: string, check: ChainCheck) {
+  const rec = await seller.store.get(paymentId);
+  if (!rec) return;
+  await seller.store.put({ ...rec, chain_check: check } as typeof rec, seller.retentionS);
 }
 
 /**
  * Delivery Receipts around a paywalled handler.
  *
- *   paid request    verify → handler → settle (x402). A settled 2xx is checked on chain
- *                   (confirmed or finalized), recorded with the URL paid for, and only then
- *                   sent, with a signed receipt and Cache-Control: no-store, private. Not
- *                   confirmed: 503 payment_unconfirmed (the record is kept, so a refetch
- *                   delivers once the chain confirms).
+ *   paid request    a payer refused earlier (blocklist) → 402, before verify / settle.
+ *                   Otherwise verify → handler → settle (x402). A settled 2xx is recorded
+ *                   with the URL paid for and sent at once, with a signed receipt and
+ *                   Cache-Control: no-store, private. After it is sent, the settlement
+ *                   transaction is checked on chain; anything but "ok" is marked on the
+ *                   record and logged, and a mismatching payer is blocked.
  *   refetch         X-Payment-Refetch: the record of that payment, for this same URL, paid by
- *                   the signer of the re-sent payment header — else 404. No store: 503.
+ *                   the signer of the re-sent payment header — else 404. A record whose chain
+ *                   check failed or did not match is refused (402). No store: 503.
  */
 export function withReceipts(deps: ReceiptDeps, opts: WithReceiptsOptions) {
   const { seller, storeKind } = deps;
   const network = normalizeNetwork(opts.requirement.network);
   const now = deps.now ?? (() => new Date());
+  const log = deps.log ?? ((l: string) => console.error(l));
 
   return async (req: Request): Promise<Response> => {
     const paymentHeader = pick(req, PAYMENT_HEADERS);
@@ -211,11 +233,13 @@ export function withReceipts(deps: ReceiptDeps, opts: WithReceiptsOptions) {
       if (!signers.includes(record.payer)) {
         return json(404, { error: "refetch_not_found", detail: "the payment header does not belong to this delivery" });
       }
+      const check = (record as { chain_check?: ChainCheck }).chain_check;
+      if (check && (check.status === "failed" || check.status === "mismatch")) {
+        return json(402, { error: "payment_rejected", detail: check.detail });
+      }
       if (now().getTime() - Date.parse(record.issued_at) > seller.refetchWindowS * 1000) {
         return json(410, { error: "refetch_expired" });
       }
-      const state = await deps.confirm(record.payment_id, network);
-      if (state !== "confirmed") return unconfirmed(record.payment_id, state, new Headers());
       const body = new Uint8Array(Buffer.from(record.body, "base64"));
       const { header } = seller.issueReceipt({ payment_id: record.payment_id, network, resource: opts.resource, body, delivery: "refetch" });
       return new Response(Buffer.from(body), {
@@ -229,6 +253,24 @@ export function withReceipts(deps: ReceiptDeps, opts: WithReceiptsOptions) {
       });
     }
 
+    // A payer whose earlier payment did not match is refused before verify / settle.
+    if (paymentHeader) {
+      for (const a of solanaSignerAddresses(paymentHeader)) {
+        let blocked = false;
+        try {
+          blocked = await deps.blocklist.has(a);
+        } catch {
+          blocked = false;
+        }
+        if (blocked) {
+          return json(402, {
+            error: "payer_blocked",
+            message: "An earlier payment from this wallet did not match the payment requirements; payments from it are not accepted.",
+          });
+        }
+      }
+    }
+
     const res = await opts.paywalled(req);
     if (!is2xx(res.status)) return res;
     const settle = decodeSettleResponse(pick(res, PAYMENT_RESPONSE_HEADERS));
@@ -238,8 +280,9 @@ export function withReceipts(deps: ReceiptDeps, opts: WithReceiptsOptions) {
     const headers = new Headers(res.headers);
     const contentType = headers.get("content-type") ?? "application/octet-stream";
 
-    // Record first (so a refetch can deliver even when the chain is slow), with the URL paid for.
+    // Recorded before it is sent, with the URL paid for.
     let receiptHeader: string | null = null;
+    let paymentId: string | null = null;
     if (storeKind !== "none") {
       const prepared = await seller.recordFirstDelivery({
         requirement: opts.requirement,
@@ -250,13 +293,27 @@ export function withReceipts(deps: ReceiptDeps, opts: WithReceiptsOptions) {
         contentType,
       });
       receiptHeader = prepared?.header ?? null;
+      paymentId = prepared?.record.payment_id ?? null;
     }
-
-    const tx = typeof settle.transaction === "string" ? settle.transaction : "";
-    const state = tx ? await deps.confirm(tx, network) : "unavailable";
-    if (state !== "confirmed") return unconfirmed(tx, state, headers);
-
     if (opts.onDelivered) await opts.onDelivered(body, contentType);
+
+    // After the body is sent: is the payment really on chain, to us, in full?
+    const tx = typeof settle.transaction === "string" ? settle.transaction : "";
+    const settledPayer = typeof settle.payer === "string" ? settle.payer : null;
+    deps.defer(async () => {
+      const r: SettlementResult = tx
+        ? await deps.verify(tx, opts.requirement).catch((e) => ({ status: "unverified" as const, detail: String(e), payer: null, received: null }))
+        : { status: "unverified", detail: "no transaction in PAYMENT-RESPONSE", payer: null, received: null };
+      if (r.status === "ok") return;
+      const check: ChainCheck = { status: r.status, detail: r.detail, checked_at: now().toISOString() };
+      log(`[x402 chain-check] ${r.status} tx=${tx || "-"} resource=${opts.resource} payer=${r.payer ?? settledPayer ?? "-"}: ${r.detail}`);
+      if (paymentId) await markRecord(seller, paymentId, check).catch((e) => log(`[x402 chain-check] could not mark record: ${e}`));
+      if (r.status === "mismatch") {
+        const who = [...new Set([r.payer, settledPayer, ...solanaSignerAddresses(paymentHeader)].filter((x): x is string => Boolean(x)))];
+        for (const a of who) await deps.blocklist.add(a, `${r.detail} (tx ${tx})`).catch((e) => log(`[x402 chain-check] could not block ${a}: ${e}`));
+      }
+    });
+
     if (receiptHeader) headers.set(RECEIPT_HEADER, receiptHeader);
     headers.set("cache-control", PAID_CACHE_CONTROL);
     const expose = new Set(

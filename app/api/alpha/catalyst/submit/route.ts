@@ -26,8 +26,8 @@ export const dynamic = "force-dynamic";
  * description + target_date) returns the existing record instead of creating.
  *
  * The handler runs before settlement, so what it writes is marked
- * payment_status "pending"; it becomes "settled" only after the payment is
- * confirmed on chain (onDelivered below). A submission still pending after 10
+ * payment_status "pending"; it becomes "settled" only once settlement has
+ * succeeded (onDelivered below). A submission still pending after 10
  * minutes is left out of judgement (lib/external-catalysts isUnpaidSubmission).
  */
 const handler = async (req: NextRequest): Promise<NextResponse> => {
@@ -121,7 +121,7 @@ const handler = async (req: NextRequest): Promise<NextResponse> => {
   }
 };
 
-/** After the payment is confirmed on chain: the pending submission becomes settled. */
+/** After settlement succeeded: the pending submission becomes settled. */
 async function markSettled(body: Uint8Array): Promise<void> {
   if (!upstashConfigured()) return;
   try {
@@ -129,7 +129,7 @@ async function markSettled(body: Uint8Array): Promise<void> {
     if (!r.catalyst_id || !r.ticker) return;
     const c = await getCatalyst(r.ticker, r.catalyst_id);
     if (!c || c.payment_status !== "pending") return;
-    await putCatalyst({ ...c, payment_status: "settled", payment_confirmed_at: new Date().toISOString() });
+    await putCatalyst({ ...c, payment_status: "settled", payment_settled_at: new Date().toISOString() });
   } catch (e) {
     console.error(`[catalyst/submit] could not mark settled: ${e}`);
   }

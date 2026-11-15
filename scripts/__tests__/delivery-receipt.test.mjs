@@ -57,7 +57,11 @@ test("a refetch is served from the stored delivery without verify/settle, with a
   const rc = buildSolanaOnlyRouteConfig("$0.01", "d", "/api/alpha/portfolio/current");
   let handlerCalls = 0;
   // The chain check is stubbed: this test is about the record, not the RPC.
-  const deps = () => ({ seller: receiptSeller(), storeKind: "file", confirm: async () => "confirmed" });
+  const deps = () => ({
+    seller: receiptSeller(), storeKind: "file",
+    verify: async () => ({ status: "ok", detail: "", payer: null, received: null }),
+    defer: () => {}, blocklist: { has: async () => false, add: async () => {} },
+  });
   const route = withX402AndInternal(async () => {
     handlerCalls++;
     return Response.json({ fresh: true });

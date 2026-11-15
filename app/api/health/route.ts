@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
  * GET /api/health — FREE. Deployment facts a buyer or the owner can check from
  * outside, no secrets: where delivery records are kept ("upstash" | "file", or
  * "none" in production without Upstash, where refetch then answers 503) and
- * whether settlements are confirmed on a configured RPC or the public one.
+ * whether settlements are checked on chain (after delivery) with a configured
+ * RPC or the public one.
  */
 export async function GET() {
   return NextResponse.json(

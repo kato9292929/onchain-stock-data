@@ -307,11 +307,11 @@ export interface ExternalCatalyst {
   company_name?: string;
   /**
    * Paid submissions (POST /api/alpha/catalyst/submit): "pending" when written
-   * by the handler, "settled" once the payment is confirmed on chain,
+   * by the handler, "settled" once settlement succeeded,
    * "internal" for X-Internal-Key callers. Absent on editorial rows.
    */
   payment_status?: "pending" | "settled" | "internal";
-  payment_confirmed_at?: string;
+  payment_settled_at?: string;
 }
 
 /**

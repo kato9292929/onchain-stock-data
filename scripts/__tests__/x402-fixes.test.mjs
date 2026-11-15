@@ -6,7 +6,8 @@
  *   3  in production without Upstash nothing goes to /tmp and a refetch is 503
  *   4  a paid submission stays "pending" until settled; 10 minutes unpaid is not judged
  *   5  a paid 2xx carries Cache-Control: no-store, private
- *   6  the settlement transaction must be confirmed on chain before a body is sent
+ *   6  the body is sent once /settle succeeds; the chain check runs after it, marks the record
+ *      and logs when it fails, and a payer whose payment did not match is refused with 402
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -22,10 +23,11 @@ process.env.INTERNAL_API_KEY = "test-internal-key";
 
 const { NextRequest } = await import("next/server");
 const { createReceiptSeller, MemoryStore } = await import("@x402jp/delivery-receipt-seller");
-const { withReceipts, receiptStoreKind, PAID_CACHE_CONTROL } = await import("../../lib/receipts.ts");
+const { withReceipts, receiptStoreKind, solanaSignerAddresses, PAID_CACHE_CONTROL } = await import("../../lib/receipts.ts");
 const { withX402AndInternal } = await import("../../lib/x402-route.ts");
 const { buildSolanaOnlyRouteConfig, x402Server, SOLANA_NETWORK } = await import("../../lib/x402.ts");
-const { readSignatureStatus, signatureState } = await import("../../lib/solana-confirm.ts");
+const { readSettlement, verifySettlement } = await import("../../lib/solana-confirm.ts");
+const { MemoryBlocklist } = await import("../../lib/payer-blocklist.ts");
 const { isUnpaidSubmission } = await import("../../lib/external-catalysts.ts");
 const { isUnpaidSubmission: evaluateIsUnpaid } = await import("../evaluate-catalysts.mjs");
 
@@ -54,13 +56,25 @@ const settleHeader = (o = {}) => Buffer.from(JSON.stringify({ success: true, tra
 const settled = (status, body) => async () =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "PAYMENT-RESPONSE": settleHeader() } });
 
-function setup({ storeKind = "upstash", chain = "confirmed" } = {}) {
+const OK = { status: "ok", detail: "paid", payer: null, received: "1000" };
+
+function setup({ storeKind = "upstash", chain = OK } = {}) {
   const seller = createReceiptSeller({ store: new MemoryStore() });
-  const calls = { confirm: 0, paywalled: 0 };
-  const deps = { seller, storeKind, confirm: async () => { calls.confirm += 1; return typeof chain === "function" ? chain() : chain; } };
+  const calls = { verify: 0, paywalled: 0 };
+  const deferred = [];
+  const logs = [];
+  const blocklist = new MemoryBlocklist();
+  const deps = {
+    seller, storeKind, blocklist,
+    verify: async () => { calls.verify += 1; return typeof chain === "function" ? chain() : chain; },
+    defer: (work) => deferred.push(work),
+    log: (l) => logs.push(l),
+  };
   const route = (resource, paywalled, onDelivered) =>
     withReceipts(deps, { paywalled: async (r) => { calls.paywalled += 1; return paywalled(r); }, requirement: REQ, resource, onDelivered });
-  return { seller, deps, route, calls };
+  /** Run what `after` would run once the response is sent. */
+  const afterResponse = async () => { while (deferred.length) await deferred.shift()(); };
+  return { seller, deps, route, calls, logs, blocklist, afterResponse };
 }
 
 // ── 2. records and refetch ────────────────────────────────────────────────
@@ -124,44 +138,75 @@ test("3: production without Upstash keeps nothing in /tmp, and a refetch is 503"
   assert.equal(re.status, 503);
 });
 
-// ── 6. on-chain confirmation ──────────────────────────────────────────────
+// ── 6. chain check after delivery ─────────────────────────────────────────
 
-test("6: not confirmed on chain → 503 and no body; the record is kept, so the refetch delivers once confirmed", async () => {
-  let state = "pending";
-  const { route } = setup({ chain: () => state });
+test("6: the body is sent as soon as /settle succeeds — even when the RPC fails — and the record is marked and logged", async () => {
+  const { seller, route, calls, logs, afterResponse } = setup({ chain: { status: "unverified", detail: "rpc unreachable: 429", payer: null, received: null } });
   const header = await paymentHeader();
   const res = await route(URL_A, settled(200, { secret: "data" }))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header } }));
-  assert.equal(res.status, 503);
-  const body = await res.json();
-  assert.equal(body.error, "payment_unconfirmed");
-  assert.equal(body.secret, undefined, "no paid body before the chain confirms");
-  assert.ok(res.headers.get("PAYMENT-RESPONSE"), "the buyer can still see the transaction");
-
-  const early = await route(URL_A, settled(200, {}))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header, "X-Payment-Refetch": TX } }));
-  assert.equal(early.status, 503);
-  state = "confirmed";
-  const later = await route(URL_A, settled(200, {}))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header, "X-Payment-Refetch": TX } }));
-  assert.equal(later.status, 200);
-  assert.deepEqual(await later.json(), { secret: "data" });
+  assert.equal(res.status, 200, "the buyer is never held up by our RPC");
+  assert.deepEqual(await res.json(), { secret: "data" });
+  assert.equal(calls.verify, 0, "nothing checked before the response");
+  await afterResponse();
+  assert.equal(calls.verify, 1);
+  assert.match(logs.join("\n"), /\[x402 chain-check\] unverified tx=5VER.*rpc unreachable: 429/);
+  const rec = await seller.store.get(TX);
+  assert.equal(rec.chain_check.status, "unverified", "the record carries the mark");
+  // An unverified payment is not refused: a refetch still delivers.
+  const re = await route(URL_A, settled(200, {}))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header, "X-Payment-Refetch": TX } }));
+  assert.equal(re.status, 200);
 });
 
-test("6: getSignatureStatuses is read as confirmed / pending / failed / unavailable", async () => {
-  const v = (x) => ({ jsonrpc: "2.0", result: { value: [x] } });
-  assert.equal(readSignatureStatus(v({ confirmationStatus: "finalized", err: null })), "confirmed");
-  assert.equal(readSignatureStatus(v({ confirmationStatus: "confirmed", err: null })), "confirmed");
-  assert.equal(readSignatureStatus(v({ confirmationStatus: "processed", err: null })), "pending");
-  assert.equal(readSignatureStatus(v(null)), "pending");
-  assert.equal(readSignatureStatus(v({ confirmationStatus: "finalized", err: { InstructionError: [0, "x"] } })), "failed");
-  assert.equal(readSignatureStatus({ error: { code: -32005 } }), "unavailable");
+test("6: a payer whose payment did not match is refused with 402 next time, before verify and settle", async () => {
+  const { route, calls, logs, blocklist, afterResponse } = setup({ chain: { status: "mismatch", detail: "payTo received 1 of USDC, expected 1000", payer: null, received: "1" } });
+  const header = await paymentHeader();
+  const first = await route(URL_A, settled(200, { a: 1 }))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header } }));
+  assert.equal(first.status, 200);
+  await afterResponse();
+  assert.match(logs.join("\n"), /mismatch/);
+  const [signer] = solanaSignerAddresses(header);
+  assert.ok(signer, "the paying wallet is read from the signed transaction");
+  assert.equal(await blocklist.has(signer), true);
+
+  const before = calls.paywalled;
+  const again = await route(URL_B, settled(200, { b: 2 }))(new Request(URL_B, { headers: { "PAYMENT-SIGNATURE": header } }));
+  assert.equal(again.status, 402);
+  assert.equal((await again.json()).error, "payer_blocked");
+  assert.equal(calls.paywalled, before, "refused before the paywall: no verify, no settle");
+
+  const refetch = await route(URL_A, settled(200, {}))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header, "X-Payment-Refetch": TX } }));
+  assert.equal(refetch.status, 402, "a mismatched payment is not delivered again");
+
+  const other = await route(URL_A, settled(200, { c: 3 }))(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": await paymentHeader() } }));
+  assert.equal(other.status, 200, "other wallets are unaffected");
+});
+
+test("6: getTransaction is read as ok / failed / mismatch / unverified", async () => {
+  const want = { payTo: REQ.payTo, asset: REQ.asset, amount: "1000" };
+  const bal = (i, owner, amount, mint = REQ.asset) => ({ accountIndex: i, mint, owner, uiTokenAmount: { amount } });
+  const tx = (o = {}) => ({
+    meta: { err: null, preTokenBalances: [bal(1, "Buyer111", "5000"), bal(2, REQ.payTo, "0")], postTokenBalances: [bal(1, "Buyer111", "4000"), bal(2, REQ.payTo, "1000")], ...o },
+    transaction: { message: { accountKeys: [] } },
+  });
+  const ok = readSettlement(tx(), want);
+  assert.equal(ok.status, "ok");
+  assert.equal(ok.payer, "Buyer111");
+  assert.equal(readSettlement(tx({ err: { InstructionError: [0, "x"] } }), want).status, "failed");
+  assert.equal(readSettlement(tx({ postTokenBalances: [bal(1, "Buyer111", "4999"), bal(2, REQ.payTo, "1")] }), want).status, "mismatch", "short amount");
+  assert.equal(readSettlement(tx({ postTokenBalances: [bal(1, "Buyer111", "4000"), bal(2, "Someone", "1000")], preTokenBalances: [bal(1, "Buyer111", "5000"), bal(2, "Someone", "0")] }), want).status, "mismatch", "paid someone else");
+  assert.equal(readSettlement(tx({ postTokenBalances: [bal(2, REQ.payTo, "1000", "OtherMint")], preTokenBalances: [bal(2, REQ.payTo, "0", "OtherMint")] }), want).status, "mismatch", "another asset");
+  assert.equal(readSettlement(null, want).status, "unverified");
 
   let n = 0;
   const fetchImpl = async (_u, init) => {
     n += 1;
-    assert.match(String(init.body), /getSignatureStatuses/);
-    return new Response(JSON.stringify(v(n < 3 ? null : { confirmationStatus: "confirmed", err: null })));
+    assert.match(String(init.body), /getTransaction/);
+    return new Response(JSON.stringify({ jsonrpc: "2.0", result: n < 3 ? null : tx() }));
   };
-  assert.equal(await signatureState(TX, { rpcUrl: "https://rpc.example", fetchImpl, intervalMs: 1 }), "confirmed");
-  assert.equal(n, 3, "retried while not yet seen");
+  assert.equal((await verifySettlement(TX, want, { rpcUrl: "https://rpc.example", fetchImpl, intervalMs: 1 })).status, "ok");
+  assert.equal(n, 3, "retried while the transaction is not visible yet");
+  const down = async () => new Response("rate limited", { status: 429 });
+  assert.equal((await verifySettlement(TX, want, { rpcUrl: "https://rpc.example", fetchImpl: down, attempts: 2, intervalMs: 1 })).status, "unverified");
 });
 
 // ── 5. cache ──────────────────────────────────────────────────────────────
@@ -188,16 +233,15 @@ test("4: a submission still pending 10 minutes after it was written is not judge
   }
 });
 
-test("4: onDelivered runs only after the chain confirms", async () => {
+test("4: onDelivered runs once settlement succeeded, not when the handler failed", async () => {
   let delivered = 0;
-  let state = "pending";
-  const { route } = setup({ chain: () => state });
+  const { route } = setup();
   const header = await paymentHeader();
-  const r = () => route(URL_A, settled(201, { catalyst_id: "ext_1", ticker: "7203" }), async () => { delivered += 1; })(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header } }));
-  assert.equal((await r()).status, 503);
-  assert.equal(delivered, 0, "not marked settled while the chain has not confirmed");
-  state = "confirmed";
-  assert.equal((await r()).status, 201);
+  const failed = await route(URL_A, async () => Response.json({ error: "bad" }, { status: 400 }), async () => { delivered += 1; })(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header } }));
+  assert.equal(failed.status, 400);
+  assert.equal(delivered, 0);
+  const ok = await route(URL_A, settled(201, { catalyst_id: "ext_1", ticker: "7203" }), async () => { delivered += 1; })(new Request(URL_A, { headers: { "PAYMENT-SIGNATURE": header } }));
+  assert.equal(ok.status, 201);
   assert.equal(delivered, 1);
 });
 

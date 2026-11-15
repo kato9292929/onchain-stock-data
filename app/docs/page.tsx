@@ -54,7 +54,7 @@ export default function DocsPage() {
         <Fields
           rows={[
             ["price", `x402 exact, USDC on Solana: ${PER_CALL_PRICE.usdc} USDC per call (a whole theme ${THEME_CALL_PRICE.usdc} USDC). The 402 names the URL requested.`],
-            ["settlement", "A body is sent only after the settlement transaction the facilitator returns is confirmed on Solana (getSignatureStatuses: confirmed or finalized) on our own RPC. Not yet confirmed: 503 payment_unconfirmed, nothing is charged again — refetch."],
+            ["settlement", "The body is sent as soon as the facilitator's /settle succeeds. Afterwards the settlement transaction is checked on Solana with our own RPC (getTransaction: succeeded, the exact amount of USDC into our payTo). A failed or unmatched check is marked on the delivery record and logged; a wallet whose payment did not match is refused with 402 from then on."],
             ["not charged", "A request that fails before delivery (bad input 400, unknown 404, upstream 5xx) is not settled."],
             ["refetch", "X-Payment-Refetch: <payment_id> with the same payment header returns the recorded body of that payment for the same URL (8 days). Another URL, or no record, is 404."],
             ["receipt", "X-Delivery-Receipt: a signed receipt of the exact body (/.well-known/x402-receipt.json). Paid responses are Cache-Control: no-store, private."],

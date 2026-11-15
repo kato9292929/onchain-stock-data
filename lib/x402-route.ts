@@ -207,9 +207,9 @@ const toNext = (res: Response): NextResponse =>
   res instanceof NextResponse ? res : new NextResponse(res.body, { status: res.status, statusText: res.statusText, headers: res.headers });
 
 export interface PaidRouteOptions {
-  /** Called once a settled 2xx is confirmed on chain, before its body is sent (lib/receipts). */
+  /** Called once a settled 2xx is about to be sent (lib/receipts). */
   onDelivered?: (body: Uint8Array, contentType: string) => Promise<void>;
-  /** Test seam: the receipt seller, store kind and chain check. */
+  /** Test seam: the receipt seller, store kind, chain check, deferral and blocklist. */
   receiptDeps?: () => ReceiptDeps;
 }
 
@@ -236,8 +236,8 @@ export function withX402AndInternal(
     );
   const wrapped = buildWrapped(routeConfig);
   // Delivery Receipts on the mainnet Solana-USDC routes (lib/receipts withReceipts): a settled
-  // 2xx is confirmed on chain, recorded with the URL paid for, and only then sent with
-  // X-Delivery-Receipt; a request with X-Payment-Refetch never reaches withX402 (no
+  // 2xx is recorded with the URL paid for and sent with X-Delivery-Receipt, then checked on
+  // chain after the response; a request with X-Payment-Refetch never reaches withX402 (no
   // verify/settle) and is served only from the record of that same URL.
   const requirement = server === x402Server ? solanaRequirement(routeConfig) : null;
   const paid = (req: NextRequest): Promise<NextResponse> => {
