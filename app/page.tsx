@@ -58,11 +58,9 @@ export default async function Home() {
           />
         )}
 
-        {!stats && (
-          <div className="mt-12">
-            <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
-          </div>
-        )}
+        <div className="mt-12">
+          <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro={!stats} />
+        </div>
 
         {/* Themes — first: the stock lists the most-read articles were written around */}
         {themeIndex && (
