@@ -10,6 +10,7 @@ import { NeocloudMetricsTable, formatMetric } from "../../components/neocloud-me
 import { isNeocloudTheme, metricSeries, neocloudCompanies } from "@/lib/neocloud";
 import { lineageChain, neocloudThemeView } from "@/lib/neocloud-page";
 import { NeocloudCompanyCard, NeocloudLineageSummary } from "../../components/neocloud-theme";
+import { getLang, pick } from "@/lib/i18n";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
   const theme = findTheme(themes, decodeURIComponent(raw));
   if (!theme) notFound();
   const today = new Date().toISOString().slice(0, 10);
+  const lang = await getLang();
   const free = themeFreeBody(theme, rec, solana, today, PUBLIC_BASE_URL);
   // The page shows each member's current catalyst; the JSON with every row is the paid view.
   const current = new Map(themeFullBody(theme, rec, solana, today).members.map((m) => [m.ticker, m.current_catalyst]));
@@ -40,16 +42,20 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
   return (
     <div className="font-inter space-y-8">
       <Link href="/themes" className="text-xs text-slate-400 hover:text-slate-600">
-        ← All themes
+        {pick(lang, "← All themes", "← テーマの一覧")}
       </Link>
       {view ? (
         <>
           <header className="space-y-1">
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{theme.title_en}</div>
-            <h1 className="font-outfit text-3xl font-semibold text-[#0a1b33] sm:text-4xl">{theme.title_ja}</h1>
+            <h1 className="font-outfit text-3xl font-semibold text-[#0a1b33] sm:text-4xl">
+              {pick(lang, theme.title_en, theme.title_ja)}
+            </h1>
             <p className="text-[12px] text-slate-500">
-              各社の今の条件と、7/31 版・7/21 版の条件がどうなったか。
-              <span className="text-slate-400"> What each company is held to now, and what became of the earlier editions&apos; conditions.</span>
+              {pick(
+                lang,
+                "What each company is held to now, and what became of the 7/31 and 7/21 editions' conditions.",
+                "各社の今の条件と、7/31 版・7/21 版の条件がどうなったか。",
+              )}
             </p>
           </header>
           <NeocloudLineageSummary
@@ -57,24 +63,42 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
             total={view.earlier_total}
             counts={view.earlier_counts}
             byEdition={view.by_edition}
+            lang={lang}
           />
-          {totals && (
+          {totals && (totals.contracted_companies > 0 || totals.energized_companies > 0) && (
             <p className="text-[13px] text-slate-600">
-              契約電力の合計 <span className="text-slate-400">Contracted power</span>{" "}
-              <span className="font-semibold tabular-nums text-[#0a1b33]">
-                {totals.contracted_companies > 0 ? formatMetric(totals.contracted_power_mw, "MW") : "—"}
-              </span>{" "}
-              <span className="text-[11px] text-slate-400">({totals.contracted_companies}/{totals.companies}社が開示)</span> · 稼働{" "}
-              <span className="text-slate-400">Energized</span>{" "}
-              <span className="font-semibold tabular-nums text-[#0a1b33]">
-                {totals.energized_companies > 0 ? formatMetric(totals.energized_mw, "MW") : "—"}
-              </span>{" "}
-              <span className="text-[11px] text-slate-400">({totals.energized_companies}/{totals.companies}社が開示)</span>
+              {totals.contracted_companies > 0 && (
+                <>
+                  {pick(lang, "Contracted power", "契約電力の合計")}{" "}
+                  <span className="font-semibold tabular-nums text-[#0a1b33]">{formatMetric(totals.contracted_power_mw, "MW")}</span>{" "}
+                  <span className="text-[11px] text-slate-400">
+                    {pick(
+                      lang,
+                      `(${totals.contracted_companies} of ${totals.companies} disclose)`,
+                      `（${totals.companies}社中 ${totals.contracted_companies}社が開示）`,
+                    )}
+                  </span>
+                </>
+              )}
+              {totals.contracted_companies > 0 && totals.energized_companies > 0 && " · "}
+              {totals.energized_companies > 0 && (
+                <>
+                  {pick(lang, "Energized", "稼働容量の合計")}{" "}
+                  <span className="font-semibold tabular-nums text-[#0a1b33]">{formatMetric(totals.energized_mw, "MW")}</span>{" "}
+                  <span className="text-[11px] text-slate-400">
+                    {pick(
+                      lang,
+                      `(${totals.energized_companies} of ${totals.companies} disclose)`,
+                      `（${totals.companies}社中 ${totals.energized_companies}社が開示）`,
+                    )}
+                  </span>
+                </>
+              )}
             </p>
           )}
           <section className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {view.cards.map((c) => (
-              <NeocloudCompanyCard key={c.ticker} c={c} />
+              <NeocloudCompanyCard key={c.ticker} c={c} lang={lang} />
             ))}
           </section>
         </>
@@ -221,7 +245,7 @@ export default async function ThemePage({ params }: { params: Promise<{ theme: s
         </>
       )}
 
-      {neocloud && <NeocloudMetricsTable companies={neocloud} />}
+      {neocloud && <NeocloudMetricsTable companies={neocloud} lang={lang} />}
 
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-[#0a152d] text-white shadow-sm">
         <div className="h-1 w-full bg-gradient-to-r from-[#00FFA3] to-[#DC1FFF]" />

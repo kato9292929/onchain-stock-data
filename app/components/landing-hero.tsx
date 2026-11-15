@@ -18,7 +18,16 @@ const VIDEO_SRC =
  * `themeCount` comes from data/themes.json and `solanaCount` from
  * data/solana-stocks.json, so both follow the weekly refresh.
  */
-export function LandingHero({ solanaCount, themeCount }: { solanaCount: number; themeCount: number }) {
+export function LandingHero({
+  solanaCount,
+  themeCount,
+  intro = true,
+}: {
+  solanaCount: number;
+  themeCount: number;
+  /** false: the headline and description are already at the top of the page (SiteIntro). */
+  intro?: boolean;
+}) {
   return (
     <div className="relative mx-auto flex min-h-[600px] w-full max-w-[1400px] flex-col overflow-hidden rounded-[48px] border border-slate-200/50 bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.03)]">
       {/* background video */}
@@ -41,17 +50,21 @@ export function LandingHero({ solanaCount, themeCount }: { solanaCount: number; 
         transition={{ duration: 0.7, ease: "easeOut" }}
         className="relative z-20 flex flex-1 flex-col items-start px-8 pb-28 pt-12 md:px-16 md:pt-16"
       >
-        <h1 className="font-outfit text-[42px] font-medium leading-[1.05] tracking-tight text-[#0a1b33] md:text-[56px]">
-          Claude-run
-          <br />
-          equity research
-        </h1>
-        <p className="font-inter mt-5 max-w-md text-[14px] leading-relaxed text-[#64748b] md:text-[15px]">
-          Weekly US &amp; Japan stock picks with dated, numeric catalysts — each
-          scored HIT / PARTIAL / MISS once its deadline passes. A public,
-          verifiable track record. Free to read over MCP; agents pay per call
-          with x402.
-        </p>
+        {intro && (
+          <>
+            <h1 className="font-outfit text-[42px] font-medium leading-[1.05] tracking-tight text-[#0a1b33] md:text-[56px]">
+              Claude-run
+              <br />
+              equity research
+            </h1>
+            <p className="font-inter mt-5 max-w-md text-[14px] leading-relaxed text-[#64748b] md:text-[15px]">
+              Weekly US &amp; Japan stock picks with dated, numeric catalysts — each
+              scored HIT / PARTIAL / MISS once its deadline passes. A public,
+              verifiable track record. Free to read over MCP; agents pay per call
+              with x402.
+            </p>
+          </>
+        )}
 
         {/* First view: the themes are the front door; the token list hangs off each theme. */}
         <Link

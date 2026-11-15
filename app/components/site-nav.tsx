@@ -2,22 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LangToggle } from "./lang-toggle";
 
 /** Replica of the landing top header, so detail pages share the exact same
  *  chrome: white logo disc + white pill nav (Home / Portfolio / Catalysts) with
  *  the three-dot active indicator + dark "API" pill. No gold, no dark bar. */
 const NAV = [
   // The logo disc is Home too, so the word is dropped on phones to make room.
-  { href: "/", label: "Home", wideOnly: true },
-  { href: "/themes", label: "Themes" },
-  { href: "/solana-stocks", label: "Stocks" },
-  { href: "/catalysts", label: "Catalysts" },
-  { href: "/portfolio", label: "Selection" },
+  { href: "/", label: "Home", ja: "ホーム", wideOnly: true },
+  { href: "/themes", label: "Themes", ja: "テーマ" },
+  { href: "/solana-stocks", label: "Stocks", ja: "銘柄" },
+  { href: "/catalysts", label: "Catalysts", ja: "カタリスト" },
+  { href: "/portfolio", label: "Selection", ja: "選定" },
 ];
 
 const SHADOW = "0 4px 14px rgba(0,0,0,0.16)";
 
-export function SiteNav() {
+export function SiteNav({ lang }: { lang: "en" | "ja" }) {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/"
@@ -66,7 +67,7 @@ export function SiteNav() {
                   active ? "opacity-100" : "opacity-50 hover:opacity-75"
                 } ${"wideOnly" in item && item.wideOnly ? "hidden sm:block" : ""}`}
               >
-                {item.label}
+                {lang === "ja" ? item.ja : item.label}
                 {active && (
                   <span className="absolute bottom-[5px] left-1/2 flex -translate-x-1/2 gap-[2px]">
                     <span className="h-[3px] w-[3px] rounded-full bg-black" />
@@ -79,6 +80,10 @@ export function SiteNav() {
           })}
         </nav>
 
+        <div className="hidden shrink-0 sm:block">
+          <LangToggle lang={lang} />
+        </div>
+
         {/* API pill */}
         <Link
           href="/api/alpha/catalysts/physical-ai"
@@ -87,6 +92,10 @@ export function SiteNav() {
         >
           API
         </Link>
+      </div>
+      {/* Phones: the switch sits under the nav, right-aligned. */}
+      <div className="mx-auto mt-2 flex max-w-3xl justify-end sm:hidden">
+        <LangToggle lang={lang} />
       </div>
     </header>
   );

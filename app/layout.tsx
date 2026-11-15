@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { SiteChrome } from "./components/site-chrome";
+import { getLang } from "@/lib/i18n";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +26,15 @@ export const metadata: Metadata = {
     "Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を統合した API + Web ページ。",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const lang = await getLang();
   return (
     <html
-      lang="en"
+      lang={lang}
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased bg-[#f9fafb]`}
     >
       <head>
@@ -46,7 +48,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#f9fafb] text-slate-900">
-        <SiteChrome>{children}</SiteChrome>
+        <SiteChrome lang={lang}>{children}</SiteChrome>
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ import { SiteFooter } from "./site-footer";
  * home page ("/"), which ships its own full-bleed chrome (gold nav/footer per
  * the redesign). Detail pages are unchanged.
  */
-export function SiteChrome({ children }: { children: React.ReactNode }) {
+export function SiteChrome({ children, lang }: { children: React.ReactNode; lang: "en" | "ja" }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -19,7 +19,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <SiteNav />
+      <SiteNav lang={lang} />
       <main className="flex-1 min-w-0 px-6 py-8 max-w-6xl w-full mx-auto">
         {children}
       </main>
