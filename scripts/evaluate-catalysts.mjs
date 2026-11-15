@@ -21,6 +21,14 @@ import { isFatalRunError } from "./lib/run-errors.mjs";
 // Shared with the chat export/import, so all three split a condition the same way.
 import { splitCondition } from "./lib/chat-ops.mjs";
 
+const UNPAID_GRACE_MS = 10 * 60 * 1000;
+/** Same as lib/external-catalysts.ts isUnpaidSubmission. */
+export function isUnpaidSubmission(c, now = new Date()) {
+  if (c?.payment_status !== "pending") return false;
+  const at = Date.parse(c.submitted_at ?? "");
+  return !Number.isFinite(at) || now.getTime() - at > UNPAID_GRACE_MS;
+}
+
 const ROOT = process.cwd();
 const EVAL_FILE = path.join(ROOT, "data", "portfolio-evaluations.json");
 const HISTORY_FILE = path.join(ROOT, "data", "portfolio-history.json");
@@ -490,7 +498,10 @@ async function main() {
   const externalsById = new Map();
   for (const c of fileExternals) externalsById.set(c.catalyst_id, c);
   for (const c of upExternals) externalsById.set(c.catalyst_id, c);
-  const externals = [...externalsById.values()];
+  // A paid submission whose payment never settled (still "pending" 10 minutes
+  // after it was written) is not judged. Same rule as lib/external-catalysts.ts
+  // isUnpaidSubmission.
+  const externals = [...externalsById.values()].filter((c) => !isUnpaidSubmission(c));
 
   // ── JP portfolio catalysts: auto-register pending evaluations from
   //    jp-portfolio-history.json (each holding's dated thesis), then judge with

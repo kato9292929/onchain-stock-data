@@ -14,8 +14,7 @@ import {
   x402TestnetServer,
   PUBLIC_BASE_URL,
 } from "./x402";
-import { withDeliveryReceipts } from "@x402jp/delivery-receipt-seller";
-import { receiptSeller, solanaRequirement } from "./receipts";
+import { PAID_CACHE_CONTROL, defaultReceiptDeps, solanaRequirement, withReceipts, type ReceiptDeps } from "./receipts";
 
 type Handler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
 
@@ -207,10 +206,18 @@ const asNext = (req: Request): NextRequest => (req instanceof NextRequest ? req 
 const toNext = (res: Response): NextResponse =>
   res instanceof NextResponse ? res : new NextResponse(res.body, { status: res.status, statusText: res.statusText, headers: res.headers });
 
+export interface PaidRouteOptions {
+  /** Called once a settled 2xx is about to be sent (lib/receipts). */
+  onDelivered?: (body: Uint8Array, contentType: string) => Promise<void>;
+  /** Test seam: the receipt seller, store kind, chain check, deferral and blocklist. */
+  receiptDeps?: () => ReceiptDeps;
+}
+
 export function withX402AndInternal(
   handler: Handler,
   routeConfig: RouteConfig,
   server: typeof x402Server = x402Server,
+  opts: PaidRouteOptions = {},
 ): (req: NextRequest) => Promise<NextResponse> {
   const buildWrapped = (config: RouteConfig) =>
     withX402(
@@ -228,24 +235,27 @@ export function withX402AndInternal(
       true, // syncFacilitatorOnStart
     );
   const wrapped = buildWrapped(routeConfig);
-  // Delivery Receipt on the mainnet Solana-USDC routes: a settled 200 is recorded before its
-  // body is sent and gets X-Delivery-Receipt; a request with X-Payment-Refetch never reaches
-  // withX402 (no verify/settle). The receipt names the URL actually requested.
+  // Delivery Receipts on the mainnet Solana-USDC routes (lib/receipts withReceipts): a settled
+  // 2xx is recorded with the URL paid for and sent with X-Delivery-Receipt, then checked on
+  // chain after the response; a request with X-Payment-Refetch never reaches withX402 (no
+  // verify/settle) and is served only from the record of that same URL.
   const requirement = server === x402Server ? solanaRequirement(routeConfig) : null;
   const paid = (req: NextRequest): Promise<NextResponse> => {
     if (!requirement) return wrapped(req).then((r) => asPaymentUnavailable(r, routeConfig));
     const u = new URL(req.url);
-    return withDeliveryReceipts(receiptSeller(), {
+    return withReceipts((opts.receiptDeps ?? defaultReceiptDeps)(), {
       paywalled: async (r) => asPaymentUnavailable(await wrapped(asNext(r)), routeConfig),
-      handler: async (r) => handler(asNext(r)),
       resource: `${PUBLIC_BASE_URL}${u.pathname}${u.search}`,
       requirement,
+      onDelivered: opts.onDelivered,
     })(req).then(toNext);
   };
   return async (req: NextRequest) => {
     if (req.method === "OPTIONS") return corsPreflight();
     try {
       const res = isInternalAuthed(req) ? await handler(req) : await paid(req);
+      // Paid bodies are never cached by a browser or a CDN.
+      if (res.status >= 200 && res.status < 300) res.headers.set("Cache-Control", PAID_CACHE_CONTROL);
       return applyCors(res);
     } catch (err) {
       const message =
@@ -339,11 +349,13 @@ export function withPaywall(
  */
 export function withSolanaOnlyPaywall(
   handler: Handler,
-  opts: { price: Price; description: string; resourcePath: string },
+  opts: { price: Price; description: string; resourcePath: string } & PaidRouteOptions,
 ): (req: NextRequest) => Promise<NextResponse> {
   return withX402AndInternal(
     handler,
     buildSolanaOnlyRouteConfig(opts.price, opts.description, opts.resourcePath),
+    x402Server,
+    { onDelivered: opts.onDelivered, receiptDeps: opts.receiptDeps },
   );
 }
 

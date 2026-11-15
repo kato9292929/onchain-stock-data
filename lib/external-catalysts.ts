@@ -293,6 +293,20 @@ async function readFileCatalysts(): Promise<ExternalCatalyst[]> {
   }
 }
 
+/** How long a paid submission may stay "pending" (written, settlement not yet confirmed). */
+export const UNPAID_GRACE_MS = 10 * 60 * 1000;
+
+/**
+ * A submission whose payment never settled: still "pending" more than 10
+ * minutes after it was written. Left out of every judgement and listing.
+ * (scripts/evaluate-catalysts.mjs keeps the same rule.) Pure.
+ */
+export function isUnpaidSubmission(c: Pick<ExternalCatalyst, "payment_status" | "submitted_at">, now: Date = new Date()): boolean {
+  if (c.payment_status !== "pending") return false;
+  const at = Date.parse(c.submitted_at ?? "");
+  return !Number.isFinite(at) || now.getTime() - at > UNPAID_GRACE_MS;
+}
+
 /**
  * All external catalysts. The committed file is the US/legacy store; when
  * Upstash is configured it is the source of truth for JP catalysts, so we merge
@@ -314,7 +328,8 @@ export async function readExternalCatalysts(): Promise<ExternalCatalyst[]> {
   const byId = new Map<string, ExternalCatalyst>();
   for (const c of fileList) byId.set(c.catalyst_id, c);
   for (const c of upList) byId.set(c.catalyst_id, normalizeMarket(c));
-  return [...byId.values()];
+  const now = new Date();
+  return [...byId.values()].filter((c) => !isUnpaidSubmission(c, now));
 }
 
 export async function writeExternalCatalysts(

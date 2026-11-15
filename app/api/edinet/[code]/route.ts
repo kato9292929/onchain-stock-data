@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withSolanaUsdcMicroPaywall, corsPreflight } from "@/lib/x402-route";
+import { withSolanaUsdcMicroPaywall, withPublicCors, corsPreflight } from "@/lib/x402-route";
 import { PER_CALL_PRICE } from "@/lib/x402";
 import {
   getCompanyFinancials,
@@ -34,11 +34,18 @@ export const maxDuration = 60;
  *
  * Priced at 1000 USDC base units (0.001 USDC), settled in USDC-SPL on Solana.
  */
-async function handler(req: NextRequest): Promise<NextResponse> {
+/** A TSE code (4 characters, e.g. 7203 / 593A) or the 5-character EDINET form (72030). */
+const EDINET_CODE = /^[0-9][0-9A-Z]{3}[0-9]?$/;
+
+function codeOf(req: NextRequest): string {
   // withX402 doesn't forward Next dynamic params — read the last path segment.
+  const seg = new URL(req.url).pathname.split("/").filter(Boolean);
+  return decodeURIComponent(seg[seg.length - 1] ?? "").trim().toUpperCase();
+}
+
+async function handler(req: NextRequest): Promise<NextResponse> {
   const url = new URL(req.url);
-  const seg = url.pathname.split("/").filter(Boolean);
-  const code = decodeURIComponent(seg[seg.length - 1] ?? "").toUpperCase();
+  const code = codeOf(req);
   const days = Math.min(
     400,
     Math.max(1, Number(url.searchParams.get("days")) || FINANCIAL_WINDOW_DAYS),
@@ -48,6 +55,10 @@ async function handler(req: NextRequest): Promise<NextResponse> {
   // real element IDs by fact. Unprocessed; same paywall as the main endpoint.
   if (url.searchParams.get("debug") === "elements") {
     const dump = await dumpReportElements(code, days);
+    // Nothing found is not a delivery: a 4xx here cancels settlement.
+    if (!dump.doc) {
+      return NextResponse.json({ error: "no_report", code, window_days: days, source: SOURCE_LABEL }, { status: 404 });
+    }
     return NextResponse.json({
       source: SOURCE_LABEL,
       pipeline: "edinet-financials-v1",
@@ -61,6 +72,15 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 
   try {
     const fin = await getCompanyFinancials(code, days);
+    // No disclosure in the window (an unknown code, a typo, a fresh listing):
+    // answer 404 so the buyer is not charged for an empty record. A 4xx from
+    // the handler cancels settlement (@x402/next handleSettlement).
+    if (!fin.doc_id) {
+      return NextResponse.json(
+        { error: "no_disclosure", message: "No EDINET report for this code in the window.", code, window_days: days, source: SOURCE_LABEL },
+        { status: 404 },
+      );
+    }
     return NextResponse.json({
       source: SOURCE_LABEL,
       processed_by: PROCESSED_BY,
@@ -95,7 +115,7 @@ async function handler(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-export const GET = withSolanaUsdcMicroPaywall(handler, {
+const paidGet = withSolanaUsdcMicroPaywall(handler, {
   units: PER_CALL_PRICE.base_units,
   // What the 402 challenge shows a buyer, so it states what actually comes
   // back. Figure extraction is paused (lib/edinet.ts FINANCIALS_ENABLED), and
@@ -105,5 +125,20 @@ export const GET = withSolanaUsdcMicroPaywall(handler, {
     "One company's latest EDINET disclosure: filer, document id / type / description, submission datetime and the accounting period (出典：金融庁 EDINET). Headline figures (sales / operating income / net income) are NOT served — they return null with financials_available:false. Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/edinet/:code",
 });
+
+/** A malformed code is 400 before any challenge: nothing is verified or settled. */
+export const GET = async (req: NextRequest): Promise<NextResponse> => {
+  if (req.method === "OPTIONS") return corsPreflight();
+  const code = codeOf(req);
+  if (!EDINET_CODE.test(code)) {
+    return withPublicCors(async () =>
+      NextResponse.json(
+        { error: "bad_code", message: "code must be a TSE code such as 7203 or 593A (or its 5-character EDINET form)", code },
+        { status: 400 },
+      ),
+    )(req);
+  }
+  return paidGet(req);
+};
 
 export const OPTIONS = corsPreflight;

@@ -56,10 +56,16 @@ test("requirements: Solana-only USDC routes get receipts; '$0.01' and unit price
 test("a refetch is served from the stored delivery without verify/settle, with a receipt that verifies", async () => {
   const rc = buildSolanaOnlyRouteConfig("$0.01", "d", "/api/alpha/portfolio/current");
   let handlerCalls = 0;
+  // The chain check is stubbed: this test is about the record, not the RPC.
+  const deps = () => ({
+    seller: receiptSeller(), storeKind: "file",
+    verify: async () => ({ status: "ok", detail: "", payer: null, received: null }),
+    defer: () => {}, blocklist: { has: async () => false, add: async () => {} },
+  });
   const route = withX402AndInternal(async () => {
     handlerCalls++;
     return Response.json({ fresh: true });
-  }, rc, x402Server);
+  }, rc, x402Server, { receiptDeps: deps });
   const url = "https://osd.x402jp.com/api/alpha/portfolio/current";
   const header = await paymentHeader(rc);
   const body = new TextEncoder().encode(JSON.stringify({ current: ["AAPL"] }));
@@ -87,7 +93,7 @@ test("a refetch is served from the stored delivery without verify/settle, with a
 
     const other = await paymentHeader(rc);
     const bad = await route(new NextRequest(url, { headers: { "PAYMENT-SIGNATURE": other, "X-Payment-Refetch": TX } }));
-    assert.equal(bad.status, 402, "another payer's header cannot refetch");
+    assert.equal(bad.status, 404, "another payer's header cannot refetch");
   } finally {
     x402Server.settlePayment = settleBefore;
   }
