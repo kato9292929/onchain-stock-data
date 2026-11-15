@@ -8,6 +8,7 @@ import {
 import type { ExternalCatalyst } from "@/lib/data";
 import { latestMetrics, neocloudCompanies, type PublicMetric } from "@/lib/neocloud";
 import type { ThemeDef } from "@/lib/theme-members";
+import { members as membersOf } from "@/lib/themes";
 
 /**
  * The neocloud theme page, for the readers of the most-read articles (the 7/31
@@ -201,4 +202,89 @@ export function lineageChain(theme: ThemeDef) {
     byDate.set(a.published_at, [...(byDate.get(a.published_at) ?? []), { url: a.url, title: a.title, latest: a === latest }]);
   }
   return [...byDate.entries()].map(([date, articles]) => ({ date, articles }));
+}
+
+// ── front page ────────────────────────────────────────────────────────────
+
+const HEADLINE_ITEMS = [
+  ["contracted_power_mw", "Contracted"],
+  ["energized_mw", "Energized"],
+  ["backlog_usd", "Backlog"],
+  ["revenue_guidance", "Revenue guidance"],
+  ["capex_guidance", "Capex guidance"],
+  ["financing", "Financing"],
+] as const;
+
+export interface FrontRow {
+  ticker: string;
+  company: string;
+  market: "US" | "JP";
+  next_earnings: NeocloudCard["next_earnings"];
+  /** The nearest current condition, in checkable form when it was written that way. */
+  condition: { question: string; target_date: string; rule: string | null } | null;
+  /** One disclosed number with its document; null when nothing is recorded. */
+  metric: { label: string; value: number | null; low: number | null; high: number | null; unit: string; as_of: string; source_url: string } | null;
+}
+
+/**
+ * The front page's neocloud rows: listed members of both markets, the nearest
+ * next earnings first (confirmed or estimated), at most `n`. Pure over the records.
+ */
+export function neocloudFrontRows(themes: ThemeDef[], rec: Records, today: string, n = 6): FrontRow[] {
+  const cards = themes.flatMap((t) =>
+    neocloudThemeView(t, rec, today).cards.map((c) => ({ c, market: t.market === "JP" ? ("JP" as const) : ("US" as const) })),
+  );
+  return cards
+    .filter(({ c }) => c.member && c.listed)
+    .map(({ c, market }) => {
+      const cur = c.current[0] ?? null;
+      const sc = cur?.success_conditions?.[0];
+      const latest = latestMetrics(rec.neocloud, c.ticker);
+      const hit = HEADLINE_ITEMS.map(([item, label]) => ({ m: latest[item], label })).find(
+        ({ m }) => m && (m.value !== null || m.low !== null || m.high !== null),
+      );
+      return {
+        ticker: c.ticker,
+        company: c.company,
+        market,
+        next_earnings: c.next_earnings,
+        condition: cur
+          ? {
+              question: cur.question,
+              target_date: cur.target_date,
+              rule: sc ? `${sc.metric} ${sc.operator} ${sc.threshold.value.toLocaleString("en-US")} ${sc.threshold.unit}` : null,
+            }
+          : null,
+        metric: hit?.m
+          ? { label: hit.label, value: hit.m.value, low: hit.m.low, high: hit.m.high, unit: hit.m.unit, as_of: hit.m.as_of, source_url: hit.m.source_url }
+          : null,
+      };
+    })
+    // Known next earnings first, nearest first. Then the companies with no date: those with a
+    // disclosed number, then by their condition's deadline.
+    .sort((a, b) => {
+      const da = a.next_earnings.date ?? "9999-12-31";
+      const db = b.next_earnings.date ?? "9999-12-31";
+      if (da !== db) return da < db ? -1 : 1;
+      if (Boolean(a.metric) !== Boolean(b.metric)) return a.metric ? -1 : 1;
+      const ta = a.condition?.target_date ?? "9999-12-31";
+      const tb = b.condition?.target_date ?? "9999-12-31";
+      return ta !== tb ? (ta < tb ? -1 : 1) : a.ticker < b.ticker ? -1 : 1;
+    })
+    .slice(0, n);
+}
+
+/** Companies covered by the themes, and their conditions by state. Pure over the records. */
+export function coverageStats(themes: ThemeDef[], rec: Records, today: string) {
+  const tickers = new Set<string>();
+  for (const t of themes) for (const m of membersOf(t, rec)) tickers.add(m.ticker.toUpperCase());
+  let active = 0;
+  let judged = 0;
+  for (const t of tickers) {
+    for (const r of conditionsFor(t, rec, today)) {
+      if (r.status === "active") active += 1;
+      else if (r.status === "judged") judged += 1;
+    }
+  }
+  return { companies: tickers.size, active_conditions: active, judged_conditions: judged };
 }

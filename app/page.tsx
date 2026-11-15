@@ -9,8 +9,9 @@ import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
 import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes, themesIndexBody } from "@/lib/themes";
 import { ThemeCards } from "./components/theme-cards";
-import { NeocloudSummary } from "./components/neocloud-summary";
-import { digestFreeBody, neocloudCompanies, nextReporters, powerTotals } from "@/lib/neocloud";
+import { NeocloudSummary, SiteIntro } from "./components/neocloud-summary";
+import { neocloudCompanies } from "@/lib/neocloud";
+import { coverageStats, neocloudFrontRows } from "@/lib/neocloud-page";
 
 export const dynamic = "force-dynamic";
 
@@ -32,36 +33,29 @@ export default async function Home() {
   const o = board.overall;
   const cur = portfolio?.current ?? null;
   const ncCompanies = neocloudCompanies(themes);
-  const ncTotals = rec ? powerTotals(ncCompanies, rec.neocloud) : null;
-  const ncDigest = rec
-    ? digestFreeBody(
-        { themes, metrics: rec.neocloud, filings: rec.neocloudFilings, signals: rec.signals, today: asOf },
-        "",
-      )
-    : null;
+  const ncThemes = (themes?.themes ?? []).filter((t) => t.id === "neocloud-us" || t.id === "neocloud-jp");
+  const ncRows = rec ? neocloudFrontRows(ncThemes, rec, asOf, 6) : [];
+  const stats = rec && themes ? coverageStats(themes.themes, rec, asOf) : null;
 
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-        {/* Neocloud — first: the most-read article series, kept as numbers from the filings */}
-        {rec && ncTotals && ncDigest && ncCompanies.length > 0 && (
+        {/* 1. What OSD is, and how much is on record */}
+        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} />}
+
+        {/* 2. Neocloud: the most-read article series, one row per company */}
+        {ncRows.length > 0 && (
           <NeocloudSummary
-            markets={[
-              { market: "US", theme: "neocloud-us", title: "US neocloud", ...ncTotals.US },
-              { market: "JP", theme: "neocloud-jp", title: "Japan neocloud", ...ncTotals.JP },
-            ]}
-            disclosures={{
-              count: ncDigest.disclosure_count,
-              companies: ncDigest.company_count,
-              from: ncDigest.window.from,
-              to: ncDigest.window.to,
-            }}
-            nextReporters={nextReporters(ncCompanies, rec, asOf, 3)}
+            rows={ncRows}
+            usCount={ncCompanies.filter((c) => c.market === "US").length}
+            jpCount={ncCompanies.filter((c) => c.market === "JP").length}
             pricePerCall={PER_CALL_PRICE.usdc}
           />
         )}
 
-        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} />
+        <div className="mt-12">
+          <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro={!stats} />
+        </div>
 
         {/* Themes — first: the stock lists the most-read articles were written around */}
         {themeIndex && (
