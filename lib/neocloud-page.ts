@@ -207,12 +207,12 @@ export function lineageChain(theme: ThemeDef) {
 // ── front page ────────────────────────────────────────────────────────────
 
 const HEADLINE_ITEMS = [
-  ["contracted_power_mw", "Contracted"],
-  ["energized_mw", "Energized"],
-  ["backlog_usd", "Backlog"],
-  ["revenue_guidance", "Revenue guidance"],
-  ["capex_guidance", "Capex guidance"],
-  ["financing", "Financing"],
+  ["contracted_power_mw", "Contracted", "契約電力"],
+  ["energized_mw", "Energized", "稼働容量"],
+  ["backlog_usd", "Backlog", "受注残"],
+  ["revenue_guidance", "Revenue guidance", "売上ガイダンス"],
+  ["capex_guidance", "Capex guidance", "設備投資ガイダンス"],
+  ["financing", "Financing", "資金調達"],
 ] as const;
 
 export interface FrontRow {
@@ -223,7 +223,7 @@ export interface FrontRow {
   /** The nearest current condition, in checkable form when it was written that way. */
   condition: { question: string; target_date: string; rule: string | null } | null;
   /** One disclosed number with its document; null when nothing is recorded. */
-  metric: { label: string; value: number | null; low: number | null; high: number | null; unit: string; as_of: string; source_url: string } | null;
+  metric: { label: string; label_ja: string; value: number | null; low: number | null; high: number | null; unit: string; as_of: string; source_url: string } | null;
 }
 
 /**
@@ -240,7 +240,7 @@ export function neocloudFrontRows(themes: ThemeDef[], rec: Records, today: strin
       const cur = c.current[0] ?? null;
       const sc = cur?.success_conditions?.[0];
       const latest = latestMetrics(rec.neocloud, c.ticker);
-      const hit = HEADLINE_ITEMS.map(([item, label]) => ({ m: latest[item], label })).find(
+      const hit = HEADLINE_ITEMS.map(([item, label, label_ja]) => ({ m: latest[item], label, label_ja })).find(
         ({ m }) => m && (m.value !== null || m.low !== null || m.high !== null),
       );
       return {
@@ -256,7 +256,7 @@ export function neocloudFrontRows(themes: ThemeDef[], rec: Records, today: strin
             }
           : null,
         metric: hit?.m
-          ? { label: hit.label, value: hit.m.value, low: hit.m.low, high: hit.m.high, unit: hit.m.unit, as_of: hit.m.as_of, source_url: hit.m.source_url }
+          ? { label: hit.label, label_ja: hit.label_ja, value: hit.m.value, low: hit.m.low, high: hit.m.high, unit: hit.m.unit, as_of: hit.m.as_of, source_url: hit.m.source_url }
           : null,
       };
     })

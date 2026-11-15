@@ -24,7 +24,7 @@ function Earnings({ r }: { r: FrontRow }) {
     <span className="tabular-nums">
       <span className="font-semibold text-slate-800">{ne.date}</span>{" "}
       <span className={ne.kind === "confirmed" ? "text-emerald-700" : "text-slate-400"}>
-        {ne.kind === "confirmed" ? "confirmed" : "estimated"}
+        {ne.kind === "confirmed" ? "確定 confirmed" : "推定 estimated"}
       </span>
     </span>
   );
@@ -55,6 +55,9 @@ export function NeocloudSummary({
         </h2>
         <p className="mt-1 text-sm text-slate-500">
           Per-company power, backlog, guidance and financing from filings — {pricePerCall} USDC per call.
+          <span className="block text-[12px] text-slate-400">
+            会社ごとの電力・受注残・ガイダンス・資金調達を、開示書類から。1 回 {pricePerCall} USDC。
+          </span>
         </p>
       </div>
 
@@ -81,14 +84,16 @@ export function NeocloudSummary({
                   ) : (
                     <span>{r.condition.question}</span>
                   )}
-                  <span className="ml-1 whitespace-nowrap tabular-nums text-slate-400">by {r.condition.target_date}</span>
+                  <span className="ml-1 whitespace-nowrap tabular-nums text-slate-400">期日 by {r.condition.target_date}</span>
                 </>
               )}
             </div>
             <div className="text-[12px]">
               {r.metric && (
-                <a href={r.metric.source_url} target="_blank" rel="noreferrer" className="hover:underline" title={`${r.metric.label}, as of ${r.metric.as_of}`}>
-                  <span className="text-slate-500">{r.metric.label}</span>{" "}
+                <a href={r.metric.source_url} target="_blank" rel="noreferrer" className="hover:underline" title={`${r.metric.label_ja} ${r.metric.label}, as of ${r.metric.as_of}`}>
+                  <span className="text-slate-500">
+                    {r.metric.label_ja} {r.metric.label}
+                  </span>{" "}
                   <span className="font-semibold tabular-nums text-[#0a1b33]">{metricText(r.metric)}</span>{" "}
                   <span className="text-sky-700">{host(r.metric.source_url)}</span>
                 </a>
@@ -100,20 +105,20 @@ export function NeocloudSummary({
 
       <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px]">
         <Link href="/themes/neocloud-us" className="text-sky-700 hover:underline">
-          All 18 US →
+          米国 {usCount}社 All {usCount} US →
         </Link>
         <Link href="/themes/neocloud-jp" className="text-sky-700 hover:underline">
-          All 5 Japan →
+          日本 {jpCount}社 All {jpCount} Japan →
         </Link>
         <Link href="/api/neocloud/digest" className="text-sky-700 hover:underline">
-          Filings, last 7 days (API) →
+          直近7日の開示 Filings, last 7 days (API) →
         </Link>
       </p>
     </section>
   );
 }
 
-/** The very top: what OSD is, and how much is on record. */
+/** The very top: what OSD is, and how much is on record (English first, Japanese beside it). */
 export function SiteIntro({
   companies,
   active,
@@ -123,24 +128,32 @@ export function SiteIntro({
   active: number;
   judged: number;
 }) {
-  const stats: Array<[string, number]> = [
-    ["companies covered", companies],
-    ["active conditions", active],
-    ["judged", judged],
+  const stats: Array<[string, string, number]> = [
+    ["companies covered", "収録銘柄", companies],
+    ["active conditions", "有効な条件", active],
+    ["judged", "判定済み", judged],
   ];
   return (
     <section className="pt-2">
       <h1 className="font-outfit text-[32px] font-semibold leading-tight tracking-tight text-[#0a1b33] md:text-[44px]">
         Claude-run equity research
       </h1>
+      <p className="text-[13px] font-semibold text-slate-400">Claude が運用する株式リサーチ</p>
       <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-slate-600 md:text-[15px]">
         Dated, numeric catalysts for US and Japanese stocks — each scored HIT / PARTIAL / MISS against the company&apos;s
         own disclosure once its deadline passes. Free to read; agents pay per call in USDC on Solana (x402).
       </p>
+      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-slate-500">
+        日米の株式に、期日と数値の付いた条件を置き、期日が来たら会社自身の開示で HIT / PARTIAL / MISS を判定します。
+        読むのは無料。エージェントは 1 回ごとに Solana の USDC で支払います（x402）。
+      </p>
       <dl className="mt-4 grid max-w-xl grid-cols-3 gap-2">
-        {stats.map(([label, n]) => (
-          <div key={label} className="rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
-            <dt className="text-[11px] text-slate-500">{label}</dt>
+        {stats.map(([en, ja, n]) => (
+          <div key={en} className="rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+            <dt className="text-[11px] leading-tight text-slate-500">
+              {ja}
+              <span className="block text-slate-400">{en}</span>
+            </dt>
             <dd className="font-outfit text-xl font-semibold tabular-nums text-[#0a1b33]">{n.toLocaleString("en-US")}</dd>
           </div>
         ))}

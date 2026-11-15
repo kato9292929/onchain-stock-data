@@ -86,6 +86,7 @@ test("front page: up to six neocloud companies, the next to report first; a comp
   const html = renderToStaticMarkup(React.createElement(NeocloudSummary, { rows: [...rows, bare], usCount: 18, jpCount: 5, pricePerCall: 0.001 }));
   assert.match(html, /Neocloud — 18 US · 5 Japan/);
   assert.match(html, /0\.001 USDC per call/);
+  assert.match(html, /1 回 0\.001 USDC/, "Japanese beside the English");
   for (const href of ["/themes/neocloud-us", "/themes/neocloud-jp", "/api/neocloud/digest"]) assert.ok(html.includes(`href="${href}"`), href);
   const rowHtml = (t) => html.match(new RegExp(`<li[^>]*data-row="${t}"[\\s\\S]*?</li>`))?.[0] ?? "";
   for (const r of [...rows, bare].filter((x) => !x.metric)) {
@@ -104,4 +105,6 @@ test("front page: the service is described first, with what is on record", () =>
   assert.match(html, /<h1/);
   assert.match(html, /scored HIT \/ PARTIAL \/ MISS/);
   assert.match(html, /companies covered/);
+  assert.match(html, /収録銘柄/, "Japanese beside the English");
+  assert.match(html, /会社自身の開示/);
 });
