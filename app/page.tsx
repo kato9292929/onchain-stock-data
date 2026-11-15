@@ -28,12 +28,6 @@ export default async function Home() {
 
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
 
-        {/* The product: every tokenized stock, its condition and its verdict. Themes, Catalysts and
-            the selection live in the tabs (the hero's nav). */}
-        <section className="mt-16">
-          <SolanaStocksSection heading="h2" />
-        </section>
-
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
         <section id="x402" className="mt-16">
           <div className="mb-4">
@@ -191,6 +185,11 @@ export default async function Home() {
             demo twin on Base Sepolia (testnet funds) for exercising the 402 →
             sign → 200 loop without spending anything real.
           </p>
+        </section>
+
+        {/* Stocks: five rows here, the full list in the Stocks tab */}
+        <section className="mt-16">
+          <SolanaStocksSection preview={5} />
         </section>
 
         <footer className="mt-16 border-t border-slate-200 py-8 text-xs text-slate-400">

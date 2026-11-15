@@ -11,8 +11,7 @@ import { StocksTable, type StockRow } from "../solana-stocks/stocks-table";
  * the per-call full record is explained. No prices: verdicts are judged on
  * disclosures, not on the stock price.
  */
-export async function SolanaStocksSection({ heading = "h1" }: { heading?: "h1" | "h2" }) {
-  const H = heading;
+export async function SolanaStocksSection({ preview }: { preview?: number } = {}) {
   const data = await loadSummaries().catch(() => null);
   if (!data) {
     return <p className="p-8 text-sm text-slate-400">Couldn&apos;t load the token list.</p>;
@@ -33,6 +32,26 @@ export async function SolanaStocksSection({ heading = "h1" }: { heading?: "h1" |
     covered: rows.filter((r) => r.conditions > 0).length,
   };
 
+  if (preview) {
+    return (
+      <div className="font-inter">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+              <SolanaMark className="h-3 w-auto" title={null} />
+              Stocks
+            </div>
+            <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{rows.length.toLocaleString()} tokenized stocks on Solana</h2>
+          </div>
+          <Link href="/solana-stocks" className="text-sm font-semibold text-[#0a152d] hover:underline">
+            All {rows.length.toLocaleString()} →
+          </Link>
+        </div>
+        <StocksTable rows={rows} today={data.today} preview={preview} />
+      </div>
+    );
+  }
+
   return (
     <div className="font-inter space-y-8">
       <header className="space-y-3">
@@ -40,9 +59,9 @@ export async function SolanaStocksSection({ heading = "h1" }: { heading?: "h1" |
           <SolanaMark className="h-3 w-auto" title={null} />
           Tokenized stocks on Solana
         </div>
-        <H className="font-outfit text-3xl font-semibold text-[#0a1b33] sm:text-4xl">
+        <h1 className="font-outfit text-3xl font-semibold text-[#0a1b33] sm:text-4xl">
           {rows.length.toLocaleString()} tokenized stocks on Solana
-        </H>
+        </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
           Every equity token issued on Solana by xStocks ({counts.xStocks.toLocaleString()}) and Ondo Global
           Markets ({counts.Ondo.toLocaleString()}), with its mint. For {counts.covered}{" "}
