@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { getPortfolioHistory } from "@/lib/data";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { LandingHero } from "./components/landing-hero";
@@ -8,12 +7,12 @@ import { SolanaMark } from "./components/solana-mark";
 import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
 import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes, themesIndexBody } from "@/lib/themes";
-import { ThemeCards } from "./components/theme-cards";
+import { ThemeCards, ThemesOverall } from "./components/theme-cards";
 import { NeocloudSummary, SiteIntro } from "./components/neocloud-summary";
 import { LangToggle } from "./components/lang-toggle";
 import { neocloudCompanies } from "@/lib/neocloud";
 import { coverageStats, neocloudFrontRows } from "@/lib/neocloud-page";
-import { getLang } from "@/lib/i18n";
+import { getLang, pick } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -22,8 +21,7 @@ export const dynamic = "force-dynamic";
  * this week's catalyst-derived selection. No P&L / benchmark tracking.
  */
 export default async function Home() {
-  const [portfolio, catalysts, solana, themes, rec] = await Promise.all([
-    getPortfolioHistory().catch(() => null),
+  const [catalysts, solana, themes, rec] = await Promise.all([
     readExternalCatalysts().catch(() => []),
     loadSummaries().catch(() => null),
     getThemes(),
@@ -33,7 +31,6 @@ export default async function Home() {
   const asOf = new Date().toISOString().slice(0, 10);
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
-  const cur = portfolio?.current ?? null;
   const ncCompanies = neocloudCompanies(themes);
   const ncThemes = (themes?.themes ?? []).filter((t) => t.id === "neocloud-us" || t.id === "neocloud-jp");
   const ncRows = rec ? neocloudFrontRows(ncThemes, rec, asOf, 6) : [];
@@ -47,51 +44,34 @@ export default async function Home() {
           <LangToggle lang={lang} />
         </div>
 
-        {/* 1. What OSD is, and how much is on record */}
-        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} lang={lang} />}
-
-        {/* 2. Neocloud: the most-read article series, one row per company */}
-        {ncRows.length > 0 && (
-          <NeocloudSummary
-            rows={ncRows}
-            usCount={ncCompanies.filter((c) => c.market === "US").length}
-            jpCount={ncCompanies.filter((c) => c.market === "JP").length}
-            pricePerCall={PER_CALL_PRICE.usdc}
-            lang={lang}
-          />
-        )}
-
-        <div className="mt-12">
-          <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro={!stats} />
-        </div>
+        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
 
         {/* Themes — first: the stock lists the most-read articles were written around */}
         {themeIndex && (
           <section className="mt-16">
             <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Themes</div>
-                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Dated catalysts by theme</h2>
-                <p className="mt-1 max-w-2xl text-sm text-slate-500">
-                  Neocloud, physical AI and the sectors of the Japanese market — each company&apos;s dated
-                  catalyst, next earnings date and Solana token, updated every week. A whole theme is{" "}
-                  {THEME_CALL_PRICE.usdc} USDC per call.
-                </p>
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                  {pick(lang, `Themes · ${THEME_CALL_PRICE.usdc} USDC per call`, `テーマ · 1 回 ${THEME_CALL_PRICE.usdc} USDC`)}
+                </div>
+                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{pick(lang, "Themes", "テーマ")}</h2>
               </div>
               <span className="flex gap-4">
                 <Link href="/themes" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                  All themes →
+                  {pick(lang, "All themes →", "テーマ一覧 →")}
                 </Link>
                 {solana && (
                   <Link href="/solana-stocks" className="inline-flex items-center gap-1 text-sm font-semibold text-[#0a152d] hover:underline">
-                    <SolanaMark className="h-3 w-auto" title={null} /> All {solana.rows.length.toLocaleString()} tokenized stocks →
+                    <SolanaMark className="h-3 w-auto" title={null} />{" "}
+                    {pick(lang, `${solana.rows.length.toLocaleString()} tokenized stocks →`, `トークン化株 ${solana.rows.length.toLocaleString()} →`)}
                   </Link>
                 )}
               </span>
             </div>
-            <ThemeCards themes={themeIndex.themes} />
-            <h3 className="mb-3 mt-8 font-outfit text-lg font-semibold text-[#0a1b33]">This week&apos;s selection</h3>
-            <ThemeCards themes={themeIndex.selections} />
+            <ThemesOverall themes={themeIndex.themes} lang={lang} />
+            <div className="mt-4">
+              <ThemeCards themes={[...themeIndex.selections, ...themeIndex.themes]} lang={lang} />
+            </div>
           </section>
         )}
 
@@ -166,39 +146,17 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* This week's selection — from catalysts, NOT a P&L */}
-        {cur && (
-          <section className="mt-16">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                  Week of {cur.week_of} · catalyst-derived
-                </div>
-                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">This week&apos;s selection</h2>
-              </div>
-              <Link href="/portfolio" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                See the picks →
-              </Link>
-            </div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="mb-4 max-w-2xl text-sm text-slate-500">
-                A research selection built from dated catalysts — not a fund and not a
-                performance track. Each name carries a verifiable 1-month catalyst.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {cur.holdings.map((h) => (
-                  <span
-                    key={h.ticker}
-                    title={h.company_name}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[13px]"
-                  >
-                    <span className="font-semibold text-[#0a1b33]">{h.ticker}</span>
-                    <span className="tabular-nums text-slate-400">{h.weight}%</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </section>
+        {/* Coverage and neocloud — below Catalysts, same section shape */}
+        {stats && <SiteIntro companies={stats.companies} active={stats.active_conditions} judged={stats.judged_conditions} lang={lang} />}
+
+        {ncRows.length > 0 && (
+          <NeocloudSummary
+            rows={ncRows}
+            usCount={ncCompanies.filter((c) => c.market === "US").length}
+            jpCount={ncCompanies.filter((c) => c.market === "JP").length}
+            pricePerCall={PER_CALL_PRICE.usdc}
+            lang={lang}
+          />
         )}
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
