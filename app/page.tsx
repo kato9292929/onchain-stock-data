@@ -1,45 +1,22 @@
 import Link from "next/link";
 import { LandingHero } from "./components/landing-hero";
+import { SolanaStocksSection } from "./components/solana-stocks-section";
+import { loadSummaries } from "@/lib/solana-stocks-load";
+import { getThemes } from "@/lib/themes";
+import { getLang } from "@/lib/i18n";
 import { SolanaMark } from "./components/solana-mark";
-import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
-import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
-import { getThemes, themesIndexBody } from "@/lib/themes";
-import { ThemeCards } from "./components/theme-cards";
-import { LedgerCards } from "./components/ledger-cards";
-import { frontLedger } from "@/lib/front-ledger";
+import { PER_CALL_PRICE } from "@/lib/x402";
 import { LangToggle } from "./components/lang-toggle";
-import { getLang, pick } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-function SectionHead({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
-  return (
-    <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-      <div>
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{eyebrow}</div>
-        <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{title}</h2>
-      </div>
-      {children && <span className="flex flex-wrap gap-4">{children}</span>}
-    </div>
-  );
-}
-
-const linkCls = "text-sm font-semibold text-[#0a152d] hover:underline";
-
-
 /**
- * Light, readable landing. Product axis: prediction track record (catalysts) +
- * this week's catalyst-derived selection. No P&L / benchmark tracking.
+ * The front page: the hero, every tokenized stock with its condition and
+ * verdict, then how agents pay (x402) and read (MCP). Themes, Catalysts and the
+ * selection are tabs in the hero's nav, not sections here.
  */
 export default async function Home() {
-  const [solana, themes, rec] = await Promise.all([
-    loadSummaries().catch(() => null),
-    getThemes(),
-    loadRecords().catch(() => null),
-  ]);
-  const themeIndex = themes && rec ? themesIndexBody(themes, rec, new Date().toISOString().slice(0, 10)) : null;
-  const asOf = new Date().toISOString().slice(0, 10);
-  const ledger = rec && themes ? frontLedger(themes.themes, rec, asOf) : null;
+  const [solana, themes] = await Promise.all([loadSummaries().catch(() => null), getThemes()]);
   const lang = await getLang();
 
   return (
@@ -51,99 +28,11 @@ export default async function Home() {
 
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
 
-        {ledger && (
-          <>
-            {/* 1. What the product does, and the whole record — one panel */}
-            <section className="mt-16">
-              <SectionHead
-                eyebrow={pick(lang, "How it works", "仕組み")}
-                title={pick(lang, "A dated, numeric condition per stock. The filing decides.", "銘柄ごとに、期日と数値の条件。当たり外れは決算書類で決まる")}
-              />
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <ol className="grid gap-4 text-[13px] text-slate-600 sm:grid-cols-3">
-                  {[
-                    [pick(lang, "Condition", "条件"), pick(lang, "A number and a threshold the company will disclose — e.g. capacity ≥ 40 MW.", "会社が開示する数字と基準。例：容量 40 MW 以上。")],
-                    [pick(lang, "Deadline", "期日"), pick(lang, "The earnings date the number comes out on.", "その数字が出る決算日。")],
-                    [pick(lang, "Verdict", "判定"), pick(lang, "HIT / PARTIAL / MISS against the filing, with its URL.", "決算書類で HIT / PARTIAL / MISS。書類の URL 付き。")],
-                  ].map(([k, v], i) => (
-                    <li key={k} className="flex gap-3">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0a152d] text-[11px] font-semibold text-white">{i + 1}</span>
-                      <span>
-                        <span className="font-semibold text-[#0a1b33]">{k}</span>
-                        <br />
-                        {v}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-                <div className="mt-6 flex items-baseline justify-between border-t border-slate-100 pt-4">
-                  <span className="font-outfit text-[#0a1b33]">{pick(lang, "Record so far", "これまでの記録")}</span>
-                  <span className="text-xs text-slate-400">
-                    {pick(lang, `${ledger.companies} companies · ${ledger.judged} judged`, `${ledger.companies}社 · 判定済み ${ledger.judged}件`)}
-                  </span>
-                </div>
-                <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
-                  {(
-                    [
-                      [pick(lang, "Hit rate", "的中率"), ledger.hit_rate == null ? "—" : `${(ledger.hit_rate * 100).toFixed(0)}%`, true],
-                      ["HIT", ledger.counts.hit, false],
-                      ["PARTIAL", ledger.counts.partial, false],
-                      ["MISS", ledger.counts.miss, false],
-                      [pick(lang, "Pending", "判定待ち"), ledger.active, false],
-                    ] as Array<[string, string | number, boolean]>
-                  ).map(([label, value, accent]) => (
-                    <div key={label} className="rounded-xl border border-slate-100 bg-slate-50 p-2 text-center">
-                      <div className={`text-lg font-semibold tabular-nums ${accent ? "text-[#0a1b33]" : "text-slate-700"}`}>{value}</div>
-                      <div className="text-[10px] uppercase tracking-wide text-slate-400">{label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* 2. Judged — the record, one shape per company */}
-            {ledger.recent.length > 0 && (
-              <section className="mt-16">
-                <SectionHead eyebrow={pick(lang, "Track record", "実績")} title={pick(lang, "Recently judged", "最近の判定")}>
-                  <Link href="/catalysts" className={linkCls}>
-                    {pick(lang, "All verdicts →", "判定の一覧 →")}
-                  </Link>
-                </SectionHead>
-                <LedgerCards items={ledger.recent} lang={lang} />
-              </section>
-            )}
-
-            {/* 3. Pending — the same shape */}
-            {ledger.upcoming.length > 0 && (
-              <section className="mt-16">
-                <SectionHead eyebrow={pick(lang, "Pending", "判定待ち")} title={pick(lang, "Coming up", "これから判定")}>
-                  {solana && (
-                    <Link href="/solana-stocks" className={`inline-flex items-center gap-1 ${linkCls}`}>
-                      <SolanaMark className="h-3 w-auto" title={null} />{" "}
-                      {pick(lang, `${solana.rows.length.toLocaleString()} tokenized stocks →`, `トークン化株 ${solana.rows.length.toLocaleString()} →`)}
-                    </Link>
-                  )}
-                </SectionHead>
-                <LedgerCards items={ledger.upcoming} lang={lang} />
-              </section>
-            )}
-          </>
-        )}
-
-        {/* 4. Themes — entry points; only those with something to judge */}
-        {themeIndex && (
-          <section className="mt-16">
-            <SectionHead
-              eyebrow={pick(lang, `Themes · ${THEME_CALL_PRICE.usdc} USDC per call`, `テーマ · 1 回 ${THEME_CALL_PRICE.usdc} USDC`)}
-              title={pick(lang, "Browse by theme", "テーマから見る")}
-            >
-              <Link href="/themes" className={linkCls}>
-                {pick(lang, `All ${themeIndex.themes.length + themeIndex.selections.length} themes →`, `全 ${themeIndex.themes.length + themeIndex.selections.length} テーマ →`)}
-              </Link>
-            </SectionHead>
-            <ThemeCards themes={[...themeIndex.selections, ...themeIndex.themes].filter((t) => t.active_catalysts > 0)} lang={lang} />
-          </section>
-        )}
+        {/* The product: every tokenized stock, its condition and its verdict. Themes, Catalysts and
+            the selection live in the tabs (the hero's nav). */}
+        <section className="mt-16">
+          <SolanaStocksSection heading="h2" />
+        </section>
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
         <section id="x402" className="mt-16">
