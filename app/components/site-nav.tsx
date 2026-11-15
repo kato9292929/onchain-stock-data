@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LangToggle } from "./lang-toggle";
 
 /** Replica of the landing top header, so detail pages share the exact same
  *  chrome: white logo disc + white pill nav (Home / Portfolio / Catalysts) with
@@ -80,10 +79,6 @@ export function SiteNav({ lang }: { lang: "en" | "ja" }) {
           })}
         </nav>
 
-        <div className="hidden shrink-0 sm:block">
-          <LangToggle lang={lang} />
-        </div>
-
         {/* API pill */}
         <Link
           href="/api/alpha/catalysts/physical-ai"
@@ -92,10 +87,6 @@ export function SiteNav({ lang }: { lang: "en" | "ja" }) {
         >
           API
         </Link>
-      </div>
-      {/* Phones: the switch sits under the nav, right-aligned. */}
-      <div className="mx-auto mt-2 flex max-w-3xl justify-end sm:hidden">
-        <LangToggle lang={lang} />
       </div>
     </header>
   );

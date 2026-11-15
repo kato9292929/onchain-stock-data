@@ -41,6 +41,8 @@ export function StocksTable({
   const [onlyConditions, setOnlyConditions] = useState(false);
   const [soon, setSoon] = useState(false);
   const [page, setPage] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+  const isPreview = Boolean(preview) && !expanded;
 
   const in14 = useMemo(() => {
     const d = new Date(`${today}T00:00:00Z`);
@@ -75,7 +77,7 @@ export function StocksTable({
 
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
   const cur = Math.min(page, pages - 1);
-  const shown = preview
+  const shown = isPreview
     ? rows.slice(0, preview)
     : filtered.slice(cur * PAGE, cur * PAGE + PAGE);
   const reset = () => setPage(0);
@@ -89,7 +91,7 @@ export function StocksTable({
 
   return (
     <div className="space-y-4">
-      {!preview && (
+      {!isPreview && (
         <div className="flex flex-wrap items-center gap-2">
           <input
             value={q}
@@ -233,7 +235,19 @@ export function StocksTable({
         </table>
       </div>
 
-      {!preview && pages > 1 && (
+      {isPreview && (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="rounded-full border border-slate-200 bg-white px-5 py-2 text-[13px] font-semibold text-[#0a1b33] shadow-sm transition-colors hover:border-slate-300"
+          >
+            Show all {rows.length.toLocaleString()} ↓
+          </button>
+        </div>
+      )}
+
+      {!isPreview && pages > 1 && (
         <div className="flex items-center justify-center gap-3 text-[12px] text-slate-500">
           <button
             type="button"

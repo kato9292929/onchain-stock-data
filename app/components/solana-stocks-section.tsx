@@ -43,9 +43,6 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
             </div>
             <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{rows.length.toLocaleString()} tokenized stocks on Solana</h2>
           </div>
-          <Link href="/solana-stocks" className="text-sm font-semibold text-[#0a152d] hover:underline">
-            All {rows.length.toLocaleString()} →
-          </Link>
         </div>
         <StocksTable rows={rows} today={data.today} preview={preview} />
       </div>

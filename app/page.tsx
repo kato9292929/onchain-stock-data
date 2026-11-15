@@ -3,10 +3,8 @@ import { LandingHero } from "./components/landing-hero";
 import { SolanaStocksSection } from "./components/solana-stocks-section";
 import { loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes } from "@/lib/themes";
-import { getLang } from "@/lib/i18n";
 import { SolanaMark } from "./components/solana-mark";
 import { PER_CALL_PRICE } from "@/lib/x402";
-import { LangToggle } from "./components/lang-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -17,15 +15,10 @@ export const dynamic = "force-dynamic";
  */
 export default async function Home() {
   const [solana, themes] = await Promise.all([loadSummaries().catch(() => null), getThemes()]);
-  const lang = await getLang();
 
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-        <div className="mb-3 flex justify-end">
-          <LangToggle lang={lang} />
-        </div>
-
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}

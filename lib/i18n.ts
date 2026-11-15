@@ -1,4 +1,3 @@
-import { cookies, headers } from "next/headers";
 
 /**
  * Page language: English or Japanese, one at a time (no side-by-side).
@@ -23,9 +22,9 @@ export function langFrom(cookie: string | undefined | null, acceptLanguage: stri
   return first?.startsWith("ja") ? "ja" : "en";
 }
 
+/** The site is English only: the JP | EN switch was removed. */
 export async function getLang(): Promise<Lang> {
-  const [c, h] = await Promise.all([cookies(), headers()]);
-  return langFrom(c.get(LANG_COOKIE)?.value, h.get("accept-language"));
+  return "en";
 }
 
 /** The string for this language. */
