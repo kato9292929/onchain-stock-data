@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { getPortfolioHistory } from "@/lib/data";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
 import { buildScoreboard, ARTICLE_TITLES } from "@/lib/physical-ai-scoreboard";
 import { LandingHero } from "./components/landing-hero";
@@ -22,8 +21,7 @@ export const dynamic = "force-dynamic";
  * this week's catalyst-derived selection. No P&L / benchmark tracking.
  */
 export default async function Home() {
-  const [portfolio, catalysts, solana, themes, rec] = await Promise.all([
-    getPortfolioHistory().catch(() => null),
+  const [catalysts, solana, themes, rec] = await Promise.all([
     readExternalCatalysts().catch(() => []),
     loadSummaries().catch(() => null),
     getThemes(),
@@ -33,7 +31,6 @@ export default async function Home() {
   const asOf = new Date().toISOString().slice(0, 10);
   const board = buildScoreboard(catalysts, asOf);
   const o = board.overall;
-  const cur = portfolio?.current ?? null;
   const ncCompanies = neocloudCompanies(themes);
   const ncThemes = (themes?.themes ?? []).filter((t) => t.id === "neocloud-us" || t.id === "neocloud-jp");
   const ncRows = rec ? neocloudFrontRows(ncThemes, rec, asOf, 6) : [];
@@ -61,9 +58,11 @@ export default async function Home() {
           />
         )}
 
-        <div className="mt-12">
-          <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro={!stats} />
-        </div>
+        {!stats && (
+          <div className="mt-12">
+            <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
+          </div>
+        )}
 
         {/* Themes — first: the stock lists the most-read articles were written around */}
         {themeIndex && (
@@ -164,41 +163,6 @@ export default async function Home() {
             ))}
           </div>
         </section>
-
-        {/* This week's selection — from catalysts, NOT a P&L */}
-        {cur && (
-          <section className="mt-16">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                  Week of {cur.week_of} · catalyst-derived
-                </div>
-                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">This week&apos;s selection</h2>
-              </div>
-              <Link href="/portfolio" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                See the picks →
-              </Link>
-            </div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="mb-4 max-w-2xl text-sm text-slate-500">
-                A research selection built from dated catalysts — not a fund and not a
-                performance track. Each name carries a verifiable 1-month catalyst.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {cur.holdings.map((h) => (
-                  <span
-                    key={h.ticker}
-                    title={h.company_name}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[13px]"
-                  >
-                    <span className="font-semibold text-[#0a1b33]">{h.ticker}</span>
-                    <span className="tabular-nums text-slate-400">{h.weight}%</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
         <section id="x402" className="mt-16">

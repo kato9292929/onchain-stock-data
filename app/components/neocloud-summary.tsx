@@ -69,48 +69,50 @@ export function NeocloudSummary({
 
       <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         {rows.map((r) => (
-          <li
-            key={r.ticker}
-            data-row={r.ticker}
-            className="grid grid-cols-1 gap-1 px-4 py-3 text-[13px] md:grid-cols-[minmax(10rem,1.1fr)_minmax(8rem,0.8fr)_minmax(0,2fr)_minmax(9rem,1fr)] md:items-start md:gap-4"
-          >
-            <div className="min-w-0">
-              <span className="font-semibold text-[#0a1b33]">{r.company}</span>{" "}
-              <span className="font-mono text-[11px] text-slate-500">{r.ticker}</span>
-              <span className="ml-1 text-[10px] text-slate-400">{r.market === "JP" ? t(lang, "JP", "日本") : t(lang, "US", "米国")}</span>
+          <li key={r.ticker} data-row={r.ticker} className="px-4 py-3 text-[13px]">
+            {/* line 1: company, and its next earnings on the right when known */}
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <div className="min-w-0">
+                <span className="font-semibold text-[#0a1b33]">{r.company}</span>{" "}
+                <span className="font-mono text-[11px] text-slate-500">{r.ticker}</span>
+                <span className="ml-1 text-[10px] text-slate-400">{r.market === "JP" ? t(lang, "JP", "日本") : t(lang, "US", "米国")}</span>
+              </div>
+              {r.next_earnings.date && (
+                <div className="text-[12px]">
+                  <span className="text-slate-400">{t(lang, "Earnings", "決算")}</span> <Earnings r={r} lang={lang} />
+                </div>
+              )}
             </div>
-            <div className="text-[12px]">
-              <Earnings r={r} lang={lang} />
-            </div>
-            <div className="min-w-0 text-[12px] leading-relaxed text-slate-600">
-              {r.condition && (
-                <>
-                  {r.condition.rule ? (
-                    <span className="rounded bg-slate-50 px-1.5 py-0.5 text-slate-700">{r.condition.rule}</span>
-                  ) : (
-                    <span>{r.condition.question}</span>
-                  )}
-                  <span className="ml-1 whitespace-nowrap tabular-nums text-slate-400">
-                    {t(lang, "by", "期日")} {r.condition.target_date}
+            {/* line 2: the condition, then the disclosed number when there is one */}
+            {(r.condition || r.metric) && (
+              <div className="mt-1 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[12px] leading-relaxed text-slate-600">
+                {r.condition && (
+                  <span className="min-w-0">
+                    {r.condition.rule ? (
+                      <span className="rounded bg-slate-50 px-1.5 py-0.5 text-slate-700">{r.condition.rule}</span>
+                    ) : (
+                      <span>{r.condition.question}</span>
+                    )}
+                    <span className="ml-1 whitespace-nowrap tabular-nums text-slate-400">
+                      {t(lang, "by", "期日")} {r.condition.target_date}
+                    </span>
                   </span>
-                </>
-              )}
-            </div>
-            <div className="text-[12px]">
-              {r.metric && (
-                <a
-                  href={r.metric.source_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:underline"
-                  title={`${t(lang, r.metric.label, r.metric.label_ja)} (${r.metric.as_of})`}
-                >
-                  <span className="text-slate-500">{t(lang, r.metric.label, r.metric.label_ja)}</span>{" "}
-                  <span className="font-semibold tabular-nums text-[#0a1b33]">{metricText(r.metric)}</span>{" "}
-                  <span className="text-sky-700">{host(r.metric.source_url)}</span>
-                </a>
-              )}
-            </div>
+                )}
+                {r.metric && (
+                  <a
+                    href={r.metric.source_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:underline"
+                    title={`${t(lang, r.metric.label, r.metric.label_ja)} (${r.metric.as_of})`}
+                  >
+                    <span className="text-slate-500">{t(lang, r.metric.label, r.metric.label_ja)}</span>{" "}
+                    <span className="font-semibold tabular-nums text-[#0a1b33]">{metricText(r.metric)}</span>{" "}
+                    <span className="text-sky-700">{host(r.metric.source_url)}</span>
+                  </a>
+                )}
+              </div>
+            )}
           </li>
         ))}
       </ul>
