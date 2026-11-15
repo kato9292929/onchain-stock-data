@@ -8,12 +8,12 @@ import { SolanaMark } from "./components/solana-mark";
 import { PER_CALL_PRICE, THEME_CALL_PRICE } from "@/lib/x402";
 import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes, themesIndexBody } from "@/lib/themes";
-import { ThemeCards } from "./components/theme-cards";
+import { ThemeCards, ThemesOverall } from "./components/theme-cards";
 import { NeocloudSummary, SiteIntro } from "./components/neocloud-summary";
 import { LangToggle } from "./components/lang-toggle";
 import { neocloudCompanies } from "@/lib/neocloud";
 import { coverageStats, neocloudFrontRows } from "@/lib/neocloud-page";
-import { getLang } from "@/lib/i18n";
+import { getLang, pick } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -70,28 +70,27 @@ export default async function Home() {
           <section className="mt-16">
             <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Themes</div>
-                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">Dated catalysts by theme</h2>
-                <p className="mt-1 max-w-2xl text-sm text-slate-500">
-                  Neocloud, physical AI and the sectors of the Japanese market — each company&apos;s dated
-                  catalyst, next earnings date and Solana token, updated every week. A whole theme is{" "}
-                  {THEME_CALL_PRICE.usdc} USDC per call.
-                </p>
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                  {pick(lang, `Themes · ${THEME_CALL_PRICE.usdc} USDC per call`, `テーマ · 1 回 ${THEME_CALL_PRICE.usdc} USDC`)}
+                </div>
+                <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{pick(lang, "Themes", "テーマ")}</h2>
               </div>
               <span className="flex gap-4">
                 <Link href="/themes" className="text-sm font-semibold text-[#0a152d] hover:underline">
-                  All themes →
+                  {pick(lang, "All themes →", "テーマ一覧 →")}
                 </Link>
                 {solana && (
                   <Link href="/solana-stocks" className="inline-flex items-center gap-1 text-sm font-semibold text-[#0a152d] hover:underline">
-                    <SolanaMark className="h-3 w-auto" title={null} /> All {solana.rows.length.toLocaleString()} tokenized stocks →
+                    <SolanaMark className="h-3 w-auto" title={null} />{" "}
+                    {pick(lang, `${solana.rows.length.toLocaleString()} tokenized stocks →`, `トークン化株 ${solana.rows.length.toLocaleString()} →`)}
                   </Link>
                 )}
               </span>
             </div>
-            <ThemeCards themes={themeIndex.themes} />
-            <h3 className="mb-3 mt-8 font-outfit text-lg font-semibold text-[#0a1b33]">This week&apos;s selection</h3>
-            <ThemeCards themes={themeIndex.selections} />
+            <ThemesOverall themes={themeIndex.themes} lang={lang} />
+            <div className="mt-4">
+              <ThemeCards themes={[...themeIndex.selections, ...themeIndex.themes]} lang={lang} />
+            </div>
           </section>
         )}
 
