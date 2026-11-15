@@ -305,6 +305,13 @@ export interface ExternalCatalyst {
   parent_catalyst_id?: string | null;
   /** Display name for unlisted / pre-IPO companies (ticker is then a slug). */
   company_name?: string;
+  /**
+   * Paid submissions (POST /api/alpha/catalyst/submit): "pending" when written
+   * by the handler, "settled" once the payment is confirmed on chain,
+   * "internal" for X-Internal-Key callers. Absent on editorial rows.
+   */
+  payment_status?: "pending" | "settled" | "internal";
+  payment_confirmed_at?: string;
 }
 
 /**
