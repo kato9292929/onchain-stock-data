@@ -19,6 +19,16 @@ export function groupOf(population: string): Group {
   return "jp-sectors";
 }
 
+/** Wording as compared across editions: full/half-width, spacing and brackets folded; the 【外れ方向】 tail dropped. */
+export function sameWording(q: string): string {
+  return String(q ?? "")
+    .split("【外れ方向】")[0]
+    .normalize("NFKC")
+    .replace(/[〜～]/g, "-")
+    .replace(/[\s()（）「」、。,.・/\-]/g, "")
+    .toLowerCase();
+}
+
 const conditionText = (r: ConditionRow) => {
   const sc = r.success_conditions?.[0];
   return sc ? `${sc.metric} ${sc.operator} ${sc.threshold.value.toLocaleString("en-US")} ${sc.threshold.unit}` : r.question;
@@ -34,8 +44,14 @@ export function selectionRows(rec: Records, today: string): SelectionRow[] {
   const seen = new Set<string>();
   const out: SelectionRow[] = [];
   for (const t of tickers) {
-    for (const r of conditionsFor(t, rec, today)) {
+    const all = conditionsFor(t, rec, today);
+    const byId = new Map(all.map((r) => [r.id, r]));
+    for (const r of all) {
       if (r.status === "superseded" || seen.has(r.id) || !r.question && !r.success_conditions?.length) continue;
+      // An older article edition whose condition the next edition carried over
+      // unchanged (same deadline, same wording) is the same prediction: count it once.
+      const next = r.superseded_by ? byId.get(r.superseded_by) : undefined;
+      if (next && next.target_date === r.target_date && sameWording(next.question) === sameWording(r.question)) continue;
       seen.add(r.id);
       out.push({
         id: r.id,
