@@ -1,11 +1,11 @@
 import { conditionsFor, weeklyRows, type ConditionRow, type Records } from "@/lib/company-record";
+import type { ThemeDef } from "@/lib/theme-members";
+import { members as membersOf } from "@/lib/themes";
 
 /**
- * Selection: every condition this site has set, in one list. Weekly picks,
- * the article series (neocloud, physical AI) and the Japanese sector research
- * were separate pages (Selection / Catalysts / Themes); they are the same
- * thing — a company, a dated numeric condition, a verdict from the filing —
- * so here they are one list, and where a condition came from is a filter.
+ * Selection: every condition this site has set, kept in its categories —
+ * the weekly picks, the neocloud and physical-AI series and the Japanese
+ * sectors (formerly the Selection / Catalysts / Themes pages).
  */
 
 import type { Group, SelectionRow } from "@/lib/selection-groups";
@@ -42,6 +42,7 @@ export function selectionRows(rec: Records, today: string): SelectionRow[] {
         ticker: r.ticker,
         company: r.company ?? r.ticker,
         group: groupOf(r.population),
+        population: r.population,
         condition: conditionText(r),
         target_date: r.target_date,
         result: r.result,
@@ -54,4 +55,45 @@ export function selectionRows(rec: Records, today: string): SelectionRow[] {
   const judged = out.filter((r) => r.status === "judged").sort((a, b) => b.target_date.localeCompare(a.target_date) || a.ticker.localeCompare(b.ticker));
   const open = out.filter((r) => r.status !== "judged").sort((a, b) => a.target_date.localeCompare(b.target_date) || a.ticker.localeCompare(b.ticker));
   return [...judged, ...open];
+}
+
+export interface SelectionSection {
+  id: string;
+  title: string;
+  group: Group;
+  companies: number;
+  rows: SelectionRow[];
+}
+
+/**
+ * The categories, in order: weekly picks, neocloud, physical AI, Japan sectors
+ * (theme rank within each). A weekly section holds that market's weekly rows;
+ * any other theme holds its members' non-weekly rows. A condition whose company
+ * is in no theme goes to "Other". Pure over the records.
+ */
+export function selectionSections(rows: SelectionRow[], themes: ThemeDef[], rec: Records): SelectionSection[] {
+  const order: Group[] = ["weekly", "neocloud", "physical-ai", "jp-sectors"];
+  const groupOfTheme = (t: ThemeDef): Group =>
+    t.kind === "weekly" ? "weekly" : t.id.startsWith("neocloud") ? "neocloud" : t.id.startsWith("physical-ai") ? "physical-ai" : "jp-sectors";
+  const sorted = [...themes].sort((a, b) => order.indexOf(groupOfTheme(a)) - order.indexOf(groupOfTheme(b)) || a.rank - b.rank);
+
+  const placed = new Set<string>();
+  const sections: SelectionSection[] = [];
+  for (const t of sorted) {
+    const g = groupOfTheme(t);
+    let mine: SelectionRow[];
+    if (g === "weekly") {
+      const want = t.market === "JP" ? "JP Weekly Selection" : "US Weekly Selection";
+      mine = rows.filter((r) => r.population === want);
+    } else {
+      const tickers = new Set(membersOf(t, rec).map((m) => m.ticker.toUpperCase()));
+      mine = rows.filter((r) => r.group !== "weekly" && tickers.has(r.ticker.toUpperCase()));
+    }
+    for (const r of mine) placed.add(r.id);
+    if (mine.length === 0) continue;
+    sections.push({ id: t.id, title: t.title_en, group: g, companies: new Set(mine.map((r) => r.ticker)).size, rows: mine });
+  }
+  const rest = rows.filter((r) => !placed.has(r.id));
+  if (rest.length) sections.push({ id: "other", title: "Other", group: "jp-sectors", companies: new Set(rest.map((r) => r.ticker)).size, rows: rest });
+  return sections;
 }

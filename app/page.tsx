@@ -53,7 +53,7 @@ export default async function Home() {
                   price: `${PER_CALL_PRICE.usdc} USDC`,
                   unit: "per call",
                   what: "Per-company lookups",
-                  detail: "/api/solana-stocks/{ticker}?view=full · /api/catalyst/{ticker} · /api/edinet/{code}",
+                  detail: "/api/solana-stocks/{ticker}?view=full · /api/edinet/{code} (大量保有報告書)",
                 },
                 {
                   price: "$0.01",

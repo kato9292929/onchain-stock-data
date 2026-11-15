@@ -15,6 +15,8 @@ export interface SelectionRow {
   ticker: string;
   company: string;
   group: Group;
+  /** Where the condition was set (the record's population label). */
+  population: string;
   /** What has to be disclosed for a hit: the checkable rule when there is one, else the question. */
   condition: string;
   target_date: string;
