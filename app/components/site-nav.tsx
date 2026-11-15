@@ -9,8 +9,8 @@ import { usePathname } from "next/navigation";
 const NAV = [
   // The logo disc is Home too, so the word is dropped on phones to make room.
   { href: "/", label: "Home", ja: "ホーム", wideOnly: true },
-  { href: "/themes", label: "Themes", ja: "テーマ" },
   { href: "/solana-stocks", label: "Stocks", ja: "銘柄" },
+  { href: "/themes", label: "Themes", ja: "テーマ" },
   { href: "/catalysts", label: "Catalysts", ja: "カタリスト" },
   { href: "/portfolio", label: "Selection", ja: "選定" },
 ];

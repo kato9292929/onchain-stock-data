@@ -119,16 +119,16 @@ export function LandingHero({
             ✦
           </div>
           <Link
-            href="/themes"
-            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
-          >
-            Themes
-          </Link>
-          <Link
             href="/solana-stocks"
             className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
           >
             Stocks
+          </Link>
+          <Link
+            href="/themes"
+            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
+          >
+            Themes
           </Link>
           <Link
             href="/catalysts"
