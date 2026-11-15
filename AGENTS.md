@@ -74,3 +74,9 @@ to the user; (e) the user explicitly approves. Only then uncomment the
 approval.** "It's probably cheap" is not approval. If you cannot estimate the
 cost, say so and stop.
 <!-- END:cost-governance -->
+
+# 人の承認が要るパス（paths that need a human, or a check, before they change）
+
+- 費用が発生するもの（cron・モデル呼び出し・有料 API）：上の Cost governance のとおり、見積もりと本人の承認が先。
+- 本番のブランチ・Vercel の Production 設定：上の Branch & repo hygiene のとおり。
+- 決済パス（402 応答・verify・settle・payTo・金額・network・受け取り記録・再取得）に触れたら、コミット前に x402-security-check を回す
