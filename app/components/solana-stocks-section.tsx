@@ -61,10 +61,9 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
           Every equity token issued on Solana by xStocks ({counts.xStocks.toLocaleString()}) and Ondo Global
-          Markets ({counts.Ondo.toLocaleString()}), with its mint. For {counts.covered}{" "}
-          of them this site sets a
-          dated earnings condition and scores it HIT / PARTIAL / MISS from the company&apos;s own disclosure.
-          Pick a ticker for its page; the full condition-and-verdict history is{" "}
+          Markets ({counts.Ondo.toLocaleString()}), with its mint. Per call, each US-listed company&apos;s own
+          SEC filings and XBRL financials (revenue, operating income, net income, EPS, cash, shares), each value
+          with its filing — plus, for {counts.covered} of them, a dated condition scored HIT / PARTIAL / MISS.{" "}
           <span className="font-semibold text-slate-700">{PER_CALL_PRICE.usdc} USDC per call</span> over x402.
         </p>
         <p className="text-[12px] text-slate-400">
