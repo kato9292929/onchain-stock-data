@@ -33,9 +33,14 @@ const nextConfig: NextConfig = {
     // exact paths, so /alpha/portfolio/[ticker] and /alpha/portfolio/history
     // are unaffected and continue to render.
     return [
-      { source: "/alpha", destination: "/portfolio", permanent: false },
-      { source: "/alpha/portfolio", destination: "/portfolio", permanent: false },
-      { source: "/alpha/jp", destination: "/portfolio", permanent: false },
+      { source: "/alpha", destination: "/selection", permanent: false },
+      { source: "/alpha/portfolio", destination: "/selection", permanent: false },
+      { source: "/alpha/jp", destination: "/selection", permanent: false },
+      // Selection, Catalysts and Themes are one list now (/selection).
+      { source: "/portfolio", destination: "/selection", permanent: false },
+      { source: "/portfolio/jp", destination: "/selection", permanent: false },
+      { source: "/catalysts", destination: "/selection", permanent: false },
+      { source: "/themes", destination: "/selection", permanent: false },
     ];
   },
 };

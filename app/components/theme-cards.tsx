@@ -50,32 +50,3 @@ export function ThemeCards({ themes, lang = "en" }: { themes: ThemeCard[]; lang?
     </div>
   );
 }
-
-/** The "Overall" panel above the theme cards — same shape as the Catalysts one. */
-export function ThemesOverall({ themes, lang = "en" }: { themes: ThemeCard[]; lang?: Lang }) {
-  const withActive = themes.filter((t) => t.active_catalysts > 0).length;
-  const withEvent = themes.filter((t) => t.events_next_14_days > 0).length;
-  const tiles: Array<[string, number, boolean]> = [
-    [pick(lang, "With active conditions", "条件あり"), withActive, true],
-    [pick(lang, "Event in 14 days", "14日以内に予定"), withEvent, false],
-    [pick(lang, "No conditions yet", "条件なし"), themes.length - withActive, false],
-  ];
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-baseline justify-between">
-        <span className="font-outfit text-[#0a1b33]">{pick(lang, "Overall", "全体")}</span>
-        <span className="text-xs text-slate-400">
-          {pick(lang, `${themes.length} themes`, `${themes.length} テーマ`)}
-        </span>
-      </div>
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        {tiles.map(([label, value, accent]) => (
-          <div key={label} className="rounded-xl border border-slate-100 bg-slate-50 p-2 text-center">
-            <div className={`text-lg font-semibold tabular-nums ${accent ? "text-[#0a1b33]" : "text-slate-700"}`}>{value}</div>
-            <div className="text-[10px] uppercase tracking-wide text-slate-400">{label}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}

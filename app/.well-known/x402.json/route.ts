@@ -134,7 +134,7 @@ export function GET(): NextResponse {
         path: "/api/edinet/:code",
         method: "GET",
         description:
-          "Latest EDINET disclosure metadata (filer, doc id/type, submit datetime) and the accounting period for a TSE ticker. Headline figures are not served (financials_available:false). Settled per call in USDC on Solana.",
+          "大量保有報告書 time series for a TSE ticker from EDINET: every 大量保有報告書 (350) and 変更報告書 (360) on its shares in the last 180 days — holder, report type, submit datetime, doc id. Holding ratio is not served yet. Settled per call in USDC on Solana.",
         accepts: solanaOnlyLeg("/api/edinet/:code", PER_CALL_PRICE.base_units),
       },
       {

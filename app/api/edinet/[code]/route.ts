@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { withSolanaUsdcMicroPaywall, withPublicCors, corsPreflight } from "@/lib/x402-route";
 import { PER_CALL_PRICE } from "@/lib/x402";
 import {
-  getCompanyFinancials,
-  dumpReportElements,
-  FINANCIAL_WINDOW_DAYS,
+  getLargeHoldings,
+  dumpDocElements,
+  LARGE_HOLDING_WINDOW_DAYS,
   SOURCE_LABEL,
   PROCESSED_BY,
 } from "@/lib/edinet";
@@ -16,23 +16,19 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 /**
- * PAID (x402 per-call, Solana mainnet exact-svm — same rail as /api/catalyst):
- * one company's LATEST disclosure from EDINET — filer name, doc id / type /
- * description, submission datetime and the accounting period, located from the
- * newest 有報・四半期・半期 report.
+ * PAID (x402 per-call, 0.001 USDC, Solana mainnet exact-svm): one company's
+ * 大量保有報告書 time series from EDINET — every 大量保有報告書 (350) and
+ * 変更報告書 (360) filed on its shares in the window, newest first: who holds
+ * (filer), which report, when, the document id and the PDF's API URL.
  *
- * The headline figures (sales / operating income / net income) are part of the
- * response shape but are NOT currently served: extraction is paused
- * (lib/edinet.ts `FINANCIALS_ENABLED = false`) because the candidate-element
- * approach shipped wrong values live, so they return null alongside
- * `financials_available:false`. Figures are never
- * fabricated. Keep the paywall `description` below in step with this.
+ * Only EDINET list fields are served. The holding ratio and share count live in
+ * each report's XBRL; they are NOT served until their element IDs are confirmed
+ * on real reports (`?debug=elements` dumps the newest report's rows for that).
+ * Values are never guessed.
  *
  * Terms compliance: every payload carries `source` = "出典：金融庁 EDINET" and
  * `processed_by`. Data is fetched only via the official EDINET API v2; date
- * lists and per-report extractions are cached weekly.
- *
- * Priced at 1000 USDC base units (0.001 USDC), settled in USDC-SPL on Solana.
+ * lists are cached weekly.
  */
 /** A TSE code (4 characters, e.g. 7203 / 593A) or the 5-character EDINET form (72030). */
 const EDINET_CODE = /^[0-9][0-9A-Z]{3}[0-9]?$/;
@@ -48,63 +44,65 @@ async function handler(req: NextRequest): Promise<NextResponse> {
   const code = codeOf(req);
   const days = Math.min(
     400,
-    Math.max(1, Number(url.searchParams.get("days")) || FINANCIAL_WINDOW_DAYS),
+    Math.max(1, Number(url.searchParams.get("days")) || LARGE_HOLDING_WINDOW_DAYS),
   );
 
-  // Debug: dump the raw XBRL element rows of the latest report, to confirm the
-  // real element IDs by fact. Unprocessed; same paywall as the main endpoint.
-  if (url.searchParams.get("debug") === "elements") {
-    const dump = await dumpReportElements(code, days);
-    // Nothing found is not a delivery: a 4xx here cancels settlement.
-    if (!dump.doc) {
-      return NextResponse.json({ error: "no_report", code, window_days: days, source: SOURCE_LABEL }, { status: 404 });
-    }
-    return NextResponse.json({
-      source: SOURCE_LABEL,
-      pipeline: "edinet-financials-v1",
-      debug: true,
-      code,
-      doc: dump.doc,
-      count: dump.count,
-      elements: dump.elements,
-    });
-  }
-
   try {
-    const fin = await getCompanyFinancials(code, days);
-    // No disclosure in the window (an unknown code, a typo, a fresh listing):
-    // answer 404 so the buyer is not charged for an empty record. A 4xx from
+    const lh = await getLargeHoldings(code, days);
+
+    // Debug: the raw XBRL rows of the newest report, to confirm the holding-ratio
+    // element IDs by fact. Unprocessed; same paywall.
+    if (url.searchParams.get("debug") === "elements") {
+      const newest = lh.filings[0];
+      if (!newest) {
+        return NextResponse.json({ error: "no_report", code, window_days: days, source: SOURCE_LABEL }, { status: 404 });
+      }
+      const dump = await dumpDocElements({
+        doc_id: newest.doc_id,
+        edinet_code: newest.holder_edinet_code,
+        sec_code: null,
+        filer_name: newest.holder_name,
+        doc_description: newest.doc_description,
+        doc_type_code: newest.doc_type_code,
+        submit_datetime: newest.submit_datetime,
+        period_start: null,
+        period_end: null,
+      });
+      return NextResponse.json({ source: SOURCE_LABEL, pipeline: "edinet-large-holdings-v1", debug: true, code, ...dump });
+    }
+
+    // Nothing to deliver (unknown code, no own filing in the window, or no
+    // large-holding report on it): 404, so the buyer is not charged. A 4xx from
     // the handler cancels settlement (@x402/next handleSettlement).
-    if (!fin.doc_id) {
+    if (!lh.issuer_edinet_code || lh.filings.length === 0) {
       return NextResponse.json(
-        { error: "no_disclosure", message: "No EDINET report for this code in the window.", code, window_days: days, source: SOURCE_LABEL },
+        {
+          error: lh.issuer_edinet_code ? "no_large_holding_reports" : "no_disclosure",
+          message: lh.issuer_edinet_code
+            ? "No 大量保有報告書 / 変更報告書 on this company in the window."
+            : "No EDINET filing by this code in the window.",
+          code,
+          window_days: days,
+          source: SOURCE_LABEL,
+        },
         { status: 404 },
       );
     }
     return NextResponse.json({
       source: SOURCE_LABEL,
       processed_by: PROCESSED_BY,
-      // Deploy marker — a one-line check that the financials pipeline is live.
-      pipeline: "edinet-financials-v1",
-      fetched_via: "EDINET API v2 (documents.json type=2 + 書類取得 type=5 CSV)",
+      pipeline: "edinet-large-holdings-v1",
+      fetched_via: "EDINET API v2 (documents.json type=2)",
       cache: "weekly",
       code,
-      sec_code: fin.sec_code,
+      sec_code: lh.sec_code,
+      issuer_edinet_code: lh.issuer_edinet_code,
+      issuer_name: lh.issuer_name,
       window_days: days,
-      financials_available: fin.financials_available,
-      filer_name: fin.filer_name,
-      doc_id: fin.doc_id,
-      doc_type_code: fin.doc_type_code,
-      doc_description: fin.doc_description,
-      submit_datetime: fin.submit_datetime,
-      period: fin.period,
-      unit: fin.unit,
-      sales: fin.sales,
-      operating_income: fin.operating_income,
-      net_income: fin.net_income,
-      // Present only when financials_available is false: the biggest current-年度
-      // 連結 JPY rows, so the real element IDs are visible without ?debug.
-      debug_unmatched: fin.debug_unmatched,
+      count: lh.filings.length,
+      filings: lh.filings,
+      holding_ratio_available: false,
+      note: "Holding ratio and share count are not served yet: they are read from each report's XBRL only once the element IDs are confirmed on real reports.",
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "edinet error";
@@ -117,12 +115,9 @@ async function handler(req: NextRequest): Promise<NextResponse> {
 
 const paidGet = withSolanaUsdcMicroPaywall(handler, {
   units: PER_CALL_PRICE.base_units,
-  // What the 402 challenge shows a buyer, so it states what actually comes
-  // back. Figure extraction is paused (lib/edinet.ts FINANCIALS_ENABLED), and
-  // this used to advertise "sales / operating income / net income" — a promise
-  // the response has not kept since. Keep the two in step.
+  // What the 402 challenge shows a buyer: keep it in step with the response.
   description:
-    "One company's latest EDINET disclosure: filer, document id / type / description, submission datetime and the accounting period (出典：金融庁 EDINET). Headline figures (sales / operating income / net income) are NOT served — they return null with financials_available:false. Settled per call in USDC on Solana (exact-svm).",
+    "One company's 大量保有報告書 time series from EDINET (出典：金融庁 EDINET): every 大量保有報告書 (350) and 変更報告書 (360) on its shares in the last 180 days — holder, report type, submission datetime, document id. Holding ratio is not served yet. Settled per call in USDC on Solana (exact-svm).",
   resourcePath: "/api/edinet/:code",
 });
 

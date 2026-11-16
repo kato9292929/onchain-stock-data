@@ -88,7 +88,7 @@ export default function DocsPage() {
         <Fields
           rows={[
             ["GET /api/solana-stocks/{ticker}", "Free. Tokenized stock on Solana: tokens and mints, next_earnings, condition_count, result_counts, latest_verdict."],
-            ["GET /api/solana-stocks/{ticker}?view=full", "Paid when the ticker has a condition. Adds conditions (full rows), financials, signals."],
+            ["GET /api/solana-stocks/{ticker}?view=full", "Paid when the company files with the SEC or has a condition; otherwise the free view at no cost. Adds sec (cik, company, filings: the latest 20 with form / filed / report_date / accession / url; financials: revenue, operating_income, net_income, eps_diluted, cash, shares_outstanding — each with tag, unit and quarterly / annual / instant values, every value with form, filed and accession), conditions (full rows), financials (TDnet for Japan), signals. SEC unreachable → 502, not charged."],
             ["GET /api/catalyst/{ticker}?view=free", "Free. Any company with a condition (US / JP Weekly, sector themes, neocloud, Physical AI): identity, next_earnings, counts, latest_verdict."],
             ["GET /api/catalyst/{ticker}", "Paid when the company has a condition; a covered company without one gets the free view at no cost. Adds conditions, financials, signals. Both views carry themes (the theme ids the company belongs to)."],
             ["GET /api/themes", "Free. themes (those with active catalysts first) and, apart, selections (weekly): id, kind, title, member_count, active_catalysts, events_next_14_days, latest_article."],

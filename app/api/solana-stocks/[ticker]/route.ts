@@ -12,6 +12,7 @@ import {
   freeBody,
   fullBody,
 } from "@/lib/solana-stocks";
+import { cikFor, getSecRecord } from "@/lib/edgar";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,10 +43,18 @@ const load = loadSolanaStocks;
 const paidGet = withSolanaUsdcMicroPaywall(
   async (req: NextRequest) => {
     const { file, rec, today } = await load();
-    const body = fullBody(tickerOf(req), file, rec, today, PUBLIC_BASE_URL);
-    return body
-      ? NextResponse.json(body)
-      : NextResponse.json({ error: "ticker not found" }, { status: 404 });
+    const ticker = tickerOf(req);
+    const body = fullBody(ticker, file, rec, today, PUBLIC_BASE_URL);
+    if (!body) return NextResponse.json({ error: "ticker not found" }, { status: 404 });
+    // The company's own SEC filings and XBRL financials (US-listed). If SEC is
+    // unreachable the call fails with 502 and is not charged.
+    let sec;
+    try {
+      sec = await getSecRecord(ticker);
+    } catch (e) {
+      return NextResponse.json({ error: "sec_unavailable", message: e instanceof Error ? e.message : String(e) }, { status: 502 });
+    }
+    return NextResponse.json({ ...body, sec });
   },
   {
     units: PER_CALL_PRICE.base_units,
@@ -76,8 +85,19 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
     )(req);
   }
   if (wantsFull && access === "paid") return paidGet(req);
+  // No condition, but the company files with the SEC: its filings and
+  // financials are the full view, so it is sold like any other.
+  if (wantsFull && access === "free-only") {
+    let sec = null;
+    try {
+      sec = await cikFor(ticker);
+    } catch {
+      return withPublicCors(async () => NextResponse.json({ error: "sec_unavailable" }, { status: 503 }))(req);
+    }
+    if (sec) return paidGet(req);
+  }
 
-  // A ticker with no condition has no full view to sell: the free view, unpaid.
+  // Nothing to sell (no condition and no SEC filer — an ETF or a non-US listing): the free view, unpaid.
   return withPublicCors(async () => NextResponse.json(freeBody(ticker, file, rec, today, PUBLIC_BASE_URL)))(req);
 };
 

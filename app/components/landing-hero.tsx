@@ -21,10 +21,13 @@ const VIDEO_SRC =
 export function LandingHero({
   solanaCount,
   themeCount,
+  pricePerCall,
   intro = true,
 }: {
   solanaCount: number;
   themeCount: number;
+  /** USDC per call, passed in by the server page (lib/x402 stays out of the client bundle). */
+  pricePerCall: number;
   /** false: the headline and description are already at the top of the page (SiteIntro). */
   intro?: boolean;
 }) {
@@ -53,33 +56,33 @@ export function LandingHero({
         {intro && (
           <>
             <h1 className="font-outfit text-[42px] font-medium leading-[1.05] tracking-tight text-[#0a1b33] md:text-[56px]">
-              Claude-run
+              Stock data,
               <br />
-              equity research
+              per call
             </h1>
             <p className="font-inter mt-5 max-w-md text-[14px] leading-relaxed text-[#64748b] md:text-[15px]">
-              Weekly US &amp; Japan stock picks with dated, numeric catalysts — each
-              scored HIT / PARTIAL / MISS once its deadline passes. A public,
-              verifiable track record. Free to read over MCP; agents pay per call
-              with x402.
+              Company filings and financials for {solanaCount.toLocaleString()} tokenized stocks on
+              Solana — SEC filings and XBRL financials for US companies, large-holding
+              reports for Japan, every value with its source document. No account, no
+              API key: agents pay {pricePerCall} USDC per call with x402.
             </p>
           </>
         )}
 
-        {/* First view: the themes are the front door; the token list hangs off each theme. */}
+        {/* First view: the stocks are the front door. */}
         <Link
-          href="/themes"
+          href="/solana-stocks"
           className="font-inter mt-6 inline-flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/90 px-5 py-3 shadow-sm backdrop-blur-sm transition-all hover:border-slate-300 hover:no-underline!"
         >
           <span className="flex flex-col">
             <span className="font-outfit text-[26px] font-semibold leading-none tabular-nums text-[#0a1b33]">
-              {themeCount} themes
+              {solanaCount.toLocaleString()} stocks
             </span>
             <span className="mt-1 text-[12px] font-semibold text-slate-500">
-              neocloud · physical AI · data centers · power · weekly picks
+              conditions · verdicts · filings — per call
             </span>
             <span className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-slate-400">
-              <SolanaMark className="h-2.5 w-auto" title={null} /> {solanaCount.toLocaleString()} tokenized stocks on Solana
+              <SolanaMark className="h-2.5 w-auto" title={null} /> tokenized on Solana
             </span>
           </span>
           <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#0a152d] px-4 py-2 text-[12px] font-semibold text-white">
@@ -96,15 +99,6 @@ export function LandingHero({
           <span className="text-slate-400">· no SOL needed</span>
         </Link>
 
-        <Link href="/catalysts">
-          <motion.span
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="font-inter mt-4 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-6 py-3 text-[13px] font-semibold text-[#0a1b33] shadow-sm"
-          >
-            View catalysts <ChevronRight className="h-4 w-4" />
-          </motion.span>
-        </Link>
       </motion.div>
 
       {/* floating bottom navbar */}
@@ -119,34 +113,16 @@ export function LandingHero({
             ✦
           </div>
           <Link
-            href="/themes"
-            className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
-          >
-            Themes
-          </Link>
-          <Link
             href="/solana-stocks"
             className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
           >
             Stocks
           </Link>
           <Link
-            href="/catalysts"
+            href="/selection"
             className="px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:px-4"
           >
-            Catalysts
-          </Link>
-          <Link
-            href="/portfolio"
-            className="hidden px-2.5 text-[12px] font-semibold text-slate-500 transition-colors hover:text-[#0a1b33] sm:inline sm:px-4"
-          >
             Selection
-          </Link>
-          <Link
-            href="/.well-known/x402.json"
-            className="flex items-center gap-1 rounded-full border border-slate-200/60 bg-white px-3 py-2 text-[12px] sm:px-5 font-semibold text-[#0a1b33] shadow-sm transition-all hover:border-slate-300"
-          >
-            API <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         </motion.nav>
       </div>

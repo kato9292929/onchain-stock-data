@@ -111,11 +111,12 @@ export function summarize(file: SolanaStocksFile, rec: Records, today: string): 
 
 /** Shown in the 402 challenge and in /.well-known/x402.json. Field meanings: /docs. */
 export const PAID_DESCRIPTION =
-  "Tokenized stock on Solana (xStocks / Ondo Global Markets) — full record for the underlying: every " +
-  "condition this site set on it (question, target date, result, evidence URL, reasoning, verdict history), " +
-  "the next earnings date from a primary source, and the latest disclosed financials extracted from the " +
-  "filing (SEC EDGAR XBRL / TDnet 決算短信 XBRL, each value with its document URL). Only tickers with at " +
-  "least one condition are charged. Field reference: /docs.";
+  "Tokenized stock on Solana (xStocks / Ondo Global Markets) — the underlying company's record: its SEC " +
+  "filings (latest 20: form, filed date, document URL) and XBRL financials (quarterly / annual revenue, " +
+  "operating income, net income, diluted EPS, cash, shares outstanding — each with form, filed date and " +
+  "accession), plus every condition this site set on it with its verdict, evidence URL and reasoning, and the " +
+  "next earnings date from a primary source. Charged when there is something to sell (an SEC filer or a " +
+  "condition); otherwise answered free. Field reference: /docs.";
 
 export type SolanaStockAccess = "not-found" | "free-only" | "paid";
 

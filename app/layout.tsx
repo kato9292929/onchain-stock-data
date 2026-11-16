@@ -21,9 +21,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Onchain Stock Data",
+  title: "Onchain Stock Data — stock data, per call",
   description:
-    "Solana 上の株式トークン (xStocks) と Backpack IPOs Onchain の情報を統合した API + Web ページ。",
+    "Company filings and financials for 1,600+ tokenized stocks on Solana: SEC filings and XBRL financials for US companies, large-holding reports for Japan, each value with its source document. Agents pay per call in USDC on Solana (x402).",
 };
 
 export default async function RootLayout({
