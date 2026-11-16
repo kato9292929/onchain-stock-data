@@ -124,12 +124,6 @@ export function LandingHero({
           >
             Selection
           </Link>
-          <Link
-            href="/.well-known/x402.json"
-            className="flex items-center gap-1 rounded-full border border-slate-200/60 bg-white px-3 py-2 text-[12px] sm:px-5 font-semibold text-[#0a1b33] shadow-sm transition-all hover:border-slate-300"
-          >
-            API <ChevronRight className="h-3.5 w-3.5" />
-          </Link>
         </motion.nav>
       </div>
     </div>

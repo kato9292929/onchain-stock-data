@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { SiteNav } from "./site-nav";
+import Link from "next/link";
 import { SiteFooter } from "./site-footer";
 
 /**
@@ -19,8 +19,10 @@ export function SiteChrome({ children, lang }: { children: React.ReactNode; lang
 
   return (
     <>
-      <SiteNav lang={lang} />
       <main className="flex-1 min-w-0 px-6 py-8 max-w-6xl w-full mx-auto">
+        <Link href="/" className="mb-6 inline-block text-xs text-slate-400 hover:text-slate-600">
+          ← Home
+        </Link>
         {children}
       </main>
       <SiteFooter />

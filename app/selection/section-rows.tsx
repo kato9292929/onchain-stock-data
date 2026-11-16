@@ -36,9 +36,9 @@ function Verdict({ r }: { r: SelectionRow }) {
 }
 
 /** One category's conditions: the first five, then "Show all" opens the rest in place (as on the Stocks list). */
-export function SectionRows({ rows }: { rows: SelectionRow[] }) {
+export function SectionRows({ rows, preview = PREVIEW }: { rows: SelectionRow[]; preview?: number }) {
   const [all, setAll] = useState(false);
-  const shown = all ? rows : rows.slice(0, PREVIEW);
+  const shown = all ? rows : rows.slice(0, preview);
   return (
     <>
       <div className="overflow-x-auto border-t border-slate-100">
@@ -95,7 +95,7 @@ export function SectionRows({ rows }: { rows: SelectionRow[] }) {
           </tbody>
         </table>
       </div>
-      {!all && rows.length > PREVIEW && (
+      {!all && rows.length > preview && (
         <div className="flex justify-center border-t border-slate-100 py-3">
           <button
             type="button"

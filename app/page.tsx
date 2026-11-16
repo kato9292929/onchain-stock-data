@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LandingHero } from "./components/landing-hero";
 import { SolanaStocksSection } from "./components/solana-stocks-section";
+import { SelectionSection } from "./components/selection-section";
 import { loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes } from "@/lib/themes";
 import { SolanaMark } from "./components/solana-mark";
@@ -178,6 +179,11 @@ export default async function Home() {
         {/* Stocks: five rows here, the full list in the Stocks tab */}
         <section className="mt-16">
           <SolanaStocksSection preview={5} />
+        </section>
+
+        {/* Selection: three rows per category here, the rest with "Show all" */}
+        <section className="mt-16">
+          <SelectionSection preview={3} onFront />
         </section>
 
         <footer className="mt-16 border-t border-slate-200 py-8 text-xs text-slate-400">
