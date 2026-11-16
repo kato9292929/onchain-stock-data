@@ -24,3 +24,12 @@ test("selection: a condition carried unchanged into the next article edition is 
 test("selection: no two rows share an id", () => {
   assert.equal(new Set(rows.map((r) => r.id)).size, rows.length);
 });
+
+test("selection: one stock × one earnings is one prediction — a stock picked several weeks running counts once", () => {
+  const weekly = rows.filter((r) => r.population.includes("Weekly"));
+  const keys = weekly.map((r) => `${r.population}|${r.ticker}|${r.target_date}`);
+  assert.equal(new Set(keys).size, keys.length);
+  // CAT was picked 9/21, 10/05, 10/12 and 10/19 for the same 10/29 earnings: the 10/19 condition stands.
+  const cat = weekly.filter((r) => r.ticker === "CAT" && r.target_date === "2026-10-29");
+  assert.deepEqual(cat.map((r) => r.id), ["us-weekly-2026-10-19-CAT"]);
+});

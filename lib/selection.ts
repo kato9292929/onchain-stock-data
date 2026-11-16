@@ -43,6 +43,10 @@ export function selectionRows(rec: Records, today: string): SelectionRow[] {
 
   const seen = new Set<string>();
   const out: SelectionRow[] = [];
+  // Weekly picks: the same stock picked several weeks running gets a fresh
+  // condition each week, all judged on the same earnings. One stock × one
+  // earnings is one prediction: keep the latest week's condition only.
+  const weeklyBest = new Map<string, { row: SelectionRow; week: string }>();
   for (const t of tickers) {
     const all = conditionsFor(t, rec, today);
     const byId = new Map(all.map((r) => [r.id, r]));
@@ -53,7 +57,7 @@ export function selectionRows(rec: Records, today: string): SelectionRow[] {
       const next = r.superseded_by ? byId.get(r.superseded_by) : undefined;
       if (next && next.target_date === r.target_date && sameWording(next.question) === sameWording(r.question)) continue;
       seen.add(r.id);
-      out.push({
+      const row: SelectionRow = {
         id: r.id,
         ticker: r.ticker,
         company: r.company ?? r.ticker,
@@ -64,9 +68,17 @@ export function selectionRows(rec: Records, today: string): SelectionRow[] {
         result: r.result,
         status: r.status,
         evidence_url: r.evidence_url,
-      });
+      };
+      if (r.week_of) {
+        const k = `${r.population}|${r.ticker}|${r.target_date}`;
+        const cur = weeklyBest.get(k);
+        if (!cur || r.week_of > cur.week) weeklyBest.set(k, { row, week: r.week_of });
+        continue;
+      }
+      out.push(row);
     }
   }
+  for (const { row } of weeklyBest.values()) out.push(row);
   // The record first (judged, newest deadline first), then what is pending (nearest deadline first).
   const judged = out.filter((r) => r.status === "judged").sort((a, b) => b.target_date.localeCompare(a.target_date) || a.ticker.localeCompare(b.ticker));
   const open = out.filter((r) => r.status !== "judged").sort((a, b) => a.target_date.localeCompare(b.target_date) || a.ticker.localeCompare(b.ticker));
