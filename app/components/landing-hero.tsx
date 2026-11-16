@@ -21,10 +21,13 @@ const VIDEO_SRC =
 export function LandingHero({
   solanaCount,
   themeCount,
+  pricePerCall,
   intro = true,
 }: {
   solanaCount: number;
   themeCount: number;
+  /** USDC per call, passed in by the server page (lib/x402 stays out of the client bundle). */
+  pricePerCall: number;
   /** false: the headline and description are already at the top of the page (SiteIntro). */
   intro?: boolean;
 }) {
@@ -53,15 +56,15 @@ export function LandingHero({
         {intro && (
           <>
             <h1 className="font-outfit text-[42px] font-medium leading-[1.05] tracking-tight text-[#0a1b33] md:text-[56px]">
-              Claude-run
+              Stock data,
               <br />
-              equity research
+              per call
             </h1>
             <p className="font-inter mt-5 max-w-md text-[14px] leading-relaxed text-[#64748b] md:text-[15px]">
-              Weekly US &amp; Japan stock picks with dated, numeric catalysts — each
-              scored HIT / PARTIAL / MISS once its deadline passes. A public,
-              verifiable track record. Free to read over MCP; agents pay per call
-              with x402.
+              Company filings and financials for {solanaCount.toLocaleString()} tokenized stocks on
+              Solana — SEC filings and XBRL financials for US companies, large-holding
+              reports for Japan, every value with its source document. No account, no
+              API key: agents pay {pricePerCall} USDC per call with x402.
             </p>
           </>
         )}

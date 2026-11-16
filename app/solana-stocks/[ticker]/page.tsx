@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cikFor } from "@/lib/edgar";
 import { freeBody, freeConditions } from "@/lib/solana-stocks";
 import { issuerShort, loadSolanaStocks } from "@/lib/solana-stocks-load";
 import { PER_CALL_PRICE, PUBLIC_BASE_URL } from "@/lib/x402";
@@ -47,7 +48,9 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
     .filter(([, n]) => n > 0);
   const ne = free.next_earnings;
   const fullUrl = `${PUBLIC_BASE_URL}/api/solana-stocks/${encodeURIComponent(ticker)}?view=full`;
-  const paid = conditions.length > 0;
+  // Something to sell: the company files with the SEC, or this site set a condition on it.
+  const secFiler = await cikFor(ticker).catch(() => null);
+  const paid = conditions.length > 0 || Boolean(secFiler);
 
   return (
     <div className="font-inter space-y-8">
@@ -158,15 +161,26 @@ export default async function SolanaStockPage({ params }: { params: Promise<{ ti
           </div>
           {paid ? (
             <ul className="list-disc space-y-1 pl-5 text-[13px] text-slate-300">
-              <li>Every condition with its verdict (hit / partial / miss / na) and the reasoning</li>
-              <li>The evidence URL each verdict was judged against — the company&apos;s filing or release</li>
-              <li>verdict_history: earlier verdicts and why they were corrected (never overwritten)</li>
-              <li>Latest disclosed financials (SEC EDGAR / TDnet XBRL), each value with its filing URL and YoY</li>
+              {secFiler && (
+                <>
+                  <li>The company&apos;s latest 20 SEC filings (10-K, 10-Q, 8-K…) with each document&apos;s URL</li>
+                  <li>
+                    XBRL financials as filed — quarterly and annual revenue, operating income, net income, diluted EPS,
+                    cash and shares outstanding — each value with its form, filed date and accession number
+                  </li>
+                </>
+              )}
+              {conditions.length > 0 && (
+                <>
+                  <li>Every condition with its verdict (hit / partial / miss / na), the reasoning and the evidence URL</li>
+                  <li>verdict_history: earlier verdicts and why they were corrected (never overwritten)</li>
+                </>
+              )}
             </ul>
           ) : (
             <p className="text-[13px] text-slate-300">
-              No condition is set on {free.ticker} yet, so there is nothing to sell: the full view answers free
-              (200) with the same fields as above.
+              {free.ticker} is not an SEC filer (an ETF or a non-US listing) and has no condition yet, so there is
+              nothing to sell: the full view answers free (200) with the same fields as above.
             </p>
           )}
         </div>

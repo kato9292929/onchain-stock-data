@@ -19,7 +19,7 @@ export default async function Home() {
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} intro />
+        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} pricePerCall={PER_CALL_PRICE.usdc} intro />
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
         <section id="x402" className="mt-16">
@@ -58,8 +58,8 @@ export default async function Home() {
                 {
                   price: "$0.01",
                   unit: "per call",
-                  what: "Portfolio & catalyst scoring",
-                  detail: "/api/alpha/… — selections, hit-rate, catalyst verdicts",
+                  what: "Selection: conditions, verdicts, hit rate",
+                  detail: "/api/alpha/… — the weekly picks and how each condition was judged",
                 },
               ].map((row) => (
                 <div key={row.what} className="bg-[#0a152d] p-6">
@@ -107,14 +107,14 @@ export default async function Home() {
               Developers
             </div>
             <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">
-              MCP · call the research
+              MCP · read the data
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
               osd ships a remote <span className="font-semibold text-slate-700">MCP server</span>.
-              Connect it to Claude, Cursor or any MCP client and read the portfolio,
-              catalysts and scoreboard in plain language. Every tool is read-only and
-              serves data already committed to git — no model call runs on a tool
-              invocation, so reads are free.
+              Connect it to Claude, Cursor or any MCP client to look up a tokenized stock
+              and the Selection record in plain language. Every tool is read-only and
+              free — no model call runs on a tool invocation. The per-company filings and
+              financials are the paid endpoints above.
             </p>
           </div>
 
@@ -126,16 +126,15 @@ export default async function Home() {
               </div>
               <ul className="mt-3 space-y-3">
                 {[
-                  ["portfolio_get", "Current US / JP selection — weights, thesis, catalyst dates."],
-                  ["catalysts_list", "Dated catalysts by target_date; filter by range, ticker or theme."],
-                  ["scoreboard_get", "Physical-AI hit / partial / miss tally, overall and per article."],
-                  ["signal_get", "Directional signals by ticker / theme (paid x402 testnet twin)."],
-                  ["solana_stock_get", "A tokenized stock on Solana — mints, next earnings, conditions, per-call URL."],
-                  ["neocloud_theme", "The neocloud theme (US 18 / JP 5): next earnings and each company's contracted and energized MW."],
+                  ["solana_stock_get", "A tokenized stock on Solana — mints, issuer, next earnings and its per-call URL."],
+                  ["portfolio_get", "This week's Selection (US / Japan) — picks, weights and each pick's condition."],
+                  ["catalysts_list", "Every condition with its deadline and verdict; filter by date range, ticker or category."],
+                  ["themes_list", "The Selection categories (weekly, neocloud, physical AI, Japan sectors) and their members."],
+                  ["theme_get", "One category's members — next earnings, current condition, Solana token."],
+                  ["scoreboard_get", "HIT / PARTIAL / MISS tally for the Physical AI category."],
+                  ["neocloud_theme", "Neocloud companies (US 18 / Japan 5): contracted and energized MW, next earnings."],
                   ["neocloud_company", "One neocloud company's latest disclosed numbers, each with its filing."],
                   ["neocloud_digest", "Neocloud companies with a filing in the last 7 days."],
-                  ["themes_list", "Every theme (neocloud, physical AI, sector themes, weekly) and its upcoming events."],
-                  ["theme_get", "One theme's members — next earnings, next event, Solana token, per-call URL."],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex flex-col gap-0.5">
                     <code className="break-all font-mono text-[13px] font-semibold text-[#0a1b33]">{name}</code>
@@ -172,11 +171,7 @@ export default async function Home() {
             </div>
           </div>
           <p className="mt-3 text-xs text-slate-400">
-            Reads are free (committed data, no model call). The paid endpoints
-            above settle on Solana;{" "}
-            <code className="text-slate-500">signal_get</code> additionally has a
-            demo twin on Base Sepolia (testnet funds) for exercising the 402 →
-            sign → 200 loop without spending anything real.
+            MCP reads are free. The paid endpoints above settle per call in USDC on Solana.
           </p>
         </section>
 
@@ -187,8 +182,8 @@ export default async function Home() {
 
         <footer className="mt-16 border-t border-slate-200 py-8 text-xs text-slate-400">
           <p>
-            Informational only — not investment advice. Predictions are scored
-            against public disclosure; no market-price / market-cap data is used.
+            Informational only — not investment advice. Data comes from the companies&apos; own
+            filings (SEC EDGAR, EDINET, TDnet); no market prices are used.
           </p>
           <p className="mt-2">
             <a href="https://github.com/kato9292929/onchain-stock-data" className="text-slate-500 hover:text-slate-700">
