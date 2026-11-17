@@ -5,8 +5,9 @@
  *
  * The universe is every tokenized stock on Solana (data/solana-stocks.json)
  * that files with the SEC, ETFs left out. A company already researched (any
- * "stocks-us" row) or with a pending condition from another series is skipped,
- * so each run hands over the next `--size` companies (default 25).
+ * "stocks-us" row), already handed over in an earlier batch file, or with a
+ * pending condition from another series is skipped, so each run hands over the
+ * next `--size` companies (default 25).
  *
  * For each company the file carries what the chat needs to set one condition:
  * its last four quarters of revenue, operating income, net income and diluted
@@ -40,8 +41,9 @@ const addMonths = (iso, n) => {
 };
 
 /** The companies still to research, in ticker order. Pure. */
-export function remainingUniverse(tokens, externals, secTickers) {
+export function remainingUniverse(tokens, externals, secTickers, handedOver = new Set()) {
   const done = new Set(externals.filter((c) => c.series === "stocks-us").map((c) => String(c.ticker).toUpperCase()));
+  for (const t of handedOver) done.add(t);
   const pending = new Set(externals.filter((c) => c.status === "pending").map((c) => String(c.ticker).toUpperCase()));
   const seen = new Set();
   const out = [];
@@ -80,7 +82,7 @@ function companyBlock(c, sec) {
   L.push("");
   if (annualEnd && annualEnd >= (ends[0] ?? "")) L.push(`直近の通期（10-K）の期末：${annualEnd}`);
   if (recent) L.push(`直近の定期報告：${recent.form}（${recent.filed} 提出）${recent.url}`);
-  L.push(`次の四半期末の目安：${addMonths(lastEnd, 3)}（会社の会計年度で確かめる）`, "");
+  L.push(lastEnd ? `次の四半期末の目安：${addMonths(lastEnd, 3)}（会社の会計年度で確かめる）` : "次の四半期末の目安：不明（EDGAR に四半期の期末がない。会社の開示で確かめる）", "");
   return { text: L.join("\n"), lastEnd };
 }
 
@@ -147,7 +149,14 @@ async function main() {
   const solana = JSON.parse(await readFile(path.join(ROOT, "data", "solana-stocks.json"), "utf8"));
   const externals = JSON.parse(await readFile(path.join(ROOT, "data", "external-catalysts.json"), "utf8"));
   const secTickers = await secTickerMap();
-  const all = remainingUniverse(solana.tokens, externals, secTickers);
+  // Companies already handed to the chat in an earlier batch are not handed over
+  // again, whether or not it set a condition (it may have left one out on purpose).
+  const handedOver = new Set();
+  for (const f of await readdir(OUT_DIR).catch(() => [])) {
+    if (!f.startsWith("stocks-research-")) continue;
+    for (const m of (await readFile(path.join(OUT_DIR, f), "utf8")).matchAll(/^### (\S+) — /gm)) handedOver.add(m[1]);
+  }
+  const all = remainingUniverse(solana.tokens, externals, secTickers, handedOver);
   const batch = all.slice(0, size);
   if (batch.length === 0) {
     console.log("nothing left to research");

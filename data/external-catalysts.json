@@ -5896,5 +5896,887 @@
     "company_name": "Foundry",
     "unlisted": true,
     "author": "claude-fable-5-1 (chat)"
+  },
+  {
+    "catalyst_id": "ext_7da47972",
+    "ticker": "A",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/0001090872/000109087226000062/exhibit991-q326pressrelease.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 1,980 USD mn (quarter ending 2026-10-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 1980,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算発表で示した第4四半期の売上ガイダンス 19.8〜20.0 億ドルの下限。",
+    "target_date": "2026-11-24",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Agilent Technologies, Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-10-31",
+      "operator": ">=",
+      "threshold": 1980000000
+    }
+  },
+  {
+    "catalyst_id": "ext_9f528845",
+    "ticker": "AA",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526437885/aa-20260930.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 3,500 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 3500,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期の売上ガイダンスはない。2026年の直近3四半期の売上は 3,193〜3,966 百万ドル、第3四半期は 3,704 百万ドルで、その水準を大きく割らないことを基準にした。",
+    "target_date": "2027-01-21",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Alcoa Corp",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 3500000000
+    }
+  },
+  {
+    "catalyst_id": "ext_322605a4",
+    "ticker": "AAL",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://news.aa.com/news/news-details/2026/American-sets-new-revenue-records-amid-historic-fuel-cost-pressure-CORP-FI-10/",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 16,729 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 16729,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算発表で示した第4四半期の売上の前年同期比 +19.5〜22.5% のガイダンスの下限（167.29 億ドル）。",
+    "target_date": "2027-01-22",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "American Airlines Group Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 16729000000
+    }
+  },
+  {
+    "catalyst_id": "ext_4b57c5dc",
+    "ticker": "AAOI",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://finviz.com/news/417752/applied-optoelectronics-reports-third-quarter-2026-results",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 385 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 385,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算発表で示した第4四半期の売上ガイダンス 3.85〜4.20 億ドルの下限。",
+    "target_date": "2027-02-19",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Applied Optoelectronics, Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 385000000
+    }
+  },
+  {
+    "catalyst_id": "ext_78d22e91",
+    "ticker": "AAON",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000088/aaon-20260930.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Operating income >= 80 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Operating income Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 80,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期のガイダンスはなく、売上は XBRL で取れていない。営業利益は第2四半期 81.7、第3四半期 100 百万ドルで、第4四半期もその下限水準を保つことを基準にした。",
+    "target_date": "2027-02-26",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "AAON, Inc.",
+    "auto_judge": {
+      "metric": "operating_income",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 80000000
+    }
+  },
+  {
+    "catalyst_id": "ext_89152af4",
+    "ticker": "AAPL",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://9to5mac.com/?p=1077100",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q1 FY2027 Revenue >= 153,820 USD mn (quarter ending 2026-12-26)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q1 FY2027",
+        "operator": ">=",
+        "threshold": {
+          "value": 153820,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-Q"
+      }
+    ],
+    "basis": "第4四半期の決算説明会で示した12月四半期の売上の前年同期比 +7〜10% のガイダンスの下限を、前年同期の 143,756 百万ドルに掛けた値。",
+    "target_date": "2027-01-28",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Apple Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-26",
+      "operator": ">=",
+      "threshold": 153820000000
+    }
+  },
+  {
+    "catalyst_id": "ext_c1ebaf78",
+    "ticker": "ABBV",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://news.abbvie.com/2026-10-30-AbbVie-Reports-Third-Quarter-2026-Financial-Results",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 17,450 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 17450,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期の売上ガイダンスはない。第3四半期の売上は前年同期比 +10.3%。前年同期（2025年第4四半期）の 16,618 百万ドルに +5% を掛けた値を基準にした。",
+    "target_date": "2027-02-03",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "AbbVie Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 17450000000
+    }
+  },
+  {
+    "catalyst_id": "ext_ac4b4d9f",
+    "ticker": "ABNB",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://finsee.ai/earnings/abnb/2026/q3/en/",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 3,222 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 3222,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算で示した第4四半期の売上の前年同期比 +16〜18% のガイダンスの下限を、前年同期の 2,778 百万ドルに掛けた値。",
+    "target_date": "2027-02-11",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Airbnb, Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 3222000000
+    }
+  },
+  {
+    "catalyst_id": "ext_d1f4eccf",
+    "ticker": "ABT",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://finviz.com/news/405133/abbott-reports-third-quarter-2026-results-and-reaffirms-full-year-eps-guidance",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 12,600 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 12600,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期の売上ガイダンスはない。第3四半期は Exact Sciences の買収込みで前年同期比 +14.5%。前年同期（2025年第4四半期）の 11,460 百万ドルに +10% を掛けた値を基準にした。",
+    "target_date": "2027-01-21",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Abbott Laboratories",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 12600000000
+    }
+  },
+  {
+    "catalyst_id": "ext_7fd1b931",
+    "ticker": "ACGL",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000152/acgl-20260930.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 4,500 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 4500,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期のガイダンスはない。2026年の直近3四半期の売上は 4,521〜4,668 百万ドルで、その下限近くを基準にした。",
+    "target_date": "2027-02-10",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Arch Capital Group Ltd.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 4500000000
+    }
+  },
+  {
+    "catalyst_id": "ext_3e23c7a7",
+    "ticker": "ACHR",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.earningswhispers.com/epsdetails/ACHR/202609",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 5 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 5,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算で示した第4四半期の売上ガイダンス 500〜600 万ドルの下限。",
+    "target_date": "2027-02-25",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Archer Aviation Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 5000000
+    }
+  },
+  {
+    "catalyst_id": "ext_ad287238",
+    "ticker": "ACI",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001646972&type=10-Q",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q3 FY2026 Revenue >= 19,100 USD mn (quarter ending 2026-12-05)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q3 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 19100,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-Q"
+      }
+    ],
+    "basis": "四半期のガイダンスはない。第2四半期の売上は前年同期とほぼ横ばい（18,894.7 対 18,915.8 百万ドル）。前年同期（2025-11-29 末）の 19,123.7 百万ドルとほぼ同水準を基準にした。",
+    "target_date": "2027-01-13",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Albertsons Companies, Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-05",
+      "operator": ">=",
+      "threshold": 19100000000
+    }
+  },
+  {
+    "catalyst_id": "ext_eb1c171c",
+    "ticker": "ACLS",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/0001113232/000110465926123080/tm2629011d1_ex99-1.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 275 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 275,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算発表で示した第4四半期の売上ガイダンス（約 2.75 億ドル）。",
+    "target_date": "2027-02-04",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Axcelis Technologies Inc",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 275000000
+    }
+  },
+  {
+    "catalyst_id": "ext_691e8074",
+    "ticker": "ACMR",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.morningstar.com/news/globe-newswire/9870989/acm-research-reports-third-quarter-2026-results",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 348.1 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 348.1,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "2026年の売上ガイダンス 12.4〜12.8 億ドルの下限から、9か月累計の 891.9 百万ドルを引いた値。",
+    "target_date": "2027-02-26",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ACM Research, Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 348100000
+    }
+  },
+  {
+    "catalyst_id": "ext_6e14cbdf",
+    "ticker": "ACN",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.zacks.com/stock/news/2999088/accentures-q4-earnings-beat-estimates-revenues-increase-6-yy",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q1 FY2027 Revenue >= 18,950 USD mn (quarter ending 2026-11-30)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q1 FY2027",
+        "operator": ">=",
+        "threshold": {
+          "value": 18950,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-Q"
+      }
+    ],
+    "basis": "第4四半期の決算発表で示した2027年度第1四半期の売上ガイダンス 189.5〜196.0 億ドルの下限。",
+    "target_date": "2026-12-17",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Accenture plc",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-11-30",
+      "operator": ">=",
+      "threshold": 18950000000
+    }
+  },
+  {
+    "catalyst_id": "ext_b2b2863a",
+    "ticker": "ADBE",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://finviz.com/news/391143/adobe-q3-revenue-rises-13-as-q4-guidance-comes-in-below-consensus",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 6,800 USD mn (quarter ending 2026-11-27)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 6800,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算発表で示した第4四半期の売上ガイダンス 68.0〜68.5 億ドルの下限。",
+    "target_date": "2026-12-10",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Adobe Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-11-27",
+      "operator": ">=",
+      "threshold": 6800000000
+    }
+  },
+  {
+    "catalyst_id": "ext_dfec41af",
+    "ticker": "ADC",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000076/adc-20260930.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 215 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 215,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期の売上ガイダンスはない。売上は 200.8 → 205.1 → 213.9 百万ドルと毎四半期増えており、第3四半期を上回ることを基準にした。",
+    "target_date": "2027-02-09",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Agree Realty Corp",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 215000000
+    }
+  },
+  {
+    "catalyst_id": "ext_64a699f1",
+    "ticker": "ADI",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/0000006281/000000628126000072/adi3q26exhibit991earnings.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 4,200 USD mn (quarter ending 2026-10-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 4200,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "第3四半期の決算発表で示した第4四半期の売上ガイダンス 43 億ドル ±1 億ドルの下限。",
+    "target_date": "2026-11-24",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Analog Devices Inc",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-10-31",
+      "operator": ">=",
+      "threshold": 4200000000
+    }
+  },
+  {
+    "catalyst_id": "ext_a67e84e8",
+    "ticker": "ADP",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000008670&type=10-Q",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q2 FY2027 Revenue >= 5,627 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q2 FY2027",
+        "operator": ">=",
+        "threshold": {
+          "value": 5627,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-Q"
+      }
+    ],
+    "basis": "四半期の売上ガイダンスはない。第1四半期の売上は前年同期比 +6.1%（5,490.7 対 5,175.2 百万ドル）。前年同期（2025年12月末）の 5,359.3 百万ドルに +5% を掛けた値を基準にした。",
+    "target_date": "2027-01-27",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Automatic Data Processing Inc",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 5627000000
+    }
+  },
+  {
+    "catalyst_id": "ext_c2268687",
+    "ticker": "ADSK",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://investors.autodesk.com/node/36196",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q3 FY2027 Revenue >= 2,125 USD mn (quarter ending 2026-10-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q3 FY2027",
+        "operator": ">=",
+        "threshold": {
+          "value": 2125,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-Q"
+      }
+    ],
+    "basis": "第2四半期の決算発表で示した第3四半期の売上ガイダンス 21.25〜21.40 億ドルの下限。",
+    "target_date": "2026-11-24",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "Autodesk, Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-10-31",
+      "operator": ">=",
+      "threshold": 2125000000
+    }
+  },
+  {
+    "catalyst_id": "ext_115dd0cd",
+    "ticker": "ADT",
+    "market": "US",
+    "source": "research:stocks-us",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000116/adt-20260930.htm",
+    "conviction": null,
+    "agent_id": null,
+    "catalyst_description": "Q4 FY2026 Revenue >= 1,340 USD mn (quarter ending 2026-12-31)",
+    "success_conditions": [
+      {
+        "metric": "Revenue Q4 FY2026",
+        "operator": ">=",
+        "threshold": {
+          "value": 1340,
+          "unit": "USD mn"
+        },
+        "source_doc": "10-K"
+      }
+    ],
+    "basis": "四半期の売上ガイダンスはない。売上は 1,278.5 → 1,312.3 → 1,349 百万ドルと増えており、第3四半期は前年同期比 +3.9%。第3四半期の水準を保つことを基準にした。",
+    "target_date": "2027-02-25",
+    "submitted_at": "2026-11-17T00:46:19.192Z",
+    "submitter_contact": null,
+    "status": "pending",
+    "judgement_date": null,
+    "evidence_urls": [],
+    "reasoning": null,
+    "catalyst_type": "earnings",
+    "date_confidence": "estimated",
+    "country": "US",
+    "series": "stocks-us",
+    "catalyst_role": "main",
+    "parent_catalyst_id": null,
+    "company_name": "ADT Inc.",
+    "auto_judge": {
+      "metric": "revenue",
+      "period_end": "2026-12-31",
+      "operator": ">=",
+      "threshold": 1340000000
+    }
   }
 ]

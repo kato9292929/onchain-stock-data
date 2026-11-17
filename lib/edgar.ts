@@ -120,6 +120,7 @@ export const CONCEPTS: Array<{ key: string; unit: string; tags: Array<[string, s
     tags: [
       ["us-gaap", "RevenueFromContractWithCustomerExcludingAssessedTax"],
       ["us-gaap", "Revenues"],
+      ["us-gaap", "RevenueFromContractWithCustomerIncludingAssessedTax"],
       ["us-gaap", "SalesRevenueNet"],
     ],
   },
@@ -205,12 +206,28 @@ async function financialsFor(cik: number): Promise<Record<string, SecSeries>> {
         const s = j ? seriesFromConcept(j.units, c.unit, `${tax}:${tag}`) : null;
         if (s) found.push(s);
       }
-      // Companies move between tags over the years: use the one with the newest period.
-      found.sort((a, b) => newest(b).localeCompare(newest(a)));
-      if (found[0]) out[c.key] = found[0];
+      const pick = pickSeries(c.key, found);
+      if (pick) out[c.key] = pick;
     }),
   );
   return dropStale(out);
+}
+
+const latestValue = (s: SecSeries) => s.quarterly[0]?.value ?? s.annual[0]?.value ?? s.instant[0]?.value ?? 0;
+
+/**
+ * Of the tags that carry a metric, the one to use. Companies move between tags
+ * over the years, so the one with the newest period. For revenue, a company can
+ * tag both its total (Revenues) and a part of it (revenue from contracts with
+ * customers, without e.g. derivative sales — ADM: 22.3bn vs 6.6bn): among the
+ * current tags, the largest is the total. Pure.
+ */
+export function pickSeries(key: string, found: SecSeries[]): SecSeries | null {
+  if (found.length === 0) return null;
+  const top = found.map(newest).sort().pop()!;
+  const current = found.filter((s) => newest(s) === top);
+  if (key === "revenue") return current.sort((a, b) => latestValue(b) - latestValue(a))[0];
+  return current[0];
 }
 
 /**
@@ -304,14 +321,17 @@ export function quarterValue(
 /** Fetch the filed value for a metric and quarter, trying the metric's tags in order. Throws if SEC is unreachable. */
 export async function filedQuarterValue(cik: number, metric: JudgeableMetric, periodEnd: string): Promise<FiledValue | null> {
   const c = conceptOf(metric);
+  const found: FiledValue[] = [];
   for (const [tax, tag] of c.tags) {
     const j = await secJson<{ units?: Record<string, Fact[]> }>(
       `https://data.sec.gov/api/xbrl/companyconcept/CIK${pad(cik)}/${tax}/${tag}.json`,
     );
     const v = j ? quarterValue(j.units, c.unit, periodEnd, `${tax}:${tag}`, metric !== "eps_diluted") : null;
-    if (v) return v;
+    if (v) found.push(v);
   }
-  return null;
+  // Revenue: the total, not a part of it (see pickSeries). Others: the first tag in preference order.
+  if (metric === "revenue") return found.sort((a, b) => b.value - a.value)[0] ?? null;
+  return found[0] ?? null;
 }
 
 export const filingIndexUrl = (cik: number | string, accession: string) =>

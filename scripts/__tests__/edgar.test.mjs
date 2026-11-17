@@ -40,3 +40,10 @@ test("edgar: filings link to the primary document under the CIK and accession", 
   });
   assert.equal(out[0].url, "https://www.sec.gov/Archives/edgar/data/320193/000032019326000077/aapl-20260627.htm");
 });
+
+test("edgar: revenue is the total when a company also tags a part of it (ADM: Revenues 22.3bn vs contracts 6.6bn)", async () => {
+  const { pickSeries } = await import("../../lib/edgar.ts");
+  const mk = (tag, val, end = "2026-09-30") => seriesFromConcept({ USD: [f("2026-07-01", end, val, "2026-11-03")] }, "USD", tag);
+  assert.equal(pickSeries("revenue", [mk("us-gaap:RevenueFromContract", 6628), mk("us-gaap:Revenues", 22335)]).tag, "us-gaap:Revenues");
+  assert.equal(pickSeries("revenue", [mk("old", 99999, "2020-09-30"), mk("cur", 5)]).tag, "cur", "a stale tag never wins on size");
+});
