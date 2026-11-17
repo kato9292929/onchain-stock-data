@@ -801,6 +801,127 @@ function importMetrics(p, files, ctx) {
   };
 }
 
+// ── stock_catalysts: one dated, numeric condition per US stock ───────────────
+
+const STOCK_METRICS = {
+  revenue: "Revenue",
+  operating_income: "Operating income",
+  net_income: "Net income",
+  eps_diluted: "Diluted EPS",
+};
+const STOCK_OPS = new Set([">=", ">", "<=", "<"]);
+const FISCAL_PERIODS = new Set(["Q1", "Q2", "Q3", "Q4"]);
+
+/** Same ticker, metric and quarter → the same id, so a resend is a no-op. */
+export function stockCatalystId(ticker, metric, periodEnd) {
+  const h = createHash("sha256").update(`stocks-us|${ticker}|${metric}|${periodEnd}`).digest("hex");
+  return `ext_${h.slice(0, 8)}`;
+}
+
+const fmtThreshold = (metric, v) =>
+  metric === "eps_diluted" ? `${v.toLocaleString("en-US")} USD per share` : `${v.toLocaleString("en-US")} USD mn`;
+
+/**
+ * Conditions for the US stocks research (scripts/export-stocks-research.mjs).
+ * Each is a single number the next 10-Q / 10-K tags in XBRL — revenue,
+ * operating income, net income or diluted EPS for a named fiscal quarter — so
+ * scripts/judge-stocks-edgar.mjs can judge it from EDGAR with no model. One
+ * condition per company per quarter. Bad items are listed and skipped.
+ */
+function importStockCatalysts(p, files, ctx) {
+  if (p.author !== CHAT_MODEL) return { errors: [`author must be "${CHAT_MODEL}"`] };
+  const items = Array.isArray(p.items) ? p.items : [];
+  if (items.length === 0) return { errors: ["items must be a non-empty array"] };
+  const list = structuredClone(files.externals ?? []);
+  const known = new Set(list.map((c) => c.catalyst_id));
+  const thisBatch = new Set();
+  const rejected = [];
+  let applied = 0;
+  for (const [i, it] of items.entries()) {
+    const reasons = [];
+    const ticker = String(it?.ticker ?? "").trim().toUpperCase();
+    const metric = it?.metric;
+    const periodEnd = it?.period_end;
+    const threshold = Number(it?.threshold);
+    if (!US_CODE.test(ticker)) reasons.push(`bad ticker "${it?.ticker}"`);
+    if (!nonEmpty(it?.company_name)) reasons.push("company_name is required");
+    if (!(metric in STOCK_METRICS)) reasons.push(`metric must be one of ${Object.keys(STOCK_METRICS).join(", ")}`);
+    if (!FISCAL_PERIODS.has(it?.fiscal_period)) reasons.push("fiscal_period must be Q1, Q2, Q3 or Q4");
+    if (!Number.isInteger(it?.fiscal_year) || it.fiscal_year < 2026 || it.fiscal_year > 2028) reasons.push("fiscal_year must be 2026–2028");
+    if (metric === "eps_diluted" && it?.fiscal_period === "Q4") {
+      reasons.push("eps_diluted cannot be used for Q4 (a 10-K tags the year, and EPS cannot be derived)");
+    }
+    if (!ISO_DATE.test(periodEnd ?? "")) reasons.push("period_end must be YYYY-MM-DD");
+    if (!STOCK_OPS.has(it?.operator)) reasons.push("operator must be >=, >, <= or <");
+    if (!Number.isFinite(threshold)) reasons.push("threshold must be a number (USD mn; USD per share for eps_diluted)");
+    if (!ISO_DATE.test(it?.target_date ?? "")) reasons.push("target_date (the expected report date) must be YYYY-MM-DD");
+    else if (ISO_DATE.test(periodEnd ?? "")) {
+      const lag = (Date.parse(it.target_date) - Date.parse(periodEnd)) / 86_400_000;
+      if (lag < 0 || lag > 120) reasons.push("target_date must be 0–120 days after period_end");
+    }
+    if (it?.target_date && it.target_date < ctx.today.slice(0, 10)) reasons.push("target_date is in the past: the result may already be out");
+    if (!DATE_CONFIDENCE.has(it?.date_confidence)) reasons.push(`date_confidence must be "confirmed" or "estimated"`);
+    if (!nonEmpty(it?.basis)) reasons.push("basis (why this threshold) is required");
+    if (!isUrl(it?.source_url)) reasons.push("source_url (the guidance or filing the threshold comes from) is required");
+    const id = stockCatalystId(ticker, metric, periodEnd);
+    if (known.has(id)) reasons.push("already on record");
+    if (thisBatch.has(`${ticker}|${periodEnd}`)) reasons.push("one condition per company per quarter");
+    if (reasons.length) {
+      rejected.push({ index: i, id: ticker || `items[${i}]`, reasons });
+      continue;
+    }
+    thisBatch.add(`${ticker}|${periodEnd}`);
+    const label = STOCK_METRICS[metric];
+    const fp = `${it.fiscal_period} FY${it.fiscal_year}`;
+    const unit = metric === "eps_diluted" ? "USD per share" : "USD mn";
+    list.push({
+      catalyst_id: id,
+      ticker,
+      market: "US",
+      source: "research:stocks-us",
+      source_url: it.source_url,
+      conviction: null,
+      agent_id: null,
+      catalyst_description: `${fp} ${label} ${it.operator} ${fmtThreshold(metric, threshold)} (quarter ending ${periodEnd})`,
+      success_conditions: [
+        { metric: `${label} ${fp}`, operator: it.operator, threshold: { value: threshold, unit }, source_doc: it.fiscal_period === "Q4" ? "10-K" : "10-Q" },
+      ],
+      basis: String(it.basis).trim(),
+      target_date: it.target_date,
+      submitted_at: ctx.now,
+      submitter_contact: null,
+      status: "pending",
+      judgement_date: null,
+      evidence_urls: [],
+      reasoning: null,
+      catalyst_type: "earnings",
+      date_confidence: it.date_confidence,
+      country: "US",
+      series: "stocks-us",
+      catalyst_role: "main",
+      parent_catalyst_id: null,
+      company_name: String(it.company_name).trim(),
+      // What scripts/judge-stocks-edgar.mjs compares: the filed XBRL value in raw USD.
+      auto_judge: {
+        metric,
+        period_end: periodEnd,
+        operator: it.operator,
+        threshold: metric === "eps_diluted" ? threshold : threshold * 1e6,
+      },
+    });
+    known.add(id);
+    applied += 1;
+  }
+  if (applied === 0) return { errors: rejected.map((r) => `items[${r.index}] ${r.id}: ${r.reasons.join("; ")}`) };
+  return {
+    writes: { externals: list },
+    applied,
+    rejected,
+    notes: [`stocks-us: ${applied}件`],
+    label: `stocks-us ${applied}件`,
+  };
+}
+
 const HANDLERS = {
   selection: importSelection,
   verdicts: importVerdicts,
@@ -808,6 +929,7 @@ const HANDLERS = {
   date_checks: importDateChecks,
   theme_catalysts: importThemeCatalysts,
   metrics: importMetrics,
+  stock_catalysts: importStockCatalysts,
 };
 
 /**

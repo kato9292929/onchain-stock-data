@@ -181,6 +181,7 @@ export const POPULATION = {
 /** Population label for a series-authored catalyst. */
 const SERIES_LABEL: Record<string, string> = {
   "physical-ai": "Physical AI series",
+  "stocks-us": "US stocks research",
   "neocloud-us": "Neocloud US",
   "neocloud-jp": "Neocloud Japan",
 };

@@ -13,6 +13,7 @@ export { GROUPS, type Group, type SelectionRow } from "@/lib/selection-groups";
 
 export function groupOf(population: string): Group {
   const p = population.toLowerCase();
+  if (p.includes("us stocks")) return "us-stocks";
   if (p.includes("weekly")) return "weekly";
   if (p.includes("neocloud")) return "neocloud";
   if (p.includes("physical")) return "physical-ai";
@@ -115,11 +116,17 @@ export function selectionSections(rows: SelectionRow[], themes: ThemeDef[], rec:
       mine = rows.filter((r) => r.population === want);
     } else {
       const tickers = new Set(membersOf(t, rec).map((m) => m.ticker.toUpperCase()));
-      mine = rows.filter((r) => r.group !== "weekly" && tickers.has(r.ticker.toUpperCase()));
+      mine = rows.filter((r) => r.group !== "weekly" && r.group !== "us-stocks" && tickers.has(r.ticker.toUpperCase()));
     }
     for (const r of mine) placed.add(r.id);
     if (mine.length === 0) continue;
     sections.push({ id: t.id, title: t.title_en, group: g, companies: new Set(mine.map((r) => r.ticker)).size, rows: mine });
+  }
+  // The US stocks research is not a theme: one category of its own.
+  const usStocks = rows.filter((r) => r.group === "us-stocks");
+  if (usStocks.length) {
+    for (const r of usStocks) placed.add(r.id);
+    sections.push({ id: "us-stocks", title: "US stocks · next quarter", group: "us-stocks", companies: new Set(usStocks.map((r) => r.ticker)).size, rows: usStocks });
   }
   const rest = rows.filter((r) => !placed.has(r.id));
   if (rest.length) sections.push({ id: "other", title: "Other", group: "jp-sectors", companies: new Set(rest.map((r) => r.ticker)).size, rows: rest });
