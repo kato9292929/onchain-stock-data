@@ -112,10 +112,10 @@ export default async function Home() {
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
               osd ships a remote <span className="font-semibold text-slate-700">MCP server</span>.
-              Connect it to Claude, Cursor or any MCP client to look up a tokenized stock
-              and the Selection record in plain language. Every tool is read-only and
-              free — no model call runs on a tool invocation. The per-company filings and
-              financials are the paid endpoints above.
+              Connect it to Claude, Cursor or any MCP client and ask about a stock in plain
+              language: the last quarter as filed, the latest filings, what is due to be
+              judged and how past conditions went — every number with the filing it came
+              from. Read-only and free; no model call runs on a tool invocation.
             </p>
           </div>
 
@@ -127,15 +127,14 @@ export default async function Home() {
               </div>
               <ul className="mt-3 space-y-3">
                 {[
+                  ["stock_brief", "A US stock before its report: last quarter as filed (with YoY and the filing URL), next earnings, latest filings, open conditions and track record."],
+                  ["stock_financials", "Revenue, operating income, net income, EPS, cash and shares over time, exactly as tagged in the 10-Q / 10-K."],
+                  ["stock_filings", "Latest SEC filings (10-K, 10-Q, 8-K…) with document URLs; filter by form."],
+                  ["selection_list", "Conditions and verdicts (HIT / PARTIAL / MISS) with evidence; filter by category, status or ticker."],
+                  ["earnings_upcoming", "Conditions due in the next N days — what is about to be judged."],
+                  ["large_holdings", "Japan large-holding reports (EDINET): who crossed 5% and who changed, newest first."],
                   ["solana_stock_get", "A tokenized stock on Solana — mints, issuer, next earnings and its per-call URL."],
-                  ["portfolio_get", "This week's Selection (US / Japan) — picks, weights and each pick's condition."],
-                  ["catalysts_list", "Every condition with its deadline and verdict; filter by date range, ticker or category."],
-                  ["themes_list", "The Selection categories (weekly, neocloud, physical AI, Japan sectors) and their members."],
-                  ["theme_get", "One category's members — next earnings, current condition, Solana token."],
-                  ["scoreboard_get", "HIT / PARTIAL / MISS tally for the Physical AI category."],
-                  ["neocloud_theme", "Neocloud companies (US 18 / Japan 5): contracted and energized MW, next earnings."],
-                  ["neocloud_company", "One neocloud company's latest disclosed numbers, each with its filing."],
-                  ["neocloud_digest", "Neocloud companies with a filing in the last 7 days."],
+                  ["neocloud_company", "One neocloud company's latest disclosed numbers (MW, backlog, guidance), each with its filing."],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex flex-col gap-0.5">
                     <code className="break-all font-mono text-[13px] font-semibold text-[#0a1b33]">{name}</code>
