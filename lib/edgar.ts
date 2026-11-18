@@ -18,7 +18,20 @@ export const SEC_SOURCE = "SEC EDGAR (company filings, XBRL)";
 const UA = "onchain-stock-data (+https://osd-coral.vercel.app)";
 const DAY = 24 * 60 * 60;
 
+// SEC fair access: at most 10 requests/second per client. Keep this process at
+// 8/s by spacing the start of each request (cached responses count too — the
+// cost is a little latency, never a block).
+const MIN_GAP_MS = 125;
+let nextSlot = 0;
+async function slot(): Promise<void> {
+  const now = Date.now();
+  const at = Math.max(now, nextSlot);
+  nextSlot = at + MIN_GAP_MS;
+  if (at > now) await new Promise((r) => setTimeout(r, at - now));
+}
+
 async function secJson<T>(url: string): Promise<T | null> {
+  await slot();
   const res = await fetch(url, {
     headers: { "User-Agent": UA, Accept: "application/json" },
     next: { revalidate: DAY },
@@ -35,13 +48,22 @@ export function secTicker(ticker: string): string {
   return ticker.trim().toUpperCase().replace(/\./g, "-");
 }
 
-export async function cikFor(ticker: string): Promise<{ cik: number; title: string } | null> {
+let tickerMap: { at: number; map: Map<string, { cik: number; title: string }> } | null = null;
+
+/** SEC's ticker → CIK list, kept in memory for a day within one process. */
+export async function secTickerMap(): Promise<Map<string, { cik: number; title: string }>> {
+  if (tickerMap && Date.now() - tickerMap.at < DAY * 1000) return tickerMap.map;
   const all = await secJson<Record<string, { cik_str: number; ticker: string; title: string }>>(
     "https://www.sec.gov/files/company_tickers.json",
   );
-  const want = secTicker(ticker);
-  for (const v of Object.values(all ?? {})) if (v.ticker.toUpperCase() === want) return { cik: v.cik_str, title: v.title };
-  return null;
+  const map = new Map<string, { cik: number; title: string }>();
+  for (const v of Object.values(all ?? {})) if (!map.has(v.ticker.toUpperCase())) map.set(v.ticker.toUpperCase(), { cik: v.cik_str, title: v.title });
+  tickerMap = { at: Date.now(), map };
+  return map;
+}
+
+export async function cikFor(ticker: string): Promise<{ cik: number; title: string } | null> {
+  return (await secTickerMap()).get(secTicker(ticker)) ?? null;
 }
 
 // ── filings ─────────────────────────────────────────────────────────────────
@@ -98,6 +120,7 @@ export const CONCEPTS: Array<{ key: string; unit: string; tags: Array<[string, s
     tags: [
       ["us-gaap", "RevenueFromContractWithCustomerExcludingAssessedTax"],
       ["us-gaap", "Revenues"],
+      ["us-gaap", "RevenueFromContractWithCustomerIncludingAssessedTax"],
       ["us-gaap", "SalesRevenueNet"],
     ],
   },
@@ -183,12 +206,28 @@ async function financialsFor(cik: number): Promise<Record<string, SecSeries>> {
         const s = j ? seriesFromConcept(j.units, c.unit, `${tax}:${tag}`) : null;
         if (s) found.push(s);
       }
-      // Companies move between tags over the years: use the one with the newest period.
-      found.sort((a, b) => newest(b).localeCompare(newest(a)));
-      if (found[0]) out[c.key] = found[0];
+      const pick = pickSeries(c.key, found);
+      if (pick) out[c.key] = pick;
     }),
   );
   return dropStale(out);
+}
+
+const latestValue = (s: SecSeries) => s.quarterly[0]?.value ?? s.annual[0]?.value ?? s.instant[0]?.value ?? 0;
+
+/**
+ * Of the tags that carry a metric, the one to use. Companies move between tags
+ * over the years, so the one with the newest period. For revenue, a company can
+ * tag both its total (Revenues) and a part of it (revenue from contracts with
+ * customers, without e.g. derivative sales — ADM: 22.3bn vs 6.6bn): among the
+ * current tags, the largest is the total. Pure.
+ */
+export function pickSeries(key: string, found: SecSeries[]): SecSeries | null {
+  if (found.length === 0) return null;
+  const top = found.map(newest).sort().pop()!;
+  const current = found.filter((s) => newest(s) === top);
+  if (key === "revenue") return current.sort((a, b) => latestValue(b) - latestValue(a))[0];
+  return current[0];
 }
 
 /**
@@ -226,3 +265,74 @@ export async function getSecRecord(ticker: string): Promise<SecRecord | null> {
     financials,
   };
 }
+
+// ── judging a condition against the filed number ───────────────────────────
+
+/** The four metrics a stock condition may use: each is tagged in every 10-Q / 10-K, so it can be judged from EDGAR alone. */
+export const JUDGEABLE = ["revenue", "operating_income", "net_income", "eps_diluted"] as const;
+export type JudgeableMetric = (typeof JUDGEABLE)[number];
+
+export function conceptOf(metric: JudgeableMetric) {
+  const c = CONCEPTS.find((x) => x.key === metric);
+  if (!c) throw new Error(`unknown metric ${metric}`);
+  return c;
+}
+
+export interface FiledValue {
+  value: number;
+  /** "reported": the quarter as tagged; "derived": fiscal Q4 = full year − nine months (10-Ks tag the year, not Q4). */
+  how: "reported" | "derived";
+  form: string;
+  filed: string;
+  accession: string;
+  tag: string;
+}
+
+const near = (a: string, b: string, tol = 10) => Math.abs(days(a, b)) <= tol;
+
+/**
+ * The value for the fiscal quarter ending `periodEnd` (± 10 days), from one
+ * concept's facts. A Q4 is not tagged as a quarter in a 10-K, so for a flow
+ * metric it is derived as the full year less the nine months to Q3. EPS is not
+ * additive and is never derived. null when the quarter is not filed yet. Pure.
+ */
+export function quarterValue(
+  units: Record<string, Fact[]> | undefined,
+  unit: string,
+  periodEnd: string,
+  tag: string,
+  additive: boolean,
+): FiledValue | null {
+  const facts = (units?.[unit] ?? []).filter((f) => PERIODIC_FORMS.has(f.form) && Number.isFinite(f.val) && f.start);
+  const latest = (xs: Fact[]) => xs.sort((a, b) => b.filed.localeCompare(a.filed))[0];
+  const dur = (f: Fact) => days(f.start!, f.end);
+
+  const q = latest(facts.filter((f) => near(f.end, periodEnd) && dur(f) >= 80 && dur(f) <= 100));
+  if (q) return { value: q.val, how: "reported", form: q.form, filed: q.filed, accession: q.accn, tag };
+  if (!additive) return null;
+
+  const fy = latest(facts.filter((f) => near(f.end, periodEnd) && dur(f) >= 350 && dur(f) <= 380));
+  if (!fy) return null;
+  const nine = latest(facts.filter((f) => f.start && near(f.start, fy.start!) && dur(f) >= 260 && dur(f) <= 290));
+  if (!nine) return null;
+  return { value: fy.val - nine.val, how: "derived", form: fy.form, filed: fy.filed, accession: fy.accn, tag };
+}
+
+/** Fetch the filed value for a metric and quarter, trying the metric's tags in order. Throws if SEC is unreachable. */
+export async function filedQuarterValue(cik: number, metric: JudgeableMetric, periodEnd: string): Promise<FiledValue | null> {
+  const c = conceptOf(metric);
+  const found: FiledValue[] = [];
+  for (const [tax, tag] of c.tags) {
+    const j = await secJson<{ units?: Record<string, Fact[]> }>(
+      `https://data.sec.gov/api/xbrl/companyconcept/CIK${pad(cik)}/${tax}/${tag}.json`,
+    );
+    const v = j ? quarterValue(j.units, c.unit, periodEnd, `${tax}:${tag}`, metric !== "eps_diluted") : null;
+    if (v) found.push(v);
+  }
+  // Revenue: the total, not a part of it (see pickSeries). Others: the first tag in preference order.
+  if (metric === "revenue") return found.sort((a, b) => b.value - a.value)[0] ?? null;
+  return found[0] ?? null;
+}
+
+export const filingIndexUrl = (cik: number | string, accession: string) =>
+  `https://www.sec.gov/Archives/edgar/data/${Number(cik)}/${accession.replace(/-/g, "")}/`;

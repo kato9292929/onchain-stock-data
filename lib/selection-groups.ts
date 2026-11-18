@@ -1,10 +1,11 @@
 /** Shared with the client table: no server imports here. */
 import type { Result, RowStatus } from "@/lib/company-record";
 
-export type Group = "weekly" | "neocloud" | "physical-ai" | "jp-sectors";
+export type Group = "weekly" | "us-stocks" | "neocloud" | "physical-ai" | "jp-sectors";
 
 export const GROUPS: Array<{ id: Group; label: string }> = [
   { id: "weekly", label: "Weekly picks" },
+  { id: "us-stocks", label: "US stocks" },
   { id: "neocloud", label: "Neocloud" },
   { id: "physical-ai", label: "Physical AI" },
   { id: "jp-sectors", label: "Japan sectors" },
