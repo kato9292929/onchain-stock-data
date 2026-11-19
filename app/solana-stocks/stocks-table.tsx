@@ -24,7 +24,7 @@ export const STATUS_STYLE: Record<string, string> = {
   na: "bg-slate-50 text-slate-500 border-slate-200",
 };
 
-type Issuer = "all" | "xStocks" | "Ondo";
+type Issuer = "all" | "xStocks" | "Ondo" | "Backpack";
 
 /** `preview`: show only the first `preview` rows, without the search, filters and pager (the front page). */
 export function StocksTable({
@@ -103,7 +103,7 @@ export function StocksTable({
             aria-label="Search ticker or name"
             className="h-9 w-full rounded-full border border-slate-200 bg-white px-4 text-sm outline-none focus:border-slate-400 sm:w-64"
           />
-          {(["all", "xStocks", "Ondo"] as Issuer[]).map((v) => (
+          {(["all", "xStocks", "Ondo", "Backpack"] as Issuer[]).map((v) => (
             <button
               key={v}
               type="button"
