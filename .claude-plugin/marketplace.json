@@ -1,0 +1,14 @@
+{
+  "name": "osd",
+  "description": "Onchain Stock Data — company filings, financials and onchain activity for every tokenized stock on Solana, as Claude Code skills over a free MCP server.",
+  "owner": {
+    "name": "Onchain Stock Data"
+  },
+  "plugins": [
+    {
+      "name": "osd",
+      "source": "./plugins/osd",
+      "description": "Earnings briefs from SEC filings, tokenized stocks trading now on Solana, checking a claim against the company's own disclosure, and Japan large-holding reports. No API key."
+    }
+  ]
+}

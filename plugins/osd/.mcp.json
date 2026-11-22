@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "osd": {
+      "type": "http",
+      "url": "https://osd.x402jp.com/api/mcp"
+    }
+  }
+}

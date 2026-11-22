@@ -5,7 +5,7 @@ import { SolanaMark } from "./solana-mark";
 import { StocksTable, type StockRow } from "../solana-stocks/stocks-table";
 
 /**
- * Every tokenized stock issued on Solana (xStocks, Ondo Global Markets), one
+ * Every tokenized stock issued on Solana (xStocks, Ondo Global Markets, Backpack Securities), one
  * row per underlying ticker, joined to the dated earnings conditions this site
  * sets and scores. Each row leads to /solana-stocks/{ticker}, which is where
  * the per-call full record is explained. No prices: verdicts are judged on
@@ -29,6 +29,7 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
   const counts = {
     xStocks: rows.filter((r) => r.tokens.some((t) => t.issuer === "xStocks")).length,
     Ondo: rows.filter((r) => r.tokens.some((t) => t.issuer === "Ondo")).length,
+    Backpack: rows.filter((r) => r.tokens.some((t) => t.issuer === "Backpack")).length,
     covered: rows.filter((r) => r.conditions > 0).length,
   };
 
@@ -60,8 +61,8 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
           {rows.length.toLocaleString()} tokenized stocks on Solana
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
-          Every equity token issued on Solana by xStocks ({counts.xStocks.toLocaleString()}) and Ondo Global
-          Markets ({counts.Ondo.toLocaleString()}), with its mint. Per call, each US-listed company&apos;s own
+          Every equity token issued on Solana by xStocks ({counts.xStocks.toLocaleString()}), Ondo Global
+          Markets ({counts.Ondo.toLocaleString()}) and Backpack Securities via Sunrise ({counts.Backpack.toLocaleString()}), with its mint. Per call, each US-listed company&apos;s own
           SEC filings and XBRL financials (revenue, operating income, net income, EPS, cash, shares), each value
           with its filing — plus, for {counts.covered} of them, a dated condition scored HIT / PARTIAL / MISS.{" "}
           <span className="font-semibold text-slate-700">{PER_CALL_PRICE.usdc} USDC per call</span> over x402.

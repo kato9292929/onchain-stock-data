@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LandingHero } from "./components/landing-hero";
 import { SolanaStocksSection } from "./components/solana-stocks-section";
 import { SelectionSection } from "./components/selection-section";
+import { OnchainTrending } from "./components/onchain-trending";
 import { loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes } from "@/lib/themes";
 import { SolanaMark } from "./components/solana-mark";
@@ -21,6 +22,11 @@ export default async function Home() {
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} pricePerCall={PER_CALL_PRICE.usdc} intro />
+
+        {/* What is trading on Solana right now (Jupiter, cached 15 minutes) */}
+        <section className="mt-16">
+          <OnchainTrending />
+        </section>
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
         <section id="x402" className="mt-16">
@@ -127,6 +133,7 @@ export default async function Home() {
               </div>
               <ul className="mt-3 space-y-3">
                 {[
+                  ["onchain_trending", "Tokenized stocks trading now on Solana — 24h volume, trades, holders, new listings and each issuer's share."],
                   ["stock_brief", "A US stock before its report: last quarter as filed (with YoY and the filing URL), next earnings, latest filings, open conditions and track record."],
                   ["stock_financials", "Revenue, operating income, net income, EPS, cash and shares over time, exactly as tagged in the 10-Q / 10-K."],
                   ["stock_filings", "Latest SEC filings (10-K, 10-Q, 8-K…) with document URLs; filter by form."],
@@ -187,8 +194,9 @@ export default async function Home() {
 
         <footer className="mt-16 border-t border-slate-200 py-8 text-xs text-slate-400">
           <p>
-            Informational only — not investment advice. Data comes from the companies&apos; own
-            filings (SEC EDGAR, EDINET, TDnet); no market prices are used.
+            Informational only — not investment advice. Company data comes from the companies&apos; own
+            filings (SEC EDGAR, EDINET, TDnet); onchain activity from Jupiter&apos;s public token API.
+            Verdicts are judged on filings only, never on prices or volume.
           </p>
           <p className="mt-2">
             <a href="https://github.com/kato9292929/onchain-stock-data" className="text-slate-500 hover:text-slate-700">

@@ -1,0 +1,21 @@
+{
+  "name": "osd",
+  "version": "0.1.0",
+  "description": "Onchain Stock Data: earnings briefs from SEC filings (every number with its filing), tokenized stocks trading now on Solana (xStocks, Ondo, Backpack Securities), checking a market claim against the company's own disclosure, and Japan large-holding reports (EDINET). Read-only, free, no API key.",
+  "author": {
+    "name": "Onchain Stock Data",
+    "url": "https://osd-coral.vercel.app"
+  },
+  "homepage": "https://osd-coral.vercel.app",
+  "repository": "https://github.com/kato9292929/onchain-stock-data",
+  "keywords": [
+    "stocks",
+    "sec",
+    "edgar",
+    "edinet",
+    "solana",
+    "tokenized-stocks",
+    "earnings",
+    "mcp"
+  ]
+}

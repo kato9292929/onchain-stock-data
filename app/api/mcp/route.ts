@@ -16,6 +16,8 @@ import { findTheme, getThemes, themeFreeBody, themesIndexBody } from "@/lib/them
 import { loadSolanaStocks } from "@/lib/solana-stocks-load";
 import { companyFreeBody, digestFreeBody, findNeocloudCompany } from "@/lib/neocloud";
 import { getStockBrief } from "@/lib/stock-brief";
+import { fetchActivity, fetchTopTraded, rankActivity, ONCHAIN_SOURCE } from "@/lib/onchain-activity";
+import { issuerShort } from "@/lib/solana-stocks-load";
 import { filingIndexUrl, getSecRecord } from "@/lib/edgar";
 import { selectionRows } from "@/lib/selection";
 import { hitRateOf, tally } from "@/lib/hit-rate";
@@ -80,11 +82,20 @@ const handler = createMcpHandler(
         annotations: { title: "Stock brief before earnings", ...LIVE },
       },
       async ({ ticker }) => {
-        const rec = await loadRecords();
+        const [rec, file] = await Promise.all([loadRecords(), getSolanaStocks().catch(() => null)]);
+        const want = ticker.toUpperCase();
+        const tokens = (file?.tokens ?? []).filter((t) => t.ticker === want);
+        // On-chain activity of its Solana tokens (market activity, not used for verdicts).
+        const onchain = await fetchActivity(tokens.map((t) => t.solana_mint).slice(0, 100))
+          .then((act) => ({
+            source: ONCHAIN_SOURCE,
+            tokens: tokens.map((t) => ({ issuer: issuerShort(t.issuer), symbol: t.symbol, mint: t.solana_mint, ...(act.get(t.solana_mint) ?? {}) })),
+          }))
+          .catch(() => null);
         try {
-          return text(await getStockBrief(ticker, rec, today()));
+          return text({ ...(await getStockBrief(ticker, rec, today(), tokens[0]?.name)), onchain });
         } catch (e) {
-          return text({ error: "sec_unavailable", message: e instanceof Error ? e.message : String(e) });
+          return text({ error: "sec_unavailable", message: e instanceof Error ? e.message : String(e), onchain });
         }
       },
     );
@@ -151,6 +162,29 @@ const handler = createMcpHandler(
         const want = forms?.map((f) => f.toUpperCase());
         const filings = sec.filings.filter((f) => !want || want.includes(f.form.toUpperCase())).slice(0, limit);
         return text({ ticker: ticker.toUpperCase(), company: sec.company, cik: sec.cik, filings });
+      },
+    );
+
+    server.registerTool(
+      "onchain_trending",
+      {
+        title: "Tokenized stocks trading now on Solana",
+        description:
+          "The tokenized stocks among Solana's top 100 tokens by 24h volume (Jupiter's public token API, refreshed every 15 minutes): per stock the 24h volume, trades, traders and holders summed over its issuers (xStocks, Ondo, Backpack Securities), the 24h change in holders, and new listings (first pool within 30 days). Also the total and each issuer's share. Market activity only — never used to judge a condition.",
+        inputSchema: z.object({
+          limit: z.number().int().min(1).max(100).default(20),
+          new_only: z.boolean().default(false).describe("only new listings"),
+        }),
+        annotations: { title: "Tokenized stocks trading now on Solana", ...LIVE },
+      },
+      async ({ limit, new_only }) => {
+        try {
+          const [file, act] = await Promise.all([getSolanaStocks(), fetchTopTraded()]);
+          const r = rankActivity(file, act, new Date(), issuerShort);
+          return text({ ...r, top: (new_only ? r.new_listings : r.top).slice(0, limit), new_listings: r.new_listings.map((x) => x.ticker) });
+        } catch (e) {
+          return text({ error: "onchain_unavailable", message: e instanceof Error ? e.message : String(e) });
+        }
       },
     );
 

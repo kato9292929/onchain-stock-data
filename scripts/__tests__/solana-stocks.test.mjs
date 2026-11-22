@@ -210,3 +210,22 @@ test("the free view gives mint, dates and the latest verdict as a full row; the 
   assert.equal(full.signals[0].verified, false);
   assert.equal(freeBody("ZZZ", FILE, REC, "2026-10-29", "https://osd").full, null);
 });
+
+test("Backpack Securities (Sunrise): the .US assets with a Solana mint, each verified on-chain", async () => {
+  const { parseBackpack, isBackpackSecuritiesMint, ISSUERS: I } = await import("../refresh-solana-stocks.mjs");
+  const assets = [
+    { symbol: "ANT.US", displayName: "Anthropic", tokens: [{ blockchain: "Solana", contractAddress: "ANTBTZQ1EUuTxUs3tfeampxdqTWPHmwyJmcWj4xoAyNe" }] },
+    { symbol: "BRK.B.US", displayName: "Berkshire Hathaway", tokens: [{ blockchain: "Solana", contractAddress: "BRKbXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1" }] },
+    { symbol: "ANTX.US", displayName: "ANTX.US", tokens: [{ blockchain: "Solana", contractAddress: null }] },
+    { symbol: "BTC", displayName: "Bitcoin", tokens: [{ blockchain: "Solana", contractAddress: "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij" }] },
+  ];
+  const rows = parseBackpack(assets, { fetchedAt: "2026-11-19" });
+  assert.deepEqual(rows.map((r) => [r.ticker, r.issuer]), [["ANT", I.backpack], ["BRK.B", I.backpack]]);
+
+  const acct = (name, uri) => ({ data: { parsed: { info: { extensions: [{ extension: "tokenMetadata", state: { name, uri } }] } } } });
+  assert.equal(isBackpackSecuritiesMint(acct("Anthropic - Backpack Securities", "https://metadata.backpack.exchange/stocks/ant.us.json")), true);
+  assert.equal(isBackpackSecuritiesMint(acct("Apple - Backpack Securities", "https://trek-labs.github.io/heart-metadata/stocks/aapl.us.json")), true);
+  assert.equal(isBackpackSecuritiesMint(acct("Anthropic - Backpack Securities", "https://evil.example/ant.json")), false, "a copycat on another host");
+  assert.equal(isBackpackSecuritiesMint(acct("Anthropic", "https://metadata.backpack.exchange/x.json")), false);
+  assert.equal(isBackpackSecuritiesMint(null), false, "no such account");
+});

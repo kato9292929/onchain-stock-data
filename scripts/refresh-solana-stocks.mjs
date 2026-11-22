@@ -6,6 +6,12 @@
  *                              (the product list is embedded in the page)
  *   Ondo Global Markets        https://docs.ondo.finance/addresses
  *                              (links the issuer's own token CSV; we follow it)
+ *   Backpack Securities        https://api.backpack.exchange/api/v1/assets
+ *     (listed via Sunrise)     (the exchange's public asset list: "<TICKER>.US"
+ *                              with its Solana mint), each mint then checked
+ *                              on-chain: its Token-2022 metadata must name
+ *                              "Backpack Securities" and point at Backpack's
+ *                              own metadata host. A public Solana RPC read.
  *
  * Both are the issuers' own public pages. No API key, no paid data API, no
  * web search, no model call: this costs nothing to run, which is why it may
@@ -25,12 +31,17 @@ const OUT = path.join(process.cwd(), "data", "solana-stocks.json");
 
 export const XSTOCKS_URL = "https://xstocks.fi/us/products";
 export const ONDO_DOCS_URL = "https://docs.ondo.finance/addresses";
+export const BACKPACK_ASSETS_URL = "https://api.backpack.exchange/api/v1/assets";
+const SOLANA_RPC = process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
 export const ISSUERS = {
   xstocks: "xStocks (Backed / Kraken)",
   ondo: "Ondo Global Markets",
+  backpack: "Backpack Securities (Sunrise)",
 };
 /** Below this, a parse is treated as broken rather than as a real delisting. */
-export const MIN_ROWS = { xstocks: 200, ondo: 100 };
+export const MIN_ROWS = { xstocks: 200, ondo: 100, backpack: 500 };
+/** Hosts Backpack publishes its token metadata on (Trek Labs is Backpack's operator). */
+export const BACKPACK_METADATA_HOSTS = ["metadata.backpack.exchange", "trek-labs.github.io"];
 
 const BASE58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const UA = "onchain-stock-data/refresh-solana-stocks (+https://osd-coral.vercel.app)";
@@ -146,6 +157,68 @@ export function parseOndo(csvText, { fetchedAt, sourceUrl }) {
 }
 
 /**
+ * Backpack's public asset list → candidate rows: every "<TICKER>.US" asset
+ * with a Solana contract address. Pure; the mints are checked on-chain next.
+ */
+export function parseBackpack(assets, { fetchedAt, sourceUrl = BACKPACK_ASSETS_URL }) {
+  const out = new Map();
+  for (const a of Array.isArray(assets) ? assets : []) {
+    const sym = String(a?.symbol ?? "");
+    if (!sym.endsWith(".US")) continue;
+    const sol = (a.tokens ?? []).find((t) => t?.blockchain === "Solana" && t.contractAddress);
+    const mint = sol?.contractAddress;
+    if (!mint || !BASE58.test(mint)) continue;
+    const ticker = sym.slice(0, -3).toUpperCase();
+    if (!ticker) continue;
+    out.set(mint, {
+      ticker,
+      symbol: sym,
+      name: String(a.displayName ?? ticker).trim(),
+      issuer: ISSUERS.backpack,
+      asset_type: null,
+      solana_mint: mint,
+      source_url: sourceUrl,
+      fetched_at: fetchedAt,
+    });
+  }
+  return [...out.values()];
+}
+
+/** A mint is Backpack Securities' when its on-chain token metadata says so and points at Backpack's host. Pure. */
+export function isBackpackSecuritiesMint(account) {
+  const ext = account?.data?.parsed?.info?.extensions ?? [];
+  const meta = ext.find((e) => e?.extension === "tokenMetadata")?.state;
+  if (!meta || !String(meta.name ?? "").includes("Backpack Securities")) return false;
+  try {
+    return BACKPACK_METADATA_HOSTS.includes(new URL(meta.uri).hostname);
+  } catch {
+    return false;
+  }
+}
+
+/** Keep the rows whose mint is verified on-chain (100 accounts per RPC read, gently). */
+async function verifyBackpack(rows) {
+  const kept = [];
+  for (let i = 0; i < rows.length; i += 100) {
+    const chunk = rows.slice(i, i + 100);
+    const res = await fetch(SOLANA_RPC, {
+      method: "POST",
+      headers: { "content-type": "application/json", "user-agent": UA },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "getMultipleAccounts", params: [chunk.map((r) => r.solana_mint), { encoding: "jsonParsed" }] }),
+      signal: AbortSignal.timeout(60_000),
+    });
+    if (!res.ok) throw new Error(`${SOLANA_RPC} → HTTP ${res.status}`);
+    const values = (await res.json())?.result?.value;
+    if (!Array.isArray(values)) throw new Error("getMultipleAccounts returned no accounts");
+    chunk.forEach((r, j) => {
+      if (isBackpackSecuritiesMint(values[j])) kept.push(r);
+    });
+    await new Promise((r) => setTimeout(r, 1_000));
+  }
+  return kept;
+}
+
+/**
  * Merge this run's rows with last week's: a source that failed keeps its old
  * rows. Pure.
  */
@@ -216,6 +289,13 @@ async function main() {
     results.ondo = { url: ONDO_DOCS_URL, rows: parseOndo(csv, { fetchedAt: today, sourceUrl: ONDO_DOCS_URL }) };
   } catch (e) {
     results.ondo = { url: ONDO_DOCS_URL, rows: [], error: e.message };
+  }
+
+  try {
+    const assets = JSON.parse(await fetchText(BACKPACK_ASSETS_URL));
+    results.backpack = { url: BACKPACK_ASSETS_URL, rows: await verifyBackpack(parseBackpack(assets, { fetchedAt: today })) };
+  } catch (e) {
+    results.backpack = { url: BACKPACK_ASSETS_URL, rows: [], error: e.message };
   }
 
   const next = mergeRefresh(previous, results, now);

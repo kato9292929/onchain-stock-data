@@ -86,5 +86,5 @@ export async function loadSummaries(): Promise<{ rows: TickerSummary[]; updatedA
 
 /** "xStocks (Backed / Kraken)" → "xStocks", "Ondo Global Markets" → "Ondo". */
 export function issuerShort(issuer: string): string {
-  return issuer.startsWith("xStocks") ? "xStocks" : issuer.startsWith("Ondo") ? "Ondo" : issuer;
+  return issuer.startsWith("xStocks") ? "xStocks" : issuer.startsWith("Ondo") ? "Ondo" : issuer.startsWith("Backpack") ? "Backpack" : issuer;
 }
