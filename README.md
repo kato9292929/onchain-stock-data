@@ -17,6 +17,25 @@ Claude が選ぶ米株・日本株ポートフォリオと、日付つきカタ�
 
 > **公開 API のスコープ**: `/api/stocks`・`/api/ipo`・`/api/liquidity`・`/api/holders`・`/api/analyst`・`/api/predict`・`/api/alpha-posts`・`/api/wrappers/*` と、ページ `/stocks`・`/ipo`・`/liquidity`・`/holders`・`/analyst` は commit `1ac413d` (*feat(scope): trim public API to Portfolio + Catalysts only*) で**削除済み**です（現在 404）。`lib/analyst/`・`lib/predict.ts`・`lib/wrappers.ts` と `app/components/portfolio-pnl.tsx` はコードとしては残っていますが、**どの公開ルート／ページからも呼ばれていません**（`lib/tokensXyz.ts` は現役 — 下記 Data sources 参照）。
 
+## Claude Code plugin
+
+OSD ships as a Claude Code plugin: the free MCP server plus four skills. No API key.
+
+```
+/plugin install osd --marketplace kato9292929/onchain-stock-data
+```
+
+(On older Claude Code: `/plugin marketplace add kato9292929/onchain-stock-data`, then `/plugin install osd@osd`.)
+
+| Skill | What it does |
+| --- | --- |
+| `/osd:earnings-brief NVDA` | One US stock before its report: last quarter as filed (YoY, filing link), next earnings, latest filings, open conditions, track record, onchain activity |
+| `/osd:onchain-trending` | Tokenized stocks trading most on Solana now (xStocks, Ondo, Backpack Securities): 24h volume, holders, new listings, issuer share |
+| `/osd:check-claim` | Turns a market claim into a dated, numeric condition and shows what the company's filings say now |
+| `/osd:jp-large-holdings 6871` | Japan large-holding reports (EDINET): who crossed 5% and who changed |
+
+The plugin lives in `plugins/osd/` (marketplace: `.claude-plugin/marketplace.json`).
+
 ## Features
 
 | Path | 内容 | 課金 |
