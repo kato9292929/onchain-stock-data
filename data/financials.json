@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-11-16T00:18:30.051Z",
+  "updated_at": "2026-11-23T01:05:52.546Z",
   "sources": {
     "us": "https://data.sec.gov/api/xbrl/companyfacts/",
     "jp": "https://www.release.tdnet.info/inbs/I_main_00.html"
   },
   "last_run": {
-    "us_requested": 98,
+    "us_requested": 116,
     "us_failed": [
       {
         "ticker": "AGILITY",
@@ -129,8 +129,8 @@
       }
     ],
     "jp_requested": 226,
-    "jp_tdnet_pages": 129,
-    "jp_found_in_window": 202,
+    "jp_tdnet_pages": 133,
+    "jp_found_in_window": 203,
     "jp_failed": []
   },
   "companies": {
@@ -1983,13 +1983,13 @@
       "market": "JP",
       "company": "フィックスターズ",
       "source": "TDnet 決算短信 XBRL",
-      "fetched_at": "2026-11-08T12:53:37.814Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest": {
-        "title": "2026年9月期 決算短信〔日本基準〕（連結）",
+        "title": "（訂正・数値データ訂正）「2026年9月期 決算短信〔日本基準〕（連結）」の一部訂正について",
         "accounting_standard": "JGAAP",
-        "disclosed_at": "2026-11-06T16:30:00+09:00",
-        "document_url": "https://www.release.tdnet.info/inbs/140120261106567809.pdf",
-        "xbrl_url": "https://www.release.tdnet.info/inbs/081220261106567809.zip",
+        "disclosed_at": "2026-11-18T16:30:00+09:00",
+        "document_url": "https://www.release.tdnet.info/inbs/140120261118582860.pdf",
+        "xbrl_url": "https://www.release.tdnet.info/inbs/081220261118582860.zip",
         "period": "FY",
         "basis": "consolidated",
         "revenue": {
@@ -1997,32 +1997,32 @@
           "unit": "JPY",
           "prior_value": 9617000000,
           "yoy_pct": 10.7,
-          "source_url": "https://www.release.tdnet.info/inbs/140120261106567809.pdf",
-          "disclosed_at": "2026-11-06T16:30:00+09:00"
+          "source_url": "https://www.release.tdnet.info/inbs/140120261118582860.pdf",
+          "disclosed_at": "2026-11-18T16:30:00+09:00"
         },
         "operating_income": {
           "value": 2901000000,
           "unit": "JPY",
           "prior_value": 2578000000,
           "yoy_pct": 12.5,
-          "source_url": "https://www.release.tdnet.info/inbs/140120261106567809.pdf",
-          "disclosed_at": "2026-11-06T16:30:00+09:00"
+          "source_url": "https://www.release.tdnet.info/inbs/140120261118582860.pdf",
+          "disclosed_at": "2026-11-18T16:30:00+09:00"
         },
         "ordinary_income": {
           "value": 2897000000,
           "unit": "JPY",
           "prior_value": 2581000000,
           "yoy_pct": 12.2,
-          "source_url": "https://www.release.tdnet.info/inbs/140120261106567809.pdf",
-          "disclosed_at": "2026-11-06T16:30:00+09:00"
+          "source_url": "https://www.release.tdnet.info/inbs/140120261118582860.pdf",
+          "disclosed_at": "2026-11-18T16:30:00+09:00"
         },
         "net_income": {
           "value": 1955000000,
           "unit": "JPY",
           "prior_value": 1945000000,
           "yoy_pct": 0.5,
-          "source_url": "https://www.release.tdnet.info/inbs/140120261106567809.pdf",
-          "disclosed_at": "2026-11-06T16:30:00+09:00"
+          "source_url": "https://www.release.tdnet.info/inbs/140120261118582860.pdf",
+          "disclosed_at": "2026-11-18T16:30:00+09:00"
         }
       }
     },
@@ -2204,6 +2204,53 @@
           "yoy_pct": 260.3,
           "source_url": "https://www.release.tdnet.info/inbs/140120261113577600.pdf",
           "disclosed_at": "2026-11-13T12:00:00+09:00"
+        }
+      }
+    },
+    "3905": {
+      "market": "JP",
+      "company": "Ｇ－データセクション",
+      "source": "TDnet 決算短信 XBRL",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest": {
+        "title": "2027年３月期 第２四半期（中間期）決算短信〔日本基準〕（連結）",
+        "accounting_standard": "JGAAP",
+        "disclosed_at": "2026-11-16T21:00:00+09:00",
+        "document_url": "https://www.release.tdnet.info/inbs/140120261116581695.pdf",
+        "xbrl_url": "https://www.release.tdnet.info/inbs/081220261116581695.zip",
+        "period": "Q2_YTD",
+        "basis": "consolidated",
+        "revenue": {
+          "value": 6694000000,
+          "unit": "JPY",
+          "prior_value": 1746000000,
+          "yoy_pct": 283.4,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116581695.pdf",
+          "disclosed_at": "2026-11-16T21:00:00+09:00"
+        },
+        "operating_income": {
+          "value": 3016000000,
+          "unit": "JPY",
+          "prior_value": -1370000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116581695.pdf",
+          "disclosed_at": "2026-11-16T21:00:00+09:00"
+        },
+        "ordinary_income": {
+          "value": 1594000000,
+          "unit": "JPY",
+          "prior_value": -1430000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116581695.pdf",
+          "disclosed_at": "2026-11-16T21:00:00+09:00"
+        },
+        "net_income": {
+          "value": -2348000000,
+          "unit": "JPY",
+          "prior_value": -1465000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116581695.pdf",
+          "disclosed_at": "2026-11-16T21:00:00+09:00"
         }
       }
     },
@@ -2707,6 +2754,53 @@
           "yoy_pct": 116.8,
           "source_url": "https://www.release.tdnet.info/inbs/140120261112575552.pdf",
           "disclosed_at": "2026-11-13T16:00:00+09:00"
+        }
+      }
+    },
+    "4172": {
+      "market": "JP",
+      "company": "Ｈｉクラテス",
+      "source": "TDnet 決算短信 XBRL",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest": {
+        "title": "2026年９月期決算短信〔日本基準〕(非連結)",
+        "accounting_standard": "JGAAP",
+        "disclosed_at": "2026-11-16T12:00:00+09:00",
+        "document_url": "https://www.release.tdnet.info/inbs/140120261116580961.pdf",
+        "xbrl_url": "https://www.release.tdnet.info/inbs/081220261116580961.zip",
+        "period": "FY",
+        "basis": "non_consolidated",
+        "revenue": {
+          "value": 2516000000,
+          "unit": "JPY",
+          "prior_value": 2406000000,
+          "yoy_pct": 4.6,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580961.pdf",
+          "disclosed_at": "2026-11-16T12:00:00+09:00"
+        },
+        "operating_income": {
+          "value": 568000000,
+          "unit": "JPY",
+          "prior_value": 549000000,
+          "yoy_pct": 3.5,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580961.pdf",
+          "disclosed_at": "2026-11-16T12:00:00+09:00"
+        },
+        "ordinary_income": {
+          "value": 726000000,
+          "unit": "JPY",
+          "prior_value": 652000000,
+          "yoy_pct": 11.3,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580961.pdf",
+          "disclosed_at": "2026-11-16T12:00:00+09:00"
+        },
+        "net_income": {
+          "value": 495000000,
+          "unit": "JPY",
+          "prior_value": 448000000,
+          "yoy_pct": 10.5,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580961.pdf",
+          "disclosed_at": "2026-11-16T12:00:00+09:00"
         }
       }
     },
@@ -3600,6 +3694,53 @@
           "yoy_pct": -3.7,
           "source_url": "https://www.release.tdnet.info/inbs/140120261112574801.pdf",
           "disclosed_at": "2026-11-12T15:30:00+09:00"
+        }
+      }
+    },
+    "4651": {
+      "market": "JP",
+      "company": "サニックスＨＤ",
+      "source": "TDnet 決算短信 XBRL",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest": {
+        "title": "2027年３月期　第２四半期（中間期）決算短信〔日本基準〕（連結）",
+        "accounting_standard": "JGAAP",
+        "disclosed_at": "2026-11-16T15:30:00+09:00",
+        "document_url": "https://www.release.tdnet.info/inbs/140120261116580670.pdf",
+        "xbrl_url": "https://www.release.tdnet.info/inbs/081220261116580670.zip",
+        "period": "Q2_YTD",
+        "basis": "consolidated",
+        "revenue": {
+          "value": 22090000000,
+          "unit": "JPY",
+          "prior_value": 21502000000,
+          "yoy_pct": 2.7,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580670.pdf",
+          "disclosed_at": "2026-11-16T15:30:00+09:00"
+        },
+        "operating_income": {
+          "value": 737000000,
+          "unit": "JPY",
+          "prior_value": -19000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580670.pdf",
+          "disclosed_at": "2026-11-16T15:30:00+09:00"
+        },
+        "ordinary_income": {
+          "value": 570000000,
+          "unit": "JPY",
+          "prior_value": -407000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580670.pdf",
+          "disclosed_at": "2026-11-16T15:30:00+09:00"
+        },
+        "net_income": {
+          "value": 115000000,
+          "unit": "JPY",
+          "prior_value": -613000000,
+          "yoy_pct": null,
+          "source_url": "https://www.release.tdnet.info/inbs/140120261116580670.pdf",
+          "disclosed_at": "2026-11-16T15:30:00+09:00"
         }
       }
     },
@@ -9811,13 +9952,343 @@
         }
       }
     },
+    "A": {
+      "market": "US",
+      "company": "AGILENT TECHNOLOGIES, INC.",
+      "cik": "0001090872",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001090872.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-07-31",
+        "revenue": {
+          "value": 1878000000,
+          "unit": "USD",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 1738000000,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 8.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-09-01",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087226000064/0001090872-26-000064-index.htm"
+        },
+        "operating_income": {
+          "value": 444000000,
+          "unit": "USD",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 360000000,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 23.3,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-09-01",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087226000064/0001090872-26-000064-index.htm"
+        },
+        "net_income": {
+          "value": 362000000,
+          "unit": "USD",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 336000000,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 7.7,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-09-01",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087226000064/0001090872-26-000064-index.htm"
+        },
+        "eps_diluted": {
+          "value": 1.28,
+          "unit": "USD/shares",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 1.18,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 8.5,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-09-01",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087226000064/0001090872-26-000064-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-10-31",
+        "revenue": {
+          "value": 6948000000,
+          "unit": "USD",
+          "period_start": "2024-11-01",
+          "period_end": "2025-10-31",
+          "prior_value": 6510000000,
+          "prior_period_end": "2024-10-31",
+          "yoy_pct": 6.7,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2025-12-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087225000087/0001090872-25-000087-index.htm"
+        },
+        "operating_income": {
+          "value": 1479000000,
+          "unit": "USD",
+          "period_start": "2024-11-01",
+          "period_end": "2025-10-31",
+          "prior_value": 1488000000,
+          "prior_period_end": "2024-10-31",
+          "yoy_pct": -0.6,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2025-12-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087225000087/0001090872-25-000087-index.htm"
+        },
+        "net_income": {
+          "value": 1303000000,
+          "unit": "USD",
+          "period_start": "2024-11-01",
+          "period_end": "2025-10-31",
+          "prior_value": 1289000000,
+          "prior_period_end": "2024-10-31",
+          "yoy_pct": 1.1,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2025-12-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087225000087/0001090872-25-000087-index.htm"
+        },
+        "eps_diluted": {
+          "value": 4.57,
+          "unit": "USD/shares",
+          "period_start": "2024-11-01",
+          "period_end": "2025-10-31",
+          "prior_value": 4.43,
+          "prior_period_end": "2024-10-31",
+          "yoy_pct": 3.2,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2025-12-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087225000087/0001090872-25-000087-index.htm"
+        }
+      }
+    },
+    "AA": {
+      "market": "US",
+      "company": "ALCOA CORP",
+      "cik": "0001675149",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001675149.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 3704000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 2995000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 23.7,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-10-29",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526437885/0001193125-26-437885-index.htm"
+        },
+        "operating_income": null,
+        "net_income": {
+          "value": 483000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 232000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 108.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-29",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526437885/0001193125-26-437885-index.htm"
+        },
+        "eps_diluted": {
+          "value": 1.81,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.88,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 105.7,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-10-29",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526437885/0001193125-26-437885-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 12831000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 11895000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 7.9,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526077167/0001193125-26-077167-index.htm"
+        },
+        "operating_income": null,
+        "net_income": {
+          "value": 1157000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 60000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 1828.3,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526077167/0001193125-26-077167-index.htm"
+        },
+        "eps_diluted": {
+          "value": 4.37,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 0.26,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 1580.8,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1675149/000119312526077167/0001193125-26-077167-index.htm"
+        }
+      }
+    },
+    "AAL": {
+      "market": "US",
+      "company": "American Airlines Group Inc.",
+      "cik": "0000006201",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000006201.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 16335000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 13691000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 19.3,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-10-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000065/0000006201-26-000065-index.htm"
+        },
+        "operating_income": {
+          "value": 115000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 151000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -23.8,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000065/0000006201-26-000065-index.htm"
+        },
+        "net_income": {
+          "value": -269000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -114000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": null,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000065/0000006201-26-000065-index.htm"
+        },
+        "eps_diluted": {
+          "value": -0.41,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -0.17,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": null,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-10-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000065/0000006201-26-000065-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 54633000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 54211000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 0.8,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-02-18",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000014/0000006201-26-000014-index.htm"
+        },
+        "operating_income": {
+          "value": 1467000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 2614000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -43.9,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-18",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000014/0000006201-26-000014-index.htm"
+        },
+        "net_income": {
+          "value": 111000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 846000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -86.9,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-18",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000014/0000006201-26-000014-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.17,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 1.24,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -86.3,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-18",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/6201/000000620126000014/0000006201-26-000014-index.htm"
+        }
+      }
+    },
     "AAOI": {
       "market": "US",
-      "company": "Applied Optoelectronics, Inc.",
+      "company": "APPLIED OPTOELECTRONICS, INC.",
       "cik": "0001158114",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001158114.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -9929,13 +10400,131 @@
         }
       }
     },
+    "AAON": {
+      "market": "US",
+      "company": "AAON, INC.",
+      "cik": "0000824142",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000824142.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 707430000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 384238000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 84.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerIncludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000088/0000824142-26-000088-index.htm"
+        },
+        "operating_income": {
+          "value": 99980000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 43595000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 129.3,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000088/0000824142-26-000088-index.htm"
+        },
+        "net_income": {
+          "value": 68958000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 30782000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 124,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000088/0000824142-26-000088-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.83,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.37,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 124.3,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000088/0000824142-26-000088-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 1442076000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 1200635000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 20.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerIncludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000005/0000824142-26-000005-index.htm"
+        },
+        "operating_income": {
+          "value": 146248000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 209118000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -30.1,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000005/0000824142-26-000005-index.htm"
+        },
+        "net_income": {
+          "value": 107593000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 168559000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -36.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000005/0000824142-26-000005-index.htm"
+        },
+        "eps_diluted": {
+          "value": 1.29,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 2.02,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -36.1,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/824142/000082414226000005/0000824142-26-000005-index.htm"
+        }
+      }
+    },
     "AAPL": {
       "market": "US",
       "company": "Apple Inc.",
       "cik": "0000320193",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-06-27",
         "revenue": {
@@ -10047,13 +10636,1263 @@
         }
       }
     },
+    "ABBV": {
+      "market": "US",
+      "company": "AbbVie Inc.",
+      "cik": "0001551152",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001551152.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 17404000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 15776000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 10.3,
+          "concept": "us-gaap:Revenues",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000037/0001551152-26-000037-index.htm"
+        },
+        "operating_income": {
+          "value": 6267000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1904000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 229.1,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000037/0001551152-26-000037-index.htm"
+        },
+        "net_income": {
+          "value": 4218000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 186000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 2167.7,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000037/0001551152-26-000037-index.htm"
+        },
+        "eps_diluted": {
+          "value": 2.37,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.1,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 2270,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000037/0001551152-26-000037-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 61160000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 56334000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 8.6,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000008/0001551152-26-000008-index.htm"
+        },
+        "operating_income": {
+          "value": 15075000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 9137000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 65,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000008/0001551152-26-000008-index.htm"
+        },
+        "net_income": {
+          "value": 4226000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 4278000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -1.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000008/0001551152-26-000008-index.htm"
+        },
+        "eps_diluted": {
+          "value": 2.36,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 2.39,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -1.3,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000008/0001551152-26-000008-index.htm"
+        }
+      }
+    },
+    "ABNB": {
+      "market": "US",
+      "company": "Airbnb, Inc.",
+      "cik": "0001559720",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001559720.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 4869000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 4095000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 18.9,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000032/0001559720-26-000032-index.htm"
+        },
+        "operating_income": {
+          "value": 2021000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1625000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 24.4,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000032/0001559720-26-000032-index.htm"
+        },
+        "net_income": {
+          "value": 1890000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1374000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 37.6,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000032/0001559720-26-000032-index.htm"
+        },
+        "eps_diluted": null
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 12241000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 11102000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 10.3,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-02-12",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000004/0001559720-26-000004-index.htm"
+        },
+        "operating_income": {
+          "value": 2544000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 2553000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -0.4,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-12",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000004/0001559720-26-000004-index.htm"
+        },
+        "net_income": {
+          "value": 2511000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 2648000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -5.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-12",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972026000004/0001559720-26-000004-index.htm"
+        },
+        "eps_diluted": null
+      }
+    },
+    "ABT": {
+      "market": "US",
+      "company": "ABBOTT LABORATORIES",
+      "cik": "0000001800",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000001800.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 13013000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 11369000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 14.5,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026070154/0001628280-26-070154-index.htm"
+        },
+        "operating_income": {
+          "value": 1358000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 2057000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -34,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026070154/0001628280-26-070154-index.htm"
+        },
+        "net_income": {
+          "value": 920000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1644000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -44,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026070154/0001628280-26-070154-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.53,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.94,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -43.6,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026070154/0001628280-26-070154-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 44328000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 41950000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 5.7,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026010185/0001628280-26-010185-index.htm"
+        },
+        "operating_income": {
+          "value": 8053000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 6825000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 18,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026010185/0001628280-26-010185-index.htm"
+        },
+        "net_income": {
+          "value": 6524000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 13402000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -51.3,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026010185/0001628280-26-010185-index.htm"
+        },
+        "eps_diluted": {
+          "value": 3.72,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 7.64,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -51.3,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1800/000162828026010185/0001628280-26-010185-index.htm"
+        }
+      }
+    },
+    "ACGL": {
+      "market": "US",
+      "company": "ARCH CAPITAL GROUP LTD.",
+      "cik": "0000947484",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000947484.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 4655000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 5109000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -8.9,
+          "concept": "us-gaap:Revenues",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000152/0000947484-26-000152-index.htm"
+        },
+        "operating_income": null,
+        "net_income": {
+          "value": 1035000000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1350000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -23.3,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000152/0000947484-26-000152-index.htm"
+        },
+        "eps_diluted": {
+          "value": 3,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 3.56,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -15.7,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-04",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000152/0000947484-26-000152-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 19929000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 17440000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 14.3,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000017/0000947484-26-000017-index.htm"
+        },
+        "operating_income": null,
+        "net_income": {
+          "value": 4399000000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 4312000000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000017/0000947484-26-000017-index.htm"
+        },
+        "eps_diluted": {
+          "value": 11.6,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 11.19,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 3.7,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/947484/000094748426000017/0000947484-26-000017-index.htm"
+        }
+      }
+    },
+    "ACHR": {
+      "market": "US",
+      "company": "Archer Aviation Inc.",
+      "cik": "0001824502",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001824502.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 5100000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": null,
+          "concept": "us-gaap:Revenues",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000089/0001824502-26-000089-index.htm"
+        },
+        "operating_income": {
+          "value": -289200000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -174800000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": null,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000089/0001824502-26-000089-index.htm"
+        },
+        "net_income": {
+          "value": -274500000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -129900000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": null,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000089/0001824502-26-000089-index.htm"
+        },
+        "eps_diluted": {
+          "value": -0.35,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": -0.2,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": null,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-09",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000089/0001824502-26-000089-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 300000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 0,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": null,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000019/0001824502-26-000019-index.htm"
+        },
+        "operating_income": {
+          "value": -729300000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": -509700000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": null,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000019/0001824502-26-000019-index.htm"
+        },
+        "net_income": {
+          "value": -618200000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": -536800000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": null,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000019/0001824502-26-000019-index.htm"
+        },
+        "eps_diluted": {
+          "value": -0.99,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": -1.42,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": null,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1824502/000182450226000019/0001824502-26-000019-index.htm"
+        }
+      }
+    },
+    "ACI": {
+      "market": "US",
+      "company": "Albertsons Companies, Inc.",
+      "cik": "0001646972",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001646972.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-12",
+        "revenue": {
+          "value": 18894700000,
+          "unit": "USD",
+          "period_start": "2026-06-21",
+          "period_end": "2026-09-12",
+          "prior_value": 18915800000,
+          "prior_period_end": "2025-09-06",
+          "yoy_pct": -0.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000065/0001646972-26-000065-index.htm"
+        },
+        "operating_income": {
+          "value": 174500000,
+          "unit": "USD",
+          "period_start": "2026-06-21",
+          "period_end": "2026-09-12",
+          "prior_value": 295300000,
+          "prior_period_end": "2025-09-06",
+          "yoy_pct": -40.9,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000065/0001646972-26-000065-index.htm"
+        },
+        "net_income": {
+          "value": 51500000,
+          "unit": "USD",
+          "period_start": "2026-06-21",
+          "period_end": "2026-09-12",
+          "prior_value": 168500000,
+          "prior_period_end": "2025-09-06",
+          "yoy_pct": -69.4,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000065/0001646972-26-000065-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.11,
+          "unit": "USD/shares",
+          "period_start": "2026-06-21",
+          "period_end": "2026-09-12",
+          "prior_value": 0.3,
+          "prior_period_end": "2025-09-06",
+          "yoy_pct": -63.3,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000065/0001646972-26-000065-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2026-02-28",
+        "revenue": {
+          "value": 83172500000,
+          "unit": "USD",
+          "period_start": "2025-02-23",
+          "period_end": "2026-02-28",
+          "prior_value": 80390900000,
+          "prior_period_end": "2025-02-22",
+          "yoy_pct": 3.5,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-04-27",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000032/0001646972-26-000032-index.htm"
+        },
+        "operating_income": {
+          "value": 727600000,
+          "unit": "USD",
+          "period_start": "2025-02-23",
+          "period_end": "2026-02-28",
+          "prior_value": 1546100000,
+          "prior_period_end": "2025-02-22",
+          "yoy_pct": -52.9,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-04-27",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000032/0001646972-26-000032-index.htm"
+        },
+        "net_income": {
+          "value": 217400000,
+          "unit": "USD",
+          "period_start": "2025-02-23",
+          "period_end": "2026-02-28",
+          "prior_value": 958600000,
+          "prior_period_end": "2025-02-22",
+          "yoy_pct": -77.3,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-04-27",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000032/0001646972-26-000032-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.4,
+          "unit": "USD/shares",
+          "period_start": "2025-02-23",
+          "period_end": "2026-02-28",
+          "prior_value": 1.64,
+          "prior_period_end": "2025-02-22",
+          "yoy_pct": -75.6,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-04-27",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1646972/000164697226000032/0001646972-26-000032-index.htm"
+        }
+      }
+    },
+    "ACLS": {
+      "market": "US",
+      "company": "AXCELIS TECHNOLOGIES INC",
+      "cik": "0001113232",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001113232.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 237781000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 213611000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 11.3,
+          "concept": "us-gaap:Revenues",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926123333/0001104659-26-123333-index.htm"
+        },
+        "operating_income": {
+          "value": 27343000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 25020000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 9.3,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926123333/0001104659-26-123333-index.htm"
+        },
+        "net_income": {
+          "value": 37759000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 25986000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 45.3,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926123333/0001104659-26-123333-index.htm"
+        },
+        "eps_diluted": {
+          "value": 1.21,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.83,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 45.8,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926123333/0001104659-26-123333-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 839048000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 1017865000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -17.6,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926020461/0001104659-26-020461-index.htm"
+        },
+        "operating_income": {
+          "value": 119315000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 210794000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -43.4,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926020461/0001104659-26-020461-index.htm"
+        },
+        "net_income": {
+          "value": 120238000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 200992000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -40.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926020461/0001104659-26-020461-index.htm"
+        },
+        "eps_diluted": {
+          "value": 3.8,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 6.15,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -38.2,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-26",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1113232/000110465926020461/0001104659-26-020461-index.htm"
+        }
+      }
+    },
+    "ACMR": {
+      "market": "US",
+      "company": "ACM Research, Inc.",
+      "cik": "0001680062",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001680062.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 367687000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 269160000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 36.6,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026071670/0001628280-26-071670-index.htm"
+        },
+        "operating_income": {
+          "value": 55527000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 28923000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 92,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026071670/0001628280-26-071670-index.htm"
+        },
+        "net_income": {
+          "value": 1544000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 35889000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -95.7,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026071670/0001628280-26-071670-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.02,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.52,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -96.2,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-11-06",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026071670/0001628280-26-071670-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 901309000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 782118000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 15.2,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026013231/0001628280-26-013231-index.htm"
+        },
+        "operating_income": {
+          "value": 109429000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 150998000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -27.5,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026013231/0001628280-26-013231-index.htm"
+        },
+        "net_income": {
+          "value": 94078000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 103627000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -9.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026013231/0001628280-26-013231-index.htm"
+        },
+        "eps_diluted": {
+          "value": 1.37,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 1.53,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -10.5,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1680062/000162828026013231/0001628280-26-013231-index.htm"
+        }
+      }
+    },
+    "ACN": {
+      "market": "US",
+      "company": "Accenture plc",
+      "cik": "0001467373",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001467373.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-08-31",
+        "revenue": {
+          "value": 18679110000,
+          "unit": "USD",
+          "period_start": "2026-06-01",
+          "period_end": "2026-08-31",
+          "prior_value": 17596260000,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 6.2,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        },
+        "operating_income": {
+          "value": 2863417000,
+          "unit": "USD",
+          "period_start": "2026-06-01",
+          "period_end": "2026-08-31",
+          "prior_value": 2049691000,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 39.7,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        },
+        "net_income": {
+          "value": 1991267000,
+          "unit": "USD",
+          "period_start": "2026-06-01",
+          "period_end": "2026-08-31",
+          "prior_value": 1413963000,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 40.8,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        },
+        "eps_diluted": {
+          "value": 3.29,
+          "unit": "USD/shares",
+          "period_start": "2026-06-01",
+          "period_end": "2026-08-31",
+          "prior_value": 2.25,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 46.2,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2026-08-31",
+        "revenue": {
+          "value": 74183445000,
+          "unit": "USD",
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-31",
+          "prior_value": 69672977000,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 6.5,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        },
+        "operating_income": {
+          "value": 11405960000,
+          "unit": "USD",
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-31",
+          "prior_value": 10225664000,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 11.5,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        },
+        "net_income": {
+          "value": 8367056000,
+          "unit": "USD",
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-31",
+          "prior_value": 7678433000,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 9,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        },
+        "eps_diluted": {
+          "value": 13.56,
+          "unit": "USD/shares",
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-31",
+          "prior_value": 12.15,
+          "prior_period_end": "2025-08-31",
+          "yoy_pct": 11.6,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-10-16",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/0001467373-26-000049-index.htm"
+        }
+      }
+    },
+    "ADBE": {
+      "market": "US",
+      "company": "ADOBE INC.",
+      "cik": "0000796343",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000796343.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-08-28",
+        "revenue": {
+          "value": 6760000000,
+          "unit": "USD",
+          "period_start": "2026-05-30",
+          "period_end": "2026-08-28",
+          "prior_value": 5988000000,
+          "prior_period_end": "2025-08-29",
+          "yoy_pct": 12.9,
+          "concept": "us-gaap:Revenues",
+          "form": "10-Q",
+          "filed": "2026-09-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000156/0000796343-26-000156-index.htm"
+        },
+        "operating_income": {
+          "value": 2354000000,
+          "unit": "USD",
+          "period_start": "2026-05-30",
+          "period_end": "2026-08-28",
+          "prior_value": 2173000000,
+          "prior_period_end": "2025-08-29",
+          "yoy_pct": 8.3,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-09-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000156/0000796343-26-000156-index.htm"
+        },
+        "net_income": {
+          "value": 1827000000,
+          "unit": "USD",
+          "period_start": "2026-05-30",
+          "period_end": "2026-08-28",
+          "prior_value": 1772000000,
+          "prior_period_end": "2025-08-29",
+          "yoy_pct": 3.1,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-09-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000156/0000796343-26-000156-index.htm"
+        },
+        "eps_diluted": {
+          "value": 4.62,
+          "unit": "USD/shares",
+          "period_start": "2026-05-30",
+          "period_end": "2026-08-28",
+          "prior_value": 4.18,
+          "prior_period_end": "2025-08-29",
+          "yoy_pct": 10.5,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-09-22",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000156/0000796343-26-000156-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-11-28",
+        "revenue": {
+          "value": 23769000000,
+          "unit": "USD",
+          "period_start": "2024-11-30",
+          "period_end": "2025-11-28",
+          "prior_value": 21505000000,
+          "prior_period_end": "2024-11-29",
+          "yoy_pct": 10.5,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-01-15",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000003/0000796343-26-000003-index.htm"
+        },
+        "operating_income": {
+          "value": 8706000000,
+          "unit": "USD",
+          "period_start": "2024-11-30",
+          "period_end": "2025-11-28",
+          "prior_value": 6741000000,
+          "prior_period_end": "2024-11-29",
+          "yoy_pct": 29.1,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-01-15",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000003/0000796343-26-000003-index.htm"
+        },
+        "net_income": {
+          "value": 7130000000,
+          "unit": "USD",
+          "period_start": "2024-11-30",
+          "period_end": "2025-11-28",
+          "prior_value": 5560000000,
+          "prior_period_end": "2024-11-29",
+          "yoy_pct": 28.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-01-15",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000003/0000796343-26-000003-index.htm"
+        },
+        "eps_diluted": {
+          "value": 16.7,
+          "unit": "USD/shares",
+          "period_start": "2024-11-30",
+          "period_end": "2025-11-28",
+          "prior_value": 12.36,
+          "prior_period_end": "2024-11-29",
+          "yoy_pct": 35.1,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-01-15",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000003/0000796343-26-000003-index.htm"
+        }
+      }
+    },
+    "ADC": {
+      "market": "US",
+      "company": "AGREE REALTY CORPORATION",
+      "cik": "0000917251",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000917251.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 213884000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 183222000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 16.7,
+          "concept": "us-gaap:Revenues",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000076/0000917251-26-000076-index.htm"
+        },
+        "operating_income": {
+          "value": 109577000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 87260000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 25.6,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000076/0000917251-26-000076-index.htm"
+        },
+        "net_income": {
+          "value": 68352000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 52117000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 31.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000076/0000917251-26-000076-index.htm"
+        },
+        "eps_diluted": {
+          "value": 0.53,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 0.45,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 17.8,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-10-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000076/0000917251-26-000076-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 718398000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 617095000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 16.4,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-02-10",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000013/0000917251-26-000013-index.htm"
+        },
+        "operating_income": {
+          "value": 340395000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 302243000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 12.6,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-10",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000013/0000917251-26-000013-index.htm"
+        },
+        "net_income": {
+          "value": 204349000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 189197000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 8,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-02-10",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000013/0000917251-26-000013-index.htm"
+        },
+        "eps_diluted": {
+          "value": 1.77,
+          "unit": "USD/shares",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 1.78,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": -0.6,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-02-10",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/917251/000091725126000013/0000917251-26-000013-index.htm"
+        }
+      }
+    },
     "ADI": {
       "market": "US",
       "company": "ANALOG DEVICES INC",
       "cik": "0000006281",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000006281.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -10165,13 +12004,343 @@
         }
       }
     },
+    "ADP": {
+      "market": "US",
+      "company": "AUTOMATIC DATA PROCESSING, INC.",
+      "cik": "0000008670",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000008670.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 5490700000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 5175200000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 6.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-10-30",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/8670/000000867026000044/0000008670-26-000044-index.htm"
+        },
+        "operating_income": null,
+        "net_income": {
+          "value": 1125200000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1013000000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 11.1,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-10-30",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/8670/000000867026000044/0000008670-26-000044-index.htm"
+        },
+        "eps_diluted": {
+          "value": 2.83,
+          "unit": "USD/shares",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 2.49,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 13.7,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-10-30",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/8670/000000867026000044/0000008670-26-000044-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2026-06-30",
+        "revenue": {
+          "value": 21947400000,
+          "unit": "USD",
+          "period_start": "2025-07-01",
+          "period_end": "2026-06-30",
+          "prior_value": 20560900000,
+          "prior_period_end": "2025-06-30",
+          "yoy_pct": 6.7,
+          "concept": "us-gaap:Revenues",
+          "form": "10-K",
+          "filed": "2026-08-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/8670/000000867026000030/0000008670-26-000030-index.htm"
+        },
+        "operating_income": null,
+        "net_income": {
+          "value": 4413500000,
+          "unit": "USD",
+          "period_start": "2025-07-01",
+          "period_end": "2026-06-30",
+          "prior_value": 4079700000,
+          "prior_period_end": "2025-06-30",
+          "yoy_pct": 8.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-08-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/8670/000000867026000030/0000008670-26-000030-index.htm"
+        },
+        "eps_diluted": {
+          "value": 10.94,
+          "unit": "USD/shares",
+          "period_start": "2025-07-01",
+          "period_end": "2026-06-30",
+          "prior_value": 9.98,
+          "prior_period_end": "2025-06-30",
+          "yoy_pct": 9.6,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-08-05",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/8670/000000867026000030/0000008670-26-000030-index.htm"
+        }
+      }
+    },
+    "ADSK": {
+      "market": "US",
+      "company": "Autodesk, Inc.",
+      "cik": "0000769397",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000769397.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-07-31",
+        "revenue": {
+          "value": 2046000000,
+          "unit": "USD",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 1763000000,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 16.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-08-28",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000061/0000769397-26-000061-index.htm"
+        },
+        "operating_income": {
+          "value": 599000000,
+          "unit": "USD",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 444000000,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 34.9,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-08-28",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000061/0000769397-26-000061-index.htm"
+        },
+        "net_income": {
+          "value": 492000000,
+          "unit": "USD",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 313000000,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 57.2,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-08-28",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000061/0000769397-26-000061-index.htm"
+        },
+        "eps_diluted": {
+          "value": 2.33,
+          "unit": "USD/shares",
+          "period_start": "2026-05-01",
+          "period_end": "2026-07-31",
+          "prior_value": 1.46,
+          "prior_period_end": "2025-07-31",
+          "yoy_pct": 59.6,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-Q",
+          "filed": "2026-08-28",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000061/0000769397-26-000061-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2026-01-31",
+        "revenue": {
+          "value": 7206000000,
+          "unit": "USD",
+          "period_start": "2025-02-01",
+          "period_end": "2026-01-31",
+          "prior_value": 6131000000,
+          "prior_period_end": "2025-01-31",
+          "yoy_pct": 17.5,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-03-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000015/0000769397-26-000015-index.htm"
+        },
+        "operating_income": {
+          "value": 1578000000,
+          "unit": "USD",
+          "period_start": "2025-02-01",
+          "period_end": "2026-01-31",
+          "prior_value": 1354000000,
+          "prior_period_end": "2025-01-31",
+          "yoy_pct": 16.5,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000015/0000769397-26-000015-index.htm"
+        },
+        "net_income": {
+          "value": 1124000000,
+          "unit": "USD",
+          "period_start": "2025-02-01",
+          "period_end": "2026-01-31",
+          "prior_value": 1112000000,
+          "prior_period_end": "2025-01-31",
+          "yoy_pct": 1.1,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000015/0000769397-26-000015-index.htm"
+        },
+        "eps_diluted": {
+          "value": 5.23,
+          "unit": "USD/shares",
+          "period_start": "2025-02-01",
+          "period_end": "2026-01-31",
+          "prior_value": 5.12,
+          "prior_period_end": "2025-01-31",
+          "yoy_pct": 2.1,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2026-03-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/769397/000076939726000015/0000769397-26-000015-index.htm"
+        }
+      }
+    },
+    "ADT": {
+      "market": "US",
+      "company": "ADT Inc.",
+      "cik": "0001703056",
+      "source": "SEC EDGAR XBRL companyfacts",
+      "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001703056.json",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
+      "latest_quarter": {
+        "period_end": "2026-09-30",
+        "revenue": {
+          "value": 1348979000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1297954000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 3.9,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000116/0001703056-26-000116-index.htm"
+        },
+        "operating_income": {
+          "value": 310531000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 315073000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": -1.4,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000116/0001703056-26-000116-index.htm"
+        },
+        "net_income": {
+          "value": 150577000,
+          "unit": "USD",
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 145132000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 3.8,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-Q",
+          "filed": "2026-11-03",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000116/0001703056-26-000116-index.htm"
+        },
+        "eps_diluted": {
+          "value": -0.1,
+          "unit": "USD/shares",
+          "period_start": "2019-10-01",
+          "period_end": "2019-12-31",
+          "prior_value": -0.2,
+          "prior_period_end": "2018-12-31",
+          "yoy_pct": null,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2020-03-10",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305620000013/0001703056-20-000013-index.htm"
+        }
+      },
+      "latest_annual": {
+        "period_end": "2025-12-31",
+        "revenue": {
+          "value": 5128607000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 4898446000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 4.7,
+          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000022/0001703056-26-000022-index.htm"
+        },
+        "operating_income": {
+          "value": 1308901000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 1208064000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 8.3,
+          "concept": "us-gaap:OperatingIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000022/0001703056-26-000022-index.htm"
+        },
+        "net_income": {
+          "value": 595951000,
+          "unit": "USD",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "prior_value": 501053000,
+          "prior_period_end": "2024-12-31",
+          "yoy_pct": 18.9,
+          "concept": "us-gaap:NetIncomeLoss",
+          "form": "10-K",
+          "filed": "2026-03-02",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305626000022/0001703056-26-000022-index.htm"
+        },
+        "eps_diluted": {
+          "value": -0.57,
+          "unit": "USD/shares",
+          "period_start": "2019-01-01",
+          "period_end": "2019-12-31",
+          "prior_value": -0.81,
+          "prior_period_end": "2018-12-31",
+          "yoy_pct": null,
+          "concept": "us-gaap:EarningsPerShareDiluted",
+          "form": "10-K",
+          "filed": "2020-03-10",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1703056/000170305620000013/0001703056-20-000013-index.htm"
+        }
+      }
+    },
     "ALAB": {
       "market": "US",
       "company": "Astera Labs, Inc.",
       "cik": "0001736297",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001736297.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10289,7 +12458,7 @@
       "cik": "0000006951",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000006951.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-26",
         "revenue": {
@@ -10407,7 +12576,7 @@
       "cik": "0001280263",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001280263.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -10525,7 +12694,7 @@
       "cik": "0001018724",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001018724.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10643,7 +12812,7 @@
       "cik": "0001596532",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001596532.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10761,7 +12930,7 @@
       "cik": "0001144879",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001144879.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-31",
         "revenue": {
@@ -10879,7 +13048,7 @@
       "cik": "0001828108",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001828108.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -10997,7 +13166,7 @@
       "cik": "0001730168",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001730168.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -11115,7 +13284,7 @@
       "cik": "0000018230",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000018230.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11233,7 +13402,7 @@
       "cik": "0000851205",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000851205.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-10-04",
         "revenue": {
@@ -11351,7 +13520,7 @@
       "cik": "0001819989",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001819989.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11469,7 +13638,7 @@
       "cik": "0001030894",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001030894.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11587,7 +13756,7 @@
       "cik": "0001679788",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001679788.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11705,7 +13874,7 @@
       "cik": "0001839341",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001839341.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -11823,7 +13992,7 @@
       "cik": "0000909832",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000909832.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-05-10",
         "revenue": {
@@ -11941,7 +14110,7 @@
       "cik": "0001807794",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001807794.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -12059,7 +14228,7 @@
       "cik": "0001769628",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001769628.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -12177,47 +14346,47 @@
       "cik": "0000858877",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000858877.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
-        "period_end": "2026-04-25",
+        "period_end": "2026-10-24",
         "revenue": {
-          "value": 15841000000,
+          "value": 18517000000,
           "unit": "USD",
-          "period_start": "2026-01-25",
-          "period_end": "2026-04-25",
-          "prior_value": 14149000000,
-          "prior_period_end": "2025-04-26",
-          "yoy_pct": 12,
+          "period_start": "2026-07-26",
+          "period_end": "2026-10-24",
+          "prior_value": 14883000000,
+          "prior_period_end": "2025-10-25",
+          "yoy_pct": 24.4,
           "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
           "form": "10-Q",
-          "filed": "2026-05-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000078/0000858877-26-000078-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000185/0000858877-26-000185-index.htm"
         },
         "operating_income": {
-          "value": 3960000000,
+          "value": 5598000000,
           "unit": "USD",
-          "period_start": "2026-01-25",
-          "period_end": "2026-04-25",
-          "prior_value": 3202000000,
-          "prior_period_end": "2025-04-26",
-          "yoy_pct": 23.7,
+          "period_start": "2026-07-26",
+          "period_end": "2026-10-24",
+          "prior_value": 3363000000,
+          "prior_period_end": "2025-10-25",
+          "yoy_pct": 66.5,
           "concept": "us-gaap:OperatingIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-05-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000078/0000858877-26-000078-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000185/0000858877-26-000185-index.htm"
         },
         "net_income": {
-          "value": 3373000000,
+          "value": 4552000000,
           "unit": "USD",
-          "period_start": "2026-01-25",
-          "period_end": "2026-04-25",
-          "prior_value": 2491000000,
-          "prior_period_end": "2025-04-26",
-          "yoy_pct": 35.4,
+          "period_start": "2026-07-26",
+          "period_end": "2026-10-24",
+          "prior_value": 2860000000,
+          "prior_period_end": "2025-10-25",
+          "yoy_pct": 59.2,
           "concept": "us-gaap:NetIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-05-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000078/0000858877-26-000078-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000185/0000858877-26-000185-index.htm"
         },
         "eps_diluted": {
           "value": 0.23,
@@ -12295,7 +14464,7 @@
       "cik": "0000315189",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000315189.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -12413,7 +14582,7 @@
       "cik": "0001652044",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001652044.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -12531,7 +14700,7 @@
       "cik": "0001653482",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001653482.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -12649,7 +14818,7 @@
       "cik": "0001720424",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001720424.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -12743,7 +14912,7 @@
       "cik": "0001964789",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001964789.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -12861,7 +15030,7 @@
       "cik": "0001980994",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001980994.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-03-31",
         "revenue": null,
@@ -12931,7 +15100,7 @@
       "cik": "0001048268",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001048268.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -12988,58 +15157,58 @@
         }
       },
       "latest_annual": {
-        "period_end": "2025-09-30",
+        "period_end": "2026-09-30",
         "revenue": {
-          "value": 3371468000,
+          "value": 4477915000,
           "unit": "USD",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 2884358000,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 16.9,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 3371468000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 32.8,
           "concept": "us-gaap:Revenues",
           "form": "10-K",
-          "filed": "2025-11-21",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826825000174/0001048268-25-000174-index.htm"
+          "filed": "2026-11-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826826000175/0001048268-26-000175-index.htm"
         },
         "operating_income": {
-          "value": 383529000,
+          "value": 605697000,
           "unit": "USD",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 300876000,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 27.5,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 383529000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 57.9,
           "concept": "us-gaap:OperatingIncomeLoss",
           "form": "10-K",
-          "filed": "2025-11-21",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826825000174/0001048268-25-000174-index.htm"
+          "filed": "2026-11-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826826000175/0001048268-26-000175-index.htm"
         },
         "net_income": {
-          "value": 305975000,
+          "value": 536604000,
           "unit": "USD",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 219116000,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 39.6,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 305975000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 75.4,
           "concept": "us-gaap:NetIncomeLoss",
           "form": "10-K",
-          "filed": "2025-11-21",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826825000174/0001048268-25-000174-index.htm"
+          "filed": "2026-11-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826826000175/0001048268-26-000175-index.htm"
         },
         "eps_diluted": {
-          "value": 15.02,
+          "value": 13.24,
           "unit": "USD/shares",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 9.89,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 51.9,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 7.51,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 76.3,
           "concept": "us-gaap:EarningsPerShareDiluted",
           "form": "10-K",
-          "filed": "2025-11-21",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826825000174/0001048268-25-000174-index.htm"
+          "filed": "2026-11-20",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1048268/000104826826000175/0001048268-26-000175-index.htm"
         }
       }
     },
@@ -13049,7 +15218,7 @@
       "cik": "0001642896",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001642896.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-01",
         "revenue": {
@@ -13167,7 +15336,7 @@
       "cik": "0001878848",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001878848.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -13285,7 +15454,7 @@
       "cik": "0000019617",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000019617.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -13379,7 +15548,7 @@
       "cik": "0000059478",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000059478.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -13473,7 +15642,7 @@
       "cik": "0000855658",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000855658.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-10-03",
         "revenue": {
@@ -13591,7 +15760,7 @@
       "cik": "0001397187",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001397187.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-08-02",
         "revenue": {
@@ -13709,7 +15878,7 @@
       "cik": "0001910139",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001910139.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-26",
         "revenue": {
@@ -13827,7 +15996,7 @@
       "cik": "0001441816",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001441816.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -13945,7 +16114,7 @@
       "cik": "0001326801",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001326801.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -14063,7 +16232,7 @@
       "cik": "0000067347",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000067347.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -14181,7 +16350,7 @@
       "cik": "0000789019",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -14299,7 +16468,7 @@
       "cik": "0001050446",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001050446.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -14417,7 +16586,7 @@
       "cik": "0000723125",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000723125.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-05-28",
         "revenue": {
@@ -14535,7 +16704,7 @@
       "cik": "0001513845",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001513845.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": null,
       "latest_annual": {
         "period_end": "2023-12-31",
@@ -14599,7 +16768,7 @@
       "cik": "0001045810",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-26",
         "revenue": {
@@ -14717,7 +16886,7 @@
       "cik": "0001852131",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001852131.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-10-02",
         "revenue": {
@@ -14835,7 +17004,7 @@
       "cik": "0001097864",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001097864.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-10-02",
         "revenue": {
@@ -14953,7 +17122,7 @@
       "cik": "0001816581",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001816581.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -15067,64 +17236,64 @@
     },
     "PANW": {
       "market": "US",
-      "company": "Palo Alto Networks, Inc.",
+      "company": "PALO ALTO NETWORKS, INC",
       "cik": "0001327567",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001327567.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
-        "period_end": "2026-04-30",
+        "period_end": "2026-10-31",
         "revenue": {
-          "value": 3002000000,
+          "value": 3445000000,
           "unit": "USD",
-          "period_start": "2026-02-01",
-          "period_end": "2026-04-30",
-          "prior_value": 2289000000,
-          "prior_period_end": "2025-04-30",
-          "yoy_pct": 31.1,
+          "period_start": "2026-08-01",
+          "period_end": "2026-10-31",
+          "prior_value": 2474000000,
+          "prior_period_end": "2025-10-31",
+          "yoy_pct": 39.2,
           "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
           "form": "10-Q",
-          "filed": "2026-06-03",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000015/0001327567-26-000015-index.htm"
+          "filed": "2026-11-19",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000033/0001327567-26-000033-index.htm"
         },
         "operating_income": {
-          "value": -183000000,
+          "value": 96000000,
           "unit": "USD",
-          "period_start": "2026-02-01",
-          "period_end": "2026-04-30",
-          "prior_value": 219000000,
-          "prior_period_end": "2025-04-30",
-          "yoy_pct": -183.6,
+          "period_start": "2026-08-01",
+          "period_end": "2026-10-31",
+          "prior_value": 309000000,
+          "prior_period_end": "2025-10-31",
+          "yoy_pct": -68.9,
           "concept": "us-gaap:OperatingIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-06-03",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000015/0001327567-26-000015-index.htm"
+          "filed": "2026-11-19",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000033/0001327567-26-000033-index.htm"
         },
         "net_income": {
-          "value": -177000000,
+          "value": 482000000,
           "unit": "USD",
-          "period_start": "2026-02-01",
-          "period_end": "2026-04-30",
-          "prior_value": 262000000,
-          "prior_period_end": "2025-04-30",
-          "yoy_pct": -167.6,
+          "period_start": "2026-08-01",
+          "period_end": "2026-10-31",
+          "prior_value": 334000000,
+          "prior_period_end": "2025-10-31",
+          "yoy_pct": 44.3,
           "concept": "us-gaap:NetIncomeLoss",
           "form": "10-Q",
-          "filed": "2026-06-03",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000015/0001327567-26-000015-index.htm"
+          "filed": "2026-11-19",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000033/0001327567-26-000033-index.htm"
         },
         "eps_diluted": {
-          "value": -0.22,
+          "value": 0.57,
           "unit": "USD/shares",
-          "period_start": "2026-02-01",
-          "period_end": "2026-04-30",
-          "prior_value": 0.37,
-          "prior_period_end": "2025-04-30",
-          "yoy_pct": -159.5,
+          "period_start": "2026-08-01",
+          "period_end": "2026-10-31",
+          "prior_value": 0.47,
+          "prior_period_end": "2025-10-31",
+          "yoy_pct": 21.3,
           "concept": "us-gaap:EarningsPerShareDiluted",
           "form": "10-Q",
-          "filed": "2026-06-03",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000015/0001327567-26-000015-index.htm"
+          "filed": "2026-11-19",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756726000033/0001327567-26-000033-index.htm"
         }
       },
       "latest_annual": {
@@ -15189,7 +17358,7 @@
       "cik": "0001114995",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001114995.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -15307,21 +17476,21 @@
       "cik": "0000080420",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000080420.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
-        "period_end": "2026-06-30",
+        "period_end": "2026-09-30",
         "revenue": {
-          "value": 311740000,
+          "value": 396707000,
           "unit": "USD",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": 286273000,
-          "prior_period_end": "2025-06-30",
-          "yoy_pct": 8.9,
-          "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
-          "form": "10-Q",
-          "filed": "2026-08-04",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000107/0000080420-26-000107-index.htm"
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 297983000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 33.1,
+          "concept": "us-gaap:RevenueFromContractWithCustomerIncludingAssessedTax",
+          "form": "10-K",
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         },
         "operating_income": {
           "value": 64076000,
@@ -15337,85 +17506,85 @@
           "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000107/0000080420-26-000107-index.htm"
         },
         "net_income": {
-          "value": 52160000,
+          "value": 81548000,
           "unit": "USD",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": 48234000,
-          "prior_period_end": "2025-06-30",
-          "yoy_pct": 8.1,
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 51420000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 58.6,
           "concept": "us-gaap:NetIncomeLoss",
-          "form": "10-Q",
-          "filed": "2026-08-04",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000107/0000080420-26-000107-index.htm"
+          "form": "10-K",
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         },
         "eps_diluted": {
-          "value": 1.42,
+          "value": 2.23,
           "unit": "USD/shares",
-          "period_start": "2026-04-01",
-          "period_end": "2026-06-30",
-          "prior_value": 1.32,
-          "prior_period_end": "2025-06-30",
-          "yoy_pct": 7.6,
+          "period_start": "2026-07-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1.41,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 58.2,
           "concept": "us-gaap:EarningsPerShareDiluted",
-          "form": "10-Q",
-          "filed": "2026-08-04",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000107/0000080420-26-000107-index.htm"
+          "form": "10-K",
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         }
       },
       "latest_annual": {
-        "period_end": "2025-09-30",
+        "period_end": "2026-09-30",
         "revenue": {
-          "value": 1104318000,
+          "value": 1256246000,
           "unit": "USD",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 1012356000,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 9.1,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 1104318000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 13.8,
           "concept": "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
           "form": "10-K",
-          "filed": "2025-11-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042025000152/0000080420-25-000152-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         },
         "operating_income": {
-          "value": 217860000,
+          "value": 264988000,
           "unit": "USD",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 178773000,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 21.9,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 217860000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 21.6,
           "concept": "us-gaap:OperatingIncomeLoss",
           "form": "10-K",
-          "filed": "2025-11-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042025000152/0000080420-25-000152-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         },
         "net_income": {
-          "value": 180747000,
+          "value": 220985000,
           "unit": "USD",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 149848000,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 20.6,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 180747000,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 22.3,
           "concept": "us-gaap:NetIncomeLoss",
           "form": "10-K",
-          "filed": "2025-11-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042025000152/0000080420-25-000152-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         },
         "eps_diluted": {
-          "value": 14.86,
+          "value": 6.04,
           "unit": "USD/shares",
-          "period_start": "2024-10-01",
-          "period_end": "2025-09-30",
-          "prior_value": 12.29,
-          "prior_period_end": "2024-09-30",
-          "yoy_pct": 20.9,
+          "period_start": "2025-10-01",
+          "period_end": "2026-09-30",
+          "prior_value": 4.95,
+          "prior_period_end": "2025-09-30",
+          "yoy_pct": 22,
           "concept": "us-gaap:EarningsPerShareDiluted",
           "form": "10-K",
-          "filed": "2025-11-19",
-          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042025000152/0000080420-25-000152-index.htm"
+          "filed": "2026-11-17",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/80420/000008042026000143/0000080420-26-000143-index.htm"
         }
       }
     },
@@ -15425,7 +17594,7 @@
       "cik": "0000804328",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000804328.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-06-28",
         "revenue": {
@@ -15543,7 +17712,7 @@
       "cik": "0001819994",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001819994.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -15661,7 +17830,7 @@
       "cik": "0001024478",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001024478.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -15779,7 +17948,7 @@
       "cik": "0001583708",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001583708.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -15897,7 +18066,7 @@
       "cik": "0001832483",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001832483.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -16015,7 +18184,7 @@
       "cik": "0001822966",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001822966.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -16133,7 +18302,7 @@
       "cik": "0001837240",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001837240.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-06-27",
         "revenue": {
@@ -16251,7 +18420,7 @@
       "cik": "0000097210",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000097210.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-27",
         "revenue": {
@@ -16369,7 +18538,7 @@
       "cik": "0000931427",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000931427.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": null,
       "latest_annual": null
     },
@@ -16379,7 +18548,7 @@
       "cik": "0001756262",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001756262.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -16497,7 +18666,7 @@
       "cik": "0001318605",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001318605.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -16615,7 +18784,7 @@
       "cik": "0000097476",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000097476.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -16733,7 +18902,7 @@
       "cik": "0000731766",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000731766.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -16851,7 +19020,7 @@
       "cik": "0001403161",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001403161.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-06-30",
         "revenue": {
@@ -16945,7 +19114,7 @@
       "cik": "0001607678",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001607678.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -17063,7 +19232,7 @@
       "cik": "0001674101",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001674101.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -17181,7 +19350,7 @@
       "cik": "0000104169",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000104169.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-07-31",
         "revenue": {
@@ -17287,7 +19456,7 @@
       "cik": "0001083301",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001083301.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -17405,7 +19574,7 @@
       "cik": "0002042022",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002042022.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-09-30",
         "revenue": {
@@ -17523,7 +19692,7 @@
       "cik": "0000877212",
       "source": "SEC EDGAR XBRL companyfacts",
       "source_api_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000877212.json",
-      "fetched_at": "2026-11-16T00:18:30.051Z",
+      "fetched_at": "2026-11-23T01:05:52.546Z",
       "latest_quarter": {
         "period_end": "2026-10-03",
         "revenue": {
