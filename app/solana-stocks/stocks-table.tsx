@@ -13,6 +13,8 @@ export interface StockRow {
   next: { date: string } | null;
   conditions: number;
   verdict: { status: string; judged_at: string | null } | null;
+  /** Sunrise launch date when one of its tokens is listed via Sunrise. */
+  sunrise?: string | null;
 }
 
 const PAGE = 100;
@@ -24,7 +26,7 @@ export const STATUS_STYLE: Record<string, string> = {
   na: "bg-slate-50 text-slate-500 border-slate-200",
 };
 
-type Issuer = "all" | "xStocks" | "Ondo" | "Backpack";
+type Issuer = "all" | "Sunrise" | "xStocks" | "Ondo" | "Backpack";
 
 /** `preview`: show only the first `preview` rows, without the search, filters and pager (the front page). */
 export function StocksTable({
@@ -59,7 +61,7 @@ export function StocksTable({
         !r.name.toUpperCase().includes(needle)
       )
         return false;
-      if (issuer !== "all" && !r.tokens.some((t) => t.issuer === issuer))
+      if (issuer === "Sunrise" ? !r.sunrise : issuer !== "all" && !r.tokens.some((t) => t.issuer === issuer))
         return false;
       if (onlyConditions && r.conditions === 0) return false;
       if (soon && !(r.next && r.next.date >= today && r.next.date <= in14))
@@ -103,7 +105,7 @@ export function StocksTable({
             aria-label="Search ticker or name"
             className="h-9 w-full rounded-full border border-slate-200 bg-white px-4 text-sm outline-none focus:border-slate-400 sm:w-64"
           />
-          {(["all", "xStocks", "Ondo", "Backpack"] as Issuer[]).map((v) => (
+          {(["all", "Sunrise", "xStocks", "Ondo", "Backpack"] as Issuer[]).map((v) => (
             <button
               key={v}
               type="button"
@@ -166,6 +168,14 @@ export function StocksTable({
                   >
                     {r.ticker}
                   </Link>
+                  {r.sunrise && (
+                    <span
+                      title={`Listed via Sunrise on ${r.sunrise}`}
+                      className="ml-2 rounded bg-orange-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-orange-700"
+                    >
+                      Sunrise
+                    </span>
+                  )}
                   <div className="max-w-[16rem] truncate text-[12px] text-slate-500">
                     {r.name}
                   </div>

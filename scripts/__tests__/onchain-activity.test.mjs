@@ -13,9 +13,9 @@ const jup = (id, vol, holders, first, holderChange = 0) => ({
 test("onchain: per ticker, every issuer's token added up and ranked by 24h volume; new listings and issuer shares", () => {
   const file = {
     tokens: [
-      { ticker: "ANT", name: "Anthropic", symbol: "ANT.US", issuer: "Backpack Securities (Sunrise)", solana_mint: "A1" },
+      { ticker: "ANT", name: "Anthropic", symbol: "ANT.US", issuer: "Backpack Securities", solana_mint: "A1" },
       { ticker: "NVDA", name: "NVIDIA", symbol: "NVDAx", issuer: "xStocks (Backed / Kraken)", solana_mint: "N1" },
-      { ticker: "NVDA", name: "NVIDIA", symbol: "NVDA.US", issuer: "Backpack Securities (Sunrise)", solana_mint: "N2" },
+      { ticker: "NVDA", name: "NVIDIA", symbol: "NVDA.US", issuer: "Backpack Securities", solana_mint: "N2" },
       { ticker: "QUIET", name: "Quiet", symbol: "Qx", issuer: "xStocks (Backed / Kraken)", solana_mint: "Q1" },
     ],
   };

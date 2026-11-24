@@ -1,6 +1,6 @@
 ---
 name: onchain-trending
-description: Show which tokenized stocks are trading most on Solana right now (xStocks, Ondo, Backpack Securities via Sunrise) — 24h volume, trades, holders, holder growth, new listings and each issuer's share — and brief the notable ones from their filings. Use when the user asks what is hot or trending in tokenized stocks, about a new onchain listing (e.g. an IPO token), or which issuer leads.
+description: Show which tokenized stocks are trading most on Solana right now (xStocks, Ondo, Backpack Securities — and the stocks listed via Sunrise) — 24h volume, trades, holders, holder growth, new listings and each issuer's share — and brief the notable ones from their filings. Use when the user asks what is hot or trending in tokenized stocks, about a new onchain listing (e.g. an IPO token), or which issuer leads.
 argument-hint: "[new]"
 ---
 

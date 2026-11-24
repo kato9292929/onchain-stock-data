@@ -16,6 +16,7 @@ import { findTheme, getThemes, themeFreeBody, themesIndexBody } from "@/lib/them
 import { loadSolanaStocks } from "@/lib/solana-stocks-load";
 import { companyFreeBody, digestFreeBody, findNeocloudCompany } from "@/lib/neocloud";
 import { getStockBrief } from "@/lib/stock-brief";
+import { sunriseListings } from "@/lib/sunrise";
 import { fetchActivity, fetchTopTraded, rankActivity, ONCHAIN_SOURCE } from "@/lib/onchain-activity";
 import { issuerShort } from "@/lib/solana-stocks-load";
 import { filingIndexUrl, getSecRecord } from "@/lib/edgar";
@@ -185,6 +186,30 @@ const handler = createMcpHandler(
         } catch (e) {
           return text({ error: "onchain_unavailable", message: e instanceof Error ? e.message : String(e) });
         }
+      },
+    );
+
+    server.registerTool(
+      "sunrise_listings",
+      {
+        title: "Stocks listed on Solana via Sunrise",
+        description:
+          "The tokenized stocks listed on Solana via Sunrise (Wormhole Labs), issued by Backpack Securities, newest listing first: ticker, name, mint and Sunrise launch date (from Sunrise's own list, read weekly; each mint checked on-chain), with each one's 24h volume and holders (Jupiter's public token API — market activity, not used for verdicts).",
+        inputSchema: z.object({ limit: z.number().int().min(1).max(100).default(20) }),
+        annotations: { title: "Stocks listed on Solana via Sunrise", ...LIVE },
+      },
+      async ({ limit }) => {
+        const file = await getSolanaStocks();
+        const list = sunriseListings(file).slice(0, limit);
+        const act = await fetchActivity(list.map((l) => l.mint)).catch(() => null);
+        return text({
+          source: "Sunrise listings: https://app.sunrise.xyz (weekly); activity: " + ONCHAIN_SOURCE,
+          total: sunriseListings(file).length,
+          listings: list.map((l) => {
+            const a = act?.get(l.mint);
+            return { ...l, volume_24h_usd: a?.volume_24h_usd ?? null, holders: a?.holders ?? null };
+          }),
+        });
       },
     );
 

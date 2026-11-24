@@ -211,7 +211,7 @@ test("the free view gives mint, dates and the latest verdict as a full row; the 
   assert.equal(freeBody("ZZZ", FILE, REC, "2026-10-29", "https://osd").full, null);
 });
 
-test("Backpack Securities (Sunrise): the .US assets with a Solana mint, each verified on-chain", async () => {
+test("Backpack Securities: the .US assets with a Solana mint, each verified on-chain", async () => {
   const { parseBackpack, isBackpackSecuritiesMint, ISSUERS: I } = await import("../refresh-solana-stocks.mjs");
   const assets = [
     { symbol: "ANT.US", displayName: "Anthropic", tokens: [{ blockchain: "Solana", contractAddress: "ANTBTZQ1EUuTxUs3tfeampxdqTWPHmwyJmcWj4xoAyNe" }] },
@@ -228,4 +228,36 @@ test("Backpack Securities (Sunrise): the .US assets with a Solana mint, each ver
   assert.equal(isBackpackSecuritiesMint(acct("Anthropic - Backpack Securities", "https://evil.example/ant.json")), false, "a copycat on another host");
   assert.equal(isBackpackSecuritiesMint(acct("Anthropic", "https://metadata.backpack.exchange/x.json")), false);
   assert.equal(isBackpackSecuritiesMint(null), false, "no such account");
+});
+
+test("Sunrise: its listings are read from its app page, and only those Backpack rows are marked", async () => {
+  const { parseSunrise, markSunrise } = await import("../refresh-solana-stocks.mjs");
+  // The app page embeds the list in escaped JSON.
+  const html =
+    'x \\"tokenSymbol\\":\\"ANT\\",\\"tokenName\\":\\"Anthropic - Backpack Securities\\",\\"tokenIcon\\":\\"https://i\\",' +
+    '\\"tokenAddress\\":\\"ANTBTZQ1EUuTxUs3tfeampxdqTWPHmwyJmcWj4xoAyNe\\",\\"sunriseLaunchDate\\":\\"2026-11-19T18:00:00.000Z\\" y ' +
+    '\\"tokenSymbol\\":\\"AKT\\",\\"tokenName\\":\\"Akash\\",\\"tokenIcon\\":\\"https://i\\",\\"tokenAddress\\":\\"5d3fjPDdkYbtYcAMR9PC2TANaEyhzuyP8JxTEwqjVgBZ\\"';
+  const listed = parseSunrise(html);
+  assert.deepEqual(listed.map((x) => [x.symbol, x.launch]), [["ANT", "2026-11-19"], ["AKT", null]]);
+
+  const tokens = [
+    { ticker: "ANT", issuer: "Backpack Securities", solana_mint: "ANTBTZQ1EUuTxUs3tfeampxdqTWPHmwyJmcWj4xoAyNe" },
+    { ticker: "AAPL", issuer: "Backpack Securities", solana_mint: "AAPLother", sunrise_listed_at: "2020-01-01" },
+  ];
+  const marked = markSunrise(tokens, listed);
+  assert.equal(marked[0].sunrise_listed_at, "2026-11-19");
+  assert.equal(marked[1].sunrise_listed_at, undefined, "a stale mark is dropped when Sunrise no longer lists it");
+
+  // Sunrise unreachable: last week's marks are kept by mint.
+  const kept = markSunrise([{ ...tokens[0] }], null, [{ solana_mint: tokens[0].solana_mint, sunrise_listed_at: "2026-11-19" }]);
+  assert.equal(kept[0].sunrise_listed_at, "2026-11-19");
+});
+
+test("the committed list marks the Sunrise listings (and only Backpack Securities rows)", () => {
+  const f = JSON.parse(readFileSync("data/solana-stocks.json", "utf8"));
+  const marked = f.tokens.filter((t) => t.sunrise_listed_at);
+  assert.ok(marked.length >= 50, `${marked.length} marked`);
+  assert.ok(marked.every((t) => t.issuer === "Backpack Securities"));
+  assert.ok(marked.some((t) => t.ticker === "ANT" && t.sunrise_listed_at === "2026-11-19"));
+  assert.ok(f.tokens.filter((t) => t.issuer === "Backpack Securities").length > marked.length, "not every Backpack token is on Sunrise");
 });
