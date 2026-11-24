@@ -3,6 +3,7 @@ import { LandingHero } from "./components/landing-hero";
 import { SolanaStocksSection } from "./components/solana-stocks-section";
 import { SelectionSection } from "./components/selection-section";
 import { OnchainTrending } from "./components/onchain-trending";
+import { SunriseListings } from "./components/sunrise-listings";
 import { loadSummaries } from "@/lib/solana-stocks-load";
 import { getThemes } from "@/lib/themes";
 import { SolanaMark } from "./components/solana-mark";
@@ -22,6 +23,11 @@ export default async function Home() {
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
         <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} pricePerCall={PER_CALL_PRICE.usdc} intro />
+
+        {/* Sunrise listings first: the stocks listed on Solana via Sunrise, newest first */}
+        <section className="mt-16">
+          <SunriseListings />
+        </section>
 
         {/* What is trading on Solana right now (Jupiter, cached 15 minutes) */}
         <section className="mt-16">

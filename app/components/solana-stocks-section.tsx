@@ -22,6 +22,7 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
     ticker: s.ticker,
     name: s.name,
     tokens: s.tokens.map((t) => ({ issuer: issuerShort(t.issuer), symbol: t.symbol, mint: t.solana_mint })),
+    sunrise: s.tokens.find((t) => t.sunrise_listed_at)?.sunrise_listed_at ?? null,
     next: s.next_earnings.status === "confirmed" && s.next_earnings.date ? { date: s.next_earnings.date } : null,
     conditions: s.conditions,
     verdict: s.latest_verdict ? { status: s.latest_verdict.result, judged_at: s.latest_verdict.judged_at } : null,
@@ -30,6 +31,7 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
     xStocks: rows.filter((r) => r.tokens.some((t) => t.issuer === "xStocks")).length,
     Ondo: rows.filter((r) => r.tokens.some((t) => t.issuer === "Ondo")).length,
     Backpack: rows.filter((r) => r.tokens.some((t) => t.issuer === "Backpack")).length,
+    Sunrise: rows.filter((r) => r.sunrise).length,
     covered: rows.filter((r) => r.conditions > 0).length,
   };
 
@@ -62,7 +64,7 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
           Every equity token issued on Solana by xStocks ({counts.xStocks.toLocaleString()}), Ondo Global
-          Markets ({counts.Ondo.toLocaleString()}) and Backpack Securities via Sunrise ({counts.Backpack.toLocaleString()}), with its mint. Per call, each US-listed company&apos;s own
+          Markets ({counts.Ondo.toLocaleString()}) and Backpack Securities ({counts.Backpack.toLocaleString()}; {counts.Sunrise} of them listed via Sunrise), with its mint. Per call, each US-listed company&apos;s own
           SEC filings and XBRL financials (revenue, operating income, net income, EPS, cash, shares), each value
           with its filing — plus, for {counts.covered} of them, a dated condition scored HIT / PARTIAL / MISS.{" "}
           <span className="font-semibold text-slate-700">{PER_CALL_PRICE.usdc} USDC per call</span> over x402.

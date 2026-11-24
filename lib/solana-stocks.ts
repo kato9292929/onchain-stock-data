@@ -34,6 +34,8 @@ export interface SolanaToken {
   solana_mint: string;
   source_url: string;
   fetched_at: string;
+  /** Set when Sunrise (Wormhole Labs) lists this mint on Solana: its Sunrise launch date. */
+  sunrise_listed_at?: string;
 }
 
 export interface SolanaStocksFile {
@@ -45,6 +47,8 @@ export interface SolanaStocksFile {
     { issuer: string; url: string | null; fetched_at: string | null; ok: boolean; count: number; last_error?: string }
   >;
   tokens: SolanaToken[];
+  /** The Sunrise listings read this week (app.sunrise.xyz). */
+  sunrise?: { url: string; ok: boolean; fetched_at?: string; listed?: number; stocks_marked?: number; last_error?: string };
 }
 
 export async function getSolanaStocks(): Promise<SolanaStocksFile> {
@@ -68,7 +72,7 @@ export {
 export interface TickerSummary {
   ticker: string;
   name: string;
-  tokens: Array<Pick<SolanaToken, "issuer" | "symbol" | "solana_mint" | "asset_type" | "source_url" | "fetched_at">>;
+  tokens: Array<Pick<SolanaToken, "issuer" | "symbol" | "solana_mint" | "asset_type" | "source_url" | "fetched_at" | "sunrise_listed_at">>;
   next_earnings: NextEarnings;
   conditions: number;
   latest_verdict: ConditionRow | null;
@@ -88,13 +92,14 @@ export function summarize(file: SolanaStocksFile, rec: Records, today: string): 
     out.push({
       ticker,
       name: tokens[0].name,
-      tokens: tokens.map(({ issuer, symbol, solana_mint, asset_type, source_url, fetched_at }) => ({
+      tokens: tokens.map(({ issuer, symbol, solana_mint, asset_type, source_url, fetched_at, sunrise_listed_at }) => ({
         issuer,
         symbol,
         solana_mint,
         asset_type,
         source_url,
         fetched_at,
+        ...(sunrise_listed_at ? { sunrise_listed_at } : {}),
       })),
       next_earnings: nextEarningsOf(ticker, rec, today),
       conditions: rows.length,
@@ -144,13 +149,14 @@ export function freeBody(
   return {
     ticker: want,
     name: tokens[0].name,
-    tokens: tokens.map(({ issuer, symbol, solana_mint, asset_type, source_url, fetched_at }) => ({
+    tokens: tokens.map(({ issuer, symbol, solana_mint, asset_type, source_url, fetched_at, sunrise_listed_at }) => ({
       issuer,
       symbol,
       solana_mint,
       asset_type,
       source_url,
       fetched_at,
+      ...(sunrise_listed_at ? { sunrise_listed_at } : {}),
     })),
     next_earnings: nextEarningsOf(want, rec, today),
     condition_count: rows.length,

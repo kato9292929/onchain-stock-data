@@ -7,11 +7,17 @@
  *   Ondo Global Markets        https://docs.ondo.finance/addresses
  *                              (links the issuer's own token CSV; we follow it)
  *   Backpack Securities        https://api.backpack.exchange/api/v1/assets
- *     (listed via Sunrise)     (the exchange's public asset list: "<TICKER>.US"
+ *                              (the exchange's public asset list: "<TICKER>.US"
  *                              with its Solana mint), each mint then checked
  *                              on-chain: its Token-2022 metadata must name
  *                              "Backpack Securities" and point at Backpack's
  *                              own metadata host. A public Solana RPC read.
+ *   Sunrise (Wormhole Labs)    https://app.sunrise.xyz
+ *                              the assets Sunrise lists on Solana, embedded in
+ *                              its app page (symbol, name, mint, launch date).
+ *                              Not an issuer: a Backpack row whose mint is on
+ *                              it gets `sunrise_listed_at`. A failed read keeps
+ *                              last week's marks.
  *
  * Both are the issuers' own public pages. No API key, no paid data API, no
  * web search, no model call: this costs nothing to run, which is why it may
@@ -32,11 +38,14 @@ const OUT = path.join(process.cwd(), "data", "solana-stocks.json");
 export const XSTOCKS_URL = "https://xstocks.fi/us/products";
 export const ONDO_DOCS_URL = "https://docs.ondo.finance/addresses";
 export const BACKPACK_ASSETS_URL = "https://api.backpack.exchange/api/v1/assets";
+export const SUNRISE_URL = "https://app.sunrise.xyz";
+/** Below this, the Sunrise page is treated as unparsed rather than delisted. */
+export const SUNRISE_MIN = 50;
 const SOLANA_RPC = process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
 export const ISSUERS = {
   xstocks: "xStocks (Backed / Kraken)",
   ondo: "Ondo Global Markets",
-  backpack: "Backpack Securities (Sunrise)",
+  backpack: "Backpack Securities",
 };
 /** Below this, a parse is treated as broken rather than as a real delisting. */
 export const MIN_ROWS = { xstocks: 200, ondo: 100, backpack: 500 };
@@ -219,6 +228,36 @@ async function verifyBackpack(rows) {
 }
 
 /**
+ * Sunrise's listings from its app page: each embedded asset's symbol, name,
+ * Solana mint and Sunrise launch date (stocks and other assets alike). Pure.
+ */
+export function parseSunrise(html) {
+  const t = String(html).replace(/\\"/g, '"');
+  const rx =
+    /"tokenSymbol":"([^"]+)","tokenName":"([^"]+)","tokenIcon":"[^"]*","tokenAddress":"([1-9A-HJ-NP-Za-km-z]{32,44})"(?:,"sunriseLaunchDate":"([^"]*)")?/g;
+  const out = new Map();
+  for (const m of t.matchAll(rx)) {
+    const [, symbol, name, mint, launch] = m;
+    if (!out.has(mint)) out.set(mint, { symbol, name, mint, launch: launch ? launch.slice(0, 10) : null });
+  }
+  return [...out.values()];
+}
+
+/**
+ * Mark the Backpack rows Sunrise lists (`sunrise_listed_at`, the launch date).
+ * With no fresh Sunrise list, last week's marks are kept by mint. Pure.
+ */
+export function markSunrise(tokens, sunrise, previousTokens = []) {
+  const fresh = sunrise ? new Map(sunrise.map((x) => [x.mint, x.launch ?? "unknown"])) : null;
+  const prev = new Map(previousTokens.filter((t) => t.sunrise_listed_at).map((t) => [t.solana_mint, t.sunrise_listed_at]));
+  return tokens.map((t) => {
+    const { sunrise_listed_at: _drop, ...rest } = t;
+    const at = fresh ? fresh.get(t.solana_mint) : prev.get(t.solana_mint);
+    return at ? { ...rest, sunrise_listed_at: at } : rest;
+  });
+}
+
+/**
  * Merge this run's rows with last week's: a source that failed keeps its old
  * rows. Pure.
  */
@@ -298,13 +337,36 @@ async function main() {
     results.backpack = { url: BACKPACK_ASSETS_URL, rows: [], error: e.message };
   }
 
-  const next = mergeRefresh(previous, results, now);
+  let sunrise = null;
+  let sunriseError = null;
+  try {
+    const listed = parseSunrise(await fetchText(SUNRISE_URL));
+    if (listed.length < SUNRISE_MIN) throw new Error(`parsed ${listed.length} assets, below the floor of ${SUNRISE_MIN}`);
+    sunrise = listed;
+  } catch (e) {
+    sunriseError = e.message;
+  }
+
+  const merged = mergeRefresh(previous, results, now);
+  const next = {
+    ...merged,
+    tokens: markSunrise(merged.tokens, sunrise, previous?.tokens ?? []),
+    sunrise: sunrise
+      ? { url: SUNRISE_URL, fetched_at: now, ok: true, listed: sunrise.length, stocks_marked: 0 }
+      : { url: SUNRISE_URL, ok: false, last_error: sunriseError, last_attempt_at: now, kept: "last week's marks" },
+  };
+  if (next.sunrise.ok) next.sunrise.stocks_marked = next.tokens.filter((t) => t.sunrise_listed_at).length;
   await writeFile(OUT, `${JSON.stringify(next, null, 2)}\n`, "utf8");
   for (const [k, s] of Object.entries(next.sources)) {
     const line = `[solana-stocks] ${k}: ${s.ok ? "ok" : "FAILED, kept previous"} · ${s.count} rows`;
     if (s.ok) console.log(line);
     else console.warn(`::warning::${line} — ${s.last_error}`);
   }
+  console.log(
+    next.sunrise.ok
+      ? `[solana-stocks] sunrise: ok · ${next.sunrise.listed} listed, ${next.sunrise.stocks_marked} stock rows marked`
+      : `::warning::[solana-stocks] sunrise: FAILED, kept last week's marks — ${next.sunrise.last_error}`,
+  );
   console.log(`[solana-stocks] wrote ${next.tokens.length} rows`);
 }
 
