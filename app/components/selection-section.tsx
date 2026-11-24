@@ -1,4 +1,6 @@
-import { loadRecords, loadSummaries } from "@/lib/solana-stocks-load";
+import { loadRecords } from "@/lib/solana-stocks-load";
+import { getSolanaStocks } from "@/lib/solana-stocks";
+import { FIVE_MINUTES, memoize } from "@/lib/memo";
 import {
   selectionRows,
   selectionSections,
@@ -24,29 +26,28 @@ function stats(rows: SelectionRow[]) {
   };
 }
 
+/** The Selection rows and their categories, computed once per five minutes per server instance. */
+const loadSelectionCached = memoize(async () => {
+  const [rec, file, themes] = await Promise.all([loadRecords(), getSolanaStocks().catch(() => null), getThemes()]);
+  if (!themes) throw new Error("themes unavailable");
+  const pages = new Set((file?.tokens ?? []).map((t) => t.ticker.toUpperCase()));
+  const rows = selectionRows(rec, new Date().toISOString().slice(0, 10)).map((r) => ({ ...r, has_page: pages.has(r.ticker.toUpperCase()) }));
+  return { rows, sections: selectionSections(rows, themes.themes, rec) };
+}, FIVE_MINUTES);
+
 /**
  * Selection: every condition, kept in its categories. The Selection page shows
  * five rows per category; the front page three, with a section heading.
  */
 export async function SelectionSection({ preview = 5, onFront = false }: { preview?: number; onFront?: boolean }) {
-  const [rec, stocks, themes] = await Promise.all([
-    loadRecords().catch(() => null),
-    loadSummaries().catch(() => null),
-    getThemes().catch(() => null),
-  ]);
-  if (!rec || !themes)
+  const data = await loadSelectionCached().catch(() => null);
+  if (!data)
     return (
       <p className="p-8 text-sm text-slate-400">
         Couldn&apos;t load the record.
       </p>
     );
-  const pages = new Set(
-    (stocks?.rows ?? []).map((s) => s.ticker.toUpperCase()),
-  );
-  const rows = selectionRows(rec, new Date().toISOString().slice(0, 10)).map(
-    (r) => ({ ...r, has_page: pages.has(r.ticker.toUpperCase()) }),
-  );
-  const sections = selectionSections(rows, themes.themes, rec);
+  const { rows, sections } = data;
   const all = stats(rows);
   const H = onFront ? "h2" : "h1";
 

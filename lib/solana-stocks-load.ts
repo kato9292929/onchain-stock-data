@@ -5,6 +5,7 @@ import {
   getPortfolioHistory,
 } from "@/lib/data";
 import { readExternalCatalysts } from "@/lib/external-catalysts";
+import { FIVE_MINUTES, memoize } from "@/lib/memo";
 import { getIrFairFile } from "@/lib/ir-fair-scoreboard";
 import { getSignals } from "@/lib/signals";
 import { getEarningsDates, getFinancials, type Records } from "@/lib/company-record";
@@ -83,6 +84,9 @@ export async function loadSummaries(): Promise<{ rows: TickerSummary[]; updatedA
   const { file, rec, today } = await loadSolanaStocks();
   return { rows: summarize(file, rec, today).sort(byDefaultOrder), updatedAt: file.updated_at, today };
 }
+
+/** loadSummaries, kept for five minutes per server instance (the pages call it on every request). */
+export const loadSummariesCached = memoize(loadSummaries, FIVE_MINUTES);
 
 /** "xStocks (Backed / Kraken)" → "xStocks", "Ondo Global Markets" → "Ondo". */
 export function issuerShort(issuer: string): string {

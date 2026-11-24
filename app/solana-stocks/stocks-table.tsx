@@ -30,14 +30,21 @@ type Issuer = "all" | "Sunrise" | "xStocks" | "Ondo" | "Backpack";
 
 /** `preview`: show only the first `preview` rows, without the search, filters and pager (the front page). */
 export function StocksTable({
-  rows,
+  rows: initialRows,
   today,
   preview,
+  total,
+  allUrl,
 }: {
   rows: StockRow[];
   today: string;
   preview?: number;
+  /** With `allUrl`: the page carried only the first rows; the full list (`total` rows) is fetched on "Show all". */
+  total?: number;
+  allUrl?: string;
 }) {
+  const [rows, setRows] = useState(initialRows);
+  const [loading, setLoading] = useState(false);
   const [q, setQ] = useState("");
   const [issuer, setIssuer] = useState<Issuer>("all");
   const [onlyConditions, setOnlyConditions] = useState(false);
@@ -249,10 +256,22 @@ export function StocksTable({
         <div className="flex justify-center">
           <button
             type="button"
-            onClick={() => setExpanded(true)}
+            disabled={loading}
+            onClick={async () => {
+              if (allUrl && rows.length < (total ?? 0)) {
+                setLoading(true);
+                try {
+                  const res = await fetch(allUrl);
+                  if (res.ok) setRows(((await res.json()) as { rows: StockRow[] }).rows);
+                } finally {
+                  setLoading(false);
+                }
+              }
+              setExpanded(true);
+            }}
             className="rounded-full border border-slate-200 bg-white px-5 py-2 text-[13px] font-semibold text-[#0a1b33] shadow-sm transition-colors hover:border-slate-300"
           >
-            Show all {rows.length.toLocaleString()} ↓
+            {loading ? "Loading…" : `Show all ${(total ?? rows.length).toLocaleString()} ↓`}
           </button>
         </div>
       )}
