@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { issuerShort, loadSummaries } from "@/lib/solana-stocks-load";
+import { stockTableRows } from "@/lib/stock-table-rows";
 import { PER_CALL_PRICE } from "@/lib/x402";
 import { SolanaMark } from "./solana-mark";
-import { StocksTable, type StockRow } from "../solana-stocks/stocks-table";
+import { StocksTable } from "../solana-stocks/stocks-table";
 
 /**
  * Every tokenized stock issued on Solana (xStocks, Ondo Global Markets, Backpack Securities), one
@@ -12,28 +12,11 @@ import { StocksTable, type StockRow } from "../solana-stocks/stocks-table";
  * disclosures, not on the stock price.
  */
 export async function SolanaStocksSection({ preview }: { preview?: number } = {}) {
-  const data = await loadSummaries().catch(() => null);
+  const data = await stockTableRows().catch(() => null);
   if (!data) {
     return <p className="p-8 text-sm text-slate-400">Couldn&apos;t load the token list.</p>;
   }
-
-  // Compact rows: the full list is ~1,500 tickers, so only what the table shows.
-  const rows: StockRow[] = data.rows.map((s) => ({
-    ticker: s.ticker,
-    name: s.name,
-    tokens: s.tokens.map((t) => ({ issuer: issuerShort(t.issuer), symbol: t.symbol, mint: t.solana_mint })),
-    sunrise: s.tokens.find((t) => t.sunrise_listed_at)?.sunrise_listed_at ?? null,
-    next: s.next_earnings.status === "confirmed" && s.next_earnings.date ? { date: s.next_earnings.date } : null,
-    conditions: s.conditions,
-    verdict: s.latest_verdict ? { status: s.latest_verdict.result, judged_at: s.latest_verdict.judged_at } : null,
-  }));
-  const counts = {
-    xStocks: rows.filter((r) => r.tokens.some((t) => t.issuer === "xStocks")).length,
-    Ondo: rows.filter((r) => r.tokens.some((t) => t.issuer === "Ondo")).length,
-    Backpack: rows.filter((r) => r.tokens.some((t) => t.issuer === "Backpack")).length,
-    Sunrise: rows.filter((r) => r.sunrise).length,
-    covered: rows.filter((r) => r.conditions > 0).length,
-  };
+  const { rows, counts } = data;
 
   if (preview) {
     return (
@@ -47,7 +30,8 @@ export async function SolanaStocksSection({ preview }: { preview?: number } = {}
             <h2 className="font-outfit text-2xl font-semibold text-[#0a1b33]">{rows.length.toLocaleString()} tokenized stocks on Solana</h2>
           </div>
         </div>
-        <StocksTable rows={rows} today={data.today} preview={preview} />
+        {/* Only the first rows travel with the page; the rest load on "Show all". */}
+        <StocksTable rows={rows.slice(0, preview)} total={rows.length} allUrl="/api/stocks-list" today={data.today} preview={preview} />
       </div>
     );
   }

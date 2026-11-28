@@ -4,12 +4,23 @@ import { SolanaStocksSection } from "./components/solana-stocks-section";
 import { SelectionSection } from "./components/selection-section";
 import { OnchainTrending } from "./components/onchain-trending";
 import { SunriseListings } from "./components/sunrise-listings";
-import { loadSummaries } from "@/lib/solana-stocks-load";
+import { Suspense } from "react";
+import { getSolanaStocks } from "@/lib/solana-stocks";
 import { getThemes } from "@/lib/themes";
 import { SolanaMark } from "./components/solana-mark";
 import { PER_CALL_PRICE } from "@/lib/x402";
 
 export const dynamic = "force-dynamic";
+
+/** What a section shows while its data streams in: its title and a quiet placeholder. */
+function SectionSkeleton({ title }: { title: string }) {
+  return (
+    <div className="font-inter" aria-busy="true">
+      <h2 className="font-outfit mb-4 text-2xl font-semibold text-[#0a1b33]">{title}</h2>
+      <div className="h-40 animate-pulse rounded-2xl border border-slate-200 bg-white" />
+    </div>
+  );
+}
 
 /**
  * The front page: the hero, every tokenized stock with its condition and
@@ -17,21 +28,30 @@ export const dynamic = "force-dynamic";
  * selection are tabs in the hero's nav, not sections here.
  */
 export default async function Home() {
-  const [solana, themes] = await Promise.all([loadSummaries().catch(() => null), getThemes()]);
+  // Cheap on purpose: the hero only needs the ticker count, read straight off the token list.
+  const [file, themes] = await Promise.all([getSolanaStocks().catch(() => null), getThemes()]);
+  const tickerCount = new Set((file?.tokens ?? []).map((t) => t.ticker)).size;
 
   return (
     <div className="font-inter min-h-screen bg-[#f9fafb] text-slate-900">
       <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-        <LandingHero solanaCount={solana?.rows.length ?? 0} themeCount={themes?.themes.length ?? 0} pricePerCall={PER_CALL_PRICE.usdc} intro />
+        <LandingHero solanaCount={tickerCount} themeCount={themes?.themes.length ?? 0} pricePerCall={PER_CALL_PRICE.usdc} intro />
+
+        {/* The sections below wait on data (Jupiter, the token list summary, the Selection rows):
+            each streams in on its own, so the page shows at once instead of after the slowest. */}
 
         {/* Sunrise listings first: the stocks listed on Solana via Sunrise, newest first */}
         <section className="mt-16">
-          <SunriseListings />
+          <Suspense fallback={<SectionSkeleton title="Listed via Sunrise" />}>
+            <SunriseListings />
+          </Suspense>
         </section>
 
         {/* What is trading on Solana right now (Jupiter, cached 15 minutes) */}
         <section className="mt-16">
-          <OnchainTrending />
+          <Suspense fallback={<SectionSkeleton title="Trading now on Solana" />}>
+            <OnchainTrending />
+          </Suspense>
         </section>
 
         {/* x402 — the payment rail. Every paid call settles on Solana. */}
@@ -190,12 +210,16 @@ export default async function Home() {
 
         {/* Stocks: five rows here, the full list in the Stocks tab */}
         <section className="mt-16">
-          <SolanaStocksSection preview={5} />
+          <Suspense fallback={<SectionSkeleton title="Tokenized stocks on Solana" />}>
+            <SolanaStocksSection preview={5} />
+          </Suspense>
         </section>
 
         {/* Selection: three rows per category here, the rest with "Show all" */}
         <section className="mt-16">
-          <SelectionSection preview={3} onFront />
+          <Suspense fallback={<SectionSkeleton title="Selection" />}>
+            <SelectionSection preview={3} onFront />
+          </Suspense>
         </section>
 
         <footer className="mt-16 border-t border-slate-200 py-8 text-xs text-slate-400">
